@@ -1,0 +1,22 @@
+:root {
+/* Colores de la paleta */
+--color-primario: #F4EEFF; /* Color primario */
+--color-secundario: #DCD6F7; /* Color secundario */
+--color-terciario: #A6B1E1; /* Color terciario */
+--color-cuarto: #424874; /* Color cuarto */
+
+  /* Colores básicos */
+  --azul-oscuro: #0c2342;
+  --azul-intermedio: #0d4f81;
+  --negro: #323232;
+  --naranja-claro: #ffe6b1;
+  --naranja-oscuro: #f0ad4e;
+  --rojo-vivo: #de361c;
+  --verde-claro: #36ab2b;
+  --blanco: #EEEEEE;
+}
+
+.fondo-principal {
+  background-color: var(--color-cuarto);
+  color: var(--color-primario);
+}
