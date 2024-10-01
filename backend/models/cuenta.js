@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     cuenta.associate = function (models){
-        cuenta.belongsTo(models.persona, {foreignKey: 'id_persona'});
+        cuenta.belongsTo(models.entidad, {foreignKey: 'id_entidad'});
     }
 
     return cuenta;

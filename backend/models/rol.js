@@ -8,8 +8,7 @@ module.exports = (sequelize, DataTypes) => {
         freezeTableName: true
     });
     rol.associate = function (models){
-        rol.hasMany(models.rol_rol, {foreignKey: 'id_rol',as:'rol_rol'});
-        rol.hasOne(models.cuenta, { foreignKey: 'id_rol', as: 'cuenta'});
+        rol.hasOne(models.rol_proyecto, { foreignKey: 'id_rol', as: 'rol_proyecto'});
     };
  
     return rol;
