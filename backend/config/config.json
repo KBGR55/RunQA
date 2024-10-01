@@ -1,0 +1,10 @@
+{
+    "development":{
+        "username":"desarrollo",
+        "password":"desarrollo",
+        "database": "bdrunqa",
+        "host":"127.0.0.1",
+        "dialect":"mysql",
+        "operatorAliases":false
+    }
+}
