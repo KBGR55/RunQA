@@ -52,7 +52,11 @@ const NavLink = () => {
         <Nav className=''>
             <Nav.Link href="/" ><i className="fas fa-home"></i> Inicio</Nav.Link>
             <Nav.Link href="/create/book"  style={navLinkStyle}><i className="fas fa-book"></i>Opcion 1</Nav.Link>
+
+            <Nav.Link href="/caso/prueba"  style={navLinkStyle}>Caso Prueba</Nav.Link>
+            <Nav.Link href='/proyectos' style={navLinkStyle}>Proyectos</Nav.Link>
             {token && (<Nav.Link href="/perfil-usuario"  style={navLinkStyle}><i className="fas fa-user"></i> Perfil</Nav.Link>)}
+
             {getRol() === 'USUARIO' && <Nav.Link href="/api"  style={navLinkStyle}><i className="fas fa-code"></i> Opcion 2</Nav.Link>}
             {getRol() === 'ADMINISTRADOR' && <Nav.Link href="/comentarios"  style={navLinkStyle}><i className="fas fa-comments"></i> Opcion 3</Nav.Link>}
             {getRol() === 'ADMINISTRADOR' && <Nav.Link href="/peticion-api"  style={navLinkStyle}><i className="fas fa-users"></i>Opcion 4</Nav.Link>}

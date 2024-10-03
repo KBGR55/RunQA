@@ -1,22 +1,103 @@
 :root {
-/* Colores de la paleta */
---color-primario: #F4EEFF; /* Color primario */
---color-secundario: #DCD6F7; /* Color secundario */
---color-terciario: #A6B1E1; /* Color terciario */
---color-cuarto: #424874; /* Color cuarto */
-
-  /* Colores básicos */
+  /* Paleta de colores */
+  --color-primario: #F4EEFF;
+  --color-secundario: #DCD6F7;
+  --color-terciario: #A6B1E1;
+  --color-cuarto: #424874;
   --azul-oscuro: #0c2342;
   --azul-intermedio: #0d4f81;
   --negro: #323232;
   --naranja-claro: #ffe6b1;
-  --naranja-oscuro: #f0ad4e;
-  --rojo-vivo: #de361c;
-  --verde-claro: #36ab2b;
+  --rojo-claro: #FFACAC;
+  --rojo: #FD5E53;
+  --verde-claro: #21BF73;
+  --verde-pastel: #94e085;
   --blanco: #EEEEEE;
+  --color-positivo: var(--verde-claro);
+  --color-negativo: var(--rojo);
 }
 
 .fondo-principal {
   background-color: var(--color-cuarto);
   color: var(--color-primario);
+}
+
+.titulo-primario {
+  color: var(--color-cuarto);
+  font-size: 30px;
+  font-weight: bold;
+  padding-left: 10px;
+  position: relative;
+}
+
+.titulo-primario::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0; width: 5px;
+  background: linear-gradient(to bottom, var(--color-cuarto), var(--color-terciario), var(--color-secundario));
+  z-index: -1;
+}
+
+.titulo-secundario {
+  color: var(--color-terciario);
+  font-size: 20px;
+  font-weight: bold;
+}
+label{
+  color: var(--negro);
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.form-group {
+  margin: 2px 0 5px;
+}
+/*Contenedor*/
+.contenedor-centro {
+  display: flex; justify-content: center; margin: 100px 50px 0;
+}
+
+.contenedor-carta {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+  background-color: transparent; border-radius: 10px; padding: 25px; width: 100%;
+}
+
+.contenedor-filo {
+  display: flex; 
+  justify-content: flex-end; 
+}
+/*Tabla*/
+.table th {
+  background-color: var(--color-cuarto);
+  color: var(--color-primario);
+}
+
+/* Botones */
+.btn-normal, .btn-positivo, .btn-negativo {
+  background-color: var(--color-cuarto);
+  color: var(--color-primario);
+  border: none; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+  border-radius: 5px; margin: 8px; font-size: 16px; padding: 8px;
+}
+
+.btn-normal:hover {
+  background-color: var(--color-terciario);
+}
+
+.btn-positivo {
+  background-color: var(--color-positivo);
+}
+
+.btn-positivo:hover {
+  background-color: var(--verde-pastel);
+  color: var(--negro);
+}
+
+.btn-negativo {
+  background-color: var(--color-negativo);
+}
+
+.btn-negativo:hover {
+  background-color: var(--rojo-claro);
+  color: var(--negro);
 }
