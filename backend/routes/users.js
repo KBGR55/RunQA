@@ -64,6 +64,8 @@ var auth = function middleware(req, res, next) {
 };
 
 // GUARDAR IMAGENES 
+// Configuración de almacenamiento en memoria
+const storage = multer.memoryStorage();
 
 // Función para crear configuraciones de almacenamiento de multer
 const createStorage = (folderPath) => {
@@ -92,7 +94,6 @@ const extensionesAceptadasFoto = (req, file, cb) => {
 
 // Configuración de Multer con control de tamaño y tipo de archivo
 const uploadFoto = (folderPath) => {
-  const storage = createStorage(folderPath);
   return multer({
     storage: storage,
     fileFilter: extensionesAceptadasFoto,

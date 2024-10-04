@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 8;
 const path = require('path');
 const uuid = require('uuid');
+const fs = require('fs');
 
 class EntidadController {
 
@@ -67,29 +68,20 @@ class EntidadController {
         });
     }
 
+
     async guardar(req, res) {
+    
+        // Iniciar una transacción fuera del bloque try
+        const transaction = await models.sequelize.transaction();
+    
         try {
+            // Validación de los datos
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
                 return res.status(400).json({
                     msg: "DATOS INCOMPLETOS",
                     code: 400,
                     errors: errors.array()
-                });
-            }
-    
-            const claveHash = (clave) => {
-                if (!clave) {
-                    throw new Error("La clave es obligatoria");
-                }
-                const salt = bcrypt.genSaltSync(saltRounds);
-                return bcrypt.hashSync(clave, salt);
-            };
-    
-            if (!req.file) {
-                return res.status(400).json({
-                    msg: "FALTA CARGAR LA IMAGEN",
-                    code: 400
                 });
             }
     
@@ -100,38 +92,75 @@ class EntidadController {
                 });
             }
     
+            // Verifica si se cargó una imagen en memoria
+            if (!req.file) {
+                return res.status(400).json({
+                    msg: "FALTA CARGAR LA IMAGEN",
+                    code: 400
+                });
+            }
+    
+            // Generar el hash de la clave
+            const claveHash = (clave) => {
+                if (!clave) {
+                    throw new Error("La clave es obligatoria");
+                }
+                const salt = bcrypt.genSaltSync(saltRounds);
+                return bcrypt.hashSync(clave, salt);
+            };
+    
+            // Datos a guardar en la base de datos
             const data = {
                 nombres: req.body.nombres,
                 apellidos: req.body.apellidos,
                 fecha_nacimiento: req.body.fecha_nacimiento,
                 telefono: req.body.telefono,
-                foto: req.file.filename,
                 cuenta: {
                     correo: req.body.correo,
                     clave: claveHash(req.body.clave)
-                }
+                },
+                external_id: uuid.v4()
             };
     
-            data.external_id = uuid.v4();
-    
-            const transaction = await models.sequelize.transaction();
-            await entidad.create(data, {
-                include: [
-                    {
-                        model: models.cuenta,
-                        as: "cuenta"
-                    }
-                ],
+            // Guardar los datos de la entidad en la base de datos
+            const entidad = await models.entidad.create(data, {
+                include: [{ model: models.cuenta, as: "cuenta" }],
                 transaction
             });
+    
+            // Guardar la imagen en el disco después de confirmar los datos
+            const filename = `${uuid.v4()}${path.extname(req.file.originalname)}`;
+            const finalPath = path.join(__dirname, '../public/images/users', filename);
+    
+            fs.writeFileSync(finalPath, req.file.buffer);
+    
+            // Actualizar el campo de la foto con el nombre final
+            entidad.foto = filename;
+            await entidad.save({ transaction });
+    
+            // Confirmar la transacción solo después de que todo esté completo
             await transaction.commit();
     
             return res.status(200).json({
                 msg: "SE HAN REGISTRADO LOS DATOS CON ÉXITO",
                 code: 200
             });
+    
         } catch (error) {
             console.error(error);
+    
+            // Si ocurre un error, asegurarse de hacer rollback solo si la transacción no ha sido finalizada
+            if (transaction && !transaction.finished) {
+                await transaction.rollback();
+            }
+    
+            // Verificar si el error es de duplicación de correo
+            if (error.name === 'SequelizeUniqueConstraintError' && error.errors[0].path === 'correo') {
+                return res.status(400).json({
+                    msg: "ESTE CORREO SE ENCUENTRA REGISTRADO EN EL SISTEMA",
+                    code: 400
+                });
+            }
     
             return res.status(400).json({
                 msg: error.message || "Ha ocurrido un error en el servidor",
@@ -139,7 +168,8 @@ class EntidadController {
             });
         }
     }
-    
+       
+
 
     async modificar(req, res) {
         try {
