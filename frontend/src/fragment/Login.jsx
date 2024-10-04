@@ -1,10 +1,49 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/Login_Style.css'
 import iconLogo from '../img/logo512.png';
 import MenuBar from './MenuBar';
+import { InicioSesion } from '../utilities/hooks/Conexion';
+import { useNavigate } from 'react-router';
+import { useForm } from 'react-hook-form';
+import { getRol, getToken, getUser, saveCorreo, saveRol, saveToken, saveUser } from '../utilities/Sessionutil';
+import mensajes from '../utilities/Mensajes';
 
 const Login = () => {
+    const navegation = useNavigate();
+    const { register, formState: { errors }, handleSubmit } = useForm();
+    const [focused, setFocused] = useState({ correo: false, clave: false });
+
+    const handleFocus = (field) => {
+        setFocused({ ...focused, [field]: true });
+    };
+
+    const handleBlur = (field, hasValue) => {
+        setFocused({ ...focused, [field]: hasValue });
+    };
+
+
+    const onSubmit = (data, event) => {
+        var datos = {
+            "correo": data.correo,
+            "clave": data.clave
+        };
+
+        InicioSesion(datos).then((info) => {
+            var infoAux = info.info;
+            if (info.code !== 200) {
+                mensajes(info.msg, "error", "Error")
+            } else {
+                saveToken(infoAux.token);
+                saveRol(infoAux.rol);
+                saveUser(infoAux.user);
+                saveCorreo(infoAux.correo);
+                navegation("/proyectos");
+                mensajes(info.msg);
+            }
+        })
+    };
+
     return (
         <div>
             <MenuBar />
@@ -25,15 +64,41 @@ const Login = () => {
 
                         {/* Parte derecha con el formulario */}
                         <div className="login-right p-5 d-flex flex-column justify-content-center">
-                            <h2 className="text-center mb-4" style={{fontWeight:'bold'}}>Inicio de Sesión</h2>
-                            <form>
+                            <h2 className="text-center mb-4" style={{ fontWeight: 'bold' }}>Inicio de Sesión</h2>
+                            <form onSubmit={handleSubmit(onSubmit)}>
                                 <div className="mb-3">
                                     <label htmlFor="email" className="form-label">Correo electronico</label>
-                                    <input type="email" className="form-control" id="email" />
+                                    <input type="email"
+                                        {...register("correo", {
+                                            required: {
+                                                value: true,
+                                                message: "Ingrese un correo"
+                                            },
+                                            pattern: {
+                                                value: /[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,5}/,
+                                                message: "Ingrese un correo válido"
+                                            }
+                                        })}
+                                        onFocus={() => handleFocus('correo')}
+                                        onBlur={(e) => handleBlur('correo', e.target.value !== '')}
+                                        className="form-control"
+                                        id="email" />
+                                        {errors.correo && <span className='mensajeerror'>{errors.correo.message}</span>}
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="password" className="form-label">Contraseña</label>
-                                    <input type="password" className="form-control" id="password" />
+                                    <input type="password" 
+                                    {...register("clave", {
+                                        required: {
+                                            value: true,
+                                            message: "Ingrese una contraseña"
+                                        }
+                                    })}
+                                    onFocus={() => handleFocus('clave')}
+                                    onBlur={(e) => handleBlur('clave', e.target.value !== '')}
+                                    className="form-control" 
+                                    id="password" />
+                                    {errors.clave && <span className='mensajeerror'>{errors.clave.message}</span>}
                                 </div>
                                 <div className="mb-3 d-flex justify-content-end">
                                     <a href="#" className="text-muted">¿Olvido su contraseña?</a>
