@@ -14,7 +14,7 @@ const MenuBar = () => {
             <div className='container-fluid'>
                 <Navbar.Brand className='fondo-principal' href="/">RunQA</Navbar.Brand>
                 <Navbar.Toggle className={'navbar-toggler'} aria-controls="offcanvasNavbar" onClick={() => setShowOffcanvas(!showOffcanvas)} />
-                <div className={'collapse navbar-collapse'}>
+                <div className={'collapse navbar-collapse contenedor-filo titulo-terciario'}>
                     <NavLink classNameNav="navbar-nav ms-auto mb-2 mb-lg-0" />
                 </div>
                 <Offcanvas className='fondo-principal' show={showOffcanvas} onHide={() => setShowOffcanvas(false)} placement="end" target="#offcanvasNavbar">
@@ -51,11 +51,11 @@ const NavLink = () => {
     return (
         <Nav className=''>
             <Nav.Link href="/" ><i className="fas fa-home"></i> Inicio</Nav.Link>
-            <Nav.Link href="/create/book"  style={navLinkStyle}><i className="fas fa-book"></i>Opcion 1</Nav.Link>
+            <Nav.Link href="/usuarios"  style={navLinkStyle}><i className="fas fa-book"></i>Gestionar Usuarios</Nav.Link>
 
             <Nav.Link href="/caso/prueba"  style={navLinkStyle}>Caso Prueba</Nav.Link>
             <Nav.Link href='/proyectos' style={navLinkStyle}>Proyectos</Nav.Link>
-            {token && (<Nav.Link href="/perfil-usuario"  style={navLinkStyle}><i className="fas fa-user"></i> Perfil</Nav.Link>)}
+            {token && (<Nav.Link href="/perfil"  style={navLinkStyle}><i className="fas fa-user"></i> Perfil</Nav.Link>)}
 
             {getRol() === 'USUARIO' && <Nav.Link href="/api"  style={navLinkStyle}><i className="fas fa-code"></i> Opcion 2</Nav.Link>}
             {getRol() === 'ADMINISTRADOR' && <Nav.Link href="/comentarios"  style={navLinkStyle}><i className="fas fa-comments"></i> Opcion 3</Nav.Link>}

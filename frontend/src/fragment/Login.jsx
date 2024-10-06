@@ -41,8 +41,10 @@ const Login = () => {
                 navegation("/proyectos");
                 mensajes(info.msg);
             }
+            console.log("DATOS DEL USUARIO", infoAux.user);
         })
     };
+    
 
     return (
         <div>
@@ -50,7 +52,6 @@ const Login = () => {
             <div>
                 <div className="container-fluid custom-container-login d-flex justify-content-center align-items-center vh-100">
                     <div className="login-container shadow-lg">
-                        {/* Parte izquierda con la imagen y el overlay */}
                         <div className="login-left position-relative">
                             <div className="login-overlay d-flex flex-column justify-content-between">
                                 <div className="d-flex justify-content-between">
@@ -62,9 +63,8 @@ const Login = () => {
                             </div>
                         </div>
 
-                        {/* Parte derecha con el formulario */}
                         <div className="login-right p-5 d-flex flex-column justify-content-center">
-                            <h2 className="text-center mb-4" style={{ fontWeight: 'bold' }}>Inicio de Sesión</h2>
+                            <h2 className="text-center mb-4" style={{ fontWeight: 'bold', color:'#424874' }}>Inicio de Sesión</h2>
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 <div className="mb-3">
                                     <label htmlFor="email" className="form-label">Correo electronico</label>

@@ -64,8 +64,7 @@ var auth = function middleware(req, res, next) {
 };
 
 // GUARDAR IMAGENES 
-// Configuración de almacenamiento en memoria
-const storage = multer.memoryStorage();
+
 
 // Función para crear configuraciones de almacenamiento de multer
 const createStorage = (folderPath) => {
@@ -79,6 +78,8 @@ const createStorage = (folderPath) => {
     }
   });
 };
+
+const storage = createStorage('../public/images/users');
 
 // Método para validar las extensiones de las fotografías
 const extensionesAceptadasFoto = (req, file, cb) => {
@@ -120,7 +121,7 @@ router.post('/guardar/rol', rolController.guardar);
 
 /*****ENTIDAD****/
 router.post('/guardar/entidad', uploadFotoPersona.single('foto'), entidadController.guardar);
-router.post('/modificar/entidad', uploadFotoPersona.single('foto'), entidadController.modificar);
+router.put('/modificar/entidad', uploadFotoPersona.single('foto'), entidadController.modificar);
 router.get('/listar/entidad', entidadController.listar);
 router.get('/obtener/entidad/:external',  entidadController.obtener);
 

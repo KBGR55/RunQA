@@ -16,27 +16,19 @@ class EntidadController {
                 attributes: ['apellidos', 'nombres', 'external_id', 'foto', 'telefono', 'fecha_nacimiento', 'estado'],
                 include: [
                     {
-                        model: models.rol_proyecto,
-                        as: 'rol_proyecto',
-                        attributes: [
-                            'external_id'
-                        ],
-                        include: {
-                            model: models.cuenta,
-                            as: 'cuenta',
-                            attributes: [
-                                'correo',
-                            ],
-                        }
+                        model: models.cuenta, 
+                        as: 'cuenta', 
+                        attributes: ['correo'],
                     },
                 ],
             });
             res.json({ msg: 'OK!', code: 200, info: listar });
         } catch (error) {
-            res.status(500)
-            res.json({ msg: 'Error al listar personas', code: 500, info: error });
+            res.status(500);
+            res.json({ msg: 'Error al listar personas: ' + error.message, code: 500, info: error });
         }
     }
+    
 
     async obtener(req, res) {
         const external = req.params.external;
@@ -45,6 +37,7 @@ class EntidadController {
                 external_id: external
             },
             attributes: [
+                'id',
                 'apellidos',
                 'nombres',
                 'external_id',
@@ -92,7 +85,6 @@ class EntidadController {
                 });
             }
     
-            // Verifica si se cargó una imagen en memoria
             if (!req.file) {
                 return res.status(400).json({
                     msg: "FALTA CARGAR LA IMAGEN",
@@ -122,13 +114,11 @@ class EntidadController {
                 external_id: uuid.v4()
             };
     
-            // Guardar los datos de la entidad en la base de datos
             const entidad = await models.entidad.create(data, {
                 include: [{ model: models.cuenta, as: "cuenta" }],
                 transaction
             });
     
-            // Guardar la imagen en el disco después de confirmar los datos
             const filename = `${uuid.v4()}${path.extname(req.file.originalname)}`;
             const finalPath = path.join(__dirname, '../public/images/users', filename);
     
@@ -172,70 +162,61 @@ class EntidadController {
 
 
     async modificar(req, res) {
+        
         try {
             const entidadAux = await entidad.findOne({
-                where: {
-                    external_id: req.body.external_id
-                }
+                where: { external_id: req.body.external_id }
             });
-
+    
             if (!entidadAux) {
-                return res.status(400).json({
-                    msg: "NO EXISTE EL REGISTRO",
-                    code: 400
-                });
+                return res.status(400).json({ msg: "NO EXISTE EL REGISTRO", code: 400 });
             }
-
+    
             const cuentaAux = await models.cuenta.findOne({
-                where: {
-                    id_persona: entidadAux.id
-                }
-            })
+                where: { id_entidad: entidadAux.id }
+            });
+    
+            if (!cuentaAux) {
+                return res.status(400).json({ msg: "NO SE ENCONTRÓ LA CUENTA ASOCIADA A ESTA ENTIDAD", code: 400 });
+            }
+    
             let imagenAnterior = entidadAux.foto;
-
+    
             if (req.file) {
-                // Eliminar la imagen anterior solo si hay una nueva imagen cargada
                 if (imagenAnterior) {
                     const imagenAnteriorPath = path.join(__dirname, '../public/images/users/', imagenAnterior);
                     fs.unlink(imagenAnteriorPath, (err) => {
                         if (err) {
                             console.log('Error al eliminar la imagen anterior:', err);
                         } else {
-                            console.log("eliminada: " + imagenAnterior)
+                            console.log("eliminada: " + imagenAnterior);
                         }
                     });
                 }
-                // Actualizar el nombre de la imagen con el nombre de la nueva imagen cargada
-                imagenAnterior = req.file.filename;
+                imagenAnterior = req.file.filename; // Aquí asegúrate de que esto sea correcto
             }
-
+    
             entidadAux.nombres = req.body.nombres;
             entidadAux.apellidos = req.body.apellidos;
             entidadAux.estado = req.body.estado;
             cuentaAux.estado = req.body.estado;
-            entidadAux.foto = imagenAnterior;
+            entidadAux.foto = imagenAnterior; // Guardar el nuevo nombre de imagen
             entidadAux.external_id = uuid.v4();
-
+    
             const result = await entidadAux.save();
             await cuentaAux.save();
+    
             if (!result) {
-                return res.status(400).json({
-                    msg: "NO SE HAN MODIFICADO SUS DATOS, VUELVA A INTENTAR",
-                    code: 400
-                });
+                return res.status(400).json({ msg: "NO SE HAN MODIFICADO SUS DATOS, VUELVA A INTENTAR", code: 400 });
             }
-
-            return res.status(200).json({
-                msg: "SE HAN MODIFICADO SUS DATOS CON ÉXITO",
-                code: 200
-            });
-
+    
+            return res.status(200).json({ msg: "SE HAN MODIFICADO SUS DATOS CON ÉXITO", code: 200 });
         } catch (error) {
-            return res.status(400).json({
-                msg: "Error en el servidor",
-                code: 400
-            });
+            console.error("Error en el servidor:", error);
+            return res.status(400).json({ msg: "Error en el servidor", error, code: 400 });
         }
     }
+    
+    
 }
 module.exports = EntidadController;
