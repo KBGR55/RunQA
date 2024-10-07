@@ -41,7 +41,6 @@ const Login = () => {
                 navegation("/proyectos");
                 mensajes(info.msg);
             }
-            console.log("DATOS DEL USUARIO", infoAux.user);
         })
     };
     
