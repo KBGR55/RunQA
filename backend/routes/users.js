@@ -6,7 +6,10 @@ const path = require('path');
 const uuid = require('uuid');
 
 const { body, validationResult,isDate } = require('express-validator');
-
+const RolController = require('../controls/RolController');
+var rolController = new RolController();
+const ProyectoController = require('../controls/ProyectoController');
+var proyectoController = new  ProyectoController();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -55,5 +58,13 @@ var auth = function middleware(req, res, next) {
   }
 
 };
+
+router.get('/rol', rolController.listar);
+
+
+router.post('/proyect', proyectoController.createProyect);
+router.put('/proyect', proyectoController.updateProyect);
+router.post('/proyect/assign', proyectoController.assignEntity);
+
 
 module.exports = router;  

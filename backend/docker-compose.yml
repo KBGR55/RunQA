@@ -1,0 +1,17 @@
+version: "3"
+
+services:      
+  mariadb2:
+    image: "mariadb:latest"
+    restart: 'always'    
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"    
+      MYSQL_DATABASE: "desarrollo"  
+      MYSQL_USER: "desarrollo"
+      MYSQL_PASSWORD: "desarrollo"
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+volumes:
+  mariadb-data:
