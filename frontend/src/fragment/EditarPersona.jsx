@@ -29,15 +29,11 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
         formData.append('external_id', personaObtenida.external_id);
         formData.append('entidad_id', personaObtenida.id);
 
-        // Aquí agregamos la foto solo si hay una nueva
         if (file) {
             formData.append('foto', file);
         } else {
-            // Si no se seleccionó una nueva foto, podemos agregar un campo para indicar que se mantiene la anterior
-            formData.append('foto_actual', personaObtenida.foto); // Asegúrate de que personaObtenida tenga la propiedad 'foto'
+            formData.append('foto_actual', personaObtenida.foto);
         }
-
-        console.log(file?.name);
 
         ActualizarImagenes(formData, getToken(), "/modificar/entidad").then((info) => {
             if (!info || info.code !== 200) {
@@ -53,7 +49,7 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
             console.error('Error en la solicitud:', error);
             mensajes('Error en la conexión con el servidor', 'error', 'Error');
         });
-        
+
     }
 
     useEffect(() => {
@@ -81,104 +77,99 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
     };
 
     return (
-        <div className="container">
-            <div className="crud shadow-lg p-3 mb-5 mt-5 bg-body rounded">
-                <div className="row">
-                    <div className="col-12">
-                        <div className="card">
-                            <div className="card-body">
-                                <form className="form-sample" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
-                                    <p className="card-description" style={{fontWeight:'bold'}}>Datos informativos</p>
-                                    <div className="row">
-                                        {/** INGRESAR NOMBRES */}
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <label>Nombres</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    defaultValue={personaObtenida.nombres} onChange={handleChange}
-                                                    {...register('nombres', { required: true })}
-                                                />
-                                                {errors.nombres && errors.nombres.type === 'required' && (
-                                                    <div className='alert alert-danger'>Ingrese los nombres</div>
-                                                )}
-                                            </div>
-                                        </div>
-                                        {/** INGRESAR APELLIDOS */}
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <label>Apellidos</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    defaultValue={personaObtenida.apellidos} onChange={handleChange}
-                                                    {...register('apellidos', { required: true })}
-                                                />
-                                                {errors.apellidos && errors.apellidos.type === 'required' && (
-                                                    <div className='alert alert-danger'>Ingrese los apellidos</div>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        {/** INGRESAR NUMERO DE TELEFONO*/}
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <label>Número telefónico</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="Ingrese su número telefónico"
-                                                    defaultValue={personaObtenida.telefono} onChange={handleChange}
-                                                    {...register('telefono', { required: true })}
-                                                />
-                                                {errors.ntelefono && errors.ntelefono.type === 'required' && (
-                                                    <div className='alert alert-danger'>Ingrese un número telefónico</div>
-                                                )}
-                                            </div>
-                                        </div>
-                                        {/** ESCOGER FOTO */}
-                                        <div className="col-md-6">
-                                            <div className="form-data">
-                                                <label>Foto</label>
-                                                <input
-                                                    type="file"
-                                                    className="form-control"
-                                                    placeholder="Seleccionar una Foto"
-                                                    onChange={selectedHandler}
-                                                />
-                                            </div>
-                                        </div>
-                                        {/** CAMBIAR ESTADO */}
-                                        <div className="col-md-12">
-                                            <div className="form-group">
-                                                <label>Estado</label>
-                                                <div className="form-check">
-                                                    <input
-                                                        type="checkbox"
-                                                        className="form-check-input"
-                                                        defaultChecked={personaObtenida.estado}
-                                                        {...register('estado')}
-                                                    />
-                                                    <label className="form-check-label">{personaObtenida.estado ? "Seleccione para Desactivar Cuenta" : "Seleccione para Activar Cuenta"}</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-12" style={{ marginBottom: '10px' }}></div>
-                                    </div>
-                                    <div className="contenedor-filo">
-                                        <button type="button" onClick={() => { handleCancelClick()}} className="btn-negativo">
-                                            <FontAwesomeIcon icon={faTimes} /> Cancelar
-                                        </button>
-
-                                        <button className="btn-positivo" type="submit">
-                                            <FontAwesomeIcon icon={faCheck} /> Registrar</button>
-                                    </div>
-
-                                </form>
+        <div className="contenedor-carta">
+            <div className="row">
+                <div className="col-12">
+                    <form className="form-sample" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
+                        <p className="card-description" style={{ fontWeight: 'bold' }}>Datos informativos</p>
+                        <div className="row">
+                            {/** INGRESAR NOMBRES */}
+                            <div className="col-md-6">
+                                <div className="form-group">
+                                    <label>Nombres</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        defaultValue={personaObtenida.nombres} onChange={handleChange}
+                                        {...register('nombres', { required: true })}
+                                    />
+                                    {errors.nombres && errors.nombres.type === 'required' && (
+                                        <div className='alert alert-danger'>Ingrese los nombres</div>
+                                    )}
+                                </div>
                             </div>
+                            {/** INGRESAR APELLIDOS */}
+                            <div className="col-md-6">
+                                <div className="form-group">
+                                    <label>Apellidos</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        defaultValue={personaObtenida.apellidos} onChange={handleChange}
+                                        {...register('apellidos', { required: true })}
+                                    />
+                                    {errors.apellidos && errors.apellidos.type === 'required' && (
+                                        <div className='alert alert-danger'>Ingrese los apellidos</div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/** INGRESAR NUMERO DE TELEFONO*/}
+                            <div className="col-md-6">
+                                <div className="form-group">
+                                    <label>Número telefónico</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Ingrese su número telefónico"
+                                        defaultValue={personaObtenida.telefono} onChange={handleChange}
+                                        {...register('telefono', { required: true })}
+                                    />
+                                    {errors.ntelefono && errors.ntelefono.type === 'required' && (
+                                        <div className='alert alert-danger'>Ingrese un número telefónico</div>
+                                    )}
+                                </div>
+                            </div>
+                            {/** ESCOGER FOTO */}
+                            <div className="col-md-6">
+                                <div className="form-data">
+                                    <label>Foto</label>
+                                    <input
+                                        type="file"
+                                        className="form-control"
+                                        placeholder="Seleccionar una Foto"
+                                        onChange={selectedHandler}
+                                    />
+                                </div>
+                            </div>
+                            {/** CAMBIAR ESTADO */}
+                            <div className="col-md-12">
+                                <div className="form-group">
+                                    <label>Estado</label>
+                                    <div className="form-check">
+                                        <input
+                                            type="checkbox"
+                                            className="form-check-input"
+                                            defaultChecked={personaObtenida.estado}
+                                            {...register('estado')}
+                                        />
+                                        <label className="form-check-label">{personaObtenida.estado ? "Seleccione para Desactivar Cuenta" : "Seleccione para Activar Cuenta"}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-12" style={{ marginBottom: '10px' }}></div>
                         </div>
-                    </div>
+                        <div className="contenedor-filo">
+                            <button type="button" onClick={() => { handleCancelClick() }} className="btn-negativo">
+                                <FontAwesomeIcon icon={faTimes} /> Cancelar
+                            </button>
+
+                            <button className="btn-positivo" type="submit">
+                                <FontAwesomeIcon icon={faCheck} /> Registrar</button>
+                        </div>
+
+                    </form>
+
                 </div>
             </div>
         </div>

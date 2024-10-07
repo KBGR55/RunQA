@@ -154,30 +154,21 @@ const ListaUsuarios = () => {
 
                 </div>
                 {/* < VENTANA MODAL EDITAR> */}
-                <div className="model_box">
-                    <Modal
-                        show={showEdit}
-                        onHide={handleCloseEdit}
-                        backdrop="static"
-                        keyboard={false}
-                    >
-                        <Modal.Header style={{ background: 'var(--color-terciario)' }}>
-                            <Modal.Title style={{ fontWeight: 'bold', color: 'var(--blanco)' }}>Editar persona
-                            </Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <EditarPersona personaObtenida={personaObtenida} handleChange={handleChange} />
+                <Modal
+                    show={showEdit}
+                    onHide={handleCloseEdit}
+                    backdrop="static"
+                    keyboard={false}
+                >
+                    <Modal.Header>
+                        <Modal.Title className='titulo-primario'>Editar persona</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <EditarPersona personaObtenida={personaObtenida} handleChange={handleChange} />
 
-                        </Modal.Body>
+                    </Modal.Body>
+                </Modal>
 
-                        <Modal.Footer style={{ background: 'var(--color-terciario)' }}>
-                            <Button variant="secondary" onClick={() => { handleCloseEdit(); }} style={{ fontWeight: 'bold', color: 'var(--blanco)' }}>
-                                Cerrar
-                            </Button>
-
-                        </Modal.Footer>
-                    </Modal>
-                </div>
             </div>
 
         </div>
