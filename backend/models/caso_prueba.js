@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(150),  
             allowNull: true 
         },
+        precondiciones: { 
+            type: DataTypes.STRING(150),  
+            allowNull: true 
+        },
         pasos: { 
             type: DataTypes.TEXT,
             allowNull: true 
@@ -35,13 +39,18 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,  
             defaultValue: 'MEDIA'  
         },
-        tipo_prueba:  {  
-            type: DataTypes.STRING(50), 
+        tipo_prueba: {  
+            type: DataTypes.ENUM(
+                'FUNCIONAL',
+                'INTEGRACION',
+                'SISTEMA',
+                'REGRESION',
+                'EXPLORATORIA',
+                'ACEPTACION_USUARIO',
+                'RENDIMIENTO',
+                'SEGURIDAD'
+            ), 
             allowNull: false 
-        },
-        incidente_numero: { 
-            type: DataTypes.INTEGER, 
-            defaultValue: 0 
         },
         fecha_disenio: { 
             type: DataTypes.DATE, 
