@@ -1,58 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons'; // Importar el ícono
+import { faPlus, faEye } from '@fortawesome/free-solid-svg-icons';
 import MenuBar from './MenuBar';
-import RegistrarCasoPrueba from './CasoPrueba';
+import CasoPrueba from './CasoPrueba';
+import { peticionGet } from '../utilities/hooks/Conexion';
 import '../css/style.css';
+import { Link } from 'react-router-dom';
 
-const ListaProtectos = () => {
+const ListaProyectos = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
+    const [proyectos, setProyectos] = useState([]);
 
-    const proyectos = [
-        {
-            id: 1,
-            nombre: 'Proyecto Alpha',
-            estado: true,
-            fecha_inicio: '2024-01-01',
-            fecha_fin: '2024-12-31',
-            descripcion: 'Este es un proyecto activo.'
-        },
-        {
-            id: 2,
-            nombre: 'Proyecto Beta',
-            estado: false,
-            fecha_inicio: '2023-01-01',
-            fecha_fin: '2023-06-30',
-            descripcion: 'Este proyecto ha terminado.'
-        },
-        {
-            id: 3,
-            nombre: 'Proyecto Gamma',
-            estado: true,
-            fecha_inicio: '2024-03-01',
-            fecha_fin: '2025-02-28',
-            descripcion: 'Este es un proyecto activo.'
-        },
-        {
-            id: 4,
-            nombre: 'Proyecto Delta',
-            estado: false,
-            fecha_inicio: '2022-07-01',
-            fecha_fin: '2023-01-15',
-            descripcion: 'Este proyecto ha terminado.'
-        },
-        {
-            id: 5,
-            nombre: 'Proyecto Epsilon',
-            estado: true,
-            fecha_inicio: '2024-04-01',
-            fecha_fin: '2025-05-31',
-            descripcion: 'Este es un proyecto activo.'
-        },
-    ];
+    useEffect(() => {
+        const fetchProyectos = async () => {
+            try {
+                const response = await peticionGet('tu_api_token', 'proyecto/listar');
+                if (response.code === 200) {
+                    setProyectos(response.info);
+                } else {
+                    console.error('Error al obtener proyectos:', response.msg);
+                }
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+            }
+        };
+
+        fetchProyectos();
+    }, []);
 
     const handleShowModal = (project) => {
         setSelectedProject(project);
@@ -62,6 +39,12 @@ const ListaProtectos = () => {
     const handleCloseModal = () => {
         setShowModal(false);
         setSelectedProject(null);
+    };
+
+    // Función para formatear fechas
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toISOString().slice(0, 10); // Formato AAAA-MM-DD
     };
 
     return (
@@ -77,7 +60,7 @@ const ListaProtectos = () => {
                                 <th className="text-center">Estado</th>
                                 <th className="text-center">Fecha Inicio</th>
                                 <th className="text-center">Fecha Fin</th>
-                                <th className="text-center">Acciones</th>
+                                <th className="text-center">Acciones: Casos de Prueba</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -85,13 +68,20 @@ const ListaProtectos = () => {
                                 <tr key={proyecto.id}>
                                     <td>{proyecto.nombre}</td>
                                     <td className="text-center">{proyecto.estado ? 'Activos' : 'Terminados'}</td>
-                                    <td className="text-center">{proyecto.fecha_inicio}</td>
-                                    <td className="text-center">{proyecto.fecha_fin}</td>
+                                    <td className="text-center">{formatDate(proyecto.fecha_inicio)}</td>
+                                    <td className="text-center">{formatDate(proyecto.fecha_fin)}</td>
                                     <td className="text-center">
-                                        <Button className="btn-normal" onClick={() => handleShowModal(proyecto)}>
-                                           <FontAwesomeIcon icon={faPlus} /> {/* Icono añadido aquí */}
-                                            Caso de Prueba
+                                        <Button
+                                            className={`${!proyecto.estado ? 'btn-desactivado' : 'btn-normal'}`}
+                                            onClick={() => handleShowModal(proyecto)}
+                                            disabled={!proyecto.estado}
+                                        >
+                                            <FontAwesomeIcon icon={faPlus} />
                                         </Button>
+
+                                        <Link to={`/casos-prueba/${proyecto.id}`} className="btn-normal">
+                                            <FontAwesomeIcon icon={faEye} />
+                                        </Link>
                                     </td>
                                 </tr>
                             ))}
@@ -99,16 +89,17 @@ const ListaProtectos = () => {
                     </table>
                 </div>
             </div>
+
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
                     <Modal.Title className='titulo-primario'>Agregar Caso de Prueba - {selectedProject?.nombre}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <RegistrarCasoPrueba />
+                    <CasoPrueba projectId={selectedProject?.id} />
                 </Modal.Body>
             </Modal>
         </div>
     );
 };
 
-export default ListaProtectos;
+export default ListaProyectos;

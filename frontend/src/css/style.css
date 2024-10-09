@@ -67,17 +67,24 @@ label{
   justify-content: flex-end; 
 }
 /*Tabla*/
+
 .table th {
   background-color: var(--color-cuarto);
   color: var(--color-primario);
 }
 
 /* Botones */
-.btn-normal, .btn-positivo, .btn-negativo {
+.btn-normal, .btn-positivo, .btn-negativo ,.btn-desactivado{
   background-color: var(--color-cuarto);
   color: var(--color-primario);
-  border: none; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
-  border-radius: 5px; margin: 8px; font-size: 16px; padding: 8px;
+  border: none; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+  border-radius: 5px; margin: 8px;  padding: 8px;
+}
+
+.btn-desactivado{
+  background-color: var(--color-secundario) !important; 
+  border: none;
 }
 
 .btn-normal:hover {
