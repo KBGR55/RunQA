@@ -69,28 +69,34 @@ export const GuardarImages = async (data, key, urls) => {
     const headers = {
         "x-api-token": key,
     };
+
     const requestOptions = {
         method: "POST",
-        headers: headers,
-        body: data, 
+        headers: headers, 
+        body: data,
     };
-    console.log("DATITA", data);
-    
+
     try {
-        const response = await fetch(URL + urls, requestOptions);
+        const response = await fetch(URL_BACKEND + urls, requestOptions);
+        const contentType = response.headers.get("content-type");
+        const textResponse = await response.text();
+        
+        if (contentType && contentType.includes("application/json")) {
+            return JSON.parse(textResponse);
+        } else {
+            throw new Error("La respuesta del servidor no es JSON: " + textResponse);
+        }
+        
 
-        const datos = await response.json();
-
-        return datos;
     } catch (error) {
         console.log("Error:", error);
         throw error;
-    }  
-    
-}
+    }
+};
+
+
 
 export const ActualizarImagenes = async (data, key, urls) => {
-    console.log('llega');
     console.log(data);
     const headers = {
         "x-api-token": key,
@@ -98,7 +104,7 @@ export const ActualizarImagenes = async (data, key, urls) => {
     const requestOptions = {
         method: "PUT",
         headers: headers,
-        body: data, // Envía el FormData directamente como cuerpo
+        body: data, 
     };
     try {
         const response = await fetch(URL_BACKEND + urls, requestOptions);
