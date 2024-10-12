@@ -136,7 +136,24 @@ router.post('/guardar/entidad', (req, res, next) => {
     entidadController.guardar(req, res, next);
   });
 });
-router.put('/modificar/entidad', uploadFotoPersona.single('foto'), entidadController.modificar);
+
+router.put('/modificar/entidad', (req, res, next) => {
+  uploadFotoPersona.single('foto')(req, res, (error) => {
+    if (error) {
+      if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({
+          msg: "El archivo es demasiado grande. Por favor, sube un archivo de menos de 2 MB.",
+          code: 413
+        });
+      }
+      return res.status(400).json({
+        msg: "Error al cargar el archivo: " + error.message,
+        code: 400
+      });
+    }
+    entidadController.modificar(req, res, next);
+  });
+});
 router.get('/listar/entidad', entidadController.listar);
 router.get('/obtener/entidad/:external',  entidadController.obtener);
 
