@@ -63,12 +63,10 @@ class EntidadController {
 
 
     async guardar(req, res) {
-    
-        // Iniciar una transacción fuera del bloque try
         const transaction = await models.sequelize.transaction();
+        const saltRounds = 10; // Define el número de saltRounds para bcrypt
     
         try {
-            // Validación de los datos
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
                 return res.status(400).json({
@@ -92,7 +90,6 @@ class EntidadController {
                 });
             }
     
-            // Generar el hash de la clave
             const claveHash = (clave) => {
                 if (!clave) {
                     throw new Error("La clave es obligatoria");
@@ -101,12 +98,12 @@ class EntidadController {
                 return bcrypt.hashSync(clave, salt);
             };
     
-            // Datos a guardar en la base de datos
             const data = {
                 nombres: req.body.nombres,
                 apellidos: req.body.apellidos,
                 fecha_nacimiento: req.body.fecha_nacimiento,
                 telefono: req.body.telefono,
+                foto: req.file.filename, 
                 cuenta: {
                     correo: req.body.correo,
                     clave: claveHash(req.body.clave)
@@ -119,16 +116,6 @@ class EntidadController {
                 transaction
             });
     
-            const filename = `${uuid.v4()}${path.extname(req.file.originalname)}`;
-            const finalPath = path.join(__dirname, '../public/images/users', filename);
-    
-            fs.writeFileSync(finalPath, req.file.buffer);
-    
-            // Actualizar el campo de la foto con el nombre final
-            entidad.foto = filename;
-            await entidad.save({ transaction });
-    
-            // Confirmar la transacción solo después de que todo esté completo
             await transaction.commit();
     
             return res.status(200).json({
@@ -137,14 +124,14 @@ class EntidadController {
             });
     
         } catch (error) {
-            console.error(error);
+            if (req.file && req.file.path) {
+                fs.unlinkSync(path.join(__dirname, '../public/images/products', req.file.filename));
+            }
     
-            // Si ocurre un error, asegurarse de hacer rollback solo si la transacción no ha sido finalizada
             if (transaction && !transaction.finished) {
                 await transaction.rollback();
             }
     
-            // Verificar si el error es de duplicación de correo
             if (error.name === 'SequelizeUniqueConstraintError' && error.errors[0].path === 'correo') {
                 return res.status(400).json({
                     msg: "ESTE CORREO SE ENCUENTRA REGISTRADO EN EL SISTEMA",
@@ -158,7 +145,6 @@ class EntidadController {
             });
         }
     }
-       
 
 
     async modificar(req, res) {
@@ -193,14 +179,14 @@ class EntidadController {
                         }
                     });
                 }
-                imagenAnterior = req.file.filename; // Aquí asegúrate de que esto sea correcto
+                imagenAnterior = req.file.filename; 
             }
     
             entidadAux.nombres = req.body.nombres;
             entidadAux.apellidos = req.body.apellidos;
             entidadAux.estado = req.body.estado;
             cuentaAux.estado = req.body.estado;
-            entidadAux.foto = imagenAnterior; // Guardar el nuevo nombre de imagen
+            entidadAux.foto = imagenAnterior; 
             entidadAux.external_id = uuid.v4();
     
             const result = await entidadAux.save();

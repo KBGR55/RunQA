@@ -2,7 +2,7 @@
     "development":{
         "username":"desarrollo",
         "password":"desarrollo",
-        "database": "bd_runqa",
+        "database": "bd_runqua",
         "host":"127.0.0.1",
         "dialect":"mysql",
         "operatorAliases":false

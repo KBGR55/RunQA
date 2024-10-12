@@ -1,0 +1,186 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.custom-container-register {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .custom-container-register::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('../img/fondo1.jpeg') no-repeat center center/cover;
+        filter: blur(2px);
+        background-size: cover; /* Mejora la calidad de la imagen de fondo */
+        clip-path: polygon(0 0, 80% 0, 40% 100%, 0% 100%);
+        z-index: -1;
+    }
+
+    .custom-container-register::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        clip-path: polygon(80% 0, 100% 0, 100% 100%, 40% 100%);
+        z-index: -1;
+    }
+
+.register-container {
+    display: flow;
+    width: 700px;
+    height: 710px;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    border: 12px solid white;
+}
+
+.register-left {
+    flex: 1;
+    background: transparent;
+    position: relative;
+}
+
+.register-overlay {
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: white;
+}
+
+.register-right {
+    flex: 1;
+    padding: 50px;
+    background-color: white;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.form-control {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 0px; /* Añade espacio entre los elementos */
+    box-sizing: border-box;
+}
+
+.btn-guardar {
+    width: 40%;
+    height: 53px;
+    padding: 13px;
+    background-color: var(--color-cuarto);
+    border-radius: 10px;
+    border: 0;
+    box-sizing: border-box;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: large;
+    color: #ffffff;
+}
+
+.btn-guardar:hover, .btn-guardar:active{
+    color: #ffffff;
+    background-color: #61428f;
+    border-color: #61428f;
+}
+
+.btn-guardar:focus{
+    box-shadow: 0 0 0 3px rgba(121, 82, 179, 0,25);
+}
+
+.btn-cancelar {
+    width: 40%;
+    height: 54px;
+    padding: 13px;
+    background-color: #9CA3AF;
+    border-radius: 10px;
+    border: 0;
+    box-sizing: border-box;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: medium;
+    color: #ffffff;
+    margin-top: 20px;
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+    text-decoration: none;
+}
+
+.btn-cancelar:hover, .btn-cancelar:active{
+    color: #ffffff;
+    background-color: #b0b4bb;
+    border-color: #b0b4bb;
+}
+
+.btn-cancelar:focus{
+    box-shadow: 0 0 0 3px #6B7280;
+}
+
+
+.text-muted {
+    font-size: 0.9rem;
+}
+
+.mensajeerror {
+    color: var(--rojo);
+    font-weight: bold;
+    font-size: 14px;
+    text-decoration: underline;
+}
+
+.form-label {
+    font-weight: bold;
+    color: rgb(125, 114, 170);
+    text-align: left !important;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas de igual tamaño */
+    gap: 0px; /* Espacio entre las columnas */
+}
+
+.form-full-width {
+    grid-column: span 2; /* Para los campos que ocupan todo el ancho */
+}
+
+
+@media (max-width: 888px) {
+    .register-container {
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+    }
+
+    .register-left, .register-right {
+        width: 100%;
+        height: 30px;
+    }
+
+    .register-right {
+        padding: 30px;
+    }
+}
