@@ -10,6 +10,8 @@ const RolController = require('../controls/RolController');
 var rolController = new RolController();
 const ProyectoController = require('../controls/ProyectoController');
 var proyectoController = new  ProyectoController();
+const CuentaController = require('../controls/CuentaController');
+var cuentaController = new CuentaController();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -62,9 +64,14 @@ var auth = function middleware(req, res, next) {
 router.get('/rol', rolController.listar);
 
 
+router.get('/cuenta/:correo',cuentaController.obtenerCuenta);
+
+
 router.post('/proyect', proyectoController.createProyect);
 router.put('/proyect', proyectoController.updateProyect);
 router.post('/proyect/assign', proyectoController.assignEntity);
+router.get('/proyect/:id_proyect',proyectoController.getEntityProyect);
+router.delete('/proyect/:id_proyect/:id_entidad',proyectoController.deleteEntity);
 
 
 module.exports = router;  

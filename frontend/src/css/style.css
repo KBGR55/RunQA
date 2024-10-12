@@ -101,3 +101,27 @@ label{
   background-color: var(--rojo-claro);
   color: var(--negro);
 }
+
+.box-container {
+  display: flex;
+  flex-wrap: wrap; /* Permite que los elementos se ajusten a la siguiente fila si hay espacio */
+  gap: 5px; /* Añade un pequeño espacio entre los elementos */
+}
+
+.box-of-users {
+  border: 1px solid #ddd;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-basis: calc(50% - 10px); /* Los elementos ocuparán el 50% del contenedor, ajustado para incluir el gap */
+  margin-bottom: 5px;
+}
+
+@media (max-width: 500px) {
+  .box-of-users {
+      flex-basis: 100%; 
+  }
+}

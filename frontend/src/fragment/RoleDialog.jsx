@@ -2,55 +2,49 @@ import React, { useState, useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/style.css';
-import { peticionGet, peticionPost } from '../utilities/hooks/Conexion'; // Asegúrate de importar peticionPost
+import { peticionGet, peticionPost } from '../utilities/hooks/Conexion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTimes, faTrash } from '@fortawesome/free-solid-svg-icons';
 import mensajes from '../utilities/Mensajes';
 
-const RoleDialog = ({  handleClose }) => {
+const RoleDialog = ({ handleClose }) => {
     const [selectedDate, setSelectedDate] = useState('');
     const [email, setEmail] = useState('');
-    const [userInfo, setUserInfo] = useState(null);
-    const [isSearching, setIsSearching] = useState(false);
+    const [users, setUsers] = useState([]);  
     const [roles, setRoles] = useState([]);
-    const [selectedRole, setSelectedRole] = useState(''); // Para almacenar el rol seleccionado
-
-    const getTodayDate = () => {
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        return `${yyyy}-${mm}-${dd}`;
-    };
+    const [selectedRole, setSelectedRole] = useState('');
 
     const handleAssignRole = async () => {
-        if (!selectedRole || !userInfo) {
-            return; 
+        if (!selectedRole || users.length === 0) {
+            mensajes('Faltan campos obligatorios', 'error', 'Error');
+            return;
         }
-
+    
         const datos = {
-            "id_proyect": 4, // Cambia esto al id del proyecto correspondiente
-            "id_entidad": userInfo.id_entidad, // O el id correspondiente que necesites
-            "id_rol": selectedRole,
-            "owner": 1 // Cambia esto según corresponda
+            id_proyect: 4,
+            users: users.map(user => ({ id_entidad: user.id })),
+            id_rol: selectedRole,
+            owner: 1
         };
-
+    
         try {
-            const response = await peticionPost("key", 'proyect/assign', datos);
+            const response = await peticionPost('key', 'proyect/assign', datos);
             if (response.code !== 200) {
-                mensajes(response.msg, "error", "Error");
+                mensajes(response.msg, 'error', 'Error');
             } else {
-                mensajes(response.msg, "success", "Éxito");
-                handleClose(); 
+                
+                mensajes(response.msg, 'success', 'Éxito');
             }
         } catch (error) {
-            console.error("Error al asignar rol:", error);
+            console.error("Error al asignar roles:", error);
         }
+        handleClose();
     };
 
     const fetchRoles = async () => {
         try {
             const response = await peticionGet('key', 'rol');
+            console.log(response);
             setRoles(response.info);
         } catch (error) {
             console.error("Error al obtener los roles:", error);
@@ -58,20 +52,21 @@ const RoleDialog = ({  handleClose }) => {
     };
 
     const fetchUserByEmail = async (email) => {
+        // Verificar si el usuario ya está agregado
+        const emailExists = users.some(user => user.correo === email);
+        if (emailExists) {
+            setEmail('');  // Limpiar el campo de correo
+            return;
+        }
+
         try {
-            setIsSearching(true);
-            // Simula la búsqueda de un usuario, aquí deberías hacer una petición a tu API.
-            var datos = {
-                "id_entidad": 2,
-                "name": 'Juan Pérez',
-                "email": 'juan.perez@example.com' // Esto debería ser el email real que buscas
-            };
-            setUserInfo(datos);
+            const response = await peticionGet('key', `cuenta/${email}`);
+            if (response.info) {
+                setUsers((prevUsers) => [...prevUsers, response.info]); // Agrega el usuario encontrado
+                setEmail('');  
+            } 
         } catch (error) {
             console.error("Error al buscar el usuario:", error);
-            setUserInfo(null);
-        } finally {
-            setIsSearching(false);
         }
     };
 
@@ -83,10 +78,16 @@ const RoleDialog = ({  handleClose }) => {
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (emailPattern.test(email)) {
             fetchUserByEmail(email);
-        } else {
-            setUserInfo(null);
         }
     }, [email]);
+
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+    };
+
+    const removeUser = (emailToRemove) => {
+        setUsers(users.filter((user) => user.correo !== emailToRemove));
+    };
 
     return (
         <div className='contenedor-carta'>
@@ -97,19 +98,27 @@ const RoleDialog = ({  handleClose }) => {
                         type="text"
                         placeholder="Ingrese el correo electrónico"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={handleEmailChange}
                     />
                 </Form.Group>
-                {isSearching ? (
-                    <p>Buscando usuario...</p>
-                ) : userInfo ? (
-                    <div className="user-info">
-                        <p><strong>Nombre:</strong> {userInfo.name}</p>
-                        <p><strong>Correo:</strong> {userInfo.email}</p>
-                    </div>
-                ) : (
-                    email && <p>No se encontró información del usuario</p>
-                )}
+
+                <div className="users-container">
+                    {users.map((user, index) => (
+                        <div key={index} className="box-of-users">
+                            <div>
+                                <p style={{ margin: 0 }}><strong>{user.nombres + ' ' + user.apellidos}</strong></p>
+                                <p style={{ margin: 0 }}>{user.correo}</p>
+                            </div>
+                            <button 
+                                className="btn btn-danger" 
+                                style={{ padding: '2px 5px', fontSize: '0.8rem' }}  
+                                onClick={() => removeUser(user.correo)}
+                            >
+                                <FontAwesomeIcon icon={faTrash} /> 
+                            </button>
+                        </div>
+                    ))}
+                </div>
 
                 <Form.Group className="mb-3" controlId="roleSelect">
                     <Form.Label>Seleccionar Rol</Form.Label>
@@ -122,20 +131,17 @@ const RoleDialog = ({  handleClose }) => {
                         ))}
                     </Form.Control>
                 </Form.Group>
-                <Form.Group className="mb-3" controlId="expirationDate">
-                    <Form.Label>Fecha de Expiración del Rol</Form.Label>
-                    <Form.Control
-                        type="date"
-                        min={getTodayDate()}
-                        value={selectedDate}
-                        onChange={(e) => setSelectedDate(e.target.value)}
-                    />
-                </Form.Group>
+                
                 <Form.Group className="contenedor-filo">
                     <button type="button" onClick={handleClose} className="btn-negativo">
                         <FontAwesomeIcon icon={faTimes} /> Cancelar
                     </button>
-                    <button type="button" className="btn-positivo" onClick={handleAssignRole}>
+                    <button 
+                        type="button" 
+                        className="btn-positivo" 
+                        onClick={handleAssignRole}
+                        disabled={!selectedRole || users.length === 0}  // Deshabilitar el botón si no hay usuarios o rol
+                    >
                         <FontAwesomeIcon icon={faCheck} /> Asignar
                     </button>
                 </Form.Group>

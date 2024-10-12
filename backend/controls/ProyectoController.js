@@ -79,9 +79,9 @@ class ProyectoController {
         } catch (error) {
             if (transaction) await transaction.rollback();
             if (error.errors && error.errors[0].message) {
-                res.json({ msg: error.errors[0].message, code: 200 });
+                res.json({ msg: error.errors[0].message, code: 500 });
             } else {
-                res.json({ msg: error.message, code: 200 });
+                res.json({ msg: error.message, code: 500 });
             }
         }
     }
@@ -91,30 +91,107 @@ class ProyectoController {
         try {
             transaction = await models.sequelize.transaction();
             const proyect = await models.proyecto.findOne({ where: { id: req.body.id_proyect } });
-            const entidad = await models.entidad.findOne({ where: { id: req.body.id_entidad } });
             const owner = await models.entidad.findOne({ where: { id: req.body.owner } });
             const role = await models.rol.findOne({ where: { external_id: req.body.id_rol }, attributes: ['id'] });
-            if (entidad && proyect &&role && (owner.id !== entidad.id)) {
-                const existingRolProyecto = await models.rol_proyecto.findOne({ where: { id_entidad: entidad.id, id_proyecto: proyect.id } });
-                if (existingRolProyecto) {
-                    existingRolProyecto.id_rol = role.id;
-                    await existingRolProyecto.save({ transaction });
-                    await transaction.commit();
-                    res.json({ msg: "ROL ACTUALIZADO CORRECTAMENTE", code: 200 });
-                } else {
-                    await models.rol_proyecto.create({ id_rol: role.id, id_entidad: entidad.id, id_proyecto: proyect.id, external_id: uuid.v4() }, { transaction });
-                    await transaction.commit();
-                    res.json({ msg: "SE HA ASIGNADO CORRECTAMENTE", code: 200 });
-                }
-            } else {
-                res.status(200).json({ msg: "No se pudo asignar el proyecto", code: 200 });
+
+            if (!proyect || !role || !owner) {
+                return res.status(400).json({ msg: "Datos inválidos", code: 400 });
             }
+            const users = req.body.users;
+            for (const user of users) {
+                const entidad = await models.entidad.findOne({ where: { id: user.id_entidad } });
+
+                if (entidad && owner.id !== entidad.id) {
+                    const existingRolProyecto = await models.rol_proyecto.findOne({
+                        where: { id_entidad: entidad.id, id_proyecto: proyect.id }
+                    });
+                    if (existingRolProyecto) {
+                        existingRolProyecto.id_rol = role.id;
+                        await existingRolProyecto.save({ transaction });
+                    } else {
+                        await models.rol_proyecto.create({
+                            id_rol: role.id,
+                            id_entidad: entidad.id,
+                            id_proyecto: proyect.id,
+                            external_id: uuid.v4(),
+                        }, { transaction });
+                    }
+                }
+            }
+            await transaction.commit();
+            if (users.length > 1) {
+                res.json({ msg: "Roles asignados correctamente", code: 200 });
+            } else {
+                res.json({ msg: "Rol asignado correctamente", code: 200 });
+            }
+
         } catch (error) {
             if (transaction) await transaction.rollback();
             if (error.errors && error.errors[0].message) {
-                res.json({ msg: error.errors[0].message, code: 200 });
+                res.json({ msg: error.errors[0].message, code: 500 });
             } else {
-                res.json({ msg: error.message, code: 200 });
+                res.json({ msg: error.message, code: 500 });
+            }
+        }
+    }
+
+    async getEntityProyect(req, res) {
+        try {
+            const proyect = await models.proyecto.findOne({ where: { external_id: req.params.id_proyect } });
+            if (proyect) {
+                const rolProyect = await models.rol_proyecto.findAll({
+                    where: { id_proyecto: proyect.id },
+                    include: [
+                        {
+                            model: models.entidad,
+                            attributes: ['nombres', 'apellidos', 'id'], 
+                        },
+                        {
+                            model: models.rol,
+                            attributes: ['nombre'] 
+                        }
+                    ],
+                    attributes: ['id']
+                });
+                res.status(200).json({ msg: "OK!", code: 200, info: rolProyect });
+            } else {
+                res.status(200).json({ msg: "No se encontró el proyecto", code: 200 });
+            }
+        } catch (error) {
+            if (error.errors && error.errors[0].message) {
+                res.json({ msg: error.errors[0].message, code: 500 });
+            } else {
+                res.json({ msg: error.message, code: 500 });
+            }
+        }
+    }
+
+
+    async deleteEntity(req, res) {
+        try {
+            const proyect = await models.proyecto.findOne({ where: { external_id: req.params.id_proyect } });
+    
+            if (proyect) {
+                const rolProyect = await models.rol_proyecto.findOne({
+                    where: { 
+                        id_proyecto: proyect.id, 
+                        id_entidad: req.params.id_entidad 
+                    } 
+                })
+                if (rolProyect) {
+                    await rolProyect.destroy();
+                    res.status(200).json({ msg: "Usuario eliminado del proyecto exitosamente", code: 200 });
+                } else {
+                    res.status(404).json({ msg: "No se encontró la relación entre el usuario y el proyecto", code: 404 });
+                }
+            } else {
+                res.status(404).json({ msg: "No se encontró el proyecto", code: 404 });
+            }
+        } catch (error) {
+            if (error.errors && error.errors[0].message) {
+                res.status(500).json({ msg: error.errors[0].message, code: 500 });
+            } else {
+                res.status(500).json({ msg: error.message, code: 500 });
             }
         }
     }
