@@ -80,7 +80,7 @@ export const GuardarImages = async (data, key, urls) => {
         const response = await fetch(URL_BACKEND + urls, requestOptions);
         const contentType = response.headers.get("content-type");
         const textResponse = await response.text();
-        
+
         if (contentType && contentType.includes("application/json")) {
             return JSON.parse(textResponse);
         } else {
