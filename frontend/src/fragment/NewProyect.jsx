@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
-import { Button, Modal } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/style.css';
 import MenuBar from './MenuBar';
-import RoleDialog from './RoleDialog';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom'; 
 import { peticionPost } from '../utilities/hooks/Conexion';
 import mensajes from '../utilities/Mensajes';
 
 const NewProyect = () => {
-    const [showModal, setShowModal] = useState(false);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const navigate = useNavigate(); 
@@ -49,14 +46,6 @@ const NewProyect = () => {
                 navigate('/proyectos'); 
             }
         });
-    };
-
-    const handleShowModal = () => {
-        setShowModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setShowModal(false);
     };
 
     return (
@@ -100,20 +89,6 @@ const NewProyect = () => {
                             <FontAwesomeIcon icon={faCheck} /> Registrar
                         </button>
                     </div>
-                    <td className="text-center">
-                        <Button className="btn-normal" onClick={handleShowModal}>
-                            <FontAwesomeIcon icon={faPlus} />
-                            Caso de Prueba
-                        </Button>
-                    </td>
-                    <Modal show={showModal} onHide={handleCloseModal}>
-                        <Modal.Header closeButton>
-                            <Modal.Title className='titulo-primario'>Agregar miembros</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            {showModal && <RoleDialog handleClose={handleCloseModal} />}
-                        </Modal.Body>
-                    </Modal>
                 </form>
             </div>
             </div>

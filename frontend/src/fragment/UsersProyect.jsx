@@ -2,19 +2,21 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import MenuBar from './MenuBar';
-import { peticionGet, peticionDelete } from '../utilities/hooks/Conexion'; // Asegúrate de importar peticionDelete
+import { peticionGet, peticionDelete } from '../utilities/hooks/Conexion'; 
 import { useNavigate } from 'react-router-dom';
 import { getToken } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
+import RoleDialog from './RoleDialog';
 
 const UsersProyect = () => {
     const [data, setData] = useState([]);
+    const [showModalAddMembers, setshowModalAddMembers] = useState(false);
     const [llUsuarios, setUsuarios] = useState(false);
-    const [showModal, setShowModal] = useState(false); // Estado para mostrar el modal
-    const [userIdToDelete, setUserIdToDelete] = useState(null); // ID del usuario a eliminar
-    const [externalId] = useState('bfcbc971-c893-4994-86a8-abd69d4a5903'); // ID del proyecto
+    const [showModal, setShowModal] = useState(false);
+    const [userIdToDelete, setUserIdToDelete] = useState(null); 
+    const [externalId] = useState('bfcbc971-c893-4994-86a8-abd69d4a5903'); // ID del proyecto modificar yovin cuando tengas
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -31,21 +33,28 @@ const UsersProyect = () => {
     }, [llUsuarios, navigate, externalId]);
 
     const handleShowModal = (id) => {
-        setUserIdToDelete(id); // Guardar el ID del usuario a eliminar
-        setShowModal(true); // Mostrar el modal
+        setUserIdToDelete(id); 
+        setShowModal(true); 
     };
 
     const handleCloseModal = () => {
-        setShowModal(false); // Cerrar el modal
-        setUserIdToDelete(null); // Limpiar el ID
+        setShowModal(false); 
+        setUserIdToDelete(null); 
+    };
+    const handleShowModalAddMembers = () => {
+        setshowModalAddMembers(true);
+    };
+
+    const handleCloseModalAddMembers = () => {
+        setshowModalAddMembers(false);
     };
 
     const handleDeleteUser = async () => {
         try {
-            const response = await peticionDelete(getToken(), `proyect/${externalId}/${userIdToDelete}`); // Llama a la API para eliminar el usuario
+            const response = await peticionDelete(getToken(), `proyect/${externalId}/${userIdToDelete}`); 
             if (response.code === 200) {
                 mensajes('Usuario eliminado exitosamente', 'success', 'Éxito');
-                setData(data.filter(user => user.entidad.id !== userIdToDelete)); // Actualiza la lista de usuarios
+                setData(data.filter(user => user.entidad.id !== userIdToDelete)); 
             } else {
                 mensajes(response.mensajes, 'error', 'Error');
             }
@@ -53,7 +62,7 @@ const UsersProyect = () => {
             console.error("Error al eliminar usuario:", error);
             mensajes('Error al eliminar usuario', 'error', 'Error');
         } finally {
-            handleCloseModal(); 
+            handleCloseModal();
         }
     };
 
@@ -62,6 +71,24 @@ const UsersProyect = () => {
             <MenuBar />
             <div className="contenedor-centro">
                 <div className='contenedor-carta'>
+                    <div className="contenedor-filo">
+                    <td className="text-center">
+                        <Button className="btn-normal" onClick={handleShowModalAddMembers}>
+                            <FontAwesomeIcon icon={faPlus} />
+                           Asignar Miem bro
+                        </Button>
+                    </td>
+                    <Modal show={showModalAddMembers} onHide={handleCloseModalAddMembers}>
+                        <Modal.Header closeButton>
+                            <Modal.Title className='titulo-primario'>Agregar miembros</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            {showModalAddMembers && <RoleDialog handleClose={handleCloseModalAddMembers} />}
+                        </Modal.Body>
+                    </Modal>
+
+                    </div>
+
                     <main className="table">
                         <section className='table_header'>
                             <h1 className="titulo-primario">Lista de Usuarios</h1>
@@ -101,8 +128,6 @@ const UsersProyect = () => {
                     </main>
                 </div>
             </div>
-
-            {/* Modal de Confirmación */}
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Confirmación de Eliminación</Modal.Title>
