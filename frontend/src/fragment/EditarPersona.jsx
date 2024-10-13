@@ -30,10 +30,7 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
         formData.append('apellidos', data.apellidos);
         formData.append('fecha_nacimiento', data.fecha_nacimiento);
         formData.append('telefono', data.telefono);
-        
-        // Refleja el estado cambiado en el formulario: si estadoInicial es true (activo), desactiva si estado es true, etc.
-        formData.append('estado', estadoInicial ? !estado : estado);
-        
+        formData.append('estado', estadoInicial ? !estado : estado);        
         formData.append('external_id', personaObtenida.external_id);
         formData.append('entidad_id', personaObtenida.id);
 

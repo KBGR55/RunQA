@@ -185,6 +185,8 @@ class EntidadController {
             entidadAux.nombres = req.body.nombres;
             entidadAux.apellidos = req.body.apellidos;
             entidadAux.estado = req.body.estado;
+            entidadAux.telefono = req.body.telefono;
+            entidadAux.fecha_nacimiento = req.body.fecha_nacimiento;
             cuentaAux.estado = req.body.estado;
             entidadAux.foto = imagenAnterior; 
             entidadAux.external_id = uuid.v4();
