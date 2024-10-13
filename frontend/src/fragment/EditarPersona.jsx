@@ -13,15 +13,15 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm();
     const navigate = useNavigate();
     const [file, setFile] = useState(null);
-    const [estado, setEstado] = useState(false); // Controla la selección del usuario
-    const estadoInicial = personaObtenida.estado; // Estado inicial solo para el mensaje
+    const [estado, setEstado] = useState(false); 
+    const estadoInicial = personaObtenida.estado; 
 
     const selectedHandler = e => {
         setFile(e.target.files[0]);
     };
 
     const handleEstadoChange = () => {
-        setEstado(!estado); // Cambia el valor del checkbox al seleccionarlo
+        setEstado(!estado); 
     };
 
     const onSubmit = async (data) => {
