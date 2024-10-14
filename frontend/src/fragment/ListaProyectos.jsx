@@ -90,8 +90,6 @@ const ListaProyectos = () => {
         return role.nombre;
     };
 
-    const allowedRoles = ['GERENTE DE PRUEBAS', 'ANALISTA'];
-
     return (
         <div>
             <MenuBar />
@@ -131,7 +129,7 @@ const ListaProyectos = () => {
                                         <td className="text-center">{formatDate(proyecto.proyecto.fecha_fin)}</td>
                                         <td className="text-center">{getRoleName(proyecto.id_rol)}</td>
                                         <td className="text-center">
-                                            {allowedRoles.includes(getRoleName(proyecto.id_rol)) && (
+                                         
                                                 <Button
                                                     className={`${!proyecto.proyecto.estado ? 'btn-desactivado' : 'btn-normal'}`}
                                                     onClick={() => handleShowModal(proyecto.proyecto)}
@@ -139,7 +137,7 @@ const ListaProyectos = () => {
                                                 >
                                                     <FontAwesomeIcon icon={faPlus} />
                                                 </Button>
-                                            )}
+                                        
                                             <Link to={`/casos-prueba/${proyecto.id_proyecto}`} className="btn-normal">
                                                 <FontAwesomeIcon icon={faEye} />
                                             </Link>

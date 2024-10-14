@@ -1,14 +1,13 @@
 import '../css/Perfil_Style.css';
 import BarraMenu from './MenuBar';
-import { getCorreo, getUser } from '../utilities/Sessionutil';
+import { getUser } from '../utilities/Sessionutil';
 import React, { useEffect, useState } from 'react';
 import iconLogo from '../img/logo512.png';
 import { URLBASE } from '../utilities/hooks/Conexion';
 
 const Perfil = () => {
     const usuario = getUser();
-    const correo = getCorreo();
-    const [nombreUsuario, setNombreUsuario] = useState('');
+    const [setNombreUsuario] = useState('');
 
     useEffect(() => {
         if (usuario && usuario.nombres) {

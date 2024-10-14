@@ -142,7 +142,7 @@ const Registrar = () => {
                             </div>
 
                             <div className="col-md-6">
-                                <label htmlFor="correo" className="form-label">Ingrese su correo electronico</label>
+                                <label htmlFor="correo" className="form-label">Ingrese su correo electrónico</label>
                                 <input type="email"
                                     {...register("correo", {
                                         required: {
@@ -209,7 +209,7 @@ const Registrar = () => {
                                 />
                                 {errors.foto && <span className='mensajeerror'>{errors.foto.message}</span>}
                             </div>
-                            <div className="col-md-12 d-flex justify-content-between">
+                            <div className="contenedor-filo">
                                 <button type="button" onClick={() => { handleCancelClick() }} className="btn-negativo btn btn-md me-3">Cancelar</button>
                                 <button type="submit" className="btn-normal btn btn-md">Guardar</button>
                             </div>

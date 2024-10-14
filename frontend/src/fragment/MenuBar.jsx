@@ -50,13 +50,8 @@ const NavLink = () => {
 
     return (
         <Nav className=''>
-            <Nav.Link href="/" ><i className="fas fa-home"></i> Inicio</Nav.Link>
-
-            <Nav.Link href="/create/book"  style={navLinkStyle}><i className="fas fa-book"></i>Opcion 1</Nav.Link>
-
+            <Nav.Link href="/main" ><i className="fas fa-home"></i> Inicio</Nav.Link>
             <Nav.Link href="/usuarios"  style={navLinkStyle}><i className="fas fa-book"></i>Gestionar Usuarios</Nav.Link>
-
-            <Nav.Link href="/caso/prueba"  style={navLinkStyle}>Caso Prueba</Nav.Link>
             <Nav.Link href='/proyectos' style={navLinkStyle}>Proyectos</Nav.Link>
             {token && (<Nav.Link href="/perfil"  style={navLinkStyle}><i className="fas fa-user"></i> Perfil</Nav.Link>)}
             {!token && (
