@@ -16,10 +16,10 @@ const { body, validationResult,isDate } = require('express-validator');
 const CasoPruebaController=require('../controls/CasoPruebaController');
 var casoPruebaController=new CasoPruebaController();
 const ProyectoController = require('../controls/ProyectoController');
-const proyectoController = new ProyectoController();const RolController = require('../controls/RolController');
+const proyectoController = new ProyectoController();
+const RolController = require('../controls/RolController');
 var rolController = new RolController();
 const ProyectoController = require('../controls/ProyectoController');
-var proyectoController = new  ProyectoController();
 const CuentaController = require('../controls/CuentaController');
 var cuentaController = new CuentaController();
 
@@ -70,5 +70,99 @@ var auth = function middleware(req, res, next) {
   }
 
 };
+
+// GUARDAR IMAGENES 
+
+// Función para crear configuraciones de almacenamiento de multer
+const createStorage = (folderPath) => {
+  return multer.diskStorage({
+    destination: path.join(__dirname, folderPath),
+    filename: (req, file, cb) => {
+      console.log(file);
+      const parts = file.originalname.split('.');
+      const extension = parts[parts.length - 1];
+      cb(null, uuid.v4() + "." + extension);
+    }
+  });
+};
+
+// Método para validar las extensiones de las fotografías
+const extensionesAceptadasFoto = (req, file, cb) => {
+  const allowedExtensions = ['.jpeg', '.jpg', '.png'];
+  console.log(file);
+  const ext = path.extname(file.originalname).toLowerCase();
+  if (allowedExtensions.includes(ext)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Solo se permiten archivos JPEG, JPG y PNG.'), false);
+  }
+};
+
+// Configuración de Multer con control de tamaño y tipo de archivo
+const uploadFoto = (folderPath) => {
+  const storage = createStorage(folderPath);
+  return multer({
+    storage: storage,
+    fileFilter: extensionesAceptadasFoto,
+    limits: {
+      fileSize: 2 * 1024 * 1024  // 5MB
+    }
+  });
+};
+
+
+// Ejemplos de uso
+const uploadFotoPersona = uploadFoto('../public/images/users');
+
+//INICIO DE SESION
+router.post('/sesion', [
+  body('correo', 'Ingrese un correo valido').exists().not().isEmpty().isEmail(),
+  body('clave', 'Ingrese una clave valido').exists().not().isEmpty(),
+], cuentaController.sesion)
+
+//GET-ROL
+router.get('/listar/rol', rolController.listar);
+
+//POST ROL
+router.post('/guardar/rol', rolController.guardar);
+
+/*****ENTIDAD****/
+router.post('/guardar/entidad', (req, res, next) => {
+  uploadFotoPersona.single('foto')(req, res, (error) => {
+    if (error) {
+      if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({
+          msg: "El archivo es demasiado grande. Por favor, sube un archivo de menos de 2 MB.",
+          code: 413
+        });
+      }
+      return res.status(400).json({
+        msg: "Error al cargar el archivo: " + error.message,
+        code: 400
+      });
+    }
+    entidadController.guardar(req, res, next);
+  });
+});
+
+router.put('/modificar/entidad', (req, res, next) => {
+  uploadFotoPersona.single('foto')(req, res, (error) => {
+    if (error) {
+      if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({
+          msg: "El archivo es demasiado grande. Por favor, sube un archivo de menos de 2 MB.",
+          code: 413
+        });
+      }
+      return res.status(400).json({
+        msg: "Error al cargar el archivo: " + error.message,
+        code: 400
+      });
+    }
+    entidadController.modificar(req, res, next);
+  });
+});
+router.get('/listar/entidad', entidadController.listar);
+router.get('/obtener/entidad/:external',  entidadController.obtener);
 
 module.exports = router;  
