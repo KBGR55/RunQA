@@ -5,6 +5,13 @@ const multer = require('multer');
 const path = require('path');
 const uuid = require('uuid');
 
+const RolController = require('../controls/RolController');
+var rolController = new RolController();
+const EntidadController = require('../controls/EntidadController');
+var entidadController = new EntidadController();
+const CuentaController = require('../controls/CuentaController');
+var cuentaController = new CuentaController();
+
 const { body, validationResult,isDate } = require('express-validator');
 const CasoPruebaController=require('../controls/CasoPruebaController');
 var casoPruebaController=new CasoPruebaController();
@@ -70,5 +77,66 @@ router.get('/caso/prueba/listar',casoPruebaController.listar);
 router.get('/caso/prueba/obtener',casoPruebaController.obtener);
 router.put('/caso/prueba/cambiar/estado',casoPruebaController.cambiar_estado);
 router.get('/caso/prueba/eliminar',casoPruebaController.cambiar_estado_obsoleto);
+// GUARDAR IMAGENES 
+
+
+// Función para crear configuraciones de almacenamiento de multer
+const createStorage = (folderPath) => {
+  return multer.diskStorage({
+    destination: path.join(__dirname, folderPath),
+    filename: (req, file, cb) => {
+      console.log(file);
+      const parts = file.originalname.split('.');
+      const extension = parts[parts.length - 1];
+      cb(null, uuid.v4() + "." + extension);
+    }
+  });
+};
+
+const storage = createStorage('../public/images/users');
+
+// Método para validar las extensiones de las fotografías
+const extensionesAceptadasFoto = (req, file, cb) => {
+  const allowedExtensions = ['.jpeg', '.jpg', '.png'];
+  console.log(file);
+  const ext = path.extname(file.originalname).toLowerCase();
+  if (allowedExtensions.includes(ext)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Solo se permiten archivos JPEG, JPG y PNG.'), false);
+  }
+};
+
+// Configuración de Multer con control de tamaño y tipo de archivo
+const uploadFoto = (folderPath) => {
+  return multer({
+    storage: storage,
+    fileFilter: extensionesAceptadasFoto,
+    limits: {
+      fileSize: 2 * 1024 * 1024  // 5MB
+    }
+  });
+};
+
+// Ejemplos de uso
+const uploadFotoPersona = uploadFoto('../public/images/users');
+
+//INICIO DE SESION
+router.post('/sesion', [
+  body('correo', 'Ingrese un correo valido').exists().not().isEmpty().isEmail(),
+  body('clave', 'Ingrese una clave valido').exists().not().isEmpty(),
+], cuentaController.sesion)
+
+//GET-ROL
+router.get('/listar/rol', rolController.listar);
+
+//POST ROL
+router.post('/guardar/rol', rolController.guardar);
+
+/*****ENTIDAD****/
+router.post('/guardar/entidad', uploadFotoPersona.single('foto'), entidadController.guardar);
+router.put('/modificar/entidad', uploadFotoPersona.single('foto'), entidadController.modificar);
+router.get('/listar/entidad', entidadController.listar);
+router.get('/obtener/entidad/:external',  entidadController.obtener);
 
 module.exports = router;  

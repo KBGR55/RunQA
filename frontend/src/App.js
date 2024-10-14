@@ -15,6 +15,9 @@ function App() {
         <Route path='/main' element={<Main/>} />
         <Route path='/proyectos' element={<ListaProyectos/>} />
         <Route path='/casos-prueba/:id' element={<ListaCasoPrueba/>}/>
+        <Route path='/perfil' element={<Perfil/>} />
+        <Route path='/usuarios' element={<ListaUsuarios/>} />
+        <Route path='/actualizar' element={<Actualizar />} />
       </Routes>
     </div>
   );
