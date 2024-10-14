@@ -67,14 +67,15 @@ const Registrar = () => {
                         <form className="row g-3" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
                             <div className="col-md-6">
                                 <label htmlFor="nombres" className="form-label">Ingrese sus nombres</label>
-                                <input type="text"
+                                <input
+                                    type="text"
                                     {...register("nombres", {
                                         required: {
                                             value: true,
                                             message: "Ingrese sus nombres"
                                         },
                                         pattern: {
-                                            value: /^[a-zA-Z\s]+$/,
+                                            value: /^(?!\s*$)[a-zA-Z\s]+$/,
                                             message: "Ingrese un nombre correcto"
                                         }
                                     })}
@@ -82,16 +83,18 @@ const Registrar = () => {
                                 />
                                 {errors.nombres && <span className='mensajeerror'>{errors.nombres.message}</span>}
                             </div>
+
                             <div className="col-md-6">
                                 <label htmlFor="apellidos" className="form-label">Ingrese sus apellidos</label>
-                                <input type="text"
+                                <input
+                                    type="text"
                                     {...register("apellidos", {
                                         required: {
                                             value: true,
                                             message: "Ingrese sus apellidos"
                                         },
                                         pattern: {
-                                            value: /^[a-zA-Z\s]+$/,
+                                            value: /^(?!\s*$)[a-zA-Z\s]+$/,
                                             message: "Ingrese un apellido correcto"
                                         }
                                     })}
@@ -99,6 +102,7 @@ const Registrar = () => {
                                 />
                                 {errors.apellidos && <span className='mensajeerror'>{errors.apellidos.message}</span>}
                             </div>
+
                             <div className="col-md-6">
                                 <label htmlFor="fecha_nacimiento" className="form-label">Ingrese su fecha de nacimiento</label>
                                 <input type="date"
@@ -106,6 +110,13 @@ const Registrar = () => {
                                         required: {
                                             value: true,
                                             message: "Ingrese su fecha de nacimiento"
+                                        },
+                                        validate: (value) => {
+                                            const fechaNacimiento = new Date(value);
+                                            const fechaActual = new Date();
+                                            const edad =
+                                                fechaActual.getFullYear() - fechaNacimiento.getFullYear();
+                                            return edad >= 16 || "Debe ser mayor de 16 años"
                                         }
                                     })}
                                     className="form-control"
@@ -156,7 +167,16 @@ const Registrar = () => {
                                             required: {
                                                 value: true,
                                                 message: "Ingrese una clave"
+                                            },
+                                            minLength: {
+                                                value: 5,
+                                                message: "La contraseña debe tener al menos 5 caracteres"
+                                            },
+                                            pattern: {
+                                                value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
+                                                message: "La clave debe contener al menos una letra y un número"
                                             }
+
                                         })}
                                         className="form-control"
                                     />
