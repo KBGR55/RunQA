@@ -6,6 +6,7 @@ import Registrar from './fragment/Registrar';
 import Main from './fragment/Main';
 import Perfil from './fragment/Perfil';
 import Actualizar from './fragment/Actualizar';
+import CasoPrueba from './fragment/CasoPrueba';
 import ListaProyectos from './fragment/ListaProyectos';
 import ListaCasoPrueba from './fragment/ListaCasoPrueba';
 import ListaUsuarios from './fragment/ListaUsuarios';
