@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { peticionPost, peticionGet } from '../utilities/hooks/Conexion';
+import { getToken } from '../utilities/Sessionutil';
 
 const CasoPrueba = ({ projectId, id_editar }) => {
     const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm();
@@ -24,10 +25,10 @@ const CasoPrueba = ({ projectId, id_editar }) => {
         const fetchCasoPrueba = async () => {
             if (id_editar) {
                 try {
-                    const response = await peticionGet('', `caso/prueba/obtener?external_id=${id_editar}`);
+                    const response = await peticionGet(getToken(), `caso/prueba/obtener?external_id=${id_editar}`);
                     if (response.code === 200) {
                         const casoPruebaData = response.info;
-                        setValue('titulo', casoPruebaData.nombre);
+                        setValue('nombre', casoPruebaData.nombre);
                         setValue('descripcion', casoPruebaData.descripcion);
                         setValue('pasos', casoPruebaData.pasos);
                         setValue('resultado_esperado', casoPruebaData.resultado_esperado);
@@ -51,7 +52,7 @@ const CasoPrueba = ({ projectId, id_editar }) => {
     const onSubmit = async (data) => {
 
         const casoPruebaData = {
-            "nombre": data.titulo.toUpperCase(),
+            "nombre": data.nombre.toUpperCase(),
             "descripcion": data.descripcion,
             "pasos": data.pasos,
             "resultado_esperado": data.resultado_esperado,
@@ -66,7 +67,7 @@ const CasoPrueba = ({ projectId, id_editar }) => {
         try {
             if (id_editar) {
                 casoPruebaData['external_id'] = id_editar;
-                const response = await peticionPost('', 'caso/prueba/actualizar', casoPruebaData);
+                const response = await peticionPost(getToken(), 'caso/prueba/actualizar', casoPruebaData);
                 if (response.code === 200) {
                     mensajes('Caso de prueba actualizado con exito', 'success');
                     reset();
@@ -98,7 +99,7 @@ const CasoPrueba = ({ projectId, id_editar }) => {
     return (
         <div className="contenedor-carta">
             <form className="form-sample" onSubmit={handleSubmit(onSubmit)}>
-                <p className="titulo-secundario">Datos del caso de prueba</p>
+                <p className="nombre-secundario">Datos del caso de prueba</p>
                 <div className="row">
                     <div className="col-md-6">
                         <div className="form-group">
@@ -106,7 +107,7 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                             <input
                                 type="text"
                                 className="form-control"
-                                {...register('titulo', {
+                                {...register('nombre', {
                                     required: 'El título es obligatorio',
                                     maxLength: {
                                         value: 50,
@@ -115,8 +116,8 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                                     validate: (value) => /^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9,.#\s-]+$/.test(value) || "El título solo puede contener letras, números, comas, puntos, '#', y '-'."
                                 })}
                             />
-                            {errors.titulo && (
-                                <div className='alert alert-danger'>{errors.titulo.message}</div>
+                            {errors.nombre && (
+                                <div className='alert alert-danger'>{errors.nombre.message}</div>
                             )}
                         </div>
                     </div>

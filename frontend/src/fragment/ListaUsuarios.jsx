@@ -11,15 +11,11 @@ import mensajes from '../utilities/Mensajes';
 import EditarPersona from './EditarPersona';
 
 const ListaUsuarios = () => {
-    const [showModal, setShowModal] = useState(false);
-    const [selectedProject, setSelectedProject] = useState(null);
     const [llUsuarios, setUsuarios] = useState(false);
     const [data, setData] = useState([]);
     const navigate = useNavigate();
     const [personaObtenida, setpersonaObtenida] = useState([]);
-    const [tablaListarPersonas, setTablaListarPersonas] = useState([]);
-
-    //SHOW EDITAR
+    
     const [showEdit, setShowEdit] = useState(false);
     const handleCloseEdit = () => setShowEdit(false);
     const handleShowEdit = () => setShowEdit(true);
@@ -39,11 +35,6 @@ const ListaUsuarios = () => {
         }
     }, [llUsuarios, navigate]);
 
-    const handleCloseModal = () => {
-        setShowModal(false);
-        setSelectedProject(null);
-    };
-
     //CAMBIAR FORMATO FECHA
     const obtenerFechaFormateada = (fechaString) => {
         const fecha = new Date(fechaString);
@@ -62,25 +53,6 @@ const ListaUsuarios = () => {
             [name]: value
         }));
     }
-
-    const handleSearch = e => {
-        filtrar(e.target.value);
-    }
-
-    const filtrar = (terminoBusqueda) => {
-        const estadoActivo = "ACTIVO";
-        const estadoDadoDeBaja = "DADO DE BAJA";
-
-        var resultadosBusqueda = tablaListarPersonas.filter((elemento) => {
-            const cedulaIncluida = elemento.identificacion && elemento.identificacion.toString().toLowerCase().includes(terminoBusqueda.toLowerCase());
-            const rolIncluido = elemento.persona_rol && elemento.persona_rol.some((rol) => rol.rol.tipo.toLowerCase().includes(terminoBusqueda.toLowerCase()));
-            const estadoIncluido =
-                (terminoBusqueda.toLowerCase() === estadoActivo.toLowerCase() && elemento.estado) ||
-                (terminoBusqueda.toLowerCase() === estadoDadoDeBaja.toLowerCase() && !elemento.estado);
-            return cedulaIncluida || rolIncluido || estadoIncluido;
-        });
-        setData(resultadosBusqueda);
-    };
 
     const obtenerId = (externalId) => {
         peticionGet(getToken(), `/obtener/entidad/${externalId}`).then((info) => {

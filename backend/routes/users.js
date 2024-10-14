@@ -16,6 +16,8 @@ const CasoPruebaController=require('../controls/CasoPruebaController');
 var casoPruebaController=new CasoPruebaController();
 const ProyectoController = require('../controls/ProyectoController');
 const proyectoController = new ProyectoController();
+const RolProyectoController = require('../controls/RolProyectoController');
+const rolProyectoController = new RolProyectoController();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -115,13 +117,13 @@ router.post('/sesion', [
 ], cuentaController.sesion)
 
 //GET-ROL
-router.get('/listar/rol', rolController.listar);
+router.get('/rol/listar', rolController.listar);
 
 //POST ROL
-router.post('/guardar/rol', rolController.guardar);
+router.post('/rol/guardar', rolController.guardar);
 
 /*****ENTIDAD****/
-router.post('/guardar/entidad', (req, res, next) => {
+router.post('/entidad/guardar', (req, res, next) => {
   uploadFotoPersona.single('foto')(req, res, (error) => {
     if (error) {
       if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
@@ -160,7 +162,7 @@ router.get('/listar/entidad', entidadController.listar);
 router.get('/obtener/entidad/:external',  entidadController.obtener);
 router.get('/proyecto/listar',proyectoController.listar);
 router.post('/caso/prueba/guardar', [
-  body('titulo').notEmpty().withMessage('El título es requerido'),
+  body('nombre').notEmpty().withMessage('El título es requerido'),
   body('descripcion').notEmpty().withMessage('La descripción es requerida'),
   body('resultado_esperado').notEmpty().withMessage('El resultado esperado es requerido'),
 ], casoPruebaController.guardar);
@@ -169,7 +171,8 @@ router.get('/caso/prueba/listar',casoPruebaController.listar);
 router.get('/caso/prueba/obtener',casoPruebaController.obtener);
 router.put('/caso/prueba/cambiar/estado',casoPruebaController.cambiar_estado);
 router.get('/caso/prueba/eliminar',casoPruebaController.cambiar_estado_obsoleto);
-
+router.get('/rol_proyecto/listar', rolProyectoController.listar.bind(rolProyectoController));
+router.get('/cuenta/:correo',cuentaController.obtenerCuenta);
 router.post('/proyect', proyectoController.createProyect);
 router.put('/proyect', proyectoController.updateProyect);
 router.post('/proyect/assign', proyectoController.assignEntity);

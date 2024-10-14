@@ -28,7 +28,7 @@ function App() {
         <Route path='/usuarios' element={<ListaUsuarios/>} />
         <Route path='/actualizar' element={<Actualizar />} />
         <Route path='proyecto/nuevo' element={<NewProyect/>} />
-        <Route path='/proyecto/usuarios' element={<UsersProyect/>} />
+        <Route path='/proyecto/usuarios/:external_id' element={<UsersProyect/>} />
       </Routes>
     </div>
   );

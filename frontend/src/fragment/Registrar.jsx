@@ -29,7 +29,7 @@ const Registrar = () => {
         formData.append('clave', data.clave);
         formData.append('foto', data.foto[0]);
 
-        GuardarImages(formData, getToken(), "/guardar/entidad").then(info => {
+        GuardarImages(formData, getToken(), "/entidad/guardar").then(info => {
             if (info.code !== 200) {
                 mensajes(info.msg, 'error', 'Error');
                 borrarSesion();

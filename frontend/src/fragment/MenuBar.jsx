@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Navbar, Nav, Offcanvas } from 'react-bootstrap';
-import { borrarSesion, getRol, getToken } from '../utilities/Sessionutil';
+import { borrarSesion, getToken } from '../utilities/Sessionutil';
 import { useNavigate } from 'react-router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/style.css';
@@ -59,10 +59,6 @@ const NavLink = () => {
             <Nav.Link href="/caso/prueba"  style={navLinkStyle}>Caso Prueba</Nav.Link>
             <Nav.Link href='/proyectos' style={navLinkStyle}>Proyectos</Nav.Link>
             {token && (<Nav.Link href="/perfil"  style={navLinkStyle}><i className="fas fa-user"></i> Perfil</Nav.Link>)}
-
-            {getRol() === 'USUARIO' && <Nav.Link href="/api"  style={navLinkStyle}><i className="fas fa-code"></i> Opcion 2</Nav.Link>}
-            {getRol() === 'ADMINISTRADOR' && <Nav.Link href="/comentarios"  style={navLinkStyle}><i className="fas fa-comments"></i> Opcion 3</Nav.Link>}
-            {getRol() === 'ADMINISTRADOR' && <Nav.Link href="/peticion-api"  style={navLinkStyle}><i className="fas fa-users"></i>Opcion 4</Nav.Link>}
             {!token && (
                 <li className="nav-item dropdown" onClick={toggleDropdown}>
                     <span className={`nav-link `} style={navLinkStyle}><i className="fas fa-user-circle"></i> Mi cuenta</span>

@@ -106,7 +106,6 @@ class CuentaController {
                     code: 400
                 });
             }
-            console.log(req.params.correo);
             var cuentaEncontrada = await cuenta.findOne({ where: {correo: req.params.correo  }, include: [{model: models.entidad,as: "entidad"  }]  });
             if (cuentaEncontrada === null) {
                 return res.status(404).json({

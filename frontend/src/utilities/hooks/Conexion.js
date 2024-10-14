@@ -1,5 +1,6 @@
 const URL_BACKEND = "http://localhost:3006/api"
 export const URLBASE = "http://localhost:3006"; 
+
 export const loginpost = async (formData, URL) => {
     const headers = {
         "Accept": 'application/json',
@@ -44,7 +45,7 @@ export const InicioSesion = async (data) => {
 export const peticionGet = async (key, URL) => {
     const headers = {
         "Content-Type": "application/json",
-        "X-API-TOKEN": key
+        "x-api-token": key
     };
     const datos = await (await fetch(`${URL_BACKEND}/${URL}`, {
         method: "GET",
@@ -52,10 +53,11 @@ export const peticionGet = async (key, URL) => {
     })).json();
     return datos;
 }
+
 export const peticionPost = async (key, URL,data) => {
     const headers = {
         "Content-Type": "application/json",
-        "X-API-TOKEN": key
+        "x-api-token": key
     };
     const datos = await (await fetch(`${URL_BACKEND}/${URL}`, {
         method: "POST",
@@ -121,7 +123,7 @@ export const ActualizarImagenes = async (data, key, urls) => {
 export const peticionDelete = async (key, URL) => {
     const headers = {
         "Content-Type": "application/json",
-        "X-API-TOKEN": key
+        "x-api-token": key
     };
     const datos = await (await fetch(`${URL_BACKEND}/${URL}`, {
         method: "DELETE",

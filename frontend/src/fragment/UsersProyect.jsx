@@ -4,59 +4,64 @@ import { Button, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import MenuBar from './MenuBar';
-import { peticionGet, peticionDelete } from '../utilities/hooks/Conexion'; 
-import { useNavigate } from 'react-router-dom';
+import { peticionGet, peticionDelete, URLBASE } from '../utilities/hooks/Conexion';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getToken } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 import RoleDialog from './RoleDialog';
 
 const UsersProyect = () => {
     const [data, setData] = useState([]);
-    const [showModalAddMembers, setshowModalAddMembers] = useState(false);
-    const [llUsuarios, setUsuarios] = useState(false);
+    const [showModalAddMembers, setShowModalAddMembers] = useState(false);
     const [showModal, setShowModal] = useState(false);
-    const [userIdToDelete, setUserIdToDelete] = useState(null); 
-    const [externalId] = useState('bfcbc971-c893-4994-86a8-abd69d4a5903'); // ID del proyecto modificar yovin cuando tengas
+    const [userIdToDelete, setUserIdToDelete] = useState(null);
+    const { external_id } = useParams(); // Desestructurando directamente
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!llUsuarios) {
-            peticionGet(getToken(), `proyect/${externalId}`).then((info) => {
+        const fetchData = async () => {
+            try {
+                const info = await peticionGet(getToken(), `proyect/${external_id}`);
                 if (info.code !== 200) {
-                    mensajes(info.mensajes);
+                    mensajes(info.msg || 'Error al obtener datos del proyecto');
                     navigate("/principal");
                 } else {
                     setData(info.info);
                 }
-            });
-        }
-    }, [llUsuarios, navigate, externalId]);
+            } catch (error) {
+                mensajes(error.message || 'Error al hacer la petición');
+            }
+        };
+
+        fetchData();
+    }, [navigate, external_id]);
 
     const handleShowModal = (id) => {
-        setUserIdToDelete(id); 
-        setShowModal(true); 
+        setUserIdToDelete(id);
+        setShowModal(true);
     };
 
     const handleCloseModal = () => {
-        setShowModal(false); 
-        setUserIdToDelete(null); 
+        setShowModal(false);
+        setUserIdToDelete(null);
     };
+
     const handleShowModalAddMembers = () => {
-        setshowModalAddMembers(true);
+        setShowModalAddMembers(true);
     };
 
     const handleCloseModalAddMembers = () => {
-        setshowModalAddMembers(false);
+        setShowModalAddMembers(false);
     };
 
     const handleDeleteUser = async () => {
         try {
-            const response = await peticionDelete(getToken(), `proyect/${externalId}/${userIdToDelete}`); 
+            const response = await peticionDelete(getToken(), `proyect/${external_id}/${userIdToDelete}`);
             if (response.code === 200) {
                 mensajes('Usuario eliminado exitosamente', 'success', 'Éxito');
-                setData(data.filter(user => user.entidad.id !== userIdToDelete)); 
+                setData(data.filter(user => user.entidad.id !== userIdToDelete));
             } else {
-                mensajes(response.mensajes, 'error', 'Error');
+                mensajes(response.msg || 'Error al eliminar usuario', 'error', 'Error');
             }
         } catch (error) {
             console.error("Error al eliminar usuario:", error);
@@ -65,6 +70,7 @@ const UsersProyect = () => {
             handleCloseModal();
         }
     };
+    console.log(data);
 
     return (
         <div>
@@ -72,21 +78,20 @@ const UsersProyect = () => {
             <div className="contenedor-centro">
                 <div className='contenedor-carta'>
                     <div className="contenedor-filo">
-                    <td className="text-center">
-                        <Button className="btn-normal" onClick={handleShowModalAddMembers}>
-                            <FontAwesomeIcon icon={faPlus} />
-                           Asignar Miem bro
-                        </Button>
-                    </td>
-                    <Modal show={showModalAddMembers} onHide={handleCloseModalAddMembers}>
-                        <Modal.Header closeButton>
-                            <Modal.Title className='titulo-primario'>Agregar miembros</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            {showModalAddMembers && <RoleDialog handleClose={handleCloseModalAddMembers} />}
-                        </Modal.Body>
-                    </Modal>
-
+                        <td className="text-center">
+                            <Button className="btn-normal" onClick={handleShowModalAddMembers}>
+                                <FontAwesomeIcon icon={faPlus} />
+                                Asignar Miembros
+                            </Button>
+                        </td>
+                        <Modal show={showModalAddMembers} onHide={handleCloseModalAddMembers}>
+                            <Modal.Header closeButton>
+                                <Modal.Title className='titulo-primario'>Agregar miembros</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                            {showModalAddMembers && <RoleDialog handleClose={handleCloseModalAddMembers} external_id={external_id} />}
+                            </Modal.Body>
+                        </Modal>
                     </div>
 
                     <main className="table">
@@ -109,7 +114,7 @@ const UsersProyect = () => {
                                         {data.map((user) => (
                                             <tr key={user.id}>
                                                 <td className="text-center" style={{ backgroundColor: "#FFFFFF", border: "none" }}>
-                                                    <img src={"/images/users/" + user.foto} alt="Avatar" style={{ width: '50px', height: '50px' }} />
+                                                    <img src={URLBASE + "/images/users/" + user.entidad.foto} alt="Avatar" style={{ width: '50px', height: '50px' }} />
                                                 </td>
                                                 <td className="text-center">{user.entidad.nombres}</td>
                                                 <td className="text-center">{user.entidad.apellidos}</td>

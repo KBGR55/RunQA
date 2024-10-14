@@ -6,7 +6,7 @@ import MenuBar from './MenuBar';
 import { InicioSesion } from '../utilities/hooks/Conexion';
 import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
-import { getRol, getToken, getUser, saveCorreo, saveRol, saveToken, saveUser } from '../utilities/Sessionutil';
+import { saveCorreo, saveToken, saveUser } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 
 const Login = () => {
@@ -39,8 +39,7 @@ const Login = () => {
             if (info.code !== 200) {
                 mensajes(info.msg, "error", "Error")
             } else {
-                saveToken(infoAux.token);
-                saveRol(infoAux.rol);
+                saveToken(infoAux.token);                
                 saveUser(infoAux.user);
                 saveCorreo(infoAux.correo);
                 navegation("/proyectos");

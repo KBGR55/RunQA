@@ -15,14 +15,7 @@ export const estaSesion = () => {
     var token = localStorage.getItem('token');
     return (token && (token !== 'undefined' && token !== null && token !== 'null'));
 };
-//------------------ROL------------------
-export const saveRol = (rol) => {
-    localStorage.setItem('rol', rol);
-}
 
-export const getRol = () => {
-    return localStorage.getItem('rol');
-}
 //------------------USUARIO------------------
 export const saveUser = (user) => {
     const userJSON = JSON.stringify(user);

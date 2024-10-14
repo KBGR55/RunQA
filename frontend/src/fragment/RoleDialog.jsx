@@ -6,25 +6,30 @@ import { peticionGet, peticionPost } from '../utilities/hooks/Conexion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes, faTrash } from '@fortawesome/free-solid-svg-icons';
 import mensajes from '../utilities/Mensajes';
+import { borrarSesion, getToken, getUser } from '../utilities/Sessionutil';
+import { Navigate } from 'react-router-dom';
 
-const RoleDialog = ({ handleClose }) => {
+const RoleDialog = ({ handleClose, external_id }) => {
     const [selectedDate, setSelectedDate] = useState('');
     const [email, setEmail] = useState('');
     const [users, setUsers] = useState([]);  
     const [roles, setRoles] = useState([]);
     const [selectedRole, setSelectedRole] = useState('');
+ 
 
     const handleAssignRole = async () => {
+        console.log("Selected Role:", selectedRole);
+        console.log("Users:", users);
+    
         if (!selectedRole || users.length === 0) {
             mensajes('Faltan campos obligatorios', 'error', 'Error');
             return;
         }
     
         const datos = {
-            id_proyect: 4,
+            id_proyect: external_id,
             users: users.map(user => ({ id_entidad: user.id })),
             id_rol: selectedRole,
-            owner: 1
         };
     
         try {
@@ -43,16 +48,24 @@ const RoleDialog = ({ handleClose }) => {
 
     const fetchRoles = async () => {
         try {
-            const response = await peticionGet('key', 'rol');
-            console.log(response);
-            setRoles(response.info);
+            const info = await peticionGet(getToken(), 'rol/listar');
+            if (info.code !== 200 && info.msg === 'Acceso denegado. Token a expirado') {
+                borrarSesion();
+                mensajes(info.mensajes);
+                Navigate("/main");
+            } else if (info.code === 200) {
+                setRoles(info.info);
+            } else {
+                console.error('Error al obtener roles:', info.msg);
+            }
         } catch (error) {
-            console.error("Error al obtener los roles:", error);
+            console.error('Error en la solicitud:', error);
         }
     };
 
     const fetchUserByEmail = async (email) => {
         // Verificar si el usuario ya está agregado
+
         const emailExists = users.some(user => user.correo === email);
         if (emailExists) {
             setEmail('');  // Limpiar el campo de correo
@@ -60,7 +73,8 @@ const RoleDialog = ({ handleClose }) => {
         }
 
         try {
-            const response = await peticionGet('key', `cuenta/${email}`);
+            const response = await peticionGet(getToken(), `cuenta/${email}`);
+     
             if (response.info) {
                 setUsers((prevUsers) => [...prevUsers, response.info]); // Agrega el usuario encontrado
                 setEmail('');  
@@ -140,8 +154,7 @@ const RoleDialog = ({ handleClose }) => {
                         type="button" 
                         className="btn-positivo" 
                         onClick={handleAssignRole}
-                        disabled={!selectedRole || users.length === 0}  // Deshabilitar el botón si no hay usuarios o rol
-                    >
+                            >
                         <FontAwesomeIcon icon={faCheck} /> Asignar
                     </button>
                 </Form.Group>

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/style.css';
-import MenuBar from './MenuBar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom'; 
 import { peticionPost } from '../utilities/hooks/Conexion';
 import mensajes from '../utilities/Mensajes';
+import { getToken, getUser } from '../utilities/Sessionutil';
 
 const NewProyect = () => {
     const [name, setName] = useState('');
@@ -31,15 +31,16 @@ const NewProyect = () => {
         }
 
         var datos = {
-            "id_entidad": 1, 
+            "id_entidad":getUser().user.id , 
             "name": name,
             "description": description,
             "end_date": '2024-10-05 22:53:28' // Fecha de ejemplo, asegúrate de ajustar
         };
 
-        peticionPost("key", 'proyect', datos).then((info) => {
+        peticionPost(getToken(), 'proyect', datos).then((info) => {
             if (info.code !== 200) {
                 mensajes(info.msg, "error", "Error");
+               
             } else {
                 mensajes(info.msg, "success", "Éxito");
                 navigate('/proyectos'); 
@@ -49,10 +50,7 @@ const NewProyect = () => {
 
     return (
         <>
-            <MenuBar />
-            <div className="contenedor-centro">
             <div className="contenedor-carta">
-                <h1 className='titulo-primario'>Crear Proyecto</h1>
                 <form onSubmit={onSubmit}>
                     <div className="mb-3">
                         <label htmlFor="nombreProyecto" className="form-label">Nombre del Proyecto</label>
@@ -63,7 +61,7 @@ const NewProyect = () => {
                             placeholder="Escribe el nombre del proyecto..." 
                             value={name}
                             onChange={(e) => setName(e.target.value)}  
-                            maxLength={20} // Límite de 20 caracteres
+                            maxLength={20} 
                         />
                         <small className="text-muted">{name.length}/20 caracteres</small>
                     </div>
@@ -76,7 +74,7 @@ const NewProyect = () => {
                             placeholder="Escribe la descripción..." 
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}  
-                            maxLength={50} // Límite de 50 caracteres
+                            maxLength={50} 
                         ></textarea>
                         <small className="text-muted">{description.length}/50 caracteres</small>
                     </div>
@@ -90,7 +88,7 @@ const NewProyect = () => {
                     </div>
                 </form>
             </div>
-            </div>
+           
         </>
     );
 };

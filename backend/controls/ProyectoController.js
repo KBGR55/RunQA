@@ -1,6 +1,7 @@
 'use strict';
 const { validationResult } = require('express-validator');
 var models = require('../models/');
+const uuid = require('uuid');
 const proyecto = models.proyecto; 
 class ProyectoController {
 
@@ -24,7 +25,7 @@ class ProyectoController {
         try {
             transaction = await models.sequelize.transaction();
             const entidad = await models.entidad.findOne({ where: { id: req.body.id_entidad }, attributes: ['id'] });
-            const nameRole = await models.rol.findOne({ where: { nombre: adminRol }, attributes: ['id'] });
+            const nameRole = await models.rol.findOne({ where: { nombre: 'GERENTE DE PRUEBAS' }, attributes: ['id'] });
             if (entidad) {
                 const resultado = await models.rol_proyecto.findOne({
                     where: { id_rol: nameRole.id, id_entidad: entidad.id },
@@ -59,8 +60,6 @@ class ProyectoController {
             } else { res.json({ msg: error.message, code: 200 }); }
         }
     }
-
-
 
     async updateProyect(req, res) {
         let transaction;
@@ -104,52 +103,74 @@ class ProyectoController {
     async assignEntity(req, res) {
         let transaction;
         try {
-            transaction = await models.sequelize.transaction();
-            const proyect = await models.proyecto.findOne({ where: { id: req.body.id_proyect } });
-            const owner = await models.entidad.findOne({ where: { id: req.body.owner } });
-            const role = await models.rol.findOne({ where: { external_id: req.body.id_rol }, attributes: ['id'] });
-
-            if (!proyect || !role || !owner) {
-                return res.status(400).json({ msg: "Datos inválidos", code: 400 });
+            transaction = await models.sequelize.transaction();            
+            // Buscar el proyecto por external_id
+            const proyect = await models.proyecto.findOne({ where: { external_id: req.body.id_proyect } });
+            if (!proyect) {
+                return res.status(400).json({ msg: "Proyecto no encontrado", code: 400 });
             }
+    
+            // Buscar el rol por external_id
+            const role = await models.rol.findOne({ where: { external_id: req.body.id_rol }, attributes: ['id'] });
+            if (!role) {
+                return res.status(400).json({ msg: "Rol no encontrado", code: 400 });
+            }
+    
+            // Procesar los usuarios
             const users = req.body.users;
+            
             for (const user of users) {
+                
+                // Buscar la entidad del usuario
                 const entidad = await models.entidad.findOne({ where: { id: user.id_entidad } });
-
-                if (entidad && owner.id !== entidad.id) {
-                    const existingRolProyecto = await models.rol_proyecto.findOne({
-                        where: { id_entidad: entidad.id, id_proyecto: proyect.id }
-                    });
-                    if (existingRolProyecto) {
-                        existingRolProyecto.id_rol = role.id;
-                        await existingRolProyecto.save({ transaction });
-                    } else {
-                        await models.rol_proyecto.create({
-                            id_rol: role.id,
-                            id_entidad: entidad.id,
-                            id_proyecto: proyect.id,
-                            external_id: uuid.v4(),
-                        }, { transaction });
+    
+                if (!entidad) {
+                    console.error(`Entidad con id ${user.id_entidad} no encontrada.`);
+                    continue;  // Saltar al siguiente usuario si no se encuentra la entidad
+                }
+    
+                // Verificar si la entidad ya tiene el mismo rol en el proyecto
+                const existingRolProyecto = await models.rol_proyecto.findOne({
+                    where: {
+                        id_entidad: entidad.id,
+                        id_proyecto: proyect.id,
+                        id_rol: role.id  // Verifica si ya existe este rol para esta entidad en el proyecto
                     }
+                });
+    
+                if (existingRolProyecto) {
+                    // Si ya existe el mismo rol para esta entidad en el proyecto, no hacer nada
+                    console.log(`La entidad ${entidad.id} ya tiene el rol ${role.id} en el proyecto ${proyect.id}. No se asignará nuevamente.`);
+                    continue;
+                } else {
+                    // Si no tiene el mismo rol, asignarlo
+                    await models.rol_proyecto.create({
+                        id_rol: role.id,
+                        id_entidad: entidad.id,
+                        id_proyecto: proyect.id,
+                        external_id: uuid.v4(),
+                    }, { transaction });
                 }
             }
+    
+            // Confirmar transacción
             await transaction.commit();
-            if (users.length > 1) {
-                res.json({ msg: "Roles asignados correctamente", code: 200 });
-            } else {
-                res.json({ msg: "Rol asignado correctamente", code: 200 });
-            }
-
+            
+            // Responder con éxito
+            res.json({
+                msg: users.length > 1 ? "Roles asignados correctamente" : "Rol asignado correctamente",
+                code: 200
+            });
+    
         } catch (error) {
+            // Rollback de la transacción en caso de error
             if (transaction) await transaction.rollback();
-            if (error.errors && error.errors[0].message) {
-                res.json({ msg: error.errors[0].message, code: 500 });
-            } else {
-                res.json({ msg: error.message, code: 500 });
-            }
+    
+            console.error("Error:", error);
+            res.status(500).json({ msg: error.message || "Error interno del servidor", code: 500 });
         }
     }
-
+    
     async getEntityProyect(req, res) {
         try {
             const proyect = await models.proyecto.findOne({ where: { external_id: req.params.id_proyect } });
@@ -159,11 +180,11 @@ class ProyectoController {
                     include: [
                         {
                             model: models.entidad,
-                            attributes: ['nombres', 'apellidos', 'id'], 
+                            attributes: ['nombres', 'apellidos','foto', 'id'], 
                         },
                         {
                             model: models.rol,
-                            attributes: ['nombre'] 
+                            attributes: ['nombre'], 
                         }
                     ],
                     attributes: ['id']

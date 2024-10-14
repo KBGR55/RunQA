@@ -1,12 +1,11 @@
 import '../css/Perfil_Style.css';
 import BarraMenu from './MenuBar';
-import { getCorreo, getRol, getUser } from '../utilities/Sessionutil';
+import { getCorreo, getUser } from '../utilities/Sessionutil';
 import React, { useEffect, useState } from 'react';
 import iconLogo from '../img/logo512.png';
 import { URLBASE } from '../utilities/hooks/Conexion';
 
 const Perfil = () => {
-    const rol = getRol();
     const usuario = getUser();
     const correo = getCorreo();
     const [nombreUsuario, setNombreUsuario] = useState('');
