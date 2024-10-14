@@ -8,7 +8,7 @@ import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { peticionPost, peticionGet } from '../utilities/hooks/Conexion';
 
 const CasoPrueba = ({ projectId, id_editar }) => {
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
+    const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm();
     const navigate = useNavigate();
 
     const [clasificaciones] = useState(['ALTA', 'MEDIA', 'BAJA']);
@@ -16,7 +16,7 @@ const CasoPrueba = ({ projectId, id_editar }) => {
     const [estadoSeleccionado, setEstadoSeleccionado] = useState('APROBADO'); // Default value
     const [clasificacionSeleccionada, setClasificacionSeleccionada] = useState('MEDIA'); // Default value
     const [tiposPrueba] = useState([
-        'FUNCIONAL', 'INTEGRACION', 'SISTEMA', 'REGRESION', 'EXPLORATORIA', 
+        'FUNCIONAL', 'INTEGRACION', 'SISTEMA', 'REGRESION', 'EXPLORATORIA',
         'ACEPTACION_USUARIO', 'RENDIMIENTO', 'SEGURIDAD'
     ]);
 
@@ -32,7 +32,7 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                         setValue('pasos', casoPruebaData.pasos);
                         setValue('resultado_esperado', casoPruebaData.resultado_esperado);
                         setValue('precondiciones', casoPruebaData.precondiciones);
-                        setValue('fecha_ejecucion_prueba', casoPruebaData.fecha_ejecucion_prueba);
+                        setValue('fecha_ejecucion_prueba', new Date(casoPruebaData.fecha_ejecucion_prueba).toISOString().slice(0, 10));
                         setClasificacionSeleccionada(casoPruebaData.clasificacion);
                         setEstadoSeleccionado(casoPruebaData.estado);
                         setValue('tipo_prueba', casoPruebaData.tipo_prueba);
@@ -49,12 +49,9 @@ const CasoPrueba = ({ projectId, id_editar }) => {
     }, [id_editar, setValue]);
 
     const onSubmit = async (data) => {
-        if (data.fecha_ejecucion_prueba && new Date(data.fecha_ejecucion_prueba) < new Date()) {
-            mensajes('La fecha de ejecución no puede ser una fecha pasada', 'error');
-            return;
-        }
+
         const casoPruebaData = {
-            "titulo": data.titulo,
+            "nombre": data.titulo.toUpperCase(),
             "descripcion": data.descripcion,
             "pasos": data.pasos,
             "resultado_esperado": data.resultado_esperado,
@@ -72,19 +69,27 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                 const response = await peticionPost('', 'caso/prueba/actualizar', casoPruebaData);
                 if (response.code === 200) {
                     mensajes('Caso de prueba actualizado con exito', 'success');
-                    navigate('/proyectos'); 
+                    reset();
+                    navigate('/proyectos');
                 } else {
                     mensajes(`Error al actualizar caso de prueba: ${response.msg}`, 'error');
                 }
-            } else{
+            } else {
+
+                if (data.fecha_ejecucion_prueba && new Date(data.fecha_ejecucion_prueba) < new Date()) {
+                    mensajes('La fecha de ejecución no puede ser una fecha pasada', 'error');
+                    return;
+                }
+                //permite realizar cuado la fexcha sea mayor o igual a la actual
                 const response = await peticionPost('', 'caso/prueba/guardar', casoPruebaData);
                 if (response.code === 200) {
                     mensajes('Caso de prueba registrado con éxito', 'success');
-                    navigate('/proyectos'); 
+                    reset();
+                    navigate('/proyectos');
                 } else {
                     mensajes(`Error al registrar caso de prueba: ${response.msg}`, 'error');
                 }
-            }            
+            }
         } catch (error) {
             mensajes('Error al procesar la solicitud', 'error');
         }
@@ -101,10 +106,17 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                             <input
                                 type="text"
                                 className="form-control"
-                                {...register('titulo', { required: true })}
+                                {...register('titulo', {
+                                    required: 'El título es obligatorio',
+                                    maxLength: {
+                                        value: 50,
+                                        message: 'El título no puede tener más de 50 caracteres'
+                                    },
+                                    validate: (value) => /^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9,.#\s-]+$/.test(value) || "El título solo puede contener letras, números, comas, puntos, '#', y '-'."
+                                })}
                             />
                             {errors.titulo && (
-                                <div className='alert alert-danger'>Ingrese el título del caso de prueba</div>
+                                <div className='alert alert-danger'>{errors.titulo.message}</div>
                             )}
                         </div>
                     </div>
@@ -141,10 +153,16 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                             <label>Resultado Esperado</label>
                             <textarea
                                 className="form-control"
-                                {...register('resultado_esperado', { required: true })}
+                                {...register('resultado_esperado', {
+                                    required: 'El resultado esperado es obligatorio', 
+                                    maxLength: {
+                                        value: 255,
+                                        message: 'El resultado esperado no puede tener más de 255 caracteres' 
+                                    }
+                                })}
                             />
                             {errors.resultado_esperado && (
-                                <div className='alert alert-danger'>Ingrese el resultado esperado</div>
+                                <div className='alert alert-danger'>{errors.resultado_esperado.message}</div>
                             )}
                         </div>
                     </div>
@@ -153,13 +171,20 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                             <label>Descripción</label>
                             <textarea
                                 className="form-control"
-                                {...register('descripcion', { required: true })}
+                                {...register('descripcion', {
+                                    required: 'La descripción es obligatoria', 
+                                    maxLength: {
+                                        value: 150,
+                                        message: 'La descripción no puede tener más de 150 caracteres' 
+                                    }
+                                })}
                             />
                             {errors.descripcion && (
-                                <div className='alert alert-danger'>Ingrese una descripción</div>
+                                <div className='alert alert-danger'>{errors.descripcion.message}</div>
                             )}
                         </div>
                     </div>
+
                     <div className="col-md-6">
                         <div className="form-group">
                             <label>Estado</label>
@@ -199,21 +224,31 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                             <label>Precondiciones</label>
                             <textarea
                                 className="form-control"
-                                {...register('precondiciones', { required: true })}
+                                {...register('precondiciones', {
+                                    required: 'Las precondiciones son obligatorias', 
+                                    maxLength: {
+                                        value: 150,
+                                        message: 'Las precondiciones no pueden tener más de 150 caracteres' 
+                                    }
+                                })}
                             />
                             {errors.precondiciones && (
-                                <div className='alert alert-danger'>Ingrese las precondiciones</div>
+                                <div className='alert alert-danger'>{errors.precondiciones.message}</div>
                             )}
                         </div>
                     </div>
+
                     <div className="col-md-6">
                         <div className="form-group">
                             <label>Fecha de Ejecución</label>
                             <input
                                 type="date"
                                 className="form-control"
-                                {...register('fecha_ejecucion_prueba')}
+                                {...register('fecha_ejecucion_prueba', { required: true })}
                             />
+                            {errors.fecha_ejecucion_prueba && (
+                                <div className='alert alert-danger'>Ingrese la fecha de ejecución de la prueba</div>
+                            )}
                         </div>
                     </div>
                 </div>

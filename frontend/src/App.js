@@ -1,5 +1,5 @@
 import React from 'react';
-import {Route, Routes } from 'react-router-dom';
+import {Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Login from './fragment/Login';
 import Main from './fragment/Main';
@@ -10,6 +10,7 @@ function App() {
   return (
     <div className="App">
       <Routes>
+      <Route path='*' element={<Navigate to='/login' />}/>
         <Route path='/login' element={<Login />} />
         <Route path='/main' element={<Main/>} />
         <Route path='/proyectos' element={<ListaProyectos/>} />

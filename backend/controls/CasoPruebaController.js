@@ -83,7 +83,7 @@ class CasoPruebaController {
                 }
     
                 const nuevoCaso = await caso_prueba.create({
-                    nombre: req.body.titulo,
+                    nombre: req.body.nombre,
                     estado: req.body.estado,
                     descripcion: req.body.descripcion,
                     pasos: req.body.pasos,
@@ -119,7 +119,7 @@ class CasoPruebaController {
                     return res.status(404).json({ msg: "Caso de prueba no encontrado", code: 404 });
                 }
     
-                caso.nombre = req.body.nombre || caso.nombre;
+                caso.nombre = req.body.nombre|| caso.nombre;
                 caso.estado = req.body.estado || caso.estado;
                 caso.descripcion = req.body.descripcion || caso.descripcion;
                 caso.pasos = req.body.pasos || caso.pasos;

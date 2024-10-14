@@ -53,7 +53,8 @@ const ListaProyectos = () => {
             <div className='contenedor-centro'>
                 <div className="contenedor-carta">
                     <p className="titulo-primario">Lista de Proyectos</p>
-                    <table className="table">
+                    <div className="table-responsive">
+                    <table className="table table-striped">
                         <thead>
                             <tr>
                                 <th className="text-center">Nombre</th>
@@ -87,6 +88,7 @@ const ListaProyectos = () => {
                             ))}
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
 

@@ -28,7 +28,7 @@ const ListaCasoPrueba = ({ projectId }) => {
         };
 
         fetchCasosPrueba();
-    }, [id]); // Fixed the dependency warning by including 'id'
+    }, [id]); 
 
     const handleShowModal = (casoId) => {
         setEditingCaso(casoId);
@@ -65,7 +65,6 @@ const ListaCasoPrueba = ({ projectId }) => {
             const response = await peticionGet('tu_api_token', `caso/prueba/eliminar?external_id=${external_id}`);
             if (response.code === 200) {
                 mensajes('Caso de prueba eliminado exitosamente.');
-                setCasosPrueba(casosPrueba.filter(caso => caso.external_id !== external_id)); // Update the state to reflect deletion
             } else {
                 mensajes(response.msg, 'error', 'Error');
             }
@@ -93,7 +92,8 @@ const ListaCasoPrueba = ({ projectId }) => {
                             onChange={handleSearchChange}
                         />
                     </InputGroup>
-                    <table className="table">
+                    <div className="table-responsive">
+                    <table className="table table-striped">
                         <thead>
                             <tr>
                                 <th className="text-center">Nombre</th>
@@ -148,6 +148,7 @@ const ListaCasoPrueba = ({ projectId }) => {
                             )}
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
 
