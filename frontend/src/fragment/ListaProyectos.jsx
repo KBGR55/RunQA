@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEye, faUsers } from '@fortawesome/free-solid-svg-icons'; // Import the users icon
 import MenuBar from './MenuBar';
 import CasoPrueba from './CasoPrueba';
-import NewProyect from './NewProyect'; // Importar el componente de nuevo proyecto
+import NuevoProyecto from './NuevoProyecto'; // Importar el componente de nuevo proyecto
 import { peticionGet } from '../utilities/hooks/Conexion';
 import '../css/style.css';
 import { Link, Navigate } from 'react-router-dom';
@@ -171,7 +171,7 @@ const ListaProyectos = () => {
                     <Modal.Title className='titulo-primario'>Crear Nuevo Proyecto</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <NewProyect onClose={handleCloseNewProjectModal} />
+                    <NuevoProyecto onClose={handleCloseNewProjectModal} />
                 </Modal.Body>
             </Modal>
         </div>

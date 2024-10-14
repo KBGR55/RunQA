@@ -173,10 +173,10 @@ router.put('/caso/prueba/cambiar/estado',casoPruebaController.cambiar_estado);
 router.get('/caso/prueba/eliminar',casoPruebaController.cambiar_estado_obsoleto);
 router.get('/rol_proyecto/listar', rolProyectoController.listar.bind(rolProyectoController));
 router.get('/cuenta/:correo',cuentaController.obtenerCuenta);
-router.post('/proyect', proyectoController.createProyect);
-router.put('/proyect', proyectoController.updateProyect);
-router.post('/proyect/assign', proyectoController.assignEntity);
-router.get('/proyect/:id_proyect',proyectoController.getEntityProyect);
-router.delete('/proyect/:id_proyect/:id_entidad',proyectoController.deleteEntity);
+router.post('/proyecto', proyectoController.crearProtecto);
+router.put('/proyecto', proyectoController.actualizarProyecto);
+router.post('/proyecto/asignar', proyectoController.asiganarProyecto);
+router.get('/proyecto/:id_proyect',proyectoController.getEntidadProyecto);
+router.delete('/proyecto/:id_proyect/:id_entidad',proyectoController.removerEntidad);
 
 module.exports = router;  

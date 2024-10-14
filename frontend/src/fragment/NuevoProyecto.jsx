@@ -8,7 +8,7 @@ import { peticionPost } from '../utilities/hooks/Conexion';
 import mensajes from '../utilities/Mensajes';
 import { getToken, getUser } from '../utilities/Sessionutil';
 
-const NewProyect = () => {
+const NuevoProyecto = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const navigate = useNavigate(); 
@@ -37,7 +37,7 @@ const NewProyect = () => {
             "end_date": '2024-10-05 22:53:28' // Fecha de ejemplo, asegúrate de ajustar
         };
 
-        peticionPost(getToken(), 'proyect', datos).then((info) => {
+        peticionPost(getToken(), 'proyecto', datos).then((info) => {
             if (info.code !== 200) {
                 mensajes(info.msg, "error", "Error");
                
@@ -93,4 +93,4 @@ const NewProyect = () => {
     );
 };
 
-export default NewProyect;
+export default NuevoProyecto;

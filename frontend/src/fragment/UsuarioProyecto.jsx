@@ -10,7 +10,7 @@ import { getToken } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 import RoleDialog from './RoleDialog';
 
-const UsersProyect = () => {
+const UsuarioProyecto = () => {
     const [data, setData] = useState([]);
     const [showModalAddMembers, setShowModalAddMembers] = useState(false);
     const [showModal, setShowModal] = useState(false);
@@ -21,7 +21,7 @@ const UsersProyect = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const info = await peticionGet(getToken(), `proyect/${external_id}`);
+                const info = await peticionGet(getToken(), `proyecto/${external_id}`);
                 if (info.code !== 200) {
                     mensajes(info.msg || 'Error al obtener datos del proyecto');
                     navigate("/principal");
@@ -56,7 +56,7 @@ const UsersProyect = () => {
 
     const handleDeleteUser = async () => {
         try {
-            const response = await peticionDelete(getToken(), `proyect/${external_id}/${userIdToDelete}`);
+            const response = await peticionDelete(getToken(), `proyecto/${external_id}/${userIdToDelete}`);
             if (response.code === 200) {
                 mensajes('Usuario eliminado exitosamente', 'success', 'Éxito');
                 setData(data.filter(user => user.entidad.id !== userIdToDelete));
@@ -153,4 +153,4 @@ const UsersProyect = () => {
     );
 };
 
-export default UsersProyect;
+export default UsuarioProyecto;
