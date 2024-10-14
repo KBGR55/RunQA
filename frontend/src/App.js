@@ -10,6 +10,8 @@ import CasoPrueba from './fragment/CasoPrueba';
 import ListaProyectos from './fragment/ListaProyectos';
 import ListaCasoPrueba from './fragment/ListaCasoPrueba';
 import ListaUsuarios from './fragment/ListaUsuarios';
+import NewProyect from './fragment/NewProyect';
+import UsersProyect from './fragment/UsersProyect';
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
         <Route path='/perfil' element={<Perfil/>} />
         <Route path='/usuarios' element={<ListaUsuarios/>} />
         <Route path='/actualizar' element={<Actualizar />} />
+        <Route path='/new_proyect' element={<NewProyect/>} />
+        <Route path='/proyect_members' element={<UsersProyect/>} />
       </Routes>
     </div>
   );

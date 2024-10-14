@@ -117,3 +117,14 @@ export const ActualizarImagenes = async (data, key, urls) => {
         throw error;
     }
 }
+export const peticionDelete = async (key, URL) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "X-API-TOKEN": key
+    };
+    const datos = await (await fetch(`${URL_BACKEND}/${URL}`, {
+        method: "DELETE",
+        headers: headers,
+    })).json();
+    return datos;
+}
