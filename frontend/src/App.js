@@ -3,8 +3,11 @@ import {Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Login from './fragment/Login';
 import Main from './fragment/Main';
+import Perfil from './fragment/Perfil';
+import Actualizar from './fragment/Actualizar';
 import ListaProyectos from './fragment/ListaProyectos';
 import ListaCasoPrueba from './fragment/ListaCasoPrueba';
+import ListaUsuarios from './fragment/ListaUsuarios';
 
 function App() {
   return (
