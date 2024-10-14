@@ -5,23 +5,17 @@ const multer = require('multer');
 const path = require('path');
 const uuid = require('uuid');
 
+const { body, validationResult,isDate } = require('express-validator');
 const RolController = require('../controls/RolController');
 var rolController = new RolController();
 const EntidadController = require('../controls/EntidadController');
 var entidadController = new EntidadController();
 const CuentaController = require('../controls/CuentaController');
 var cuentaController = new CuentaController();
-
-const { body, validationResult,isDate } = require('express-validator');
 const CasoPruebaController=require('../controls/CasoPruebaController');
 var casoPruebaController=new CasoPruebaController();
 const ProyectoController = require('../controls/ProyectoController');
 const proyectoController = new ProyectoController();
-const RolController = require('../controls/RolController');
-var rolController = new RolController();
-const ProyectoController = require('../controls/ProyectoController');
-const CuentaController = require('../controls/CuentaController');
-var cuentaController = new CuentaController();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -164,5 +158,22 @@ router.put('/modificar/entidad', (req, res, next) => {
 });
 router.get('/listar/entidad', entidadController.listar);
 router.get('/obtener/entidad/:external',  entidadController.obtener);
+router.get('/proyecto/listar',proyectoController.listar);
+router.post('/caso/prueba/guardar', [
+  body('titulo').notEmpty().withMessage('El título es requerido'),
+  body('descripcion').notEmpty().withMessage('La descripción es requerida'),
+  body('resultado_esperado').notEmpty().withMessage('El resultado esperado es requerido'),
+], casoPruebaController.guardar);
+router.post('/caso/prueba/actualizar', casoPruebaController.actualizar);
+router.get('/caso/prueba/listar',casoPruebaController.listar);
+router.get('/caso/prueba/obtener',casoPruebaController.obtener);
+router.put('/caso/prueba/cambiar/estado',casoPruebaController.cambiar_estado);
+router.get('/caso/prueba/eliminar',casoPruebaController.cambiar_estado_obsoleto);
+
+router.post('/proyect', proyectoController.createProyect);
+router.put('/proyect', proyectoController.updateProyect);
+router.post('/proyect/assign', proyectoController.assignEntity);
+router.get('/proyect/:id_proyect',proyectoController.getEntityProyect);
+router.delete('/proyect/:id_proyect/:id_entidad',proyectoController.deleteEntity);
 
 module.exports = router;  

@@ -19,15 +19,6 @@ class ProyectoController {
         }
     }
 
-}
-
-module.exports = ProyectoController;
-'use strict';
-var models = require('../models');
-const uuid = require('uuid');
-const adminRol = 'administrador';
-class ProyectoController {
-
     async createProyect(req, res) {
         let transaction;
         try {

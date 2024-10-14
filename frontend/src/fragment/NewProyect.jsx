@@ -13,7 +13,6 @@ const NewProyect = () => {
     const [description, setDescription] = useState('');
     const navigate = useNavigate(); 
 
-    // Validación y envío del formulario
     const onSubmit = (event) => {
         event.preventDefault(); 
         if (!name ) {

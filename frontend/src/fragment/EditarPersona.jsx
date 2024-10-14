@@ -157,7 +157,7 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
                                 <FontAwesomeIcon icon={faTimes} /> Cancelar
                             </button>
                             <button className="btn-positivo" type="submit">
-                                <FontAwesomeIcon icon={faCheck} /> Registrar
+                                <FontAwesomeIcon icon={faCheck} /> Aceptar
                             </button>
                         </div>
                     </form>

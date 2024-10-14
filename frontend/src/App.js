@@ -27,8 +27,8 @@ function App() {
         <Route path='/perfil' element={<Perfil/>} />
         <Route path='/usuarios' element={<ListaUsuarios/>} />
         <Route path='/actualizar' element={<Actualizar />} />
-        <Route path='/new_proyect' element={<NewProyect/>} />
-        <Route path='/proyect_members' element={<UsersProyect/>} />
+        <Route path='proyecto/nuevo' element={<NewProyect/>} />
+        <Route path='/proyecto/usuarios' element={<UsersProyect/>} />
       </Routes>
     </div>
   );
