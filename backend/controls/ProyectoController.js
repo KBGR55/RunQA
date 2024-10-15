@@ -11,7 +11,7 @@ class ProyectoController {
             const listar = await proyecto.findAll({
                 attributes: [
                     'id', 'external_id', 'estado', 'nombre', 
-                    'fecha_inicio', 'fecha_fin', 'descripcion', 
+                    'fecha_inicio', 'descripcion', 
                     'createdAt', 'updatedAt'
                 ]
             });
@@ -42,7 +42,6 @@ class ProyectoController {
                         nombre: req.body.name,
                         descripcion: req.body.description,
                         fecha_inicio: new Date(),
-                        fecha_fin: req.body.end_date,
                         external_id: uuid.v4(),
                     };
 

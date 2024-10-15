@@ -14,7 +14,7 @@ import mensajes from '../utilities/Mensajes';
 
 const ListaProyectos = () => {
     const [showModal, setShowModal] = useState(false);
-    const [showNewProjectModal, setShowNewProjectModal] = useState(false); // Estado para el modal de nuevo proyecto
+    const [showNewProjectModal, setShowNewProjectModal] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
     const [proyectos, setProyectos] = useState([]);
     const [roles, setRoles] = useState([]);
@@ -113,7 +113,6 @@ const ListaProyectos = () => {
                                     <th className="text-center">Estado</th>
                                     <th className="text-center">Descripción</th>
                                     <th className="text-center">Fecha Inicio</th>
-                                    <th className="text-center">Fecha Fin</th>
                                     <th className="text-center">Rol</th>
                                     <th className="text-center">Acciones: Casos de Prueba</th>
                                     <th className="text-center">Acciones: Gestión de Usuarios</th> {/* Nueva columna */}
@@ -126,7 +125,6 @@ const ListaProyectos = () => {
                                         <td className="text-center">{proyecto.proyecto.estado ? 'Activos' : 'Terminados'}</td>
                                         <td>{proyecto.proyecto.descripcion}</td>
                                         <td className="text-center">{formatDate(proyecto.proyecto.fecha_inicio)}</td>
-                                        <td className="text-center">{formatDate(proyecto.proyecto.fecha_fin)}</td>
                                         <td className="text-center">{getRoleName(proyecto.id_rol)}</td>
                                         <td className="text-center">
                                          

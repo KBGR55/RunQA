@@ -20,7 +20,7 @@ class RolProyectoController {
                     {
                         model: models.proyecto, 
                         where: { estado: true }, 
-                        attributes: ['id', 'fecha_inicio','external_id', 'nombre','estado','fecha_fin', 'descripcion' ]
+                        attributes: ['id', 'fecha_inicio','external_id', 'nombre','estado', 'descripcion' ]
                     }
                 ]
             });
