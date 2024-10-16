@@ -5,7 +5,6 @@ import Login from './fragment/Login';
 import Registrar from './fragment/Registrar';
 import Main from './fragment/Main';
 import Perfil from './fragment/Perfil';
-import Actualizar from './fragment/Actualizar';
 import CasoPrueba from './fragment/CasoPrueba';
 import ListaProyectos from './fragment/ListaProyectos';
 import ListaCasoPrueba from './fragment/ListaCasoPrueba';
@@ -27,7 +26,6 @@ function App() {
         <Route path='/casos-prueba/:id' element={<ListaCasoPrueba/>}/>
         <Route path='/perfil' element={<Perfil/>} />
         <Route path='/usuarios' element={<ListaUsuarios/>} />
-        <Route path='/actualizar' element={<Actualizar />} />
         <Route path='proyecto/nuevo' element={<NuevoProyecto/>} />
         <Route path='/proyecto/usuarios/:external_id' element={<UsuarioProyecto/>} />
         <Route path="/proyecto/:external_id" element={<RolMenu/>} />

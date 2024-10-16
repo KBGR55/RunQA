@@ -9,7 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';  
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import iconLogo from '../img/logo512.png';
+import '../css/style.css';
 import { URLBASE } from '../utilities/hooks/Conexion';
 import mensajes from '../utilities/Mensajes';
 
@@ -118,7 +118,7 @@ const MenuBar = () => {
                 {token && (
                     <div className="d-flex align-items-center ms-auto">
                         <img
-                            src={fotoUsuario ? `${URLBASE}/images/users/${fotoUsuario}` : iconLogo}
+                            src={fotoUsuario ? `${URLBASE}/images/users/${fotoUsuario}` : '/img/logo512.png'}
                             alt="FotoUsuario"
                             className="rounded-circle"
                             style={{ width: '40px', height: '40px', marginRight: '10px' }}
@@ -142,7 +142,7 @@ const MenuBar = () => {
         <div className="d-flex">
                 <nav className="navbar-nav fondo-principal accordion" id="accordionSidebar">
                     <div className="text-center mt-3 mb-4">
-                        <img src={iconLogo} alt="Logo" className="img-fluid" style={{ width: '150px' }} />
+                        <img src="/img/logo192.png" alt="Logo" className="img-fluid" style={{ width: '150px' }} />
                     </div>
                     <div className="sidebar-heading">
                         Roles del Proyecto 

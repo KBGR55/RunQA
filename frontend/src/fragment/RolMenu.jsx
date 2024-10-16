@@ -9,7 +9,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';  
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import iconLogo from '../img/logo512.png';
 import BarraMenu from './MenuBar';
 
 const DetalleProyecto = () => {
@@ -95,6 +94,61 @@ const DetalleProyecto = () => {
     return (
         <div>
               <BarraMenu />
+            <div className="d-flex">
+                {/* Sidebar */}
+                <nav className="navbar-nav fondo-principal accordion" id="accordionSidebar">
+                    <div className="text-center mt-3 mb-4">
+                        <img src="/img/logo512.png" alt="Logo" className="img-fluid" style={{ width: '150px' }} />
+                    </div>
+                    <div className="sidebar-heading">
+                        Roles del Proyecto
+                    </div>
+                    <ul className="navbar-nav">
+                        {roles.map((role) => (
+                            <li className="mb-1" key={role.id}>
+                                {/* Botón colapsable */}
+                                <button 
+                                    style={{ color: 'white' }} 
+                                    className="btn collapsed d-flex align-items-center" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target={`#role-${role.id}`} 
+                                    aria-expanded="false">
+                                    <i className={`${roleIcons[role.nombre]} me-2`}></i>
+                                    {role.nombre}
+                                </button>
+                                {/* Contenido colapsable */}
+                                <div className="collapse" id={`role-${role.id}`}>
+                                    <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                        {roleOptions[role.nombre] ? (
+                                            roleOptions[role.nombre].map((option, index) => (
+                                                <li key={index}>
+                                                    <a
+                                                        href="#"
+                                                        className="link-dark rounded"
+                                                        onClick={() => handleOptionClick(option)} 
+                                                    >
+                                                        {option}
+                                                    </a>
+                                                </li>
+                                            ))
+                                        ) : (
+                                            <li>
+                                                <a href="#" className="link-dark rounded">Opciones no disponibles.</a>
+                                            </li>
+                                        )}
+                                    </ul>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+
+                    <hr className="sidebar-divider" />
+                </nav>
+
+                {/* Content */}
+              
+                {showListaCasoPrueba && <ListaCasoPrueba proyecto={proyecto}/>}
+            </div>
         </div>
     );
 };

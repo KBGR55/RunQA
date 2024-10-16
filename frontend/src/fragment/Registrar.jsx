@@ -27,7 +27,16 @@ const Registrar = () => {
         formData.append('fecha_nacimiento', data.fecha_nacimiento);
         formData.append('telefono', data.telefono);
         formData.append('clave', data.clave);
-        formData.append('foto', data.foto[0]);
+        if (data.foto && data.foto.length > 0) {
+            formData.append('foto', data.foto[0]);
+        } else {
+            const defaultPhotoUrl = `${process.env.PUBLIC_URL}/img/USUARIO_ICONO.png`;
+            formData.append('foto', defaultPhotoUrl);
+            console.log("data", defaultPhotoUrl);
+        }
+
+        
+        
 
         GuardarImages(formData, getToken(), "/entidad/guardar").then(info => {
             if (info.code !== 200) {
@@ -158,8 +167,8 @@ const Registrar = () => {
                                             message: "Ingrese un correo"
                                         },
                                         pattern: {
-                                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                                            message: "Ingrese un correo válido"
+                                            value: /^[a-zA-Z0-9._%+-]+@unl\.edu\.ec$/,
+                                            message: "Ingrese un correo válido institucional UNL (@unl.edu.ec)"
                                         }
                                     })}
                                     className="form-control"
@@ -209,7 +218,6 @@ const Registrar = () => {
                                 <input type="file"
                                     {...register("foto", {
                                         required: {
-                                            value: true,
                                             message: "Seleccione una foto"
                                         }
                                     })}

@@ -13,15 +13,19 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm();
     const navigate = useNavigate();
     const [file, setFile] = useState(null);
-    const [estado, setEstado] = useState(false); 
-    const estadoInicial = personaObtenida.estado; 
+    const [estado, setEstado] = useState(false);
+    const estadoInicial = personaObtenida.estado;
 
     const selectedHandler = e => {
         setFile(e.target.files[0]);
     };
 
     const handleEstadoChange = () => {
-        setEstado(!estado); 
+        setEstado(!estado);
+    };
+
+    const recargarPagina = () => {
+        window.location.reload();
     };
 
     const onSubmit = async (data) => {
@@ -30,7 +34,7 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
         formData.append('apellidos', data.apellidos);
         formData.append('fecha_nacimiento', data.fecha_nacimiento);
         formData.append('telefono', data.telefono);
-        formData.append('estado', estadoInicial ? !estado : estado);        
+        formData.append('estado', estadoInicial ? !estado : estado);
         formData.append('external_id', personaObtenida.external_id);
         formData.append('entidad_id', personaObtenida.id);
 
@@ -48,7 +52,9 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
                         borrarSesion();
                     }
                 } else {
-                    navigate('/actualizar');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1200);
                     mensajes(info.msg);
                 }
             })
@@ -141,7 +147,7 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
                                         <input
                                             type="checkbox"
                                             className="form-check-input"
-                                            checked={estado} 
+                                            checked={estado}
                                             onChange={handleEstadoChange}
                                         />
                                         <label className="form-check-label">

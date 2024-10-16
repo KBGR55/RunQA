@@ -2,22 +2,24 @@ import '../css/Perfil_Style.css';
 import BarraMenu from './MenuBar';
 import { getUser } from '../utilities/Sessionutil';
 import React, { useEffect, useState } from 'react';
-import iconLogo from '../img/logo512.png';
 import { URLBASE } from '../utilities/hooks/Conexion';
 
 const Perfil = () => {
     const usuario = getUser();
-    const [setNombreUsuario] = useState('');
+    const [nombreUsuario, setNombreUsuario] = useState('');
+
+    console.log("DATITA", usuario.user);
+    
 
     useEffect(() => {
-        if (usuario && usuario.nombres) {
-            setNombreUsuario(usuario.nombres);
+        if (usuario && usuario.user.nombres) {
+            setNombreUsuario(usuario.user.nombres);
         }
     });
 
     const obtenerFechaFormateada = (fechaString) => {
         const fecha = new Date(fechaString);
-        fecha.setDate(fecha.getDate() + 1); // Ajustar la fecha sumando 1 día
+        fecha.setDate(fecha.getDate() + 1);
         const year = fecha.getFullYear();
         const month = ('0' + (fecha.getMonth() + 1)).slice(-2);
         const day = ('0' + fecha.getDate()).slice(-2);
@@ -35,7 +37,7 @@ const Perfil = () => {
                                 <div className="card-body">
                                     <div className="d-flex flex-column align-items-center text-center">
                                         <img
-                                            src={usuario.user.foto ? `${URLBASE}/images/users/${usuario.user.foto}` : iconLogo}
+                                            src={usuario.user.foto ? `${URLBASE}/images/users/${usuario.user.foto}` : '/img/logo512.png'}
                                             alt="FotoUsuario"
                                             className="img-fluid"
                                             style={{ maxWidth: '300px', height: 'auto', borderRadius: '0.2rem' }} // Mantén la altura automática
