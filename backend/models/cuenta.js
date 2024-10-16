@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
     const cuenta = sequelize.define('cuenta', {
-        external_id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4},
+        external_id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4,unique: true},
         estado: { type: DataTypes.BOOLEAN, defaultValue: true },
         correo: { type: DataTypes.STRING(50), allowNull: false , unique: true},
         clave: { type: DataTypes.STRING(150), allowNull: false }
