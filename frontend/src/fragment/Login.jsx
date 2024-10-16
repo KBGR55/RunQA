@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { saveCorreo, saveToken, saveUser } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
+import MenuBar from './MenuBar';
 
 const Login = () => {
     const navegation = useNavigate();
@@ -50,6 +51,7 @@ const Login = () => {
     return (
         <div>
             <div>
+                <MenuBar></MenuBar>
                 <div className="container-fluid custom-container-login d-flex justify-content-center align-items-center vh-100">
                     <div className="login-container shadow-lg">
                         <div className="login-left position-relative">

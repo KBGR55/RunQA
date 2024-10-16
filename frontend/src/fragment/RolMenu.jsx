@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import mensajes from '../utilities/Mensajes';
 import { borrarSesion, getToken, getUser } from '../utilities/Sessionutil';
 import { peticionGet } from '../utilities/hooks/Conexion';
@@ -12,12 +12,11 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import BarraMenu from './MenuBar';
 
 const DetalleProyecto = () => {
-    const location = useLocation();
     const navigate = useNavigate();
     const [roles, setRoles] = useState([]);
     const [proyecto, setProyecto] = useState({});
-    const [showListaCasoPrueba, setShowListaCasoPrueba] = useState(false); 
-    const { external_id } = location.state || {};
+    const [showListaCasoPrueba, setShowListaCasoPrueba] = useState(false); // Nuevo estado para controlar la visualización de ListaCasoPrueba
+    const { external_id } = useParams(); 
 
     useEffect(() => {
         const fetchRoles = async () => {

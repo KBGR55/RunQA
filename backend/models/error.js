@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
     const error = sequelize.define('error', {
-        external_id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4 },
+        external_id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, unique: true },
         funcionalidad: { type: DataTypes.STRING(100), defaultValue: "SIN_DATOS" },  // Funcionalidad afectada por el error
         titulo: { type: DataTypes.STRING(100), defaultValue: "SIN_DATOS" },  // Título del error reportado
         pasos_reproducir: { type: DataTypes.TEXT, allowNull: true },  // Pasos para reproducir el error

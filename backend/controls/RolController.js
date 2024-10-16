@@ -1,20 +1,25 @@
 'use strict';
 
 var models = require('../models/');
+const superUsuaripo ='AMINISTRADOR DEL SISTEMA';
 var rol = models.rol;
 
 class RolController {
     async listar(req, res) {
         try {
             var listar = await rol.findAll({
-                attributes: ['nombre', 'external_id','id', 'estado']
+                attributes: ['nombre', 'external_id', 'id', 'estado'],
+                where: {
+                    nombre: { [models.Sequelize.Op.not]: superUsuaripo } 
+                }
             });
             res.json({ msg: 'OK!', code: 200, info: listar });
         } catch (error) {
-            res.json({ msg: 'Se produjo un error en listar roles', code: 200, info: error });
+            console.error('Error al listar roles:', error);
+            res.status(500).json({ msg: 'Se produjo un error al listar roles', code: 500, error: error.message });
         }
     }
-
+    
     async guardar(req, res) {
         try {
             const data = {
