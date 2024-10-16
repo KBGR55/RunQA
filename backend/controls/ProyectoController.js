@@ -51,13 +51,13 @@ class ProyectoController {
                     res.json({ msg: "SE HA REGISTRADO CORRECTAMENTE", code: 200, info: newProyect.external_id });
                 }
             } else {
-                res.status(200).json({ msg: "El usuario ya existe", code: 200 });
+                res.status(204).json({ msg: "El usuario ya existe", code: 204 });
             }
         } catch (error) {
             if (transaction) await transaction.rollback();
             if (error.errors && error.errors[0].message) {
-                res.json({ msg: error.errors[0].message, code: 200 });
-            } else { res.json({ msg: error.message, code: 200 }); }
+                res.json({ msg: "Hubo un problema al crear el proyecto", code: 500 });
+            } else { res.json({ msg: error.message, code: 500 }); }
         }
     }
 
@@ -88,14 +88,14 @@ class ProyectoController {
                     res.json({ msg: "El proyecto se ha actualizado correctamente", code: 200, info: oldProyect.external_id });
                 }
             } else {
-                res.status(200).json({ msg: "No se encontró el proyecto", code: 200 });
+                res.status(400).json({ msg: "No se encontró el proyecto", code: 400 });
             }
         } catch (error) {
             if (transaction) await transaction.rollback();
             if (error.errors && error.errors[0].message) {
-                res.json({ msg: error.errors[0].message, code: 500 });
+                res.json({ msg: "Hubo un problema al actualizar el proyecto", code: 500 });
             } else {
-                res.json({ msg: error.message, code: 500 });
+                res.json({ msg: "Hubo un problema al actualizar el proyecto", code: 500 });
             }
         }
     }
@@ -191,13 +191,13 @@ class ProyectoController {
                 });
                 res.status(200).json({ msg: "OK!", code: 200, info: rolProyect });
             } else {
-                res.status(200).json({ msg: "No se encontró el proyecto", code: 200 });
+                res.status(400).json({ msg: "No se encontró el proyecto", code: 400 });
             }
         } catch (error) {
             if (error.errors && error.errors[0].message) {
-                res.json({ msg: error.errors[0].message, code: 500 });
+                res.json({ msg: "Estamos teniendo problemas", code: 500 });
             } else {
-                res.json({ msg: error.message, code: 500 });
+                res.json({ msg: "Estamos teniendo problemas", code: 500 });
             }
         }
     }
@@ -225,9 +225,9 @@ class ProyectoController {
             }
         } catch (error) {
             if (error.errors && error.errors[0].message) {
-                res.status(500).json({ msg: error.errors[0].message, code: 500 });
+                res.status(500).json({ msg:"Estamos teniendo problemas para eliminar", code: 500 });
             } else {
-                res.status(500).json({ msg: error.message, code: 500 });
+                res.status(500).json({ msg: "Estamos teniendo problemas para eliminar", code: 500 });
             }
         }
     }
