@@ -13,9 +13,8 @@ const Perfil = () => {
         if (usuario && usuario.nombres) {
             setNombreUsuario(usuario.nombres);
         }
-    }, []);
+    });
 
-    //CAMBIAR FORMATO FECHA
     const obtenerFechaFormateada = (fechaString) => {
         const fecha = new Date(fechaString);
         fecha.setDate(fecha.getDate() + 1); // Ajustar la fecha sumando 1 día

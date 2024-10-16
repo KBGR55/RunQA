@@ -134,6 +134,14 @@ const Registrar = () => {
                                         pattern: {
                                             value: /^[0-9]+$/,
                                             message: "Ingrese su telefono correctamente"
+                                        },
+                                        minLength: {
+                                            value: 5,
+                                            message: "El telefóno debe tener mínimo 5 caracteres"
+                                        },
+                                        maxLength: {
+                                            value: 10,
+                                            message: "El telefóno debe tener máximo 10 caracteres"
                                         }
                                     })}
                                     className="form-control"

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/Login_Style.css'
 import iconLogo from '../img/logo512.png';
-import MenuBar from './MenuBar';
 import { InicioSesion } from '../utilities/hooks/Conexion';
 import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
@@ -51,7 +50,6 @@ const Login = () => {
 
     return (
         <div>
-            <MenuBar />
             <div>
                 <div className="container-fluid custom-container-login d-flex justify-content-center align-items-center vh-100">
                     <div className="login-container shadow-lg">

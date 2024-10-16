@@ -3,6 +3,7 @@ const { validationResult } = require('express-validator');
 var models = require('../models/');
 const uuid = require('uuid');
 const proyecto = models.proyecto; 
+const rolAdmin = 'GERENTE DE PRUEBAS';
 class ProyectoController {
 
     async listar(req, res) {
@@ -10,7 +11,7 @@ class ProyectoController {
             const listar = await proyecto.findAll({
                 attributes: [
                     'id', 'external_id', 'estado', 'nombre', 
-                    'fecha_inicio', 'fecha_fin', 'descripcion', 
+                    'fecha_inicio', 'descripcion', 
                     'createdAt', 'updatedAt'
                 ]
             });
@@ -20,12 +21,12 @@ class ProyectoController {
         }
     }
 
-    async createProyect(req, res) {
+    async crearProtecto(req, res) {
         let transaction;
         try {
             transaction = await models.sequelize.transaction();
             const entidad = await models.entidad.findOne({ where: { id: req.body.id_entidad }, attributes: ['id'] });
-            const nameRole = await models.rol.findOne({ where: { nombre: 'GERENTE DE PRUEBAS' }, attributes: ['id'] });
+            const nameRole = await models.rol.findOne({ where: { nombre: rolAdmin }, attributes: ['id'] });
             if (entidad) {
                 const resultado = await models.rol_proyecto.findOne({
                     where: { id_rol: nameRole.id, id_entidad: entidad.id },
@@ -41,7 +42,6 @@ class ProyectoController {
                         nombre: req.body.name,
                         descripcion: req.body.description,
                         fecha_inicio: new Date(),
-                        fecha_fin: req.body.end_date,
                         external_id: uuid.v4(),
                     };
 
@@ -61,7 +61,7 @@ class ProyectoController {
         }
     }
 
-    async updateProyect(req, res) {
+    async actualizarProyecto(req, res) {
         let transaction;
         try {
             transaction = await models.sequelize.transaction();
@@ -100,7 +100,7 @@ class ProyectoController {
         }
     }
 
-    async assignEntity(req, res) {
+    async asiganarProyecto(req, res) {
         let transaction;
         try {
             transaction = await models.sequelize.transaction();            
@@ -171,7 +171,7 @@ class ProyectoController {
         }
     }
     
-    async getEntityProyect(req, res) {
+    async getEntidadProyecto(req, res) {
         try {
             const proyect = await models.proyecto.findOne({ where: { external_id: req.params.id_proyect } });
             if (proyect) {
@@ -203,7 +203,7 @@ class ProyectoController {
     }
 
 
-    async deleteEntity(req, res) {
+    async removerEntidad(req, res) {
         try {
             const proyect = await models.proyecto.findOne({ where: { external_id: req.params.id_proyect } });
     

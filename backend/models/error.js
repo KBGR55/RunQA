@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
         funcionalidad: { type: DataTypes.STRING(100), defaultValue: "SIN_DATOS" },  // Funcionalidad afectada por el error
         titulo: { type: DataTypes.STRING(100), defaultValue: "SIN_DATOS" },  // Título del error reportado
         pasos_reproducir: { type: DataTypes.TEXT, allowNull: true },  // Pasos para reproducir el error
-        rol_asignado:  { type: DataTypes.STRING(80), defaultValue: "SIN_DATOS" },  // Persona o rol asignado
+        rol_asignado: { type: DataTypes.STRING(80), defaultValue: "SIN_DATOS" },  // Persona o rol asignado
         severidad: { 
             type: DataTypes.ENUM('ALTA', 'MEDIA', 'BAJA', 'CRITICO'), 
             allowNull: false,  

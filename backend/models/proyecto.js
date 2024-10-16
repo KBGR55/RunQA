@@ -5,7 +5,6 @@ module.exports = (sequelize, DataTypes) => {
         estado:{type: DataTypes.BOOLEAN, defaultValue: true},
         nombre: { type: DataTypes.STRING(20), allowNull: false},
         fecha_inicio: { type: DataTypes.DATE},
-        fecha_fin: { type: DataTypes.DATE},
         descripcion: { type: DataTypes.STRING(50), allowNull: true }
     }, {
         freezeTableName: true

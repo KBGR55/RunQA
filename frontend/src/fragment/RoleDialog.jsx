@@ -6,11 +6,10 @@ import { peticionGet, peticionPost } from '../utilities/hooks/Conexion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes, faTrash } from '@fortawesome/free-solid-svg-icons';
 import mensajes from '../utilities/Mensajes';
-import { borrarSesion, getToken, getUser } from '../utilities/Sessionutil';
+import { borrarSesion, getToken } from '../utilities/Sessionutil';
 import { Navigate } from 'react-router-dom';
 
 const RoleDialog = ({ handleClose, external_id }) => {
-    const [selectedDate, setSelectedDate] = useState('');
     const [email, setEmail] = useState('');
     const [users, setUsers] = useState([]);  
     const [roles, setRoles] = useState([]);
@@ -33,12 +32,12 @@ const RoleDialog = ({ handleClose, external_id }) => {
         };
     
         try {
-            const response = await peticionPost('key', 'proyect/assign', datos);
+            const response = await peticionPost('key', 'proyecto/asignar', datos);
             if (response.code !== 200) {
                 mensajes(response.msg, 'error', 'Error');
             } else {
-                
                 mensajes(response.msg, 'success', 'Éxito');
+                Navigate('/proyecto/usuarios');
             }
         } catch (error) {
             console.error("Error al asignar roles:", error);
@@ -64,7 +63,6 @@ const RoleDialog = ({ handleClose, external_id }) => {
     };
 
     const fetchUserByEmail = async (email) => {
-        // Verificar si el usuario ya está agregado
 
         const emailExists = users.some(user => user.correo === email);
         if (emailExists) {
