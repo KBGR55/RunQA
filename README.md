@@ -87,3 +87,56 @@ La carpeta principal del proyecto `RunQA` contiene dos subcarpetas principales:
 - **Frontend**: React, JavaScript
 - **Backend**: Node.js, Express
 - **Control de versiones**: Git
+## Configurar la Base de Datos
+
+Antes de ejecutar el proyecto, asegúrate de configurar la base de datos. Sigue estos pasos:
+
+1. Inicia sesión en MySQL con un usuario que tenga privilegios de administrador utilizando el siguiente comando y luego ingresa la contraseña del usuario:
+
+    ```bash
+    mysql -u root -p
+    ```
+
+2. Una vez que hayas ingresado a MySQL, ejecuta el siguiente comando para crear un nuevo usuario y asignarle todos los privilegios:
+
+    ```sql
+    CREATE USER 'desarrollo'@'localhost' IDENTIFIED BY 'desarrollo';
+    GRANT ALL PRIVILEGES ON *.* TO 'desarrollo'@'localhost' WITH GRANT OPTION;
+    FLUSH PRIVILEGES;
+    exit;
+    ```
+
+3. Luego, ingresa a MySQL con el nuevo usuario creado:
+
+    ```bash
+    mysql -h 127.0.0.1 -u desarrollo -p
+    ```
+
+4. Crea la base de datos `bd_runqa` ejecutando el siguiente comando: 
+    ```sql
+    CREATE DATABASE bd_runqa;
+    ```
+5. Ahora, asegúrate de estar en la carpeta `backend` y luego levanta el proyecto con el siguiente comando:
+
+    ```bash
+    npm start
+    ```
+
+6. Para crear las tablas necesarias en la base de datos, accede a [http://localhost:3006/privado/NOCHE_RunQA](http://localhost:3006/privado/NOCHE_RunQA). Cuando veas un mensaje que diga "OK!", significa que la configuración de la base de datos ha sido exitosa.
+
+7. Para completar la configuración de la base de datos, ejecuta los siguientes comandos SQL para insertar roles, personas, asociar personas y roles, insertar cuentas, insertar periodo, e insertar ciclo:
+
+    ```sql
+    USE bd_runqa;
+
+    START TRANSACTION;
+    
+   INSERT INTO rol (external_id, estado, nombre, createdAt, updatedAt)
+   VALUES 
+   (UUID(), 1, 'ADMINISTRADOR DEL SISTEMA', NOW(), NOW()),
+   (UUID(), 1, 'GERENTE DE PRUEBAS', NOW(), NOW()),
+   (UUID(), 1, 'ANALISTA DE PRUEBAS', NOW(), NOW()),
+   (UUID(), 1, 'TESTER', NOW(), NOW()),
+   (UUID(), 1, 'DESARROLLADOR', NOW(), NOW());
+
+  ```
