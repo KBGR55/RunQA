@@ -2,25 +2,26 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Modal, FormControl, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
-import MenuBar from './MenuBar';
+import { faSearch, faTrash} from '@fortawesome/free-solid-svg-icons';
 import CasoPrueba from './CasoPrueba';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import { useParams } from 'react-router-dom';
 import '../css/style.css';
 import mensajes from '../utilities/Mensajes';
 import { getToken } from '../utilities/Sessionutil';
+import { faPlus } from '@fortawesome/free-solid-svg-icons'; 
 
-const ListaCasoPrueba = ({ projectId }) => {
+const ListaCasoPrueba = ({ proyecto }) => {
     const [showModal, setShowModal] = useState(false);
     const [editingCaso, setEditingCaso] = useState(null);
     const [casosPrueba, setCasosPrueba] = useState([]);
     const { id } = useParams();
     const [searchTerm, setSearchTerm] = useState('');
+    const [showNewProjectModal, setShowNewProjectModal] = useState(false);
 
     useEffect(() => {
         const fetchCasosPrueba = async () => {
-            const response = await peticionGet(getToken(), `caso/prueba/listar?id_proyecto=${id}`);
+            const response = await peticionGet(getToken(), `caso/prueba/listar?id_proyecto=${proyecto.id}`);
             
             if (response.code === 200) {
                 setCasosPrueba(response.info);
@@ -64,7 +65,7 @@ const ListaCasoPrueba = ({ projectId }) => {
 
     const handleDeleteCasoPrueba = async (external_id) => {
         if (window.confirm('¿Estás seguro de que deseas eliminar este caso de prueba?')) {
-            const response = await peticionGet('tu_api_token', `caso/prueba/eliminar?external_id=${external_id}`);
+            const response = await peticionGet(getToken(), `caso/prueba/eliminar?external_id=${external_id}`);
             if (response.code === 200) {
                 mensajes('Caso de prueba eliminado exitosamente.');
             } else {
@@ -75,13 +76,26 @@ const ListaCasoPrueba = ({ projectId }) => {
 
     const formatDate = (dateString) => {
         return new Date(dateString).toISOString().slice(0, 10); // Formato AAAA-MM-DD
+    }
+    const handleShowNewProjectModal = () => {
+        setShowNewProjectModal(true);
+    };
+
+    const handleCloseNewProjectModal = () => {
+        setShowNewProjectModal(false);
     };
 
     return (
-        <div>
-            <MenuBar />
+        <div className='container-fluid'>
             <div className='contenedor-centro'>
                 <div className="contenedor-carta">
+                <div className='contenedor-filo'>
+                        <Button
+                            className="btn-normal mb-3"
+                            onClick={handleShowNewProjectModal}
+                        >  <FontAwesomeIcon icon={faPlus} />  Crear 
+                        </Button>
+                    </div>
                     <p className="titulo-primario">Lista de Casos de Prueba</p>
 
                     <InputGroup className="mb-3">
@@ -163,9 +177,17 @@ const ListaCasoPrueba = ({ projectId }) => {
                 </Modal.Header>
                 <Modal.Body>
                     <CasoPrueba
-                        projectId={projectId}
+                        projectId={proyecto.id}
                         id_editar={editingCaso}
                     />
+                </Modal.Body>
+            </Modal>
+            <Modal show={showNewProjectModal} onHide={handleCloseNewProjectModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title className='titulo-primario'>Crear Caso Prueba</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <CasoPrueba  projectId={proyecto.id} onClose={handleCloseNewProjectModal} />
                 </Modal.Body>
             </Modal>
         </div>

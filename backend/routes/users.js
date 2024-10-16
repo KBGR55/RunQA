@@ -172,6 +172,7 @@ router.get('/caso/prueba/obtener',casoPruebaController.obtener);
 router.put('/caso/prueba/cambiar/estado',casoPruebaController.cambiar_estado);
 router.get('/caso/prueba/eliminar',casoPruebaController.cambiar_estado_obsoleto);
 router.get('/rol_proyecto/listar', rolProyectoController.listar.bind(rolProyectoController));
+router.get('/rol_proyecto/listar/entidad',rolProyectoController.listar_roles_entidad);
 router.get('/cuenta/:correo',cuentaController.obtenerCuenta);
 router.post('/proyecto', proyectoController.crearProtecto);
 router.put('/proyecto', proyectoController.actualizarProyecto);

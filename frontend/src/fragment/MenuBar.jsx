@@ -3,6 +3,9 @@ import { Navbar, Nav, Offcanvas } from 'react-bootstrap';
 import { borrarSesion, getToken, getUser } from '../utilities/Sessionutil';
 import { useNavigate } from 'react-router';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';  
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../css/style.css';
 import iconLogo from '../img/logo512.png';
 import { URLBASE } from '../utilities/hooks/Conexion';
@@ -25,8 +28,8 @@ const MenuBar = () => {
         <Navbar expand="lg" className="fondo-principal navbar navbar-expand-lg text-white">
             <div className='container-fluid'>
                 <Navbar.Toggle className="navbar-toggler" aria-controls="offcanvasNavbar" onClick={() => setShowOffcanvas(!showOffcanvas)} />
-                <div className="collapse navbar-collapse contenedor-filo titulo-terciario justify-content-start">
-                    <NavLink classNameNav="navbar-nav mb-2 mb-lg-0" />
+                <div className="collapse navbar-collapse titulo-terciario justify-content-start" id="accordionSidebar">
+                    <NavLink classNameNav="navbar-nav accordion" />
                 </div>
                 <Offcanvas className="fondo-principal" show={showOffcanvas} onHide={() => setShowOffcanvas(false)} placement="end" target="#offcanvasNavbar">
                     <Offcanvas.Header closeButton>
@@ -58,10 +61,6 @@ const navLinkStyle = {
     marginRight: '10px',
     color: 'white',
     textDecoration: 'none',
-};
-
-const hoverStyle = {
-    textDecoration: 'underline',
 };
 
 const NavLink = () => {

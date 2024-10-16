@@ -2,22 +2,19 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faEye, faUsers } from '@fortawesome/free-solid-svg-icons'; // Import the users icon
+import { faPlus } from '@fortawesome/free-solid-svg-icons'; 
 import MenuBar from './MenuBar';
-import CasoPrueba from './CasoPrueba';
-import NuevoProyecto from './NuevoProyecto'; // Importar el componente de nuevo proyecto
 import { peticionGet } from '../utilities/hooks/Conexion';
 import '../css/style.css';
-import { Link, Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { borrarSesion, getToken, getUser } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
+import NuevoProyecto from './NuevoProyecto'; 
 
 const ListaProyectos = () => {
-    const [showModal, setShowModal] = useState(false);
     const [showNewProjectModal, setShowNewProjectModal] = useState(false);
-    const [selectedProject, setSelectedProject] = useState(null);
     const [proyectos, setProyectos] = useState([]);
-    const [roles, setRoles] = useState([]);
+    const navigate = useNavigate(); 
 
     useEffect(() => {
         const fetchProyectos = async () => {
@@ -26,7 +23,7 @@ const ListaProyectos = () => {
                 if (info.code !== 200 && info.msg === 'Acceso denegado. Token a expirado') {
                     borrarSesion();
                     mensajes(info.mensajes);
-                    Navigate("/main");
+                    navigate("/main");
                 } else if (info.code === 200) {
                     setProyectos(info.info);
                 } else {
@@ -36,37 +33,8 @@ const ListaProyectos = () => {
                 console.error('Error en la solicitud:', error);
             }
         };
-
-        const fetchRoles = async () => {
-            try {
-                const info = await peticionGet(getToken(), 'rol/listar');
-                if (info.code !== 200 && info.msg === 'Acceso denegado. Token a expirado') {
-                    borrarSesion();
-                    mensajes(info.mensajes);
-                    Navigate("/main");
-                } else if (info.code === 200) {
-                    setRoles(info.info);
-                } else {
-                    console.error('Error al obtener roles:', info.msg);
-                }
-            } catch (error) {
-                console.error('Error en la solicitud:', error);
-            }
-        };
-
         fetchProyectos();
-        fetchRoles();
-    }, []);
-
-    const handleShowModal = (project) => {
-        setSelectedProject(project);
-        setShowModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setShowModal(false);
-        setSelectedProject(null);
-    };
+    }, [navigate]);
 
     const handleShowNewProjectModal = () => {
         setShowNewProjectModal(true);
@@ -76,26 +44,16 @@ const ListaProyectos = () => {
         setShowNewProjectModal(false);
     };
 
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.toISOString().slice(0, 10); // Formato AAAA-MM-DD
-    };
-
-    const getRoleName = (idRol) => {
-        const role = roles.find((role) => role.id === idRol);
-        if (!role) {
-            console.error(`Rol no encontrado para el ID: ${idRol}`);
-            return 'Desconocido';
-        }
-        return role.nombre;
+    const handleProjectClick = (proyecto) => {
+         navigate(`/proyecto/${proyecto.proyecto.nombre}`, {
+            state: { external_id: proyecto.proyecto.external_id },
+        });
     };
 
     return (
         <div>
             <MenuBar />
-
             <div className='contenedor-centro'>
-
                 <div className="contenedor-carta">
                     <div className='contenedor-filo'>
                         <Button
@@ -105,65 +63,25 @@ const ListaProyectos = () => {
                         </Button>
                     </div>
                     <p className="titulo-primario">Lista de Proyectos</p>
-                    <div className="table-responsive">
-                        <table className="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th className="text-center">Nombre</th>
-                                    <th className="text-center">Estado</th>
-                                    <th className="text-center">Descripción</th>
-                                    <th className="text-center">Fecha Inicio</th>
-                                    <th className="text-center">Rol</th>
-                                    <th className="text-center">Acciones: Casos de Prueba</th>
-                                    <th className="text-center">Acciones: Gestión de Usuarios</th> {/* Nueva columna */}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {proyectos.map((proyecto) => (
-                                    <tr key={proyecto.proyecto.id}>
-                                        <td>{proyecto.proyecto.nombre}</td>
-                                        <td className="text-center">{proyecto.proyecto.estado ? 'Activos' : 'Terminados'}</td>
-                                        <td>{proyecto.proyecto.descripcion}</td>
-                                        <td className="text-center">{formatDate(proyecto.proyecto.fecha_inicio)}</td>
-                                        <td className="text-center">{getRoleName(proyecto.id_rol)}</td>
-                                        <td className="text-center">
-                                         
-                                                <Button
-                                                    className={`${!proyecto.proyecto.estado ? 'btn-desactivado' : 'btn-normal'}`}
-                                                    onClick={() => handleShowModal(proyecto.proyecto)}
-                                                    disabled={!proyecto.proyecto.estado}
-                                                >
-                                                    <FontAwesomeIcon icon={faPlus} />
-                                                </Button>
-                                        
-                                            <Link to={`/casos-prueba/${proyecto.id_proyecto}`} className="btn-normal">
-                                                <FontAwesomeIcon icon={faEye} />
-                                            </Link>
-                                        </td>
-                                        <td className="text-center">
-                                            <Link to={`/proyecto/usuarios/${proyecto.proyecto.external_id}`} className="btn-normal">
-                                                <FontAwesomeIcon icon={faUsers} />
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                    {proyectos.length === 0 ? (
+                        <div className="text-center">
+                            <p className="text-muted">No hay proyectos registrados</p>
+                        </div>
+                    ) : (
+                        <div className="row">
+                            {proyectos.map((proyecto) => (
+                                <div className="col-md-4 mb-4" onClick={() => handleProjectClick(proyecto)} key={proyecto.proyecto.id}>
+                                    <div className="card shadow h-100 py-2">
+                                        <div className="card-body text-center">
+                                            <h5 className="card-title">{proyecto.proyecto.nombre}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
-
-            {/* Modal para agregar caso de prueba */}
-            <Modal show={showModal} onHide={handleCloseModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title className='titulo-primario'>Agregar Caso de Prueba - {selectedProject?.nombre}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <CasoPrueba projectId={selectedProject?.id} />
-                </Modal.Body>
-            </Modal>
-
-            {/* Modal para crear un nuevo proyecto */}
             <Modal show={showNewProjectModal} onHide={handleCloseNewProjectModal}>
                 <Modal.Header closeButton>
                     <Modal.Title className='titulo-primario'>Crear Nuevo Proyecto</Modal.Title>
@@ -174,6 +92,7 @@ const ListaProyectos = () => {
             </Modal>
         </div>
     );
+    
 };
 
 export default ListaProyectos;

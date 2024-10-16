@@ -59,9 +59,10 @@ label{
 .form-group {
   margin: 2px 0 5px;
 }
+
 /*Contenedor*/
 .contenedor-centro {
-  display: flex; justify-content: center; margin: 100px 50px 0;
+  display: flex; justify-content: center; margin: 50px 50px 0;
 }
 
 .contenedor-carta {
