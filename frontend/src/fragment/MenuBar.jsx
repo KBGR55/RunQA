@@ -7,7 +7,6 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';  
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../css/style.css';
-import iconLogo from '../img/logo512.png';
 import { URLBASE } from '../utilities/hooks/Conexion';
 
 const MenuBar = () => {
@@ -42,7 +41,7 @@ const MenuBar = () => {
                 {token && (
                     <div className="d-flex align-items-center ms-auto">
                         <img
-                            src={fotoUsuario ? `${URLBASE}/images/users/${fotoUsuario}` : iconLogo}
+                            src={fotoUsuario ? `${URLBASE}/images/users/${fotoUsuario}` : '/img/logo512.png'}
                             alt="FotoUsuario"
                             className="rounded-circle"
                             style={{ width: '40px', height: '40px', marginRight: '10px' }}

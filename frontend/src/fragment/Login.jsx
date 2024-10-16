@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/Login_Style.css'
-import iconLogo from '../img/logo512.png';
 import { InicioSesion } from '../utilities/hooks/Conexion';
 import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
@@ -59,7 +58,7 @@ const Login = () => {
 
                                 </div>
                                 <div className="d-flex align-items-center">
-                                    <img src={iconLogo} alt="Logo RunQA" className="rounded-circle" style={{ width: '250px' }} />
+                                    <img src= "/img/logo512.png" alt="Logo RunQA" className="rounded-circle" style={{ width: '250px' }} />
                                 </div>
                             </div>
                         </div>

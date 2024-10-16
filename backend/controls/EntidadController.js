@@ -64,7 +64,7 @@ class EntidadController {
 
     async guardar(req, res) {
         const transaction = await models.sequelize.transaction();
-        const saltRounds = 10; // Define el número de saltRounds para bcrypt
+        const saltRounds = 10;
     
         try {
             const errors = validationResult(req);
@@ -83,13 +83,6 @@ class EntidadController {
                 });
             }
     
-            if (!req.file) {
-                return res.status(400).json({
-                    msg: "FALTA CARGAR LA IMAGEN",
-                    code: 400
-                });
-            }
-    
             const claveHash = (clave) => {
                 if (!clave) {
                     throw new Error("La clave es obligatoria");
@@ -98,12 +91,14 @@ class EntidadController {
                 return bcrypt.hashSync(clave, salt);
             };
     
+            const fotoFilename = req.file ? req.file.filename : 'USUARIO_ICONO.png';
+    
             const data = {
                 nombres: req.body.nombres,
                 apellidos: req.body.apellidos,
                 fecha_nacimiento: req.body.fecha_nacimiento,
                 telefono: req.body.telefono,
-                foto: req.file.filename, 
+                foto: fotoFilename,
                 cuenta: {
                     correo: req.body.correo,
                     clave: claveHash(req.body.clave)
@@ -144,8 +139,7 @@ class EntidadController {
                 code: 400
             });
         }
-    }
-
+    }    
 
     async modificar(req, res) {
         

@@ -13,6 +13,10 @@ const NuevoProyecto = () => {
     const [description, setDescription] = useState('');
     const navigate = useNavigate(); 
 
+    const recargarPagina = () => {
+        window.location.reload();
+    };
+
     const onSubmit = (event) => {
         event.preventDefault(); 
         if (!name ) {
@@ -43,7 +47,9 @@ const NuevoProyecto = () => {
                
             } else {
                 mensajes(info.msg, "success", "Éxito");
-                navigate('/proyectos'); 
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1200);
             }
         });
     };

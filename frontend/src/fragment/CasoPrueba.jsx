@@ -14,12 +14,16 @@ const CasoPrueba = ({ projectId, id_editar }) => {
 
     const [clasificaciones] = useState(['ALTA', 'MEDIA', 'BAJA']);
     const [estados] = useState(['DUPLICADO', 'BLOQUEADO', 'RECHAZADO', 'APROBADO']);
-    const [estadoSeleccionado, setEstadoSeleccionado] = useState('APROBADO'); // Default value
-    const [clasificacionSeleccionada, setClasificacionSeleccionada] = useState('MEDIA'); // Default value
+    const [estadoSeleccionado, setEstadoSeleccionado] = useState('APROBADO'); 
+    const [clasificacionSeleccionada, setClasificacionSeleccionada] = useState('MEDIA'); 
     const [tiposPrueba] = useState([
         'FUNCIONAL', 'INTEGRACION', 'SISTEMA', 'REGRESION', 'EXPLORATORIA',
         'ACEPTACION_USUARIO', 'RENDIMIENTO', 'SEGURIDAD'
     ]);
+
+    const recargarPagina = () => {
+        window.location.reload();
+    };
 
     useEffect(() => {
         const fetchCasoPrueba = async () => {
@@ -70,8 +74,9 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                 const response = await peticionPost(getToken(), 'caso/prueba/actualizar', casoPruebaData);
                 if (response.code === 200) {
                     mensajes('Caso de prueba actualizado con exito', 'success');
-                    reset();
-                    navigate('/proyectos');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1200);
                 } else {
                     mensajes(`Error al actualizar caso de prueba: ${response.msg}`, 'error');
                 }

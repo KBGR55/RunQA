@@ -9,7 +9,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';  
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import iconLogo from '../img/logo512.png';
 import BarraMenu from './MenuBar';
 
 const DetalleProyecto = () => {
@@ -17,7 +16,7 @@ const DetalleProyecto = () => {
     const navigate = useNavigate();
     const [roles, setRoles] = useState([]);
     const [proyecto, setProyecto] = useState({});
-    const [showListaCasoPrueba, setShowListaCasoPrueba] = useState(false); // Nuevo estado para controlar la visualización de ListaCasoPrueba
+    const [showListaCasoPrueba, setShowListaCasoPrueba] = useState(false); 
     const { external_id } = location.state || {};
 
     useEffect(() => {
@@ -100,7 +99,7 @@ const DetalleProyecto = () => {
                 {/* Sidebar */}
                 <nav className="navbar-nav fondo-principal accordion" id="accordionSidebar">
                     <div className="text-center mt-3 mb-4">
-                        <img src={iconLogo} alt="Logo" className="img-fluid" style={{ width: '150px' }} />
+                        <img src="/img/logo512.png" alt="Logo" className="img-fluid" style={{ width: '150px' }} />
                     </div>
                     <div className="sidebar-heading">
                         Roles del Proyecto
@@ -127,7 +126,7 @@ const DetalleProyecto = () => {
                                                     <a
                                                         href="#"
                                                         className="link-dark rounded"
-                                                        onClick={() => handleOptionClick(option)} // Maneja el click de la opción
+                                                        onClick={() => handleOptionClick(option)} 
                                                     >
                                                         {option}
                                                     </a>
