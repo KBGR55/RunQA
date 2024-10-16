@@ -34,8 +34,7 @@ const NuevoProyecto = () => {
             "id_entidad":getUser().user.id , 
             "name": name,
             "description": description,
-            "end_date": '2024-10-05 22:53:28' // Fecha de ejemplo, asegúrate de ajustar
-        };
+     };
 
         peticionPost(getToken(), 'proyecto', datos).then((info) => {
             if (info.code !== 200) {

@@ -45,9 +45,7 @@ const ListaProyectos = () => {
     };
 
     const handleProjectClick = (proyecto) => {
-         navigate(`/proyecto/${proyecto.proyecto.nombre}`, {
-            state: { external_id: proyecto.proyecto.external_id },
-        });
+         navigate(`/proyecto/${proyecto.proyecto.external_id}`);
     };
 
     return (

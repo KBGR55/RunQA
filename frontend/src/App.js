@@ -30,7 +30,7 @@ function App() {
         <Route path='/actualizar' element={<Actualizar />} />
         <Route path='proyecto/nuevo' element={<NuevoProyecto/>} />
         <Route path='/proyecto/usuarios/:external_id' element={<UsuarioProyecto/>} />
-        <Route path="/proyecto/:nombreProyecto" element={<RolMenu/>} />
+        <Route path="/proyecto/:external_id" element={<RolMenu/>} />
       </Routes>
     </div>
   );
