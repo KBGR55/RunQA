@@ -142,7 +142,7 @@ const MenuBar = () => {
         <div className="d-flex">
                 <nav className="navbar-nav fondo-principal accordion" id="accordionSidebar">
                     <div className="text-center mt-3 mb-4">
-                        <img src={iconLogo} alt="Logo" className="img-fluid" style={{ width: '150px' }} />
+                        <img src="/img/logo192.png" alt="Logo" className="img-fluid" style={{ width: '150px' }} />
                     </div>
                     <div className="sidebar-heading">
                         Roles del Proyecto 
