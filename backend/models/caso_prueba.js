@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             defaultValue: 'APROBADO'
         },
+        estadoAsignacion: {
+            type: DataTypes.ENUM('ASIGNADO', 'NO_ASIGNADO', 'REASGINADO'),
+            allowNull: false,
+            defaultValue: 'NO_ASIGNADO'
+        },
         descripcion: {
             type: DataTypes.STRING(150),
             allowNull: true

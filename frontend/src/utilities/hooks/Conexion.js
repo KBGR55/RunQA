@@ -51,6 +51,8 @@ export const peticionGet = async (key, URL) => {
         method: "GET",
         headers: headers,
     })).json();
+    console.log("datos", datos);
+    
     return datos;
 }
 
@@ -130,4 +132,33 @@ export const peticionDelete = async (key, URL) => {
         headers: headers,
     })).json();
     return datos;
+}
+
+export const ObtenerPost = async (key, url, bodyData) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "X-API-TOKEN": key
+    };
+
+    try {
+        const response = await fetch(`${URL}/${url}`, {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify(bodyData)
+        });
+
+        const text = await response.text();
+        let datos;
+
+        try {
+            datos = JSON.parse(text);
+        } catch (error) {
+            throw new Error(`La respuesta no es un JSON válido: ${text}`);
+        }
+        return datos;
+
+    } catch (error) {
+        console.error("Error al realizar la solicitud POST:", error);
+        throw error;
+    }
 }
