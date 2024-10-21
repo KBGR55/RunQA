@@ -1,7 +1,7 @@
 'use strict';
 
 var models = require('../models/');
-const superUsuaripo ='AMINISTRADOR DEL SISTEMA';
+const superUsuaripo ='AMINISTRADOR SYS';
 var rol = models.rol;
 
 class RolController {
