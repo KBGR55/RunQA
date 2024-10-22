@@ -3,6 +3,7 @@ const { validationResult } = require('express-validator');
 var models = require('../models/');
 const uuid = require('uuid');
 const proyecto = models.proyecto; 
+const cuenta = models.cuenta; 
 const rolAdmin = 'GERENTE DE PRUEBAS';
 class ProyectoController {
 
@@ -231,6 +232,62 @@ class ProyectoController {
             }
         }
     }
+
+    /** SEGUNDO SPRINT */
+    async obtenerTestersPorProyecto(req, res) {
+        try {
+            const proyect = await models.proyecto.findOne({ where: { external_id: req.params.external_id } });
+            if (!proyect) {
+                return res.status(400).json({ msg: "Proyecto no encontrado", code: 400 });
+            }
+    
+            const role = await models.rol.findOne({ where: { nombre: 'TESTER' }, attributes: ['id'] });
+            if (!role) {
+                return res.status(400).json({ msg: "Rol de tester no encontrado", code: 400 });
+            }
+    
+            const testers = await models.rol_proyecto.findAll({
+                where: {
+                    id_proyecto: proyect.id,
+                    id_rol: role.id  
+                },
+                include: [
+                    {
+                        model: models.entidad, 
+                        attributes: ['id', 'nombres', 'apellidos'],
+                        include: [
+                            {
+                                model: models.cuenta,  
+                                as: 'cuenta',  
+                                attributes: ['correo']  
+                            }
+                        ]
+                    }
+                ]
+            });
+    
+            if (testers.length === 0) {
+                return res.status(404).json({ msg: "No se encontraron testers asignados a este proyecto", code: 404 });
+            }
+    
+            res.json({
+                msg: "Testers encontrados correctamente",
+                code: 200,
+                info: testers.map(t => ({
+                    id: t.entidad.id,
+                    nombres: t.entidad.nombres,
+                    apellidos: t.entidad.apellidos,
+                    correo: t.entidad.cuenta.correo  
+                })),
+                id_rol:role.id
+            });
+    
+        } catch (error) {
+            console.error("Error:", error);
+            res.status(500).json({ msg: error.message || "Error interno del servidor", code: 500 });
+        }
+    }
+    
 }
 
 module.exports = ProyectoController;

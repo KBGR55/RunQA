@@ -18,6 +18,8 @@ const ProyectoController = require('../controls/ProyectoController');
 const proyectoController = new ProyectoController();
 const RolProyectoController = require('../controls/RolProyectoController');
 const rolProyectoController = new RolProyectoController();
+const ContratoController = require('../controls/ContratoController');
+const contratoController = new ContratoController();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -161,6 +163,8 @@ router.put('/modificar/entidad', (req, res, next) => {
 router.get('/listar/entidad', entidadController.listar);
 router.get('/obtener/entidad/:external',  entidadController.obtener);
 router.get('/proyecto/listar',proyectoController.listar);
+
+/** CASOS PRUEBA */
 router.post('/caso/prueba/guardar', [
   body('nombre').notEmpty().withMessage('El título es requerido'),
   body('descripcion').notEmpty().withMessage('La descripción es requerida'),
@@ -176,13 +180,23 @@ router.get('/caso/prueba/listar',casoPruebaController.listar);
 router.get('/caso/prueba/obtener',casoPruebaController.obtener);
 router.put('/caso/prueba/cambiar/estado',casoPruebaController.cambiar_estado);
 router.get('/caso/prueba/eliminar',casoPruebaController.cambiar_estado_obsoleto);
+router.get('/caso/obtener/proyecto/:external_id', casoPruebaController.obtenerCasosProyecto);
+
+
 router.get('/rol_proyecto/listar', rolProyectoController.listar.bind(rolProyectoController));
 router.get('/rol_proyecto/listar/entidad',rolProyectoController.listar_roles_entidad);
 router.get('/cuenta/:correo',cuentaController.obtenerCuenta);
+
+/** PROYECTO */
 router.post('/proyecto', proyectoController.crearProtecto);
 router.put('/proyecto', proyectoController.actualizarProyecto);
 router.post('/proyecto/asignar', proyectoController.asiganarProyecto);
 router.get('/proyecto/:id_proyect',proyectoController.getEntidadProyecto);
 router.delete('/proyecto/:id_proyect/:id_entidad',proyectoController.removerEntidad);
+router.get('/proyecto/listar/tester/:external_id',proyectoController.obtenerTestersPorProyecto);
+
+/** CONTRATO */
+router.post('/contrato/caso/prueba', contratoController.asignarTesters);
+router.get('/contrato/asignados', contratoController.obtenerDatosTabla);
 
 module.exports = router;  

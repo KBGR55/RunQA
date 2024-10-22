@@ -12,6 +12,8 @@ import ListaUsuarios from './fragment/ListaUsuarios';
 import NuevoProyecto from './fragment/NuevoProyecto';
 import UsuarioProyecto from './fragment/UsuarioProyecto';
 import RolMenu from './fragment/RolMenu';
+import AsignarCasosPrueba from './fragment/AsignarCasosPrueba';
+import ListaCasosAsignados from './fragment/ListaCasosAsignados';
 import VerCasoPrueba from './fragment/VerCasoPrueba';
 
 function App() {
@@ -31,6 +33,8 @@ function App() {
         <Route path='proyecto/nuevo' element={<NuevoProyecto/>} />
         <Route path='/proyecto/usuarios/:external_id' element={<UsuarioProyecto/>} />
         <Route path="/proyecto/:external_id" element={<RolMenu/>} />
+        <Route path='/asignar/tester/:external_id' element={<AsignarCasosPrueba/>} />
+        <Route path='/casos/prueba/asignados' element={<ListaCasosAsignados/>} />
       </Routes>
     </div>
   );

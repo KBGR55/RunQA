@@ -140,6 +140,45 @@ label{
   margin-bottom: 5px;
 }
 
+/* Estilos para el checkbox */
+.custom-checkbox {
+  width: 20px;
+  height: 20px;
+  transform: scale(1.5); /* Aumentar el tamaño */
+  cursor: pointer;
+}
+
+/* Efecto al seleccionar */
+.custom-checkbox:checked {
+  background-color: #ff4d4d; /* Cambia el color del fondo cuando se selecciona */
+  border-color: #ff4d4d; /* Cambia el borde */
+}
+
+/* Animación para una transición suave */
+.custom-checkbox {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Estilo normal de la tarjeta */
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transición suave */
+}
+
+/* Estilo cuando la tarjeta está seleccionada */
+.card-selected {
+  transform: scale(1.05); /* Aumentar ligeramente el tamaño de la tarjeta */
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Añadir sombra a la tarjeta */
+  border-color: #ff4d4d; /* Cambiar el color del borde */
+}
+
+/* Checkbox personalizado */
+.custom-checkbox {
+  width: 20px;
+  height: 20px;
+  transform: scale(1.5);
+  cursor: pointer;
+}
+
 @media (max-width: 500px) {
   .box-of-users {
       flex-basis: 100%; 

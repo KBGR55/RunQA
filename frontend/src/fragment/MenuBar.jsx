@@ -12,12 +12,15 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../css/style.css';
 import { URLBASE } from '../utilities/hooks/Conexion';
 import mensajes from '../utilities/Mensajes';
+import AsignarCasosPrueba from './AsignarCasosPrueba';
 
 const MenuBar = () => {
     const [showOffcanvas, setShowOffcanvas] = useState(false);
     const [nombreUsuario, setNombreUsuario] = useState('');
     const [fotoUsuario, setFotoUsuario] = useState('');
     const token = getToken();
+    const [selectedRoleId, setSelectedRoleId] = useState(null); // Estado para almacenar el ID del rol seleccionado
+    const [selectedOption, setSelectedOption] = useState('');
 
     useEffect(() => {
         const usuario = getUser();
@@ -26,10 +29,12 @@ const MenuBar = () => {
             setFotoUsuario(usuario.user.foto);
         }
     }, []);
+    
     const navigate = useNavigate();
     const [roles, setRoles] = useState([]);
     const [proyecto, setProyecto] = useState({});
-    const [showListaCasoPrueba, setShowListaCasoPrueba] = useState(false); // Nuevo estado para controlar la visualización de ListaCasoPrueba
+    const [showListaCasoPrueba, setShowListaCasoPrueba] = useState(false);
+    const [showCasoPrueba, setShowCasoPrueba] = useState(false); 
     const { external_id } = useParams(); 
 
     useEffect(() => {
@@ -56,6 +61,8 @@ const MenuBar = () => {
         fetchRoles();
     }, [external_id, navigate]);
 
+    console.log("roles", roles);
+
     const formatDate = (dateString) => {
         if (!dateString) {
             return 'Fecha no disponible';
@@ -78,7 +85,7 @@ const MenuBar = () => {
         ],
         'ANALISTA DE PRUEBAS': [
             'Casos de prueba',
-            'Asignar errores a desarrolladores',
+            'Asignar testers, analistas y desarrolladores',
             'Consultar estado de pruebas y errores'
         ],
         'TESTER': [
@@ -99,47 +106,55 @@ const MenuBar = () => {
         'DESARROLLADOR': 'bi bi-code-slash' 
     };
 
-    const handleOptionClick = (option) => {
+    // Función para manejar el clic de una opción y capturar el rol correspondiente
+    const handleOptionClick = (option, roleId, event) => {
+        event.preventDefault();  // Prevenir el comportamiento predeterminado del enlace
+        setSelectedRoleId(roleId);  // Guarda el ID del rol seleccionado
+        setSelectedOption(option);  // Guarda la opción seleccionada
+    
+        console.log("Role ID seleccionado:", roleId);  // Verifica si el roleId se está capturando
+    
         if (option === 'Casos de prueba') {
             setShowListaCasoPrueba(true);
+        } else if (option === 'Asignar testers, analistas y desarrolladores') {
+            navigate(`/asignar/tester/${external_id}`, { state: { selectedRoleId: roleId } });
         }
     };
 
     return (
         <div className=''>
-        <Navbar className="navbar-nav fondo-principal accordion" id="accordionSidebar">
-            <div className='container-fluid'>
-                <Navbar.Toggle className="navbar-toggler" aria-controls="offcanvasNavbar" onClick={() => setShowOffcanvas(!showOffcanvas)} />
-                <div className="collapse navbar-collapse titulo-terciario justify-content-start" id="accordionSidebar">
-                <div className="d-flex">
-                    <NavLink className="navbar-nav fondo-principal accordion" id="accordionSidebar"> </NavLink>
+            <Navbar className="navbar-nav fondo-principal accordion" id="accordionSidebar">
+                <div className='container-fluid'>
+                    <Navbar.Toggle className="navbar-toggler" aria-controls="offcanvasNavbar" onClick={() => setShowOffcanvas(!showOffcanvas)} />
+                    <div className="collapse navbar-collapse titulo-terciario justify-content-start" id="accordionSidebar">
+                        <div className="d-flex">
+                            <NavLink className="navbar-nav fondo-principal accordion" id="accordionSidebar"> </NavLink>
+                        </div>
                     </div>
+                    {token && (
+                        <div className="d-flex align-items-center ms-auto">
+                            <img
+                                src={fotoUsuario ? `${URLBASE}/images/users/${fotoUsuario}` : '/img/logo512.png'}
+                                alt="FotoUsuario"
+                                className="rounded-circle"
+                                style={{ width: '40px', height: '40px', marginRight: '10px' }}
+                            />
+                            <span style={{ fontWeight: 'bold', textTransform: 'uppercase' }}>
+                                {nombreUsuario}
+                            </span>
+                        </div>
+                    )}
+                    <Offcanvas className="fondo-principal" show={showOffcanvas} onHide={() => setShowOffcanvas(false)} placement="end" target="#offcanvasNavbar">
+                        <Offcanvas.Header closeButton>
+                            <Offcanvas.Title>OPCIONES</Offcanvas.Title>
+                        </Offcanvas.Header>
+                        <Offcanvas.Body className="offcanvas-body">
+                            <NavLink classNameNav="navbar-nav justify-content-end flex-grow-1 pe-3" />
+                        </Offcanvas.Body>
+                    </Offcanvas>
                 </div>
-                {token && (
-                    <div className="d-flex align-items-center ms-auto">
-                        <img
-                            src={fotoUsuario ? `${URLBASE}/images/users/${fotoUsuario}` : '/img/logo512.png'}
-                            alt="FotoUsuario"
-                            className="rounded-circle"
-                            style={{ width: '40px', height: '40px', marginRight: '10px' }}
-                        />
-                        <span style={{ fontWeight: 'bold', textTransform: 'uppercase' }}>
-                            {nombreUsuario}
-                        </span>
-                    </div>
-                )}
-                <Offcanvas className="fondo-principal " show={showOffcanvas} onHide={() => setShowOffcanvas(false)} placement="end" target="#offcanvasNavbar">
-                    <Offcanvas.Header closeButton>
-                        <Offcanvas.Title>OPCIONES</Offcanvas.Title>
-                    </Offcanvas.Header>
-                    <Offcanvas.Body className="offcanvas-body">
-                        <NavLink classNameNav="navbar-nav justify-content-end flex-grow-1 pe-3" />
-                    </Offcanvas.Body>
-                </Offcanvas>
-               
-            </div>
-        </Navbar>
-        <div className="d-flex">
+            </Navbar>
+            <div className="d-flex">
                 <nav className="navbar-nav fondo-principal accordion" id="accordionSidebar">
                     <div className="text-center mt-3 mb-4">
                         <img src="/img/logo192.png" alt="Logo" className="img-fluid" style={{ width: '150px' }} />
@@ -160,7 +175,7 @@ const MenuBar = () => {
                                     <i className={`${roleIcons[role.nombre]} me-2`}></i>
                                     {role.nombre}
                                 </button>
-                                <div className=" collapse" id={`role-${role.id}`}>
+                                <div className="collapse" id={`role-${role.id}`}>
                                     <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                         {roleOptions[role.nombre] ? (
                                             roleOptions[role.nombre].map((option, index) => (
@@ -168,7 +183,7 @@ const MenuBar = () => {
                                                     <a
                                                         href="#"
                                                         className="link-dark rounded"
-                                                        onClick={() => handleOptionClick(option)} // Maneja el click de la opción
+                                                        onClick={(e) => handleOptionClick(option, role.id, e)}  // Pasa el rol.id
                                                     >
                                                         {option}
                                                     </a>
@@ -184,10 +199,10 @@ const MenuBar = () => {
                             </li>
                         ))}
                     </ul>
-
                     <hr className="sidebar-divider" />
                 </nav>
                 {showListaCasoPrueba && <ListaCasoPrueba proyecto={proyecto}/>}
+                {showCasoPrueba && <AsignarCasosPrueba proyecto={proyecto}/>}
             </div>
         </div>
     );
