@@ -49,6 +49,10 @@
   font-size: 16px;
   font-weight: bold;
 }
+.texto-normal{
+  color: var(--negro);
+  font-size: 16px;
+}
 
 label{
   color: var(--negro);
@@ -59,6 +63,7 @@ label{
 .form-group {
   margin: 2px 0 5px;
 }
+
 
 /*Contenedor*/
 .contenedor-centro {

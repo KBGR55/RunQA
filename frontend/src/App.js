@@ -12,6 +12,7 @@ import ListaUsuarios from './fragment/ListaUsuarios';
 import NuevoProyecto from './fragment/NuevoProyecto';
 import UsuarioProyecto from './fragment/UsuarioProyecto';
 import RolMenu from './fragment/RolMenu';
+import VerCasoPrueba from './fragment/VerCasoPrueba';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path='/main' element={<Main/>} />
         <Route path='/proyectos' element={<ListaProyectos/>} />
         <Route path='/casos-prueba/:id' element={<ListaCasoPrueba/>}/>
+        <Route path='/caso-prueba/:external_id' element={<VerCasoPrueba/>}/>
         <Route path='/perfil' element={<Perfil/>} />
         <Route path='/usuarios' element={<ListaUsuarios/>} />
         <Route path='proyecto/nuevo' element={<NuevoProyecto/>} />
