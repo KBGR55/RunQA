@@ -28,7 +28,7 @@ function App() {
           <Route path='/caso/prueba' element={<CasoPrueba />} />
           <Route path='/proyecto/nuevo' element={<NuevoProyecto />} />
           <Route path='/proyectos' element={<ListaProyectos />} />
-          <Route path='/casos-prueba' element={<ListaCasoPrueba />} />
+          <Route path='/casos/prueba/:external_id' element={<ListaCasoPrueba />} />
           <Route path='/caso-prueba/:external_id' element={<VerCasoPrueba />} />
           <Route path='/perfil' element={<Perfil />} />
           <Route path='/usuarios' element={<ListaUsuarios />} />
