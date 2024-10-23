@@ -5,6 +5,7 @@ import { getToken, getUser, borrarSesion } from '../utilities/Sessionutil';
 import { Button, Collapse } from 'react-bootstrap';
 import mensajes from '../utilities/Mensajes';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import ListaCasoPrueba from './ListaCasoPrueba';
 
 const RoleMenu = () => {
     const [roles, setRoles] = useState([]);
@@ -86,7 +87,7 @@ const RoleMenu = () => {
         setSelectedOption(option);
 
         if (option === 'Casos de prueba') {
-            navigate(`/casos_prueba/${external_id}`, { state: { selectedRoleId: roleId } });
+            navigate(`/casos-prueba/${external_id}`, { state: { proyecto } });
         } else if (option === 'Asignar testers') {
             navigate(`/asignar/tester/${external_id}`, { state: { selectedRoleId: roleId } });
         }
@@ -193,6 +194,8 @@ const RoleMenu = () => {
                         </li>
                     ))}
                 </ul>
+
+                
             </div>
 
             <div className="p-2 mt-auto" style={{ textAlign: 'center', backgroundColor: 'var(--color-cuarto)' }}>
@@ -207,6 +210,8 @@ const RoleMenu = () => {
                 </Button>
             </div>
         </div>
+
+        
     );
 };
 
