@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Modal } from 'react-bootstrap';
-import MenuBar from './MenuBar';
 import '../css/style.css';
 import '../css/Usuarios_Style.css';
 import { peticionGet, URLBASE } from '../utilities/hooks/Conexion';
@@ -15,7 +14,6 @@ const ListaUsuarios = () => {
     const [data, setData] = useState([]);
     const navigate = useNavigate();
     const [personaObtenida, setpersonaObtenida] = useState([]);
-    
     const [showEdit, setShowEdit] = useState(false);
     const handleCloseEdit = () => setShowEdit(false);
     const handleShowEdit = () => setShowEdit(true);
@@ -68,7 +66,6 @@ const ListaUsuarios = () => {
 
     return (
         <div>
-            <MenuBar />
             <div className="contenedor-centro">
                 <div className='contenedor-carta '>
                     <main className="table">

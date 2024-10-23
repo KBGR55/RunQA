@@ -3,14 +3,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/style.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { peticionPost, peticionGet, peticionPut } from '../utilities/hooks/Conexion';
 import mensajes from '../utilities/Mensajes';
 import { getToken, getUser } from '../utilities/Sessionutil';
 
-const NuevoProyecto = ({ external_id }) => {
+const NuevoProyecto = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
+    const { external_id} = useParams();
+
     const navigate = useNavigate();
     const [proyecto, setProyecto] = useState([]);
 
@@ -18,8 +20,8 @@ const NuevoProyecto = ({ external_id }) => {
         if (external_id) {
             peticionGet(getToken(), `proyecto/obtener/${external_id}`).then((info) => {
                 if (info.code === 200) {
-                    setName(info.info.name);
-                    setDescription(info.info.description);
+                    setName(info.info.nombre);
+                    setDescription(info.info.descripcion);
                     setProyecto(info.info);
                 } else {
                     mensajes(info.msg, "error", "Error");
@@ -78,7 +80,7 @@ const NuevoProyecto = ({ external_id }) => {
                     mensajes(info.msg, "error", "Error");
                 } else {
                     mensajes(info.msg, "success", "Éxito");
-                    navigate('/proyecto/'+info.info.external_id);
+                    navigate('/proyecto/'+info.info);
                 }
             }).catch((error) => {
                 mensajes("Error al guardar el proyecto", "error", "Error");

@@ -10,7 +10,6 @@ import '../css/style.css';
 import mensajes from '../utilities/Mensajes';
 import { getToken } from '../utilities/Sessionutil';
 import { useForm } from 'react-hook-form';
-import MenuBar from './MenuBar';
 import swal from 'sweetalert';
 
 const VerCasoPrueba = () => {
@@ -80,8 +79,7 @@ const VerCasoPrueba = () => {
     }
 
     return (
-        <div className="">
-            <MenuBar />
+        <div>
             <div className='container-fluid'>
                 <div className='contenedor-centro'>
                     <div className="contenedor-carta">

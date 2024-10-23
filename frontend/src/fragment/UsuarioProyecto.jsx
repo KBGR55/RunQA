@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import MenuBar from './MenuBar';
 import { peticionGet, peticionDelete, URLBASE } from '../utilities/hooks/Conexion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getToken } from '../utilities/Sessionutil';
@@ -76,7 +75,6 @@ const UsuarioProyecto = () => {
 
     return (
         <div>
-            <MenuBar />
             <div className="contenedor-centro">
                 <div className='contenedor-carta'>
                     <div className="contenedor-filo">

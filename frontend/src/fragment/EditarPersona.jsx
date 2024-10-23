@@ -24,10 +24,6 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
         setEstado(!estado);
     };
 
-    const recargarPagina = () => {
-        window.location.reload();
-    };
-
     const onSubmit = async (data) => {
         const formData = new FormData();
         formData.append('nombres', data.nombres);
@@ -81,7 +77,9 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
         }).then((willCancel) => {
             if (willCancel) {
                 mensajes("Actualización cancelada", "info", "Información");
-                navigate('/actualizar');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1200);
             }
         });
     };
