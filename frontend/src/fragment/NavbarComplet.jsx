@@ -7,7 +7,7 @@ const NavbarComplet = ({ children }) => {
     return (
         <div>
             <NavbarComponent />
-            <div style={{ marginTop: '56px' /* Altura del navbar */, display: 'flex' }}>
+            <div style={{ marginTop: '56px', display: 'flex' }}>
                 <div style={{ flex: '1', padding: '20px' }}>
                     {children}
                 </div>

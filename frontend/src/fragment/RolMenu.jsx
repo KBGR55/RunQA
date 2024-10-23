@@ -9,8 +9,8 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 const RoleMenu = () => {
     const [roles, setRoles] = useState([]);
     const [proyecto, setProyecto] = useState({});
-    const [isOpen, setIsOpen] = useState(true); // Estado para colapsar/expandir la barra lateral
-    const [activeMenu, setActiveMenu] = useState(null); // Estado para manejar submenús
+    const [isOpen, setIsOpen] = useState(true); 
+    const [activeMenu, setActiveMenu] = useState(null); 
     const { external_id } = useParams();
     const navigate = useNavigate();
     const [selectedRoleId, setSelectedRoleId] = useState(null);
@@ -40,23 +40,19 @@ const RoleMenu = () => {
         fetchRoles();
     }, [external_id, navigate]);
 
-    // Escuchar los cambios en el tamaño de la pantalla
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth < 768) {
-                setIsOpen(false); // Colapsar la barra lateral en pantallas pequeñas
+                setIsOpen(false);
             } else {
-                setIsOpen(true); // Expandir la barra lateral en pantallas grandes
+                setIsOpen(true); 
             }
         };
 
-        // Ejecutar al montar el componente para definir el estado inicial
         handleResize();
 
-        // Agregar el event listener
         window.addEventListener('resize', handleResize);
 
-        // Limpiar el event listener al desmontar el componente
         return () => {
             window.removeEventListener('resize', handleResize);
         };
