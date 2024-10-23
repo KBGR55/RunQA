@@ -53,6 +53,13 @@ const ListaProyectos = () => {
             <NavbarComplet/>
             <div className='contenedor-centro'>
                 <div className="contenedor-carta">
+                <div className='contenedor-filo'>
+                        <Button
+                            className="btn-normal mb-3"
+                            onClick={handleShowNewProjectModal}
+                        >  <FontAwesomeIcon icon={faPlus} />  Crear Proyecto
+                        </Button>
+                    </div> 
                     <p className="titulo-primario">Lista de Proyectos</p>
                     {proyectos.length === 0 ? (
                         <div className="text-center">

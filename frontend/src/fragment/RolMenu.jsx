@@ -59,7 +59,7 @@ const RoleMenu = () => {
     }, []);
 
     const roleOptions = {
-        'GERENTE DE PRUEBAS': ['Crear proyectos', 'Asignar testers', 'Generar reportes', 'Casos de prueba', 'Miembros'],
+        'GERENTE DE PRUEBAS': ['Asignar testers', 'Generar reportes', 'Casos de prueba', 'Miembros','Editar proyecto'],
         'ANALISTA DE PRUEBAS': ['Casos de prueba', 'Asignar testers', 'Consultar estado de pruebas'],
         'TESTER': ['Ejecutar casos de prueba', 'Registrar errores'],
         'DESARROLLADOR': ['Actualizar el estado de los errores', 'Consultar errores asignados']
@@ -87,8 +87,8 @@ const RoleMenu = () => {
 
         if (option === 'Casos de prueba') {
             navigate(`/casos-prueba/`, { state: { proyecto } });
-        } if (option === 'Crear proyectos') {
-            navigate(`/proyecto/nuevo`, { state: { proyecto } });
+        } if (option === 'Editar proyecto') {
+            navigate(`url`, { state: { proyecto } });
         } if (option === 'Miembros') {
             navigate(`/proyecto/usuarios/${proyecto.external_id}`, { state: { proyecto } });
         } else if (option === 'Asignar testers') {
