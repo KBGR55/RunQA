@@ -25,7 +25,7 @@ class ProyectoController {
     async getProyecto(req, res) {
         try {
             const listar = await proyecto.findOne({
-               where: {external_id: req.body.external_id}
+               where: {external_id: req.params.external_id}
             });
             res.json({ msg: 'OK!', code: 200, info: listar });
         } catch (error) {
@@ -79,8 +79,9 @@ class ProyectoController {
             transaction = await models.sequelize.transaction();
             const oldProyect = await models.proyecto.findOne({ where: { id: req.body.id_proyect } });
             const rolProyect = await models.rol_proyecto.findOne({ where: { id_proyecto: req.body.id_proyect } });
+         
             if (oldProyect) {
-                const nameRole = await models.rol.findOne({ where: { nombre: adminRol }, attributes: ['id'] });
+                const nameRole = await models.rol.findOne({ where: { nombre: rolAdmin }, attributes: ['id'] });
                 const resultado = await models.rol_proyecto.findOne({
                     where: { id_rol: nameRole.id, id_entidad: rolProyect.id_entidad },
                     include: {
@@ -90,8 +91,8 @@ class ProyectoController {
                     },
                     attributes: ['id_entidad']
                 });
-                if (resultado) {
-                    res.status(200).json({ msg: "El proyecto ya existe", code: 200 });
+                if (resultado && (oldProyect.descripcion ==req.body.description)) {
+                    res.status(200).json({ msg: "El proyecto ya existe", code: 409 });
                 } else {
                     oldProyect.nombre = req.body.name;
                     oldProyect.descripcion = req.body.description;

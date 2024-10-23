@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import { getToken, getUser, borrarSesion } from '../utilities/Sessionutil';
-import { Button, Collapse } from 'react-bootstrap';
+import { Button, Collapse, Modal } from 'react-bootstrap'; // Importa Modal
 import mensajes from '../utilities/Mensajes';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import NuevoProyecto from './NuevoProyecto'; // Importa el componente NuevoProyecto
 
 const RoleMenu = () => {
     const [roles, setRoles] = useState([]);
@@ -15,6 +16,7 @@ const RoleMenu = () => {
     const navigate = useNavigate();
     const [selectedRoleId, setSelectedRoleId] = useState(null);
     const [selectedOption, setSelectedOption] = useState('');
+    const [showNewProjectModal, setShowNewProjectModal] = useState(false); // Estado para controlar el modal
 
     useEffect(() => {
         const fetchRoles = async () => {
@@ -87,13 +89,18 @@ const RoleMenu = () => {
 
         if (option === 'Casos de prueba') {
             navigate(`/casos-prueba/`, { state: { proyecto } });
-        } if (option === 'Editar proyecto') {
-            navigate(`url`, { state: { proyecto } });
-        } if (option === 'Miembros') {
+        } else if (option === 'Editar proyecto') {
+            // Abrir el modal de edición de proyecto
+            setShowNewProjectModal(true);
+        } else if (option === 'Miembros') {
             navigate(`/proyecto/usuarios/${proyecto.external_id}`, { state: { proyecto } });
         } else if (option === 'Asignar testers') {
             navigate(`/asignar/tester/${external_id}`, { state: { selectedRoleId: roleId } });
         }
+    };
+
+    const handleCloseNewProjectModal = () => {
+        setShowNewProjectModal(false);
     };
 
     return (
@@ -187,8 +194,9 @@ const RoleMenu = () => {
                                                     color: selectedOption === option ? 'var(--blanco)' : 'var(--blanco)',
                                                     borderRadius: '5px',
                                                     transition: 'background-color 0.3s'
-                                                }}>
-                                                {isOpen ? option : <i className="bi bi-chevron-right"></i>}
+                                                }}
+                                            >
+                                                {option}
                                             </button>
                                         </li>
                                     ))}
@@ -197,24 +205,24 @@ const RoleMenu = () => {
                         </li>
                     ))}
                 </ul>
-
-                
             </div>
 
-            <div className="p-2 mt-auto" style={{ textAlign: 'center', backgroundColor: 'var(--color-cuarto)' }}>
-                <Button variant="link" className="text-white" onClick={toggleSidebar}>
-                    {isOpen ? (
-                        <>
-                            <i className="bi bi-chevron-left"></i> 
-                        </>
-                    ) : (
-                        <i className="bi bi-chevron-right"></i>
-                    )}
+            {/* Modal para crear/editar proyecto */}
+            <Modal show={showNewProjectModal} onHide={handleCloseNewProjectModal} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Editar Proyecto</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <NuevoProyecto external_id={external_id} /> {/* Pasa el external_id al componente */}
+                </Modal.Body>
+            </Modal>
+
+            <div className="p-2">
+                <Button variant="link" onClick={toggleSidebar} style={{ color: 'var(--blanco)' }}>
+                    <i className={`bi ${isOpen ? 'bi-arrow-left-circle' : 'bi-arrow-right-circle'}`}></i>
                 </Button>
             </div>
         </div>
-
-        
     );
 };
 
