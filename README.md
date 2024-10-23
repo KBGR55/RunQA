@@ -1,5 +1,8 @@
 
 # RunQA
+<div align="center">
+  <img src="frontend/public/logo192.png" width="350px" alt="Logo de Quizizz" style="display: inline-block;">
+</div>
 
 **Descripción**:  
 Este proyecto tiene como objetivo construir un sistema de gestión de pruebas de software que soporte varios proyectos y diferentes roles, tales como: analista de pruebas, tester, gerente de pruebas y desarrolladores. Es importante identificar los principales casos de uso para gestionar eficientemente el proceso de pruebas.
@@ -181,4 +184,20 @@ Antes de ejecutar el proyecto, asegúrate de configurar la base de datos. Sigue 
          ('73238d10-9080-11ef-8f4d-30e37a2aa82d', 1, '2024-10-22 09:18:03', '2024-10-22 09:18:03', 4, 5, 2),
          ('73238fec-9080-11ef-8f4d-30e37a2aa82d', 1, '2024-10-22 09:18:03', '2024-10-22 09:18:03', 3, 3, 2);
 
+         COMMIT;
+
    ```
+
+Una vez completados estos pasos, la base de datos estará configurada correctamente para su correcto funcionamiento.
+## Cuentas de Acceso
+
+| Correo                     | Contraseña |
+|----------------------------|------------|
+| karen.b.gonzaga@unl.edu.ec | clave123   |
+| hilary.calva@unl.edu.ec    | clave123   |
+| maria.perez@unl.edu.ec     | clave123   |
+| pedro.ramirez@unl.edu.ec   | clave123   |
+| ana.torres@unl.edu.ec      | clave123   |
+| sofia.mendoza@unl.edu.ec   | clave123   |
+
+Podrás acceder al sistema utilizando las cuentas proporcionadas.

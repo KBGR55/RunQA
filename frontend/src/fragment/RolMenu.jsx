@@ -5,7 +5,6 @@ import { getToken, getUser, borrarSesion } from '../utilities/Sessionutil';
 import { Button, Collapse } from 'react-bootstrap';
 import mensajes from '../utilities/Mensajes';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import ListaCasoPrueba from './ListaCasoPrueba';
 
 const RoleMenu = () => {
     const [roles, setRoles] = useState([]);
@@ -60,9 +59,14 @@ const RoleMenu = () => {
     }, []);
 
     const roleOptions = {
+<<<<<<< HEAD
         'ADMINISTRADOR SYS': ['Gestionar Usuarios'],
         'GERENTE DE PRUEBAS': ['Crear proyectos', 'Asignar testers', 'Generar reportes', 'Casos de prueba'],
         'ANALISTA DE PRUEBAS': ['Casos de prueba', 'Asignar testers', 'Lista de casos de prueba asignados'],
+=======
+        'GERENTE DE PRUEBAS': ['Asignar testers', 'Generar reportes', 'Casos de prueba', 'Miembros','Editar proyecto'],
+        'ANALISTA DE PRUEBAS': ['Casos de prueba', 'Asignar testers', 'Consultar estado de pruebas'],
+>>>>>>> 24ad35bfa1c48c755d1dfed76ef8c80e13f6d20c
         'TESTER': ['Ejecutar casos de prueba', 'Registrar errores'],
         'DESARROLLADOR': ['Actualizar el estado de los errores', 'Consultar errores asignados']
     };
@@ -89,7 +93,11 @@ const RoleMenu = () => {
         setSelectedOption(option);
 
         if (option === 'Casos de prueba') {
-            navigate(`/casos-prueba/${external_id}`, { state: { proyecto } });
+            navigate(`/casos-prueba/`, { state: { proyecto } });
+        } if (option === 'Editar proyecto') {
+            navigate(`url`, { state: { proyecto } });
+        } if (option === 'Miembros') {
+            navigate(`/proyecto/usuarios/${proyecto.external_id}`, { state: { proyecto } });
         } else if (option === 'Asignar testers') {
             navigate(`/asignar/tester/${external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Lista de casos de prueba asignados') {
