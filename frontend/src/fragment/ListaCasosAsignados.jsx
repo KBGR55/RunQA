@@ -6,7 +6,6 @@ import '../css/style.css';
 import mensajes from '../utilities/Mensajes';
 import { borrarSesion, getToken } from '../utilities/Sessionutil';
 import { useNavigate } from 'react-router-dom';
-import BarraMenu from './MenuBar';
 
 const ListaCasosAsignados = () => {
     const [casosPrueba, setCasosPrueba] = useState([]);
@@ -35,7 +34,6 @@ const ListaCasosAsignados = () => {
 
     return (
         <div>
-            <BarraMenu />
             <div className='container-fluid'>
 
                 <div className='contenedor-centro'>

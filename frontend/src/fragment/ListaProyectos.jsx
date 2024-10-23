@@ -50,7 +50,6 @@ const ListaProyectos = () => {
 
     return (
         <div>
-            <NavbarComplet/>
             <div className='contenedor-centro'>
                 <div className="contenedor-carta">
                 <div className='contenedor-filo'>

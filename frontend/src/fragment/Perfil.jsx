@@ -28,7 +28,6 @@ const Perfil = () => {
 
     return (
         <div>
-            <BarraMenu />
             <div className="container5">
                 <div className="main-body" style={{ backgroundColor: '#F4EEFF' }}>
                     <div className="row gutters-sm">

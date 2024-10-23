@@ -20,8 +20,8 @@ const ManuBar = () => {
     }, []);
 
     const handleCerrarSesion = () => {
-        //borrarSesion();
-        navigate('/');
+        borrarSesion();
+        navigate('/login');
     };
 
     return (
