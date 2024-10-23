@@ -2,7 +2,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
 import mensajes from '../utilities/Mensajes';
-import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { peticionPost, peticionGet } from '../utilities/hooks/Conexion';
@@ -10,7 +9,6 @@ import { getToken } from '../utilities/Sessionutil';
 
 const CasoPrueba = ({ projectId, id_editar }) => {
     const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm();
-    const navigate = useNavigate();
 
     const [clasificaciones] = useState(['ALTA', 'MEDIA', 'BAJA']);
     const [estados] = useState(['DUPLICADO', 'BLOQUEADO', 'RECHAZADO', 'APROBADO']);
@@ -20,10 +18,6 @@ const CasoPrueba = ({ projectId, id_editar }) => {
         'FUNCIONAL', 'INTEGRACION', 'SISTEMA', 'REGRESION', 'EXPLORATORIA',
         'ACEPTACION_USUARIO', 'RENDIMIENTO', 'SEGURIDAD'
     ]);
-
-    const recargarPagina = () => {
-        window.location.reload();
-    };
 
     useEffect(() => {
         const fetchCasoPrueba = async () => {
@@ -91,7 +85,9 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                 if (response.code === 200) {
                     mensajes('Caso de prueba registrado con éxito', 'success');
                     reset();
-                    navigate('/proyectos');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1200);
                 } else {
                     mensajes(`Error al registrar caso de prueba: ${response.msg}`, 'error');
                 }
@@ -259,7 +255,7 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                     </div>
                 </div>
                 <div className="contenedor-filo">
-                    <button type="button" onClick={() => navigate('/proyectos')} className="btn-negativo">
+                    <button type="button"  onClick={() => window.location.reload()} className="btn-negativo">
                         <FontAwesomeIcon icon={faTimes} /> Cancelar
                     </button>
                     <button type="submit" className="btn-positivo">

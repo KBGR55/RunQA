@@ -170,7 +170,12 @@ router.post('/caso/prueba/guardar', [
   body('descripcion').notEmpty().withMessage('La descripción es requerida'),
   body('resultado_esperado').notEmpty().withMessage('El resultado esperado es requerido'),
 ], casoPruebaController.guardar);
-router.post('/caso/prueba/actualizar', casoPruebaController.actualizar);
+router.post('/caso/prueba/actualizar', [
+  body('external_id').trim().notEmpty().withMessage('El external_id es requerido'),
+  body('nombre').trim().optional().notEmpty().withMessage('El título no puede estar vacío'),
+  body('descripcion').trim().optional().notEmpty().withMessage('La descripción no puede estar vacía'),
+  body('resultado_esperado').trim().optional().notEmpty().withMessage('El resultado esperado no puede estar vacío'),
+], casoPruebaController.actualizar);
 router.get('/caso/prueba/listar',casoPruebaController.listar);
 router.get('/caso/prueba/obtener',casoPruebaController.obtener);
 router.put('/caso/prueba/cambiar/estado',casoPruebaController.cambiar_estado);

@@ -26,7 +26,7 @@ const ListaUsuarios = () => {
                 if (info.code !== 200 && info.msg === 'Acceso denegado. Token a expirado') {
                     borrarSesion();
                     mensajes(info.mensajes);
-                    navigate("/principal");
+                    navigate("main");
                 } else {
                     setData(info.info);
                     setUsuarios(true);

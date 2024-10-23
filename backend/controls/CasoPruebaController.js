@@ -56,7 +56,7 @@ class CasoPruebaController {
                     'nombre', 'estado', 'external_id', 'descripcion', 
                     'pasos', 'resultado_esperado', 'resultado_obtenido',
                     'clasificacion', 'tipo_prueba', 'precondiciones',
-                    'fecha_disenio', 'fecha_ejecucion_prueba'
+                    'fecha_disenio', 'fecha_ejecucion_prueba','id_proyecto'
                 ]
             });
     
