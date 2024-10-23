@@ -10,7 +10,7 @@ import mensajes from '../utilities/Mensajes';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import swal from 'sweetalert';
-import BarraMenu from './MenuBar';
+import NavbarComplet from './NavbarComplet';
 
 const AsignarCasosPrueba = () => {
     const { external_id } = useParams();
@@ -148,7 +148,6 @@ const AsignarCasosPrueba = () => {
 
     return (
         <div>
-            <BarraMenu />
             <div className='contenedor-fluid'>
                 <div className='contenedor-centro'>
                     <div className="contenedor-carta">

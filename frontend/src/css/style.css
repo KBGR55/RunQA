@@ -124,8 +124,8 @@ label{
 
 .box-container {
   display: flex;
-  flex-wrap: wrap; /* Permite que los elementos se ajusten a la siguiente fila si hay espacio */
-  gap: 5px; /* Añade un pequeño espacio entre los elementos */
+  flex-wrap: wrap;
+  gap: 5px; 
 }
 
 .box-of-users {
@@ -136,22 +136,21 @@ label{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-basis: calc(50% - 10px); /* Los elementos ocuparán el 50% del contenedor, ajustado para incluir el gap */
+  flex-basis: calc(50% - 10px);
   margin-bottom: 5px;
 }
 
-/* Estilos para el checkbox */
 .custom-checkbox {
   width: 20px;
   height: 20px;
-  transform: scale(1.5); /* Aumentar el tamaño */
+  transform: scale(1.5); 
   cursor: pointer;
 }
 
 /* Efecto al seleccionar */
 .custom-checkbox:checked {
-  background-color: #ff4d4d; /* Cambia el color del fondo cuando se selecciona */
-  border-color: #ff4d4d; /* Cambia el borde */
+  background-color: #ff4d4d; 
+  border-color: #ff4d4d;
 }
 
 /* Animación para una transición suave */
@@ -159,25 +158,65 @@ label{
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Estilo normal de la tarjeta */
 .card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transición suave */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; 
 }
 
-/* Estilo cuando la tarjeta está seleccionada */
 .card-selected {
-  transform: scale(1.05); /* Aumentar ligeramente el tamaño de la tarjeta */
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Añadir sombra a la tarjeta */
-  border-color: #ff4d4d; /* Cambiar el color del borde */
+  transform: scale(1.05); 
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  border-color: #ff4d4d;
 }
 
-/* Checkbox personalizado */
 .custom-checkbox {
   width: 20px;
   height: 20px;
   transform: scale(1.5);
   cursor: pointer;
 }
+
+/** NAVBAR STYLES */
+#dropdown-user {
+  outline: none; 
+  box-shadow: none !important;
+  text-decoration: none; 
+  color: #ffffff; 
+}
+
+#dropdown-user:focus {
+  outline: none; 
+  box-shadow: none !important; 
+  text-decoration: none; 
+}
+
+#dropdown-user:hover {
+  color: #a3a3b3; 
+}
+
+.sidebar {
+  height: 100vh; 
+  position: fixed; 
+  background-color: var(--color-cuarto)!important;;
+  width: 250px;
+  top: 0; 
+  left: 0; 
+  z-index: 1; 
+}
+
+body {
+  margin-left: 250px; 
+}
+
+/* Navbar superior */
+.navbar {
+  background-color: var(--color-cuarto)!important; 
+  position: fixed; 
+  width: calc(100% - 70px);
+  left: 70px; 
+  top: 0;
+  z-index: 10; 
+}
+
 
 @media (max-width: 500px) {
   .box-of-users {

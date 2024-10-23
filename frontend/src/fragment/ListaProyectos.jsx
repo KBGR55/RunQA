@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons'; 
-import MenuBar from './MenuBar';
+import NavbarComplet from './NavbarComplet';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import '../css/style.css';
 import { useNavigate } from 'react-router-dom';
@@ -50,7 +50,7 @@ const ListaProyectos = () => {
 
     return (
         <div>
-            <MenuBar />
+            <NavbarComplet/>
             <div className='contenedor-centro'>
                 <div className="contenedor-carta">
                     <div className='contenedor-filo'>
