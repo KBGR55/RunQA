@@ -18,8 +18,8 @@ const NuevoProyecto = ({ external_id }) => {
         if (external_id) {
             peticionGet(getToken(), `proyecto/obtener/${external_id}`).then((info) => {
                 if (info.code === 200) {
-                    setName(info.info.name);
-                    setDescription(info.info.description);
+                    setName(info.info.nombre);
+                    setDescription(info.info.descripcion);
                     setProyecto(info.info);
                 } else {
                     mensajes(info.msg, "error", "Error");
@@ -78,9 +78,7 @@ const NuevoProyecto = ({ external_id }) => {
                     mensajes(info.msg, "error", "Error");
                 } else {
                     mensajes(info.msg, "success", "Éxito");
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1200);
+                    navigate('/proyecto/'+info.info);
                 }
             }).catch((error) => {
                 mensajes("Error al guardar el proyecto", "error", "Error");
