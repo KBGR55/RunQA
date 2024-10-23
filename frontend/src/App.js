@@ -29,6 +29,7 @@ function App() {
         <Route path='/perfil' element={<Perfil/>} />
         <Route path='/usuarios' element={<ListaUsuarios/>} />
         <Route path='proyecto/nuevo' element={<NuevoProyecto/>} />
+        <Route path='proyecto/editar/:external_id' element={<NuevoProyecto/>} />
         <Route path='/proyecto/usuarios/:external_id' element={<UsuarioProyecto/>} />
         <Route path="/proyecto/:external_id" element={<RolMenu/>} />
         <Route path='/asignar/tester/:external_id' element={<AsignarCasosPrueba/>} />

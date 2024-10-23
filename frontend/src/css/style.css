@@ -179,3 +179,20 @@ label{
       flex-basis: 100%; 
   }
 }
+
+.imagen-pequena {
+  width:25px;
+   height: 25px;
+}
+
+.margen-usuarios-pequenos {
+  margin: 0;
+}
+.boton-eliminar-pequeno {
+   padding: 2px 5px;
+  font-size: 0.8rem;
+}
+.user-container {
+  display: flex;
+  align-items: center; /* Para alinear verticalmente la imagen y el texto */
+}

@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 8;
 
 let jwt = require('jsonwebtoken');
-
+const { Op } = require('sequelize');
 class CuentaController {
 
     async sesion(req, res) {
@@ -100,30 +100,50 @@ class CuentaController {
 
     async obtenerCuenta(req, res) {
         try {
-            if (!req.params.correo) {
+            if (!req.params.nombreCompleto) {
                 return res.status(400).json({
-                    msg: "FALTA EL CORREO EN LA SOLICITUD",
+                    msg: "FALTA EL NOMBRE COMPLETO O PARCIAL EN LA SOLICITUD",
                     code: 400
                 });
             }
-            var cuentaEncontrada = await cuenta.findOne({ where: {correo: req.params.correo  }, include: [{model: models.entidad,as: "entidad"  }]  });
-            if (cuentaEncontrada === null) {
+            const nombreCompleto = req.params.nombreCompleto.trim();
+            const condicionesBusqueda = {
+                [Op.or]: [
+                    {
+                        nombres: {
+                            [Op.like]: `%${nombreCompleto}%` 
+                        }
+                    },
+                    {
+                        apellidos: {
+                            [Op.like]: `%${nombreCompleto}%` 
+                        }
+                    }
+                ]
+            };
+            var cuentasEncontradas = await models.entidad.findAll({ 
+                where: condicionesBusqueda,
+                limit: 10 // Limitar los resultados a 10
+            });
+            
+            if (cuentasEncontradas.length === 0) {
                 return res.status(404).json({
-                    msg: "CUENTA NO ENCONTRADA",
+                    msg: "NO SE ENCONTRARON USUARIOS",
                     code: 404
                 });
             }
+            const cuentasInfo = cuentasEncontradas.map(entidad => ({
+                nombres: entidad.nombres,
+                apellidos: entidad.apellidos,
+                id: entidad.id,
+                foto: entidad.foto
+            }));
+    
             return res.status(200).json({
-                msg: "Cuenta encontrada",
-                info: {
-                    correo: cuentaEncontrada.correo,
-                    nombres: cuentaEncontrada.entidad.nombres,
-                    apellidos: cuentaEncontrada.entidad.apellidos,
-                    id: cuentaEncontrada.entidad.id
-                },
+                msg: "Usuarios Encontrados",
+                info: cuentasInfo,
                 code: 200
             });
-    
         } catch (error) {
             console.log(error);
             return res.status(500).json({
@@ -131,7 +151,7 @@ class CuentaController {
                 code: 500
             });
         }
-    }
+    }    
     
 
 }

@@ -180,13 +180,14 @@ router.get('/caso/obtener/proyecto/:external_id', casoPruebaController.obtenerCa
 
 router.get('/rol_proyecto/listar', rolProyectoController.listar.bind(rolProyectoController));
 router.get('/rol_proyecto/listar/entidad',rolProyectoController.listar_roles_entidad);
-router.get('/cuenta/:correo',cuentaController.obtenerCuenta);
+router.get('/cuenta/:nombreCompleto',cuentaController.obtenerCuenta);
 
 /** PROYECTO */
 router.post('/proyecto', proyectoController.crearProtecto);
 router.put('/proyecto', proyectoController.actualizarProyecto);
 router.post('/proyecto/asignar', proyectoController.asiganarProyecto);
 router.get('/proyecto/:id_proyect',proyectoController.getEntidadProyecto);
+router.get('/proyecto/obtener/:external_id',proyectoController.getProyecto);
 router.delete('/proyecto/:id_proyect/:id_entidad',proyectoController.removerEntidad);
 router.get('/proyecto/listar/tester/:external_id',proyectoController.obtenerTestersPorProyecto);
 
