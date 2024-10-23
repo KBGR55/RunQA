@@ -78,9 +78,7 @@ const NuevoProyecto = ({ external_id }) => {
                     mensajes(info.msg, "error", "Error");
                 } else {
                     mensajes(info.msg, "success", "Éxito");
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1200);
+                    navigate('/proyecto/'+info.info.external_id);
                 }
             }).catch((error) => {
                 mensajes("Error al guardar el proyecto", "error", "Error");
