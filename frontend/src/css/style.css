@@ -174,6 +174,52 @@ label{
   cursor: pointer;
 }
 
+/** NAVBAR STYLES */
+/* Estilos para eliminar el borde azul en el botón desplegable */
+#dropdown-user {
+  outline: none; /* Elimina el borde de enfoque en navegadores */
+  box-shadow: none !important; /* Elimina cualquier sombra que se aplique al hacer clic */
+  text-decoration: none; /* Elimina la línea azul bajo el texto */
+}
+
+#dropdown-user:focus {
+  outline: none; /* También desactiva el borde cuando el botón está en foco */
+  box-shadow: none !important; /* Previene que la sombra vuelva a aparecer */
+  text-decoration: none; /* Asegura que no se vea subrayado al hacer clic */
+}
+
+/* Cambia el color del texto al pasar el mouse por encima (opcional) */
+#dropdown-user:hover {
+  color: #ffffff; /* Puedes cambiar este color según el tema que uses */
+}
+
+/* Asegurar que la barra lateral ocupe el 100% de la altura de la pantalla */
+.sidebar {
+  height: 100vh; /* Hace que la barra lateral ocupe toda la altura de la ventana */
+  position: fixed; /* Fija la barra lateral en la página */
+  background-color: var(--color-cuarto)!important;; /* El color de la barra lateral */
+  width: 250px; /* Ajusta el ancho de la barra lateral */
+  top: 0; /* Alinea la barra lateral desde la parte superior */
+  left: 0; /* Mueve la barra lateral al lado izquierdo */
+  z-index: 1; /* Asegura que quede por debajo del navbar */
+}
+
+/* Ajusta el contenido del cuerpo para que no quede oculto tras la barra lateral */
+body {
+  margin-left: 250px; /* Compensa el espacio que ocupa la barra lateral */
+}
+
+/* Estilos para el navbar superior */
+.navbar {
+  background-color: var(--color-cuarto)!important; /* Mismo color que la barra lateral */
+  position: fixed; /* Asegura que el navbar quede fijo en la parte superior */
+  width: calc(100% - 70px);; /* Ajusta el ancho del navbar para que respete la barra lateral */
+  left: 70px; /* Compensa el desplazamiento de la barra lateral */
+  top: 0; /* Alinea el navbar en la parte superior */
+  z-index: 10; /* Asegura que el navbar esté por encima de la barra lateral */
+}
+
+
 @media (max-width: 500px) {
   .box-of-users {
       flex-basis: 100%; 
