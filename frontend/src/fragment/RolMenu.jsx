@@ -90,7 +90,7 @@ const RoleMenu = () => {
         setSelectedOption(option);
 
         if (option === 'Casos de prueba') {
-            navigate(`/casos-prueba/`, { state: { proyecto } });
+            navigate(`/casos/prueba/${proyecto.external_id}`, { state: { proyecto } });
         } else if (option === 'Editar proyecto') {
             setShowNewProjectModal(true);
         } else if (option === 'Miembros') {
