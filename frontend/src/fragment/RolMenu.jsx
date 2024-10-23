@@ -59,14 +59,9 @@ const RoleMenu = () => {
     }, []);
 
     const roleOptions = {
-<<<<<<< HEAD
         'ADMINISTRADOR SYS': ['Gestionar Usuarios'],
         'GERENTE DE PRUEBAS': ['Crear proyectos', 'Asignar testers', 'Generar reportes', 'Casos de prueba'],
         'ANALISTA DE PRUEBAS': ['Casos de prueba', 'Asignar testers', 'Lista de casos de prueba asignados'],
-=======
-        'GERENTE DE PRUEBAS': ['Asignar testers', 'Generar reportes', 'Casos de prueba', 'Miembros','Editar proyecto'],
-        'ANALISTA DE PRUEBAS': ['Casos de prueba', 'Asignar testers', 'Consultar estado de pruebas'],
->>>>>>> 24ad35bfa1c48c755d1dfed76ef8c80e13f6d20c
         'TESTER': ['Ejecutar casos de prueba', 'Registrar errores'],
         'DESARROLLADOR': ['Actualizar el estado de los errores', 'Consultar errores asignados']
     };
