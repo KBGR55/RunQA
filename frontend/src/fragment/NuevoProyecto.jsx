@@ -91,7 +91,6 @@ const NuevoProyecto = ({ external_id }) => {
     return (
         <>
             <div className="contenedor-carta">
-            <p className="titulo-primario">Crear nuevo Proyecto</p>
                 <form onSubmit={onSubmit}>
                     <div className="mb-3">
                         <label htmlFor="nombreProyecto" className="form-label">Nombre del Proyecto</label>
