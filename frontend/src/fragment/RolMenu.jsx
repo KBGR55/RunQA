@@ -60,13 +60,15 @@ const RoleMenu = () => {
     }, []);
 
     const roleOptions = {
+        'ADMINISTRADOR SYS': ['Gestionar Usuarios'],
         'GERENTE DE PRUEBAS': ['Crear proyectos', 'Asignar testers', 'Generar reportes', 'Casos de prueba'],
-        'ANALISTA DE PRUEBAS': ['Casos de prueba', 'Asignar testers', 'Consultar estado de pruebas'],
+        'ANALISTA DE PRUEBAS': ['Casos de prueba', 'Asignar testers', 'Lista de casos de prueba asignados'],
         'TESTER': ['Ejecutar casos de prueba', 'Registrar errores'],
         'DESARROLLADOR': ['Actualizar el estado de los errores', 'Consultar errores asignados']
     };
 
     const roleIcons = {
+        'ADMINISTRADOR SYS': 'bi bi-person-lines-fill',
         'GERENTE DE PRUEBAS': 'bi bi-briefcase-fill',
         'ANALISTA DE PRUEBAS': 'bi bi-card-checklist',
         'TESTER': 'bi bi-bug-fill',
@@ -90,6 +92,10 @@ const RoleMenu = () => {
             navigate(`/casos-prueba/${external_id}`, { state: { proyecto } });
         } else if (option === 'Asignar testers') {
             navigate(`/asignar/tester/${external_id}`, { state: { selectedRoleId: roleId } });
+        } else if (option === 'Lista de casos de prueba asignados') {
+            navigate('/casos/prueba/asignados');
+        }else if (option === 'Gestionar Usuarios') {
+            navigate('/usuarios');
         }
     };
 
@@ -121,18 +127,6 @@ const RoleMenu = () => {
                             <i className="bi bi-house-fill me-2"></i>
                             {isOpen && <span>Inicio</span>}
                         </li>
-                        <li className="p-2 mb-1" onClick={() => navigate('/usuarios')} 
-                            style={{ 
-                                cursor: 'pointer', 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                backgroundColor: selectedOption === 'Gestionar Usuarios' ? 'var(--color-terciario)' : 'transparent', 
-                                transition: 'background-color 0.3s',
-                                color: 'var(--blanco)'
-                            }}>
-                            <i className="bi bi-people-fill me-2"></i>
-                            {isOpen && <span>Gestionar Usuarios</span>}
-                        </li>
                         <li className="p-2 mb-1" onClick={() => navigate('/proyectos')} 
                             style={{ 
                                 cursor: 'pointer', 
@@ -152,6 +146,9 @@ const RoleMenu = () => {
                 <div className="sidebar-heading" style={{ marginLeft: isOpen ? '10px' : '0', color: 'var(--blanco)', fontWeight: 'bold' }}>
                     {isOpen ? proyecto.nombre : ''}
                 </div>
+
+                
+                
 
                 <ul className="list-unstyled">
                     {roles.map((role) => (
