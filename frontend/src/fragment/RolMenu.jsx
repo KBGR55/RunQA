@@ -61,8 +61,8 @@ const RoleMenu = () => {
     }, []);
 
     const roleOptions = {
-        'ADMINISTRADOR SYS': ['Gestionar Usuarios'],
-        'GERENTE DE PRUEBAS': ['Crear proyectos', 'Asignar testers', 'Generar reportes', 'Casos de prueba'],
+        'ADMINISTRADOR SYS': ['Gestionar usuarios','Registar usuarios'],
+        'GERENTE DE PRUEBAS': ['Asignar testers', 'Generar reportes', 'Casos de prueba','Editar proyecto','Miembros'],
         'ANALISTA DE PRUEBAS': ['Casos de prueba', 'Asignar testers', 'Lista de casos de prueba asignados'],
         'TESTER': ['Ejecutar casos de prueba', 'Registrar errores'],
         'DESARROLLADOR': ['Actualizar el estado de los errores', 'Consultar errores asignados']
@@ -92,15 +92,16 @@ const RoleMenu = () => {
         if (option === 'Casos de prueba') {
             navigate(`/casos-prueba/`, { state: { proyecto } });
         } else if (option === 'Editar proyecto') {
-            // Abrir el modal de edición de proyecto
             setShowNewProjectModal(true);
         } else if (option === 'Miembros') {
             navigate(`/proyecto/usuarios/${proyecto.external_id}`, { state: { proyecto } });
         } else if (option === 'Asignar testers') {
             navigate(`/asignar/tester/${external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Lista de casos de prueba asignados') {
-            navigate('/casos/prueba/asignados');
-        }else if (option === 'Gestionar Usuarios') {
+            navigate('/casos/prueba/asignados',{ state: { proyecto } });
+        } else if (option === 'Registar usuarios') {
+            navigate('/registrar-usuario');
+        }else if (option === 'Gestionar usuarios') {
             navigate('/usuarios');
         }
     };

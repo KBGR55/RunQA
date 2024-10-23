@@ -203,10 +203,6 @@ label{
   z-index: 1; 
 }
 
-body {
-  margin-left: 250px; 
-}
-
 /* Navbar superior */
 .navbar {
   background-color: var(--color-cuarto)!important; 

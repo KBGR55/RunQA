@@ -1,4 +1,3 @@
-// LayoutComponent.js
 import React from 'react';
 import NavbarComponent from './MenuBar';
 import SidebarComponent from './RolMenu';

@@ -3,14 +3,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/style.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { peticionPost, peticionGet, peticionPut } from '../utilities/hooks/Conexion';
 import mensajes from '../utilities/Mensajes';
 import { getToken, getUser } from '../utilities/Sessionutil';
 
-const NuevoProyecto = ({ external_id }) => {
+const NuevoProyecto = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
+    const { external_id} = useParams();
+
     const navigate = useNavigate();
     const [proyecto, setProyecto] = useState([]);
 
