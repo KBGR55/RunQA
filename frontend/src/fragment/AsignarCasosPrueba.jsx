@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faCheck, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { peticionGet, peticionPost } from '../utilities/hooks/Conexion';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { borrarSesion, getToken, getUser } from '../utilities/Sessionutil';
+import { borrarSesion, getExternalProyecto, getToken, getUser } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -13,7 +13,7 @@ import swal from 'sweetalert';
 import NavbarComplet from './NavbarComplet';
 
 const AsignarCasosPrueba = () => {
-    const { external_id } = useParams();
+    const external_id = useParams();
     const [showNewProjectModal, setShowNewProjectModal] = useState(false);
     const [casosPrueba, setCasosPrueba] = useState([]);
     const [testers, setTesters] = useState([]);
@@ -26,6 +26,7 @@ const AsignarCasosPrueba = () => {
     const usuario = getUser();
     const location = useLocation();
     const selectedRoleId = location.state?.selectedRoleId || null;
+    
 
     useEffect(() => {
         const fetchDataOut = async () => {
@@ -49,6 +50,9 @@ const AsignarCasosPrueba = () => {
 
         fetchDataOut();
     }, [external_id, navigate]);
+
+    console.log("exxx", external_id);
+    
 
     useEffect(() => {
         const fetchTesters = async () => {

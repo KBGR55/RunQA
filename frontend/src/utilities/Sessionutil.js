@@ -26,6 +26,17 @@ export const getUser = () => {
     const userJSON = localStorage.getItem('user');
     return JSON.parse(userJSON);
 }
+
+export const saveExternalProyecto= (external_id) => {
+    const externalProyecto = JSON.stringify(external_id);
+    localStorage.setItem('external_id', externalProyecto);
+}
+
+export const getExternalProyecto = () => {
+    const externalProyecto = localStorage.getItem('external_id');
+    return JSON.parse(externalProyecto);
+}
+
 export const savetokenApi = (tokenapi) => {
     localStorage.setItem("tokenapi", tokenapi);
 }

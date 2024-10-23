@@ -7,7 +7,7 @@ import NavbarComplet from './NavbarComplet';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import '../css/style.css';
 import { useNavigate } from 'react-router-dom';
-import { borrarSesion, getToken, getUser } from '../utilities/Sessionutil';
+import { borrarSesion, getToken, getUser, saveExternalProyecto } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 import NuevoProyecto from './NuevoProyecto'; 
 
@@ -45,8 +45,9 @@ const ListaProyectos = () => {
     };
 
     const handleProjectClick = (proyecto) => {
-         navigate(`/proyecto/${proyecto.proyecto.external_id}`);
+        navigate(`/proyecto/${proyecto.proyecto.external_id}`);
     };
+    
 
     return (
         <div>
