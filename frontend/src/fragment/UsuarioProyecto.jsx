@@ -15,7 +15,7 @@ const UsuarioProyecto = () => {
     const [showModalAddMembers, setShowModalAddMembers] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [userIdToDelete, setUserIdToDelete] = useState(null);
-    const { external_id } = useParams(); // Desestructurando directamente
+    const { external_id } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -24,7 +24,7 @@ const UsuarioProyecto = () => {
                 const info = await peticionGet(getToken(), `proyecto/${external_id}`);
                 if (info.code !== 200) {
                     mensajes(info.msg || 'Error al obtener datos del proyecto');
-                    navigate("/principal");
+                    navigate("/main");
                 } else {
                     setData(info.info);
                 }

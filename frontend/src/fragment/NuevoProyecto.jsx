@@ -93,6 +93,7 @@ const NuevoProyecto = ({ external_id }) => {
     return (
         <>
             <div className="contenedor-carta">
+            <p className="titulo-primario">Crear nuevo Proyecto</p>
                 <form onSubmit={onSubmit}>
                     <div className="mb-3">
                         <label htmlFor="nombreProyecto" className="form-label">Nombre del Proyecto</label>
@@ -121,7 +122,7 @@ const NuevoProyecto = ({ external_id }) => {
                         <small className="text-muted">{description.length}/50 caracteres</small>
                     </div>
                     <div className="contenedor-filo">
-                        <button type="button" onClick={() => navigate('/proyectos')} className="btn-negativo">
+                        <button type="button" onClick={() => window.location.reload()}  className="btn-negativo">
                             <FontAwesomeIcon icon={faTimes} /> Cancelar
                         </button>
                         <button className="btn-positivo" type="submit">
