@@ -18,7 +18,7 @@ const VerCasoPrueba = () => {
     const [editingCaso, setEditingCaso] = useState(null);
     const [casosPrueba, setCasosPrueba] = useState({});
     const { external_id } = useParams();
-    const { setValue, formState: { errors } } = useForm();
+    const { setValue} = useForm();
 
     useEffect(() => {
         const fetchCasoPrueba = async () => {

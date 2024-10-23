@@ -5,7 +5,6 @@ import { getToken, getUser, borrarSesion } from '../utilities/Sessionutil';
 import { Button, Collapse } from 'react-bootstrap';
 import mensajes from '../utilities/Mensajes';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import ListaCasoPrueba from './ListaCasoPrueba';
 
 const RoleMenu = () => {
     const [roles, setRoles] = useState([]);
@@ -60,7 +59,7 @@ const RoleMenu = () => {
     }, []);
 
     const roleOptions = {
-        'GERENTE DE PRUEBAS': ['Crear proyectos', 'Asignar testers', 'Generar reportes', 'Casos de prueba'],
+        'GERENTE DE PRUEBAS': ['Crear proyectos', 'Asignar testers', 'Generar reportes', 'Casos de prueba', 'Miembros'],
         'ANALISTA DE PRUEBAS': ['Casos de prueba', 'Asignar testers', 'Consultar estado de pruebas'],
         'TESTER': ['Ejecutar casos de prueba', 'Registrar errores'],
         'DESARROLLADOR': ['Actualizar el estado de los errores', 'Consultar errores asignados']
@@ -87,7 +86,11 @@ const RoleMenu = () => {
         setSelectedOption(option);
 
         if (option === 'Casos de prueba') {
-            navigate(`/casos-prueba/${external_id}`, { state: { proyecto } });
+            navigate(`/casos-prueba/`, { state: { proyecto } });
+        } if (option === 'Crear proyectos') {
+            navigate(`/proyecto/nuevo`, { state: { proyecto } });
+        } if (option === 'Miembros') {
+            navigate(`/proyecto/usuarios/${proyecto.external_id}`, { state: { proyecto } });
         } else if (option === 'Asignar testers') {
             navigate(`/asignar/tester/${external_id}`, { state: { selectedRoleId: roleId } });
         }

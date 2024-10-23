@@ -13,10 +13,6 @@ const NuevoProyecto = () => {
     const [description, setDescription] = useState('');
     const navigate = useNavigate(); 
 
-    const recargarPagina = () => {
-        window.location.reload();
-    };
-
     const onSubmit = (event) => {
         event.preventDefault(); 
         if (!name ) {
@@ -43,12 +39,9 @@ const NuevoProyecto = () => {
         peticionPost(getToken(), 'proyecto', datos).then((info) => {
             if (info.code !== 200) {
                 mensajes(info.msg, "error", "Error");
-               
             } else {
                 mensajes(info.msg, "success", "Éxito");
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1200);
+               navigate('/proyectos');
             }
         });
     };
@@ -56,9 +49,10 @@ const NuevoProyecto = () => {
     return (
         <>
             <div className="contenedor-carta">
+            <p className="titulo-primario">Crear nuevo Proyecto</p>
                 <form onSubmit={onSubmit}>
                     <div className="mb-3">
-                        <label htmlFor="nombreProyecto" className="form-label">Nombre del Proyecto</label>
+                        <label htmlFor="nombreProyecto" className="form-label">Nombre del proyecto</label>
                         <input 
                             type="text" 
                             className="form-control" 
@@ -84,7 +78,7 @@ const NuevoProyecto = () => {
                         <small className="text-muted">{description.length}/50 caracteres</small>
                     </div>
                     <div className="contenedor-filo">
-                        <button type="button" onClick={() => navigate('/proyectos')} className="btn-negativo">
+                        <button type="button" onClick={() => window.location.reload()}  className="btn-negativo">
                             <FontAwesomeIcon icon={faTimes} /> Cancelar
                         </button>
                         <button className="btn-positivo" type="submit">

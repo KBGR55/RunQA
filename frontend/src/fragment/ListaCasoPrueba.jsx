@@ -9,28 +9,35 @@ import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate
 import '../css/style.css';
 import mensajes from '../utilities/Mensajes';
 import { getToken } from '../utilities/Sessionutil';
-import { faPlus } from '@fortawesome/free-solid-svg-icons'; 
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { useLocation } from 'react-router-dom';
 
-const ListaCasoPrueba = ({ proyecto }) => {
+const ListaCasoPrueba = () => {
     const [casosPrueba, setCasosPrueba] = useState([]);
-    const { id } = useParams();
     const [searchTerm, setSearchTerm] = useState('');
     const [showNewProjectModal, setShowNewProjectModal] = useState(false);
-    const navigate = useNavigate(); // Initialize useNavigate
+    const navigate = useNavigate();
+    const location = useLocation();
+    const proyecto = location.state?.proyecto;
 
     useEffect(() => {
+
         const fetchCasosPrueba = async () => {
-            const response = await peticionGet(getToken(), `caso/prueba/listar?id_proyecto=${proyecto.id}`);
-            
-            if (response.code === 200) {
-                setCasosPrueba(response.info);
+            if (proyecto.id) {
+                const response = await peticionGet(getToken(), `caso/prueba/listar?id_proyecto=${proyecto.id}`);
+                if (response.code === 200) {
+                    setCasosPrueba(response.info);
+                } else {
+                    console.error('Error al obtener casos de prueba:', response.msg);
+                }
             } else {
-                console.error('Error al obtener casos de prueba:', response.msg);
+                console.error('Proyecto no definido.');
             }
         };
 
         fetchCasosPrueba();
-    }, [id]); 
+    }, [proyecto]); // Add 'proyecto' as a dependency for useEffect
+
 
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
@@ -41,7 +48,7 @@ const ListaCasoPrueba = ({ proyecto }) => {
 
         return (
             (caso.nombre && caso.nombre.toLowerCase().includes(lowerCaseSearchTerm)) ||
-            (caso.estado && caso.estado.toLowerCase().includes(lowerCaseSearchTerm)) 
+            (caso.estado && caso.estado.toLowerCase().includes(lowerCaseSearchTerm))
         );
     });
 
@@ -66,8 +73,8 @@ const ListaCasoPrueba = ({ proyecto }) => {
                         <Button
                             className="btn-normal mb-3"
                             onClick={handleShowNewProjectModal}
-                        >  
-                            <FontAwesomeIcon icon={faPlus} /> Crear 
+                        >
+                            <FontAwesomeIcon icon={faPlus} /> Crear
                         </Button>
                     </div>
                     <p className="titulo-primario">Lista de Casos de Prueba</p>
@@ -102,22 +109,22 @@ const ListaCasoPrueba = ({ proyecto }) => {
                                             <td>{caso.nombre}</td>
                                             <td className="text-center">{caso.estado}</td>
                                             <td className="text-center">
-                                            <Button
-    variant="btn btn-outline-info btn-rounded"
-    onClick={() => handleNavigateToDetail(caso.external_id)} 
-    className="btn-icon" 
->
-    <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        width="24" 
-        height="24" 
-        fill="currentColor" 
-        className="bi bi-arrow-right-circle-fill" 
-        viewBox="0 0 16 16"
-    >
-        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"/>                                             
-    </svg>
-</Button>
+                                                <Button
+                                                    variant="btn btn-outline-info btn-rounded"
+                                                    onClick={() => handleNavigateToDetail(caso.external_id)}
+                                                    className="btn-icon"
+                                                >
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="24"
+                                                        height="24"
+                                                        fill="currentColor"
+                                                        className="bi bi-arrow-right-circle-fill"
+                                                        viewBox="0 0 16 16"
+                                                    >
+                                                        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z" />
+                                                    </svg>
+                                                </Button>
 
 
                                             </td>
