@@ -22,6 +22,17 @@ class ProyectoController {
         }
     }
 
+    async getProyecto(req, res) {
+        try {
+            const listar = await proyecto.findOne({
+               where: {external_id: req.body.external_id}
+            });
+            res.json({ msg: 'OK!', code: 200, info: listar });
+        } catch (error) {
+            res.status(500).json({ msg: 'Error al obtener proyecto', code: 500, error: error.message });
+        }
+    }
+
     async crearProtecto(req, res) {
         let transaction;
         try {

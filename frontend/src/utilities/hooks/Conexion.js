@@ -68,6 +68,18 @@ export const peticionPost = async (key, URL,data) => {
     })).json();
     return datos;
 }
+export const peticionPut = async (key, URL,data) => {
+    const headers = {
+        "Content-Type": "application/json",
+        "x-api-token": key
+    };
+    const datos = await (await fetch(`${URL_BACKEND}/${URL}`, {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify(data),
+    })).json();
+    return datos;
+}
 
 export const GuardarImages = async (data, key, urls) => {
     const headers = {

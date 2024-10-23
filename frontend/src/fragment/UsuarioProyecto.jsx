@@ -59,7 +59,9 @@ const UsuarioProyecto = () => {
             const response = await peticionDelete(getToken(), `proyecto/${external_id}/${userIdToDelete}`);
             if (response.code === 200) {
                 mensajes('Usuario eliminado exitosamente', 'success', 'Éxito');
-                setData(data.filter(user => user.entidad.id !== userIdToDelete));
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1200);
             } else {
                 mensajes(response.msg || 'Error al eliminar usuario', 'error', 'Error');
             }
@@ -114,7 +116,7 @@ const UsuarioProyecto = () => {
                                         {data.map((user) => (
                                             <tr key={user.id}>
                                                 <td className="text-center" style={{ backgroundColor: "#FFFFFF", border: "none" }}>
-                                                    <img src={URLBASE + "/images/users/" + user.entidad.foto} alt="Avatar" style={{ width: '50px', height: '50px' }} />
+                                                    <img src={URLBASE + "/images/users/" + user.entidad.foto} alt="Avatar" style={{ width: '30px', height: '30px' }} />
                                                 </td>
                                                 <td className="text-center">{user.entidad.nombres}</td>
                                                 <td className="text-center">{user.entidad.apellidos}</td>
