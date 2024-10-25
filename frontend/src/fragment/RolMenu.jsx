@@ -61,7 +61,7 @@ const RoleMenu = () => {
     }, []);
 
     const roleOptions = {
-        'ADMINISTRADOR SYS': ['Gestionar usuarios','Registar usuarios'],
+        'ADMINISTRADOR SYS': ['Gestionar usuarios'],
         'GERENTE DE PRUEBAS': ['Asignar testers', 'Generar reportes', 'Casos de prueba','Editar proyecto','Miembros'],
         'ANALISTA DE PRUEBAS': ['Casos de prueba', 'Asignar testers', 'Lista de casos de prueba asignados'],
         'TESTER': ['Ejecutar casos de prueba', 'Registrar errores'],
@@ -98,9 +98,7 @@ const RoleMenu = () => {
         } else if (option === 'Asignar testers') {
             navigate(`/asignar/tester/${external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Lista de casos de prueba asignados') {
-            navigate('/casos/prueba/asignados',{ state: { proyecto } });
-        } else if (option === 'Registar usuarios') {
-            navigate('/registrar-usuario');
+            navigate ('/casos/prueba/asignados',{ state: { proyecto } });
         }else if (option === 'Gestionar usuarios') {
             navigate('/usuarios');
         }
