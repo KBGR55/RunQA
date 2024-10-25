@@ -1,5 +1,5 @@
-const URL_BACKEND = "http://localhost:3006/api"
-export const URLBASE = "http://localhost:3006"; 
+const URL_BACKEND = "https://fjz8jvpd-3006.brs.devtunnels.ms/api"
+export const URLBASE = "https://fjz8jvpd-3006.brs.devtunnels.ms/"; 
 
 export const loginpost = async (formData, URL) => {
     const headers = {
