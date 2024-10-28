@@ -78,6 +78,7 @@ const Registrar = () => {
 
     return (
         <div>
+                    
             <div className="contenedor-carta">
                 <p className="titulo-primario">Registro de usuario</p>
                 <form className="row g-3 p-2" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
@@ -245,8 +246,6 @@ const Registrar = () => {
                             <span className='mensajeerror'>Las claves no coinciden</span>
                         )}
                     </div>
-
-
                     <div className="contenedor-filo">
                         <button type="button" onClick={handleCancelClick} className="btn-negativo">Cancelar</button>
                         <button type="submit" className="btn-positivo">Guardar</button>

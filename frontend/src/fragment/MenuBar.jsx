@@ -5,7 +5,7 @@ import { URLBASE } from '../utilities/hooks/Conexion';
 import { useNavigate } from 'react-router';
 import '../css/style.css';
 
-const ManuBar = () => {
+const MenuBar = () => {
     const [nombreUsuario, setNombreUsuario] = useState('');
     const [fotoUsuario, setFotoUsuario] = useState('');
     const token = getToken();
@@ -51,4 +51,4 @@ const ManuBar = () => {
     );
 };
 
-export default ManuBar;
+export default MenuBar;
