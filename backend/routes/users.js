@@ -207,5 +207,6 @@ router.get('/contrato/asignados', contratoController.obtenerDatosTabla);
 /** ROL_ENTIDAD */
 router.get('/rol/entidad/listar', rolEntidadController.listar);
 router.post('/asignar/lideres', rolEntidadController.asignarLideres);
+router.get('/rol/entidad/obtener/lider', rolEntidadController.obtenerLider);
 
 module.exports = router;  

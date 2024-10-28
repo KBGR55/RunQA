@@ -13,6 +13,7 @@ import NuevoProyecto from './NuevoProyecto';
 const ListaProyectos = () => {
     const [showNewProjectModal, setShowNewProjectModal] = useState(false);
     const [proyectos, setProyectos] = useState([]);
+    const [rolLider, setRolLider] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -32,8 +33,30 @@ const ListaProyectos = () => {
                 console.error('Error en la solicitud:', error);
             }
         };
+        const fetchRolesLiderCalidad= async () => {
+            try {
+                const info = await peticionGet(
+                    getToken(),
+                    `/rol/entidad/obtener/lider?id_entidad=${getUser().user.id}`
+                );
+                if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
+                    borrarSesion();
+                    mensajes(info.mensajes);
+                    navigate("/main");
+                } else if (info.code === 200) {
+                    setRolLider(info.info);
+                } else {
+                    console.error('Error al obtener roles:', info.msg);
+                }
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+            }
+        };
+
+        fetchRolesLiderCalidad();
         fetchProyectos();
     }, [navigate]);
+    console.log('lit',rolLider);
 
     const handleShowNewProjectModal = () => {
         setShowNewProjectModal(true);
@@ -52,13 +75,16 @@ const ListaProyectos = () => {
         <div>
             <div className='contenedor-centro'>
                 <div className="contenedor-carta">
-                    <div className='contenedor-filo'>
+                    { rolLider.length > 0 &&
+                        <div className='contenedor-filo'>
                         <Button
                             className="btn-normal mb-3"
                             onClick={handleShowNewProjectModal}
                         >  <FontAwesomeIcon icon={faPlus} />  Crear Proyecto
                         </Button>
                     </div>
+                    }
+                    
                     <p className="titulo-primario">Lista de Proyectos</p>
                     {proyectos.length === 0 ? (
                         <div className="text-center">

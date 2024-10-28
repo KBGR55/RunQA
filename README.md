@@ -136,7 +136,7 @@ Antes de ejecutar el proyecto, asegúrate de configurar la base de datos. Sigue 
 
          INSERT INTO rol (id, external_id, estado, nombre, createdAt, updatedAt) VALUES
          (1, '1376cf7e-907c-11ef-8f4d-30e37a2aa82d', 1, 'ADMINISTRADOR SYS', '2024-10-19 05:30:36', '2024-10-19 05:30:36'),
-         (2, '2df3ca7a-8e05-11ef-80ac-b48c9d91f915', 1, 'GERENTE DE PRUEBAS', '2024-10-19 05:30:36', '2024-10-19 05:30:36'),
+         (2, '2df3ca7a-8e05-11ef-80ac-b48c9d91f915', 1, 'LIDER DE CALIDAD', '2024-10-19 05:30:36', '2024-10-19 05:30:36'),
          (3, '1fe548cb-907c-11ef-8f4d-30e37a2aa82d', 1, 'ANALISTA DE PRUEBAS', '2024-10-19 05:30:36', '2024-10-19 05:30:36'),
          (4, '26214891-907c-11ef-8f4d-30e37a2aa82d', 1, 'TESTER', '2024-10-19 05:30:36', '2024-10-19 05:30:36'),
          (5, '29b40789-907c-11ef-8f4d-30e37a2aa82d', 1, 'DESARROLLADOR', '2024-10-19 05:30:36', '2024-10-19 05:30:36');

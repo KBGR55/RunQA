@@ -4,7 +4,7 @@ var models = require('../models/');
 const uuid = require('uuid');
 const proyecto = models.proyecto; 
 const cuenta = models.cuenta; 
-const rolAdmin = 'GERENTE DE PRUEBAS';
+const rolLider = 'LIDER DE CALIDAD';
 class ProyectoController {
 
     async listar(req, res) {
@@ -38,14 +38,15 @@ class ProyectoController {
         try {
             transaction = await models.sequelize.transaction();
             const entidad = await models.entidad.findOne({ where: { id: req.body.id_entidad }, attributes: ['id'] });
-            const nameRole = await models.rol.findOne({ where: { nombre: rolAdmin }, attributes: ['id'] });
+            const nameRole = await models.rol.findOne({ where: { nombre: rolLider }, attributes: ['id'] });
             if (entidad) {
+                const rolEntidad = await models.rol_entidad.findOne({ where: { id_entidad: entidad.id,id_rol:nameRole.id},attributes: ['id']});
                 const resultado = await models.rol_proyecto.findOne({
-                    where: { id_rol: nameRole.id, id_entidad: entidad.id },
+                    where: { id_rol_entidad: rolEntidad.id },
                     include: {
                         model: models.proyecto, where: { nombre: req.body.name },
                         attributes: ['id', 'nombre']
-                    }, attributes: ['id_entidad']
+                    }, attributes: ['id_rol_entidad']
                 });
                 if (resultado) {
                     res.status(200).json({ msg: "El proyecto ya existe", code: 200 });
@@ -58,7 +59,7 @@ class ProyectoController {
                     };
 
                     const newProyect = await models.proyecto.create(data, { transaction });
-                    await models.rol_proyecto.create({ id_rol: nameRole.id, id_entidad: entidad.id, id_proyecto: newProyect.id, external_id: uuid.v4() }, { transaction });
+                   await models.rol_proyecto.create({id_rol_entidad: rolEntidad.id, id_proyecto: newProyect.id, external_id: uuid.v4() }, { transaction });
                     await transaction.commit();
                     res.json({ msg: "SE HA REGISTRADO CORRECTAMENTE", code: 200, info: newProyect.external_id });
                 }
@@ -81,7 +82,7 @@ class ProyectoController {
             const rolProyect = await models.rol_proyecto.findOne({ where: { id_proyecto: req.body.id_proyect } });
          
             if (oldProyect) {
-                const nameRole = await models.rol.findOne({ where: { nombre: rolAdmin }, attributes: ['id'] });
+                const nameRole = await models.rol.findOne({ where: { nombre: rolLider }, attributes: ['id'] });
                 const resultado = await models.rol_proyecto.findOne({
                     where: { id_rol: nameRole.id, id_entidad: rolProyect.id_entidad },
                     include: {

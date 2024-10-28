@@ -9,6 +9,7 @@ import NuevoProyecto from './NuevoProyecto';
 
 const RoleMenu = () => {
     const [roles, setRoles] = useState([]);
+    const [rolesEntida, setRolesEntidad]= useState([]);
     const [proyecto, setProyecto] = useState({});
     const [isOpen, setIsOpen] = useState(true); 
     const [activeMenu, setActiveMenu] = useState(null); 
@@ -39,11 +40,29 @@ const RoleMenu = () => {
                 console.error('Error en la solicitud:', error);
             }
         };
+        const fetchRolesEntidad = async () => {
+            try {
+                const info = await peticionGet(
+                    getToken(),
+                    `/rol/entidad/listar?id_entidad=${getUser().user.id}`
+                );
+                if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
+                    borrarSesion();
+                    mensajes(info.mensajes);
+                    navigate("/main");
+                } else if (info.code === 200) {
+                    setRolesEntidad(info.info);
+                } else {
+                    console.error('Error al obtener roles:', info.msg);
+                }
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+            }
+        };
+        
         fetchRoles();
+        fetchRolesEntidad();
     }, [external_id, navigate]);
-
-    console.log("22222222", roles);
-    console.log("33333333333333333", proyecto);
     
 
     useEffect(() => {
@@ -66,7 +85,7 @@ const RoleMenu = () => {
 
     const roleOptions = {
         'ADMINISTRADOR SYS': ['Gestionar usuarios'],
-        'GERENTE DE PRUEBAS': ['Asignar testers', 'Generar reportes', 'Casos de prueba','Editar proyecto','Miembros'],
+        'LIDER DE CALIDAD': ['Asignar testers', 'Generar reportes', 'Casos de prueba','Editar proyecto','Miembros'],
         'ANALISTA DE PRUEBAS': ['Casos de prueba', 'Asignar testers', 'Lista de casos de prueba asignados'],
         'TESTER': ['Ejecutar casos de prueba', 'Registrar errores'],
         'DESARROLLADOR': ['Actualizar el estado de los errores', 'Consultar errores asignados']
@@ -74,7 +93,7 @@ const RoleMenu = () => {
 
     const roleIcons = {
         'ADMINISTRADOR SYS': 'bi bi-person-lines-fill',
-        'GERENTE DE PRUEBAS': 'bi bi-briefcase-fill',
+        'LIDER DE CALIDAD': 'bi bi-briefcase-fill',
         'ANALISTA DE PRUEBAS': 'bi bi-card-checklist',
         'TESTER': 'bi bi-bug-fill',
         'DESARROLLADOR': 'bi bi-code-slash'

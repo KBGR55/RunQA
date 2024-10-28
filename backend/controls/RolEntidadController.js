@@ -2,6 +2,7 @@
 
 var models = require('../models/');
 var rol_proyecto = models.rol_proyecto;
+const rolLider = 'LIDER DE CALIDAD';
 const uuid = require('uuid');
 
 class RolEntidadController {
@@ -11,17 +12,12 @@ class RolEntidadController {
             const id_entidad = req.query.id_entidad;
 
             if (!id_entidad) {
-                return res.status(404).json({ msg: "No se encontró la entidad", code: 404 });
+                return res.status(400).json({ msg: "ID de entidad no proporcionado", code: 400 });
             }
-
+    
             const listar = await models.rol_entidad.findAll({
                 where: { id_entidad: id_entidad },
                 include: [
-                    {
-                        model: models.entidad,
-                        where: { estado: true },
-                        attributes: ['id', 'external_id', 'nombres', 'apellidos', 'fecha_nacimiento', 'telefono', 'estado']
-                    },
                     {
                         model: models.rol,
                         where: { estado: true },
@@ -33,12 +29,42 @@ class RolEntidadController {
             if (listar.length === 0) {
                 return res.status(404).json({ msg: "No se encontraron roles para la entidad proporcionada", code: 404 });
             }
-
-            res.json({ msg: 'OK!', code: 200, info: listar });
+    
+            res.json({ msg: 'Roles encontrados', code: 200, info: listar });
         } catch (error) {
-            res.status(500).json({ msg: 'Se produjo un error en listar roles', code: 500, info: error.message });
+            console.error("Error al listar roles:", error);
+            res.status(500).json({ msg: 'Error al listar roles', code: 500, info: error.message });
         }
-    }
+    }    
+    async obtenerLider(req, res) {
+        try {
+            const id_entidad = req.query.id_entidad;
+
+            if (!id_entidad) {
+                return res.status(400).json({ msg: "ID de entidad no proporcionado", code: 400 });
+            }
+    
+            const listar = await models.rol_entidad.findAll({
+                where: { id_entidad: id_entidad },
+                include: [
+                    {
+                        model: models.rol,
+                        where: { estado: true ,nombre:rolLider},
+                        attributes: ['external_id', 'nombre', 'estado']
+                    }
+                ]
+            });
+
+            if (listar.length === 0) {
+                return res.status(404).json({ msg: "No es lider de calidad", code: 404 });
+            }
+    
+            res.json({ msg: 'Es lider de calidad', code: 200, info: listar });
+        } catch (error) {
+            console.error("Error al listar roles:", error);
+            res.status(500).json({ msg: 'Error al listar', code: 500, info: error.message });
+        }
+    }    
 
     async asignarLideres(req, res) {
         let transaction;
@@ -59,12 +85,13 @@ class RolEntidadController {
                 const entidad = await models.entidad.findOne({
                     where: { id: lider.id_entidad, estado: 1 }
                 });
+                const nameRole = await models.rol.findOne({ where: { nombre: rolLider }, attributes: ['id'] });
                 if (!entidad) {
                     return res.status(404).json({ msg: `Entidad con ID ${lider.id_entidad} no encontrada o inactiva`, code: 404 });
                 }
     
                 const rolExistente = await models.rol_entidad.findOne({
-                    where: { id_entidad: lider.id_entidad, id_rol: 3 } //CAMBIAR SEGUN EL VALOR DEL ID DEL ROL DE LIDER DE CALIDAD
+                    where: { id_entidad: lider.id_entidad, id_rol: nameRole.id } 
                 });
                 if (rolExistente) {
                     return res.status(409).json({ msg: 'Ya tiene asignado el rol de LÍDER DE CALIDAD', code: 409 });
@@ -72,7 +99,7 @@ class RolEntidadController {
     
                 const nuevaAsignacion = await models.rol_entidad.create({
                     id_entidad: lider.id_entidad,
-                    id_rol: 3, //CAMBIAR SEGUN EL VALOR DEL ID DEL ROL DE LIDER DE CALIDAD
+                    id_rol: nameRole,id, 
                     external_id: uuid.v4()
                 }, { transaction });
                 asignaciones.push(nuevaAsignacion);
