@@ -3,6 +3,7 @@
 var models = require('../models/');
 var rol_proyecto = models.rol_proyecto;
 const rolLider = 'LIDER DE CALIDAD';
+const rolAdministrador = 'ADMINISTRADOR SYS';
 const uuid = require('uuid');
 
 class RolEntidadController {
@@ -65,6 +66,36 @@ class RolEntidadController {
             res.status(500).json({ msg: 'Error al listar', code: 500, info: error.message });
         }
     }    
+    
+    async obtenerAdministrador(req, res) {
+        try {
+            const id_entidad = req.query.id_entidad;
+
+            if (!id_entidad) {
+                return res.status(400).json({ msg: "ID de entidad no proporcionado", code: 400 });
+            }
+    
+            const listar = await models.rol_entidad.findAll({
+                where: { id_entidad: id_entidad },
+                include: [
+                    {
+                        model: models.rol,
+                        where: { estado: true ,nombre:rolAdministrador},
+                        attributes: ['external_id', 'nombre', 'estado']
+                    }
+                ]
+            });
+
+            if (listar.length === 0) {
+                return res.status(404).json({ msg: "No es administrador del sistema", code: 404 });
+            }
+    
+            res.json({ msg: 'Es administrador del sistema', code: 200, info: listar});
+        } catch (error) {
+            console.error("Error al listar roles:", error);
+            res.status(500).json({ msg: 'Error al listar', code: 500, info: error.message });
+        }
+    }  
 
     async asignarLideres(req, res) {
         let transaction;
