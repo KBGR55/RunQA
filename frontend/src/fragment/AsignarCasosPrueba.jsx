@@ -267,7 +267,7 @@ const AsignarCasosPrueba = () => {
                                     dateFormat="yyyy/MM/dd"
                                     className="form-control"
                                     placeholderText="Selecciona la fecha"
-                                    minDate={fechaInicioPrueba || new Date()}
+                                    minDate={new Date()}
                                     popperPlacement="bottom-start"
                                 />
                             </Form.Group>

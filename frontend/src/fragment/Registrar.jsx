@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/Registro_Style.css';
 import '../css/Login_Style.css';
@@ -11,15 +11,26 @@ import mensajes from '../utilities/Mensajes';
 import swal from 'sweetalert';
 
 const Registrar = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [passwordMatch, setPasswordMatch] = useState(null);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
+    useEffect(() => {
+        // Actualiza el estado de coincidencia de la clave y confirmación
+        setPasswordMatch(confirmPassword === watch('clave'));
+    }, [confirmPassword, watch('clave')]);
+
     const onSubmit = data => {
+        if (!passwordMatch) {
+            mensajes('Las contraseñas no coinciden', 'error', 'Error');
+            return;
+        }
         const formData = new FormData();
         formData.append('nombres', data.nombres.toUpperCase());
         formData.append('apellidos', data.apellidos.toUpperCase());
@@ -32,7 +43,6 @@ const Registrar = () => {
         } else {
             const defaultPhotoUrl = `${process.env.PUBLIC_URL}/img/USUARIO_ICONO.png`;
             formData.append('foto', defaultPhotoUrl);
-            console.log("data", defaultPhotoUrl);
         }
 
         GuardarImages(formData, getToken(), "/entidad/guardar").then(info => {
@@ -51,7 +61,7 @@ const Registrar = () => {
 
     const handleCancelClick = () => {
         swal({
-            title: "¿Está seguro de cancelar el registro",
+            title: "¿Está seguro de cancelar el registro?",
             text: "Una vez cancelado, no podrá revertir esta acción",
             icon: "warning",
             buttons: ["No", "Sí"],
@@ -66,11 +76,9 @@ const Registrar = () => {
         });
     };
 
-
     return (
         <div>
             <div className="contenedor-carta">
-
                 <p className="titulo-primario">Registro de usuario</p>
                 <form className="row g-3 p-2" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
                     <div className="col-md-6">
@@ -131,6 +139,7 @@ const Registrar = () => {
                         />
                         {errors.fecha_nacimiento && <span className='mensajeerror'>{errors.fecha_nacimiento.message}</span>}
                     </div>
+
                     <div className="col-md-6">
                         <label htmlFor="telefono" className="form-label">Ingrese su telefono</label>
                         <input type="text"
@@ -145,11 +154,11 @@ const Registrar = () => {
                                 },
                                 minLength: {
                                     value: 5,
-                                    message: "El telefóno debe tener mínimo 5 caracteres"
+                                    message: "El teléfono debe tener mínimo 5 caracteres"
                                 },
                                 maxLength: {
                                     value: 10,
-                                    message: "El telefóno debe tener máximo 10 caracteres"
+                                    message: "El teléfono debe tener máximo 10 caracteres"
                                 }
                             })}
                             className="form-control"
@@ -174,6 +183,7 @@ const Registrar = () => {
                         />
                         {errors.correo && <span className='mensajeerror'>{errors.correo.message}</span>}
                     </div>
+
                     <div className="col-md-6">
                         <label htmlFor="clave" className="form-label">Ingrese su clave</label>
                         <div className="input-group">
@@ -192,7 +202,6 @@ const Registrar = () => {
                                         value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
                                         message: "La clave debe contener al menos una letra y un número"
                                     }
-
                                 })}
                                 className="form-control"
                             />
@@ -201,17 +210,30 @@ const Registrar = () => {
                                 className="btn btn-outline-secondary"
                                 onClick={togglePasswordVisibility}
                             >
-                                {showPassword ? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
-                                    <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
-                                    <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
-                                </svg> : <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash-fill" viewBox="0 0 16 16">
-                                    <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z" />
-                                    <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z" />
-                                </svg>}
+                                {showPassword ? '👁️' : '👁️‍🗨️'}
                             </button>
                         </div>
                         {errors.clave && <span className='mensajeerror'>{errors.clave.message}</span>}
                     </div>
+
+                    <div className="col-md-6">
+                        <label htmlFor="confirmPassword" className="form-label">Confirme su clave</label>
+                        <div className="input-group">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                className="form-control"
+                            />
+                            <span className="input-group-text">
+                                {passwordMatch === null ? '' : passwordMatch ? '✔️' : '❌'}
+                            </span>
+                        </div>
+                        {confirmPassword && !passwordMatch && (
+                            <span className='mensajeerror'>Las claves no coinciden</span>
+                        )}
+                    </div>
+
                     <div className="col-md-12">
                         <label htmlFor="foto" className="form-label">Seleccionar foto</label>
                         <input type="file"
@@ -224,15 +246,14 @@ const Registrar = () => {
                         />
                         {errors.foto && <span className='mensajeerror'>{errors.foto.message}</span>}
                     </div>
+
                     <div className="contenedor-filo">
-                        <button type="button" onClick={() => { handleCancelClick() }} className="btn-negativo">Cancelar</button>
+                        <button type="button" onClick={handleCancelClick} className="btn-negativo">Cancelar</button>
                         <button type="submit" className="btn-positivo">Guardar</button>
                     </div>
-
                 </form>
             </div>
         </div>
-
     );
 };
 
