@@ -9,11 +9,11 @@ import { getToken, borrarSesion } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 import EditarPersona from './EditarPersona';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import Registrar from '../fragment/Registrar';
+import AsignarLideres from './AsignarLideres';
 
 const ListaUsuarios = () => {
-    const [llUsuarios, setUsuarios] = useState(false);
     const [data, setData] = useState([]);
     const navigate = useNavigate();
     const [personaObtenida, setpersonaObtenida] = useState([]);
@@ -21,22 +21,20 @@ const ListaUsuarios = () => {
     const handleCloseEdit = () => setShowEdit(false);
     const handleShowEdit = () => setShowEdit(true);
     const [showNewProjectModal, setShowNewProjectModal] = useState(false);
-  
+    const [showAsignarModal, setShowAsignarModal] = useState(false);
 
     useEffect(() => {
-        if (!llUsuarios) {
-            peticionGet(getToken(), '/listar/entidad').then((info) => {
-                if (info.code !== 200 && info.msg === 'Acceso denegado. Token a expirado') {
-                    borrarSesion();
-                    mensajes(info.mensajes);
-                    navigate("main");
-                } else {
-                    setData(info.info);
-                    setUsuarios(true);
-                }
-            });
-        }
-    }, [llUsuarios, navigate]);
+        peticionGet(getToken(), '/listar/entidad').then((info) => {
+            if (info.code !== 200 && info.msg === 'Acceso denegado. Token a expirado') {
+                borrarSesion();
+                mensajes(info.mensajes);
+                navigate("main");
+            } else {
+                setData(info.info);
+            }
+        });
+
+    }, [navigate]);
 
     //CAMBIAR FORMATO FECHA
     const obtenerFechaFormateada = (fechaString) => {
@@ -76,18 +74,28 @@ const ListaUsuarios = () => {
         setShowNewProjectModal(false);
     };
 
+    // Abrir modal de asignación de líderes
+    const handleShowAsignarModal = () => {
+        setShowAsignarModal(true);
+    };
+
+    // Cerrar modal de asignación de líderes
+    const handleCloseAsignarModal = () => {
+        setShowAsignarModal(false);
+    };
+
 
     return (
         <div>
             <div className="contenedor-centro">
                 <div className='contenedor-carta '>
-                <div className='contenedor-filo'>
+                    <div className='contenedor-filo'>
                         <Button
                             className="btn-normal mb-3"
-                            onClick={handleShowNewProjectModal}
-                        >  <FontAwesomeIcon icon={faPlus} /> Registrar Usuario
+                            onClick={handleShowAsignarModal}
+                        >  <FontAwesomeIcon icon={faPlus} /> Crear Lideres de Calidad
                         </Button>
-                    </div> 
+                    </div>
                     <main className="table">
                         <section className='table_header'>
                             <h1 className="titulo-primario">Lista de Usuarios</h1>
@@ -162,15 +170,17 @@ const ListaUsuarios = () => {
                     </Modal.Body>
                 </Modal>
 
+                {/* Modal para asignar líderes */}
+                <Modal show={showAsignarModal} onHide={handleCloseAsignarModal} backdrop="static" keyboard={false}>
+                    <Modal.Header closeButton>
+                        <Modal.Title className="titulo-primario">Asignar Líderes de Calidad</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <AsignarLideres />
+                    </Modal.Body>
+                </Modal>
+
             </div>
-            <Modal show={showNewProjectModal} onHide={handleCloseNewProjectModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title className='titulo-primario'>Crear nuevo usuario</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Registrar onClose={handleCloseNewProjectModal} />
-                </Modal.Body>
-            </Modal>
         </div>
     );
 };

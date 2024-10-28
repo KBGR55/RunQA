@@ -49,10 +49,7 @@ const AsignarCasosPrueba = () => {
         };
 
         fetchDataOut();
-    }, [external_id, navigate]);
-
-    console.log("exxx", external_id);
-    
+    }, [external_id, navigate]);    
 
     useEffect(() => {
         const fetchTesters = async () => {

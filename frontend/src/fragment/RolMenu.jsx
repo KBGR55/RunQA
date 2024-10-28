@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import { getToken, getUser, borrarSesion } from '../utilities/Sessionutil';
-import { Button, Collapse, Modal } from 'react-bootstrap'; // Importa Modal
+import { Button, Collapse, Modal } from 'react-bootstrap';
 import mensajes from '../utilities/Mensajes';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import NuevoProyecto from './NuevoProyecto'; // Importa el componente NuevoProyecto
+import NuevoProyecto from './NuevoProyecto'; 
 
 const RoleMenu = () => {
     const [roles, setRoles] = useState([]);
@@ -16,7 +16,7 @@ const RoleMenu = () => {
     const navigate = useNavigate();
     const [selectedRoleId, setSelectedRoleId] = useState(null);
     const [selectedOption, setSelectedOption] = useState('');
-    const [showNewProjectModal, setShowNewProjectModal] = useState(false); // Estado para controlar el modal
+    const [showNewProjectModal, setShowNewProjectModal] = useState(false);
 
     useEffect(() => {
         const fetchRoles = async () => {
@@ -41,6 +41,10 @@ const RoleMenu = () => {
         };
         fetchRoles();
     }, [external_id, navigate]);
+
+    console.log("22222222", roles);
+    console.log("33333333333333333", proyecto);
+    
 
     useEffect(() => {
         const handleResize = () => {
