@@ -1,7 +1,7 @@
 'use strict';
 
 var models = require('../models/');
-const superUsuaripo ='AMINISTRADOR SYS';
+const superUsuario ='ADMINISTRADOR SYS';
 var rol = models.rol;
 
 class RolController {
@@ -10,7 +10,7 @@ class RolController {
             var listar = await rol.findAll({
                 attributes: ['nombre', 'external_id', 'id', 'estado'],
                 where: {
-                    nombre: { [models.Sequelize.Op.not]: superUsuaripo } 
+                    nombre: { [models.Sequelize.Op.not]: superUsuario } 
                 }
             });
             res.json({ msg: 'OK!', code: 200, info: listar });

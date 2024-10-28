@@ -10,6 +10,7 @@ import NuevoProyecto from './NuevoProyecto';
 const RoleMenu = () => {
     const [roles, setRoles] = useState([]);
     const [rolesEntida, setRolesEntidad]= useState([]);
+    const [rolAdministrador, setRolAdministrador]= useState('');
     const [proyecto, setProyecto] = useState({});
     const [isOpen, setIsOpen] = useState(true); 
     const [activeMenu, setActiveMenu] = useState(null); 
@@ -40,11 +41,32 @@ const RoleMenu = () => {
                 console.error('Error en la solicitud:', error);
             }
         };
+        const fetchRolAdministrador= async () => {
+            try {
+                const info = await peticionGet(
+                    getToken(),
+                    `/rol/entidad/obtener/administrador?id_entidad=${getUser().user.id}`
+                );
+                if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
+                    borrarSesion();
+                    mensajes(info.mensajes);
+                    navigate("/main");
+                } else if (info.code === 200) {
+                    setRolAdministrador(info.code);
+                } else {
+                    setRolAdministrador(info.code);
+                    console.error('Error al obtener roles:', info.msg);
+                }
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+            }
+        };
+
         const fetchRolesEntidad = async () => {
             try {
                 const info = await peticionGet(
                     getToken(),
-                    `/rol/entidad/listar?id_entidad=${getUser().user.id}`
+                    `rol/entidad/listar?id_entidad=${getUser().user.id}`
                 );
                 if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
                     borrarSesion();
@@ -61,9 +83,9 @@ const RoleMenu = () => {
         };
         
         fetchRoles();
+        fetchRolAdministrador();
         fetchRolesEntidad();
     }, [external_id, navigate]);
-    
 
     useEffect(() => {
         const handleResize = () => {
@@ -84,7 +106,6 @@ const RoleMenu = () => {
     }, []);
 
     const roleOptions = {
-        'ADMINISTRADOR SYS': ['Gestionar usuarios'],
         'LIDER DE CALIDAD': ['Asignar testers', 'Generar reportes', 'Casos de prueba','Editar proyecto','Miembros'],
         'ANALISTA DE PRUEBAS': ['Casos de prueba', 'Asignar testers', 'Lista de casos de prueba asignados'],
         'TESTER': ['Ejecutar casos de prueba', 'Registrar errores'],
@@ -92,7 +113,6 @@ const RoleMenu = () => {
     };
 
     const roleIcons = {
-        'ADMINISTRADOR SYS': 'bi bi-person-lines-fill',
         'LIDER DE CALIDAD': 'bi bi-briefcase-fill',
         'ANALISTA DE PRUEBAS': 'bi bi-card-checklist',
         'TESTER': 'bi bi-bug-fill',
@@ -122,8 +142,6 @@ const RoleMenu = () => {
             navigate(`/asignar/tester/${external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Lista de casos de prueba asignados') {
             navigate ('/casos/prueba/asignados',{ state: { proyecto } });
-        }else if (option === 'Gestionar usuarios') {
-            navigate('/usuarios');
         }
     };
 
@@ -171,6 +189,20 @@ const RoleMenu = () => {
                             <i className="bi bi-clipboard-data-fill me-2"></i>
                             {isOpen && <span>Proyectos</span>}
                         </li>
+                        { rolAdministrador===200 &&
+                                <li className="p-2 mb-1" onClick={() => navigate('/usuarios')} 
+                                style={{ 
+                                    cursor: 'pointer', 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    backgroundColor: selectedOption === 'Gestionar usuarios' ? 'var(--color-terciario)' : 'transparent', 
+                                    transition: 'background-color 0.3s',
+                                    color: 'var(--blanco)'
+                                }}>
+                                <i className="bi bi-person-lines-fill me-2"></i>
+                                {isOpen && <span>Gestionar usuarios</span>}
+                            </li>
+                        }
                     </ul>
                 </div>
 

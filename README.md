@@ -161,37 +161,18 @@ Antes de ejecutar el proyecto, asegúrate de configurar la base de datos. Sigue 
          (4, '59476e19-907e-11ef-8f4d-30e37a2aa82d', 1, 'pedro.ramirez@unl.edu.ec', '$2a$08$vcbwdzAoBjH027Yt6B9PwO3G65afLhrMfejne1EJ7uoPGuLslHLC6', '2024-10-22 09:03:00', '2024-10-22 09:03:00', 4),
          (5, '59476f57-907e-11ef-8f4d-30e37a2aa82d', 1, 'ana.torres@unl.edu.ec', '$2a$08$vcbwdzAoBjH027Yt6B9PwO3G65afLhrMfejne1EJ7uoPGuLslHLC6', '2024-10-22 09:03:00', '2024-10-22 09:03:00', 5),
          (6, '594770e6-907e-11ef-8f4d-30e37a2aa82d', 1, 'sofia.mendoza@unl.edu.ec', '$2a$08$vcbwdzAoBjH027Yt6B9PwO3G65afLhrMfejne1EJ7uoPGuLslHLC6', '2024-10-22 09:03:00', '2024-10-22 09:03:00', 6);
-
+         INSERT INTO rol_entidad (external_id, estado, createdAt, updatedAt, id_entidad, id_rol)
+         VALUES 
+         ('a1b2c3d4-e5f6-7890-1234-56789abcdef0', 1, NOW(), NOW(), 1, 1);
          INSERT INTO proyecto (external_id, estado, nombre, fecha_inicio, descripcion, createdAt, updatedAt)
          VALUES
-         (UUID(), 1, 'ADMINISTRADOR SYS', '2024-10-22 09:08:40', 'Encargado de gestionar el sistema', NOW(), NOW()),
-         (UUID(), 1, 'Proyecto Alpha', '2024-10-22 09:08:40', 'Aplicación para gestión de tareas.', NOW(), NOW()),
-         (UUID(), 1, 'Proyecto Beta', '2024-10-22 09:08:40', 'Sistema de seguimiento de gastos.', NOW(), NOW()),
-         (UUID(), 1, 'Proyecto Gamma', '2024-10-22 09:08:40', 'Plataforma de e-learning online.', NOW(), NOW()),
-         (UUID(), 1, 'Proyecto Delta', '2024-10-22 09:08:40', 'Sitio web para restaurante.', NOW(), NOW()),
-         (UUID(), 1, 'Proyecto Epsilon', '2024-10-22 09:08:40', 'Red social para comunidad local.', NOW(), NOW());
+         (UUID(), 1, 'ADMINISTRADOR SYS', '2024-10-22 09:08:40', 'Encargado de gestionar el sistema', NOW(), NOW());
 
 
-         INSERT INTO rol_proyecto (external_id, estado, createdAt, updatedAt, id_entidad, id_proyecto, id_rol)
-         VALUES
-         ('c5137e95-907f-11ef-8f4d-30e37a2aa82d', 1, '2024-10-22 09:13:11', '2024-10-22 09:13:11', 1, 1, 1),
-         ('c513841c-907f-11ef-8f4d-30e37a2aa82d', 1, '2024-10-22 09:13:11', '2024-10-22 09:13:11', 2, 2, 2),
-         ('c5138511-907f-11ef-8f4d-30e37a2aa82d', 1, '2024-10-22 09:13:11', '2024-10-22 09:13:11', 3, 3, 3),
-         ('c51385a4-907f-11ef-8f4d-30e37a2aa82d', 1, '2024-10-22 09:13:11', '2024-10-22 09:13:11', 4, 4, 4),
-         ('c5138633-907f-11ef-8f4d-30e37a2aa82d', 1, '2024-10-22 09:13:11', '2024-10-22 09:13:11', 3, 5, 5),
-         ('c51386bf-907f-11ef-8f4d-30e37a2aa82d', 1, '2024-10-22 09:13:11', '2024-10-22 09:13:11', 2, 6, 2),
-         ('7323850d-9080-11ef-8f4d-30e37a2aa82d', 1, '2024-10-22 09:18:03', '2024-10-22 09:18:03', 3, 4, 2),
-         ('73238d10-9080-11ef-8f4d-30e37a2aa82d', 1, '2024-10-22 09:18:03', '2024-10-22 09:18:03', 4, 5, 2),
-         ('73238fec-9080-11ef-8f4d-30e37a2aa82d', 1, '2024-10-22 09:18:03', '2024-10-22 09:18:03', 3, 3, 2);
-         
-         INSERT INTO caso_prueba (id, external_id, nombre, estado, descripcion, precondiciones, pasos, resultado_esperado, resultado_obtenido, clasificacion, tipo_prueba, fecha_disenio, fecha_ejecucion_prueba, createdAt, updatedAt, id_proyecto)
-         VALUES    (1, 'a1f5b821-9080-11ef-8f4d-30e37a2aa82d', 'VALIDAR CREACIÓN DE USUARIO ALPHA', 'OBSOLETO', 'Caso de prueba para validar la creación de un nuevo usuario en el sistema.\nTener en cuenta el rol.', 'El usuario debe estar registrado en la base de datos.', '1. Ingresar nombre, correo y contraseña.\n2. Hacer clic en "Registrar".\n3. Mostrar mensaje de éxito', 'El usuario debe ser creado.\nY se debe recibir un mensaje de éxito.', 'Usuario creado con éxito.', 'ALTA', 'SISTEMA', '2024-10-22 09:20:00', '2024-10-22 00:00:00', '2024-10-22 09:25:53', '2024-10-22 22:38:05', 2),
-   (2, 'a1f5b822-9080-11ef-8f4d-30e37a2aa82d', 'Comprobar inicio de sesión Alpha', 'APROBADO', 'Verificar que un usuario registrado pueda iniciar sesión.', 'El usuario debe estar registrado y activo.', '1. Ingresar correo y contraseña.\n2. Hacer clic en "Iniciar sesión".', 'El usuario debe ser redirigido al panel de control.', 'Usuario redirigido al panel de control.', 'MEDIA', 'FUNCIONAL', '2024-10-22 09:20:00', '2024-10-22 09:20:00', '2024-10-22 09:25:53', '2024-10-22 09:25:53', 2),
-   (3, 'a1f5b823-9080-11ef-8f4d-30e37a2aa82d', 'Validar eliminación de usuario Alpha', 'RECHAZADO', 'Caso para validar que se puede eliminar un usuario del sistema.', 'El usuario debe estar registrado y activo.', '1. Seleccionar un usuario de la lista.\n2. Hacer clic en "Eliminar".', 'El usuario debe ser eliminado y se debe mostrar un mensaje de confirmación.', 'Error al eliminar el usuario debido a permisos insuficientes.', 'BAJA', 'FUNCIONAL', '2024-10-22 09:20:00', '2024-10-22 09:20:00', '2024-10-22 09:25:53', '2024-10-22 09:25:53', 2),
-   (4, 'a1f5b824-9080-11ef-8f4d-30e37a2aa82d', 'Verificar carga de gastos Beta', 'APROBADO', 'Caso de prueba para comprobar que los gastos se cargan correctamente.', 'El usuario debe estar registrado y tener permisos de acceso.', '1. Iniciar sesión.\n2. Navegar a la sección de gastos.\n3. Cargar un nuevo gasto.', 'El gasto debe aparecer en la lista con los detalles correctos.', 'Gasto cargado correctamente.', 'ALTA', 'FUNCIONAL', '2024-10-22 09:20:00', '2024-10-22 09:20:00', '2024-10-22 09:25:53', '2024-10-22 09:25:53', 3),
-   (5, 'a1f5b825-9080-11ef-8f4d-30e37a2aa82d', 'Comprobar informe de gastos Beta', 'BLOQUEADO', 'Verificar que el informe de gastos se genere correctamente.', 'El usuario debe tener al menos un gasto registrado.', '1. Iniciar sesión.\n2. Navegar a la sección de informes.\n3. Generar informe de gastos.', 'El informe debe generarse y mostrarse en pantalla.', 'Acceso bloqueado al generar el informe debido a restricciones de cuenta.', 'MEDIA', 'FUNCIONAL', '2024-10-22 09:20:00', '2024-10-22 09:20:00', '2024-10-22 09:25:53', '2024-10-22 09:25:53', 3),
-   (6, 'a1f5b826-9080-11ef-8f4d-30e37a2aa82d', 'Validar actualización de gastos Beta', 'OBSOLETO', 'Caso para validar que un gasto existente puede ser actualizado.', 'El gasto debe existir en la base de datos.', '1. Seleccionar un gasto.\n2. Cambiar los detalles y guardar los cambios.', 'Los detalles del gasto deben actualizarse y reflejarse correctamente.', 'Gasto marcado como obsoleto y no se actualizó.', 'BAJA', 'FUNCIONAL', '2024-10-22 09:20:00', '2024-10-22 09:20:00', '2024-10-22 09:25:53', '2024-10-22 09:25:53', 3);
-
+         INSERT INTO rol_proyecto (external_id, estado, createdAt, updatedAt, id_proyecto, id_rol_entidad)
+         VALUES 
+         ('123e4567-e89b-12d3-a456-426614174000', 1, NOW(), NOW(), 1, 1);
+      
 
          COMMIT;
 
