@@ -8,6 +8,9 @@ import { useNavigate } from 'react-router-dom';
 import { getToken, borrarSesion } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 import EditarPersona from './EditarPersona';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import Registrar from '../fragment/Registrar';
 
 const ListaUsuarios = () => {
     const [llUsuarios, setUsuarios] = useState(false);
@@ -17,6 +20,8 @@ const ListaUsuarios = () => {
     const [showEdit, setShowEdit] = useState(false);
     const handleCloseEdit = () => setShowEdit(false);
     const handleShowEdit = () => setShowEdit(true);
+    const [showNewProjectModal, setShowNewProjectModal] = useState(false);
+  
 
     useEffect(() => {
         if (!llUsuarios) {
@@ -63,11 +68,26 @@ const ListaUsuarios = () => {
         });
     };
 
+    const handleShowNewProjectModal = () => {
+        setShowNewProjectModal(true);
+    };
+
+    const handleCloseNewProjectModal = () => {
+        setShowNewProjectModal(false);
+    };
+
 
     return (
         <div>
             <div className="contenedor-centro">
                 <div className='contenedor-carta '>
+                <div className='contenedor-filo'>
+                        <Button
+                            className="btn-normal mb-3"
+                            onClick={handleShowNewProjectModal}
+                        >  <FontAwesomeIcon icon={faPlus} /> Registrar Usuario
+                        </Button>
+                    </div> 
                     <main className="table">
                         <section className='table_header'>
                             <h1 className="titulo-primario">Lista de Usuarios</h1>
@@ -143,7 +163,14 @@ const ListaUsuarios = () => {
                 </Modal>
 
             </div>
-
+            <Modal show={showNewProjectModal} onHide={handleCloseNewProjectModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title className='titulo-primario'>Crear nuevo usuario</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Registrar onClose={handleCloseNewProjectModal} />
+                </Modal.Body>
+            </Modal>
         </div>
     );
 };

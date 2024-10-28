@@ -2,18 +2,18 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons'; 
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import '../css/style.css';
 import { useNavigate } from 'react-router-dom';
 import { borrarSesion, getToken, getUser, saveExternalProyecto } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
-import NuevoProyecto from './NuevoProyecto'; 
+import NuevoProyecto from './NuevoProyecto';
 
 const ListaProyectos = () => {
     const [showNewProjectModal, setShowNewProjectModal] = useState(false);
     const [proyectos, setProyectos] = useState([]);
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProyectos = async () => {
@@ -46,19 +46,19 @@ const ListaProyectos = () => {
     const handleProjectClick = (proyecto) => {
         navigate(`/proyecto/${proyecto.proyecto.external_id}`);
     };
-    
+
 
     return (
         <div>
             <div className='contenedor-centro'>
                 <div className="contenedor-carta">
-                <div className='contenedor-filo'>
+                    <div className='contenedor-filo'>
                         <Button
                             className="btn-normal mb-3"
                             onClick={handleShowNewProjectModal}
                         >  <FontAwesomeIcon icon={faPlus} />  Crear Proyecto
                         </Button>
-                    </div> 
+                    </div>
                     <p className="titulo-primario">Lista de Proyectos</p>
                     {proyectos.length === 0 ? (
                         <div className="text-center">
@@ -89,7 +89,7 @@ const ListaProyectos = () => {
             </Modal>
         </div>
     );
-    
+
 };
 
 export default ListaProyectos;
