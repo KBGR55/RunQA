@@ -1,5 +1,6 @@
 'use strict';
 
+const { where } = require('sequelize');
 var models = require('../models/');
 var rol_proyecto= models.rol_proyecto;
 
@@ -8,14 +9,24 @@ class RolProyectoController {
     async listar(req, res) {
         try {
             const id_entidad = req.query.id_entidad;
-            console.log(id_entidad);
     
-            if (!id_entidad) {
-                return res.status(404).json({ msg: "No se encontró la entidad", code: 404 });
+            const entidadAux = await models.rol_entidad.findOne({
+                where: { id_entidad: id_entidad },
+                include: [
+                    {
+                        model: models.entidad,
+                        where: { estado: true },
+                        attributes: ['id', 'external_id', 'nombres', 'apellidos', 'fecha_nacimiento', 'telefono', 'estado']
+                    }
+                ]
+            });
+    
+            if (!entidadAux) {
+                return res.status(404).json({ msg: "No se encontró la entidad activa", code: 404 });
             }
 
             const listar = await rol_proyecto.findAll({
-                where: { id_entidad: id_entidad },
+                where: { id_rol_entidad: entidadAux.id },
                 include: [
                     {
                         model: models.proyecto,
@@ -36,15 +47,29 @@ class RolProyectoController {
 
     async listar_roles_entidad(req, res) {
         try {
-            const id_entidad = req.query.id_entidad;
-            const external_id_proyecto = req.query.external_id_proyecto;
+            const { id_entidad, external_id_proyecto } = req.query;
     
             if (!id_entidad || !external_id_proyecto) {
                 return res.status(404).json({ msg: "No se encontró la entidad o el proyecto", code: 404 });
             }
     
-            const listar = await rol_proyecto.findAll({
+            const entidadAux = await models.rol_entidad.findOne({
                 where: { id_entidad: id_entidad },
+                include: [
+                    {
+                        model: models.entidad,
+                        where: { estado: true },
+                        attributes: ['id', 'external_id', 'nombres', 'apellidos', 'fecha_nacimiento', 'telefono', 'estado']
+                    }
+                ]
+            });
+    
+            if (!entidadAux) {
+                return res.status(404).json({ msg: "No se encontró la entidad activa", code: 404 });
+            }
+    
+            const listar = await models.rol_proyecto.findAll({
+                where: { id_rol_entidad: entidadAux.id },
                 include: [
                     {
                         model: models.proyecto,
@@ -52,8 +77,13 @@ class RolProyectoController {
                         attributes: ['id', 'fecha_inicio', 'external_id', 'nombre', 'estado', 'descripcion']
                     },
                     {
-                        model: models.rol, 
-                        attributes: ['id','nombre'] 
+                        model: models.rol_entidad,
+                        include: [
+                            {
+                                model: models.rol,
+                                attributes: ['id', 'nombre']
+                            }
+                        ]
                     }
                 ]
             });
@@ -61,9 +91,10 @@ class RolProyectoController {
             if (listar.length === 0) {
                 return res.status(404).json({ msg: "No se encontraron roles para esta entidad y proyecto", code: 404 });
             }
+
+            const proyecto = listar[0].proyecto;
+            const roles = listar.map(item => item.rol_entidad.rol);
     
-            const proyecto = listar[0].proyecto; 
-            const roles = listar.map(item => item.rol); 
             const response = {
                 proyecto: {
                     id: proyecto.id,
@@ -79,7 +110,7 @@ class RolProyectoController {
             res.json({ msg: 'OK!', code: 200, info: response });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ msg: 'Se produjo un error en listar roles', code: 500, info: error });
+            res.status(500).json({ msg: 'Se produjo un error en listar roles', code: 500, info: error.message });
         }
     }
     

@@ -7,6 +7,7 @@ const saltRounds = 8;
 const path = require('path');
 const uuid = require('uuid');
 const fs = require('fs');
+const { where } = require('sequelize');
 
 class EntidadController {
 
@@ -14,6 +15,26 @@ class EntidadController {
         try {
             var listar = await entidad.findAll({
                 attributes: ['apellidos', 'nombres', 'external_id', 'foto', 'telefono', 'fecha_nacimiento', 'estado'],
+                include: [
+                    {
+                        model: models.cuenta, 
+                        as: 'cuenta', 
+                        attributes: ['correo'],
+                    },
+                ],
+            });
+            res.json({ msg: 'OK!', code: 200, info: listar });
+        } catch (error) {
+            res.status(500);
+            res.json({ msg: 'Error al listar personas: ' + error.message, code: 500, info: error });
+        }
+    }
+    
+    async listarActivos(req, res) {
+        try {
+            var listar = await entidad.findAll({
+                where:  { estado: 1 },
+                attributes: ['id', 'apellidos', 'nombres', 'external_id', 'foto', 'telefono', 'fecha_nacimiento', 'estado'],
                 include: [
                     {
                         model: models.cuenta, 

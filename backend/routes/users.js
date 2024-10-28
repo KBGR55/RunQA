@@ -163,6 +163,7 @@ router.put('/modificar/entidad', (req, res, next) => {
   });
 });
 router.get('/listar/entidad', entidadController.listar);
+router.get('/listar/entidad/activos', entidadController.listarActivos);
 router.get('/obtener/entidad/:external',  entidadController.obtener);
 router.get('/proyecto/listar',proyectoController.listar);
 
@@ -204,6 +205,7 @@ router.get('/contrato/asignados', contratoController.obtenerDatosTabla);
 
 
 /** ROL_ENTIDAD */
-router.post('rol_entidad/listar', rolEntidadController.listar);
+router.get('/rol/entidad/listar', rolEntidadController.listar);
+router.post('/asignar/lideres', rolEntidadController.asignarLideres);
 
 module.exports = router;  
