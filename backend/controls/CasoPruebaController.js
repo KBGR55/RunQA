@@ -10,7 +10,7 @@ class CasoPruebaController {
         try {
             const listar = await caso_prueba.findAll({
                 attributes: [
-                    'nombre', 'estado', 'external_id', 'descripcion', 
+                    'nombre', 'estado', 'external_id', 'descripcion', 'estadoActual','estadoAsignacion',
                     'pasos', 'resultado_esperado', 'resultado_obtenido',
                     'clasificacion', 'tipo_prueba', 'precondiciones',
                     'fecha_disenio', 'fecha_ejecucion_prueba'
@@ -29,9 +29,9 @@ class CasoPruebaController {
             }
     
             const listar = await caso_prueba.findAll({
-                where: { id_proyecto: id_proyecto }, // Filtrar por id_proyecto
+                where: { id_proyecto: id_proyecto }, 
                 attributes: [
-                    'nombre', 'estado', 'external_id', 'descripcion', 
+                    'nombre', 'estado', 'external_id', 'descripcion', 'estadoActual','estadoAsignacion',
                     'pasos', 'resultado_esperado', 'resultado_obtenido',
                     'clasificacion', 'tipo_prueba', 'precondiciones',
                     'fecha_disenio', 'fecha_ejecucion_prueba'
@@ -53,7 +53,7 @@ class CasoPruebaController {
             const caso = await caso_prueba.findOne({
                 where: { external_id: external_id },
                 attributes: [
-                    'nombre', 'estado', 'external_id', 'descripcion', 
+                    'nombre', 'estado', 'external_id', 'descripcion',  'estadoActual','estadoAsignacion',
                     'pasos', 'resultado_esperado', 'resultado_obtenido',
                     'clasificacion', 'tipo_prueba', 'precondiciones',
                     'fecha_disenio', 'fecha_ejecucion_prueba','id_proyecto'
@@ -85,7 +85,6 @@ class CasoPruebaController {
     
                 const nuevoCaso = await caso_prueba.create({
                     nombre: req.body.nombre,
-                    estado: req.body.estado,
                     descripcion: req.body.descripcion,
                     pasos: req.body.pasos,
                     resultado_esperado: req.body.resultado_esperado,
@@ -94,7 +93,7 @@ class CasoPruebaController {
                     precondiciones: req.body.precondiciones,
                     fecha_disenio: req.body.fecha_disenio,
                     fecha_ejecucion_prueba: req.body.fecha_ejecucion_prueba,
-                    id_proyecto: id_proyecto // Include 'id_proyecto' when creating the case
+                    id_proyecto: id_proyecto
                 });
     
                 res.json({ msg: "Caso de prueba registrado con éxito", code: 200, info: nuevoCaso.external_id });
@@ -121,7 +120,6 @@ class CasoPruebaController {
                 }
     
                 caso.nombre = req.body.nombre|| caso.nombre;
-                caso.estado = req.body.estado || caso.estado;
                 caso.descripcion = req.body.descripcion || caso.descripcion;
                 caso.pasos = req.body.pasos || caso.pasos;
                 caso.resultado_esperado = req.body.resultado_esperado || caso.resultado_esperado;

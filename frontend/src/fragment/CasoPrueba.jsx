@@ -12,8 +12,10 @@ const CasoPrueba = ({ projectId, id_editar }) => {
 
     const [clasificaciones] = useState(['ALTA', 'MEDIA', 'BAJA']);
     const [estados] = useState(['DUPLICADO', 'BLOQUEADO', 'RECHAZADO', 'APROBADO']);
-    const [estadoSeleccionado, setEstadoSeleccionado] = useState('APROBADO'); 
-    const [clasificacionSeleccionada, setClasificacionSeleccionada] = useState('MEDIA'); 
+
+    const [estadoSeleccionado, setEstadoSeleccionado] = useState('APROBADO');
+
+    const [clasificacionSeleccionada, setClasificacionSeleccionada] = useState('MEDIA');
     const [tiposPrueba] = useState([
         'FUNCIONAL', 'INTEGRACION', 'SISTEMA', 'REGRESION', 'EXPLORATORIA',
         'ACEPTACION_USUARIO', 'RENDIMIENTO', 'SEGURIDAD'
@@ -55,6 +57,7 @@ const CasoPrueba = ({ projectId, id_editar }) => {
             "pasos": data.pasos,
             "resultado_esperado": data.resultado_esperado,
             "estado": estadoSeleccionado,
+            "estadoActual": "PENDIENTE",
             "clasificacion": clasificacionSeleccionada,
             "tipo_prueba": data.tipo_prueba,
             "precondiciones": data.precondiciones,
@@ -156,10 +159,10 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                             <textarea
                                 className="form-control"
                                 {...register('resultado_esperado', {
-                                    required: 'El resultado esperado es obligatorio', 
+                                    required: 'El resultado esperado es obligatorio',
                                     maxLength: {
                                         value: 255,
-                                        message: 'El resultado esperado no puede tener más de 255 caracteres' 
+                                        message: 'El resultado esperado no puede tener más de 255 caracteres'
                                     }
                                 })}
                             />
@@ -174,33 +177,16 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                             <textarea
                                 className="form-control"
                                 {...register('descripcion', {
-                                    required: 'La descripción es obligatoria', 
+                                    required: 'La descripción es obligatoria',
                                     maxLength: {
                                         value: 150,
-                                        message: 'La descripción no puede tener más de 150 caracteres' 
+                                        message: 'La descripción no puede tener más de 150 caracteres'
                                     }
                                 })}
                             />
                             {errors.descripcion && (
                                 <div className='alert alert-danger'>{errors.descripcion.message}</div>
                             )}
-                        </div>
-                    </div>
-
-                    <div className="col-md-6">
-                        <div className="form-group">
-                            <label>Estado</label>
-                            <select
-                                className="form-control"
-                                value={estadoSeleccionado}
-                                onChange={(e) => setEstadoSeleccionado(e.target.value)}
-                            >
-                                {estados.map((estado, index) => (
-                                    <option key={index} value={estado}>
-                                        {estado}
-                                    </option>
-                                ))}
-                            </select>
                         </div>
                     </div>
                     <div className="col-md-6">
@@ -227,10 +213,10 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                             <textarea
                                 className="form-control"
                                 {...register('precondiciones', {
-                                    required: 'Las precondiciones son obligatorias', 
+                                    required: 'Las precondiciones son obligatorias',
                                     maxLength: {
                                         value: 150,
-                                        message: 'Las precondiciones no pueden tener más de 150 caracteres' 
+                                        message: 'Las precondiciones no pueden tener más de 150 caracteres'
                                     }
                                 })}
                             />
@@ -255,7 +241,7 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                     </div>
                 </div>
                 <div className="contenedor-filo">
-                    <button type="button"  onClick={() => window.location.reload()} className="btn-negativo">
+                    <button type="button" onClick={() => window.location.reload()} className="btn-negativo">
                         <FontAwesomeIcon icon={faTimes} /> Cancelar
                     </button>
                     <button type="submit" className="btn-positivo">
