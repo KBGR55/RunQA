@@ -94,7 +94,7 @@ class ContratoController {
                 }
 
                 for (const caso of casosPrueba) {
-                    const casoPrueba = await models.caso_prueba.findOne({ where: { external_id: caso.external_id } });  // Nombre correcto de la tabla
+                    const casoPrueba = await models.caso_prueba.findOne({ where: { external_id: caso.external_id } }); 
                     if (!casoPrueba) {
                         return res.status(404).json({ msg: `Caso de prueba con external_id ${caso.external_id} no encontrado`, code: 404 });
                     }

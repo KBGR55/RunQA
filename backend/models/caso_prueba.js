@@ -9,13 +9,18 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(50),
             allowNull: false
         },
-        estado: {
-            type: DataTypes.ENUM('OBSOLETO', 'DUPLICADO', 'BLOQUEADO', 'RECHAZADO', 'APROBADO'),
+        estadoActual: {
+            type: DataTypes.ENUM('NUEVO', 'EN_PROGRESO', 'CERRADO', 'NEED_INFO'),
             allowNull: false,
-            defaultValue: 'APROBADO'
+            defaultValue: 'NUEVO'
+        },
+        estado: {
+            type: DataTypes.ENUM('OBSOLETO', 'DUPLICADO', 'BLOQUEADO', 'RECHAZADO', 'APROBADO', 'PENDIENTE'),
+            allowNull: false,
+            defaultValue: 'PENDIENTE'
         },
         estadoAsignacion: {
-            type: DataTypes.ENUM('ASIGNADO', 'NO_ASIGNADO', 'REASGINADO'),
+            type: DataTypes.ENUM('ASIGNADO', 'NO_ASIGNADO', 'REASIGNADO'),
             allowNull: false,
             defaultValue: 'NO_ASIGNADO'
         },

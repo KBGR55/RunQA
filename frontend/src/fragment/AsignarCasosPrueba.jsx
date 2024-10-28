@@ -13,7 +13,7 @@ import swal from 'sweetalert';
 import NavbarComplet from './NavbarComplet';
 
 const AsignarCasosPrueba = () => {
-    const external_id = useParams();
+    const { external_id} = useParams();
     const [showNewProjectModal, setShowNewProjectModal] = useState(false);
     const [casosPrueba, setCasosPrueba] = useState([]);
     const [testers, setTesters] = useState([]);
