@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         freezeTableName: true
     });
     entidad.associate = function (models){
-        entidad.hasMany(models.rol_proyecto, {foreignKey: 'id_entidad',as:'rol_proyecto'});
+        entidad.hasMany(models.rol_entidad, {foreignKey: 'id_entidad',as:'rol_entidad'});
         entidad.hasOne(models.cuenta, { foreignKey: 'id_entidad', as: 'cuenta'});
     };
  

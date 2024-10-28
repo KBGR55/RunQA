@@ -18,6 +18,8 @@ const ProyectoController = require('../controls/ProyectoController');
 const proyectoController = new ProyectoController();
 const RolProyectoController = require('../controls/RolProyectoController');
 const rolProyectoController = new RolProyectoController();
+const RolEntidadController = require('../controls/RolEntidadController');
+const rolEntidadController = new RolEntidadController();
 const ContratoController = require('../controls/ContratoController');
 const contratoController = new ContratoController();
 
@@ -199,5 +201,9 @@ router.get('/proyecto/listar/tester/:external_id',proyectoController.obtenerTest
 /** CONTRATO */
 router.post('/contrato/caso/prueba', contratoController.asignarTesters);
 router.get('/contrato/asignados', contratoController.obtenerDatosTabla);
+
+
+/** ROL_ENTIDAD */
+router.post('rol_entidad/listar', rolEntidadController.listar);
 
 module.exports = router;  
