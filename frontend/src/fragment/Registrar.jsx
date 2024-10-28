@@ -217,6 +217,18 @@ const Registrar = () => {
                     </div>
 
                     <div className="col-md-6">
+                        <label htmlFor="foto" className="form-label">Seleccionar foto</label>
+                        <input type="file"
+                            {...register("foto", {
+                                required: {
+                                    message: "Seleccione una foto"
+                                }
+                            })}
+                            className="form-control"
+                        />
+                        {errors.foto && <span className='mensajeerror'>{errors.foto.message}</span>}
+                    </div>
+                    <div className="col-md-6">
                         <label htmlFor="confirmPassword" className="form-label">Confirme su clave</label>
                         <div className="input-group">
                             <input
@@ -234,18 +246,6 @@ const Registrar = () => {
                         )}
                     </div>
 
-                    <div className="col-md-12">
-                        <label htmlFor="foto" className="form-label">Seleccionar foto</label>
-                        <input type="file"
-                            {...register("foto", {
-                                required: {
-                                    message: "Seleccione una foto"
-                                }
-                            })}
-                            className="form-control"
-                        />
-                        {errors.foto && <span className='mensajeerror'>{errors.foto.message}</span>}
-                    </div>
 
                     <div className="contenedor-filo">
                         <button type="button" onClick={handleCancelClick} className="btn-negativo">Cancelar</button>
