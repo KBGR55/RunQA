@@ -106,7 +106,7 @@ const RoleMenu = () => {
     }, []);
 
     const roleOptions = {
-        'LIDER DE CALIDAD': ['Asignar testers', 'Generar reportes', 'Casos de prueba','Editar proyecto','Miembros'],
+        'LIDER DE CALIDAD': ['Asignar testers', 'Generar reportes', 'Casos de prueba','Editar proyecto', 'Miembros', 'Casos de prueba asignados'],
         'ANALISTA DE PRUEBAS': ['Casos de prueba', 'Asignar testers', 'Lista de casos de prueba asignados'],
         'TESTER': ['Ejecutar casos de prueba', 'Registrar errores'],
         'DESARROLLADOR': ['Actualizar el estado de los errores', 'Consultar errores asignados']
@@ -140,7 +140,7 @@ const RoleMenu = () => {
             navigate(`/proyecto/usuarios/${proyecto.external_id}`, { state: { proyecto } });
         } else if (option === 'Asignar testers') {
             navigate(`/asignar/tester/${external_id}`, { state: { selectedRoleId: roleId } });
-        } else if (option === 'Lista de casos de prueba asignados') {
+        } else if (option === 'Casos de prueba asignados') {
             navigate ('/casos/prueba/asignados',{ state: { proyecto } });
         }
     };
@@ -148,6 +148,7 @@ const RoleMenu = () => {
     const handleCloseNewProjectModal = () => {
         setShowNewProjectModal(false);
     };
+    
 
     return (
         <div className="sidebar d-flex flex-column justify-content-between" style={{
@@ -209,10 +210,7 @@ const RoleMenu = () => {
                 {/* Roles del Proyecto */}
                 <div className="sidebar-heading" style={{ marginLeft: isOpen ? '10px' : '0', color: 'var(--blanco)', fontWeight: 'bold' }}>
                     {isOpen ? proyecto.nombre : ''}
-                </div>
-
-                
-                
+                </div>                
 
                 <ul className="list-unstyled">
                     {roles.map((role) => (

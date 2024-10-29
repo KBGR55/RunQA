@@ -71,7 +71,7 @@ const UsuarioProyecto = () => {
             handleCloseModal();
         }
     };
-    console.log(data);
+    console.log("estadata", data);
 
     return (
         <div>
@@ -114,11 +114,11 @@ const UsuarioProyecto = () => {
                                         {data.map((user) => (
                                             <tr key={user.id}>
                                                 <td className="text-center" style={{ backgroundColor: "#FFFFFF", border: "none" }}>
-                                                    <img src={URLBASE + "/images/users/" + user.entidad.foto} alt="Avatar" style={{ width: '30px', height: '30px' }} />
+                                                    <img src={URLBASE + "/images/users/" + user.rol_entidad.entidad.foto} alt="Avatar" style={{ width: '30px', height: '30px' }} />
                                                 </td>
-                                                <td className="text-center">{user.entidad.nombres}</td>
-                                                <td className="text-center">{user.entidad.apellidos}</td>
-                                                <td className="text-center">{user.rol.nombre}</td>
+                                                <td className="text-center">{user.rol_entidad.entidad.nombres}</td>
+                                                <td className="text-center">{user.rol_entidad.entidad.apellidos}</td>
+                                                <td className="text-center">{user.rol_entidad.entidad.nombre}</td>
                                                 <td className="text-center">
                                                     <Button className="btn btn-danger" onClick={() => handleShowModal(user.entidad.id)}>
                                                         <FontAwesomeIcon icon={faTrash} />

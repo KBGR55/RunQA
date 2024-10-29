@@ -114,70 +114,72 @@ class ProyectoController {
         }
     }
 
-    async asiganarProyecto(req, res) {
+    async asignarProyecto(req, res) {
         let transaction;
         try {
-            transaction = await models.sequelize.transaction();            
-            // Buscar el proyecto por external_id
-            const proyect = await models.proyecto.findOne({ where: { external_id: req.body.id_proyect } });
-            if (!proyect) {
+            transaction = await models.sequelize.transaction();
+    
+            const proyecto = await models.proyecto.findOne({ where: { external_id: req.body.id_proyect } });
+            if (!proyecto) {
                 return res.status(400).json({ msg: "Proyecto no encontrado", code: 400 });
             }
     
-            // Buscar el rol por external_id
-            const role = await models.rol.findOne({ where: { external_id: req.body.id_rol }, attributes: ['id'] });
-            if (!role) {
+            const rol = await models.rol.findOne({ where: { external_id: req.body.id_rol }, attributes: ['id'] });
+            if (!rol) {
                 return res.status(400).json({ msg: "Rol no encontrado", code: 400 });
             }
     
-            // Procesar los usuarios
             const users = req.body.users;
-            
-            for (const user of users) {
-                
-                // Buscar la entidad del usuario
-                const entidad = await models.entidad.findOne({ where: { id: user.id_entidad } });
     
+            for (const user of users) {
+                const entidad = await models.entidad.findOne({ where: { id: user.id_entidad } });
                 if (!entidad) {
                     console.error(`Entidad con id ${user.id_entidad} no encontrada.`);
-                    continue;  // Saltar al siguiente usuario si no se encuentra la entidad
+                    continue;  
                 }
     
-                // Verificar si la entidad ya tiene el mismo rol en el proyecto
-                const existingRolProyecto = await models.rol_proyecto.findOne({
+                let rolEntidad = await models.rol_entidad.findOne({
                     where: {
                         id_entidad: entidad.id,
-                        id_proyecto: proyect.id,
-                        id_rol: role.id  // Verifica si ya existe este rol para esta entidad en el proyecto
+                        id_rol: rol.id
+                    }
+                });
+    
+                if (!rolEntidad) {
+                    rolEntidad = await models.rol_entidad.create({
+                        id_entidad: entidad.id,
+                        id_rol: rol.id,
+                        external_id: uuid.v4(),
+                    }, { transaction });
+                }
+    
+                const existingRolProyecto = await models.rol_proyecto.findOne({
+                    where: {
+                        id_rol_entidad: rolEntidad.id,
+                        id_proyecto: proyecto.id
                     }
                 });
     
                 if (existingRolProyecto) {
-                    // Si ya existe el mismo rol para esta entidad en el proyecto, no hacer nada
-                    console.log(`La entidad ${entidad.id} ya tiene el rol ${role.id} en el proyecto ${proyect.id}. No se asignará nuevamente.`);
+                    console.log(`La entidad ${entidad.id} ya tiene el rol ${rol.id} en el proyecto ${proyecto.id}. No se asignará nuevamente.`);
                     continue;
                 } else {
-                    // Si no tiene el mismo rol, asignarlo
                     await models.rol_proyecto.create({
-                        id_rol: role.id,
-                        id_entidad: entidad.id,
-                        id_proyecto: proyect.id,
+                        id_rol_entidad: rolEntidad.id,
+                        id_proyecto: proyecto.id,
                         external_id: uuid.v4(),
                     }, { transaction });
                 }
             }
     
-            // Confirmar transacción
             await transaction.commit();
-            
-            // Responder con éxito
+    
             res.json({
                 msg: users.length > 1 ? "Roles asignados correctamente" : "Rol asignado correctamente",
                 code: 200
             });
     
         } catch (error) {
-            // Rollback de la transacción en caso de error
             if (transaction) await transaction.rollback();
     
             console.error("Error:", error);
@@ -187,92 +189,113 @@ class ProyectoController {
     
     async getEntidadProyecto(req, res) {
         try {
-            const proyect = await models.proyecto.findOne({ where: { external_id: req.params.id_proyect } });
-            if (proyect) {
-                const rolProyect = await models.rol_proyecto.findAll({
-                    where: { id_proyecto: proyect.id },
-                    include: [
-                        {
-                            model: models.entidad,
-                            attributes: ['nombres', 'apellidos','foto', 'id'], 
-                        },
-                        {
-                            model: models.rol,
-                            attributes: ['nombre'], 
-                        }
-                    ],
-                    attributes: ['id']
-                });
-                res.status(200).json({ msg: "OK!", code: 200, info: rolProyect });
-            } else {
-                res.status(400).json({ msg: "No se encontró el proyecto", code: 400 });
+            const proyecto = await models.proyecto.findOne({ where: { external_id: req.params.id_proyect } });
+            if (!proyecto) {
+                return res.status(400).json({ msg: "No se encontró el proyecto", code: 400 });
             }
+    
+            const rolProyectos = await models.rol_proyecto.findAll({
+                where: { id_proyecto: proyecto.id },
+                include: [
+                    {
+                        model: models.rol_entidad,
+                        as: 'rol_entidad',
+                        include: [
+                            {
+                                model: models.entidad,
+                                as: 'entidad',
+                                attributes: ['nombres', 'apellidos', 'foto', 'id'],
+                            },
+                            {
+                                model: models.rol,
+                                as: 'rol',
+                                attributes: ['nombre'],
+                            }
+                        ]
+                    }
+                ],
+                attributes: ['id']
+            });
+    
+            res.status(200).json({ msg: "OK!", code: 200, info: rolProyectos });
+    
         } catch (error) {
-            if (error.errors && error.errors[0].message) {
-                res.json({ msg: "Estamos teniendo problemas", code: 500 });
-            } else {
-                res.json({ msg: "Estamos teniendo problemas", code: 500 });
-            }
+            console.error("Error:", error);
+            res.status(500).json({ msg: "Estamos teniendo problemas", code: 500 });
         }
-    }
+    }    
 
 
     async removerEntidad(req, res) {
         try {
-            const proyect = await models.proyecto.findOne({ where: { external_id: req.params.id_proyect } });
+            const proyecto = await models.proyecto.findOne({ where: { external_id: req.params.id_proyect } });
+            if (!proyecto) {
+                return res.status(404).json({ msg: "No se encontró el proyecto", code: 404 });
+            }
     
-            if (proyect) {
-                const rolProyect = await models.rol_proyecto.findOne({
-                    where: { 
-                        id_proyecto: proyect.id, 
-                        id_entidad: req.params.id_entidad 
-                    } 
-                })
-                if (rolProyect) {
-                    await rolProyect.destroy();
-                    res.status(200).json({ msg: "Usuario eliminado del proyecto exitosamente", code: 200 });
-                } else {
-                    res.status(404).json({ msg: "No se encontró la relación entre el usuario y el proyecto", code: 404 });
+            const rolEntidad = await models.rol_entidad.findOne({
+                where: { id_entidad: req.params.id_entidad }
+            });
+    
+            if (!rolEntidad) {
+                return res.status(404).json({ msg: "No se encontró la relación entre la entidad y el rol", code: 404 });
+            }
+    
+            const rolProyecto = await models.rol_proyecto.findOne({
+                where: {
+                    id_proyecto: proyecto.id,
+                    id_rol_entidad: rolEntidad.id
                 }
-            } else {
-                res.status(404).json({ msg: "No se encontró el proyecto", code: 404 });
+            });
+    
+            if (!rolProyecto) {
+                return res.status(404).json({ msg: "No se encontró la relación entre la entidad y el proyecto", code: 404 });
             }
+    
+            await rolProyecto.destroy();
+            res.status(200).json({ msg: "Entidad eliminada del proyecto exitosamente", code: 200 });
+    
         } catch (error) {
-            if (error.errors && error.errors[0].message) {
-                res.status(500).json({ msg:"Estamos teniendo problemas para eliminar", code: 500 });
-            } else {
-                res.status(500).json({ msg: "Estamos teniendo problemas para eliminar", code: 500 });
-            }
+            console.error("Error:", error);
+            res.status(500).json({ msg: "Estamos teniendo problemas para eliminar", code: 500 });
         }
     }
+    
 
     /** SEGUNDO SPRINT */
     async obtenerTestersPorProyecto(req, res) {
         try {
-            const proyect = await models.proyecto.findOne({ where: { external_id: req.params.external_id } });
-            if (!proyect) {
+            const proyecto = await models.proyecto.findOne({ where: { external_id: req.params.external_id } });
+            if (!proyecto) {
                 return res.status(400).json({ msg: "Proyecto no encontrado", code: 400 });
             }
     
-            const role = await models.rol.findOne({ where: { nombre: 'TESTER' }, attributes: ['id'] });
-            if (!role) {
+            const rolTester = await models.rol.findOne({ where: { nombre: 'TESTER' }, attributes: ['id'] });
+            if (!rolTester) {
                 return res.status(400).json({ msg: "Rol de tester no encontrado", code: 400 });
             }
     
             const testers = await models.rol_proyecto.findAll({
                 where: {
-                    id_proyecto: proyect.id,
-                    id_rol: role.id  
+                    id_proyecto: proyecto.id,
                 },
                 include: [
                     {
-                        model: models.entidad, 
-                        attributes: ['id', 'nombres', 'apellidos'],
+                        model: models.rol_entidad,
+                        as: 'rol_entidad',
+                        where: { id_rol: rolTester.id },
                         include: [
                             {
-                                model: models.cuenta,  
-                                as: 'cuenta',  
-                                attributes: ['correo']  
+                                model: models.entidad,
+                                as: 'entidad',
+                                attributes: ['id', 'nombres', 'apellidos'],
+                                include: [
+                                    {
+                                        model: models.cuenta,
+                                        as: 'cuenta',
+                                        attributes: ['correo']
+                                    }
+                                ]
                             }
                         ]
                     }
@@ -287,19 +310,19 @@ class ProyectoController {
                 msg: "Testers encontrados correctamente",
                 code: 200,
                 info: testers.map(t => ({
-                    id: t.entidad.id,
-                    nombres: t.entidad.nombres,
-                    apellidos: t.entidad.apellidos,
-                    correo: t.entidad.cuenta.correo  
+                    id: t.rol_entidad.entidad.id,
+                    nombres: t.rol_entidad.entidad.nombres,
+                    apellidos: t.rol_entidad.entidad.apellidos,
+                    correo: t.rol_entidad.entidad.cuenta.correo
                 })),
-                id_rol:role.id
+                id_rol: rolTester.id
             });
     
         } catch (error) {
             console.error("Error:", error);
             res.status(500).json({ msg: error.message || "Error interno del servidor", code: 500 });
         }
-    }
+    }      
     
 }
 

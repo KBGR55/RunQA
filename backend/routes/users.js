@@ -193,7 +193,7 @@ router.get('/cuenta/:nombreCompleto',cuentaController.obtenerCuenta);
 /** PROYECTO */
 router.post('/proyecto', proyectoController.crearProtecto);
 router.put('/proyecto', proyectoController.actualizarProyecto);
-router.post('/proyecto/asignar', proyectoController.asiganarProyecto);
+router.post('/proyecto/asignar', proyectoController.asignarProyecto);
 router.get('/proyecto/:id_proyect',proyectoController.getEntidadProyecto);
 router.get('/proyecto/obtener/:external_id',proyectoController.getProyecto);
 router.delete('/proyecto/:id_proyect/:id_entidad',proyectoController.removerEntidad);
