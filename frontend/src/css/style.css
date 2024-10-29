@@ -116,6 +116,12 @@ label{
 .btn-negativo {
   background-color: var(--color-negativo);
 }
+.btn-secondary:disabled {
+ 
+  border-color: #383838; /* Asegúrate de que el borde sea también gris */
+  cursor: not-allowed; /* Cambiar el cursor al pasar por encima */
+}
+
 
 .btn-negativo:hover {
   background-color: var(--rojo-claro);

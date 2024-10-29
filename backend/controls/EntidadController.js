@@ -21,6 +21,11 @@ class EntidadController {
                         as: 'cuenta', 
                         attributes: ['correo'],
                     },
+                    {
+                        model: models.rol_entidad,
+                        as: 'rol_entidad',
+                        attributes: ["id_rol"], // No selecciona atributos, excluyéndolo efectivamente
+                    }
                 ],
             });
             res.json({ msg: 'OK!', code: 200, info: listar });
@@ -29,6 +34,7 @@ class EntidadController {
             res.json({ msg: 'Error al listar personas: ' + error.message, code: 500, info: error });
         }
     }
+    
     
     async listarActivos(req, res) {
         try {
