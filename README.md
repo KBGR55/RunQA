@@ -169,9 +169,9 @@ Antes de ejecutar el proyecto, asegúrate de configurar la base de datos. Sigue 
          (UUID(), 1, 'ADMINISTRADOR SYS', '2024-10-22 09:08:40', 'Encargado de gestionar el sistema', NOW(), NOW());
 
 
-         INSERT INTO rol_proyecto (external_id, estado, createdAt, updatedAt, id_proyecto, id_rol_entidad)
+         INSERT INTO rol_proyecto (external_id, estado, horasDiarias, createdAt, updatedAt, id_proyecto, id_rol_entidad)
          VALUES 
-         ('123e4567-e89b-12d3-a456-426614174000', 1, NOW(), NOW(), 1, 1);
+         ('123e4567-e89b-12d3-a456-426614174000', 1, 2,NOW(), NOW(), 1, 1);
       
 
          COMMIT;
