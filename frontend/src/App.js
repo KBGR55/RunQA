@@ -16,6 +16,8 @@ import AsignarCasosPrueba from './fragment/AsignarCasosPrueba';
 import ListaCasosAsignados from './fragment/ListaCasosAsignados';
 import LayoutComponent from './fragment/LayoutComponent';
 import VerCasoPrueba from './fragment/VerCasoPrueba';
+import CasoPruebaAsignado from './fragment/CasoPruebaAsignado';
+import PresentacionProyecto from './fragment/PresentacionProyecto';
 
 function App() {
   return (
@@ -24,8 +26,9 @@ function App() {
         <Route path='*' element={<Navigate to='/login' />} />
         <Route path='/login' element={<Login />} />
         <Route path='/registrarse' element={<Registrar />} />
-        <Route path='/usuarios' element={<ListaUsuarios />} />
         <Route path="/" element={<LayoutComponent />}>
+          <Route path='/presentacion/:external_id' element={<PresentacionProyecto />} />
+          <Route path='/usuarios' element={<ListaUsuarios />} />
           <Route path='/caso/prueba' element={<CasoPrueba />} />
           <Route path='/proyecto/nuevo' element={<NuevoProyecto />} />
           <Route path='/proyectos' element={<ListaProyectos />} />
@@ -37,6 +40,7 @@ function App() {
           <Route path="/proyecto/:external_id" element={<RolMenu />} />
           <Route path='/asignar/tester/:external_id' element={<AsignarCasosPrueba />} />
           <Route path='/casos/prueba/asignados' element={<ListaCasosAsignados />} />
+          <Route path='/casos/prueba-asignado/:external_id' element={<CasoPruebaAsignado />} />
         </Route>
       </Routes>
     </div>

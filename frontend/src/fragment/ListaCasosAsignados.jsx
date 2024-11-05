@@ -6,6 +6,7 @@ import '../css/style.css';
 import mensajes from '../utilities/Mensajes';
 import { borrarSesion, getToken } from '../utilities/Sessionutil';
 import { useNavigate } from 'react-router-dom';
+import { Button, Modal, FormControl, InputGroup } from 'react-bootstrap';
 
 const ListaCasosAsignados = () => {
     const [casosPrueba, setCasosPrueba] = useState([]);
@@ -24,13 +25,15 @@ const ListaCasosAsignados = () => {
         });
 
     }, [navigate, id]);
-
-    console.log("DATITA", casosPrueba);
-
+    
 
     const formatDate = (dateString) => {
-        return new Date(dateString).toISOString().slice(0, 10); // Formato AAAA-MM-DD
+        return new Date(dateString).toISOString().slice(0, 10); 
     }
+
+    const handleNavigateToDetail = (external_id) => {
+        navigate(`/casos/prueba-asignado/${external_id}`);
+    };
 
     return (
         <div>
@@ -44,12 +47,9 @@ const ListaCasosAsignados = () => {
                                 <thead>
                                     <tr>
                                         <th className="text-center">Nombre</th>
-                                        <th className="text-center">Descripción</th>
                                         <th className="text-center">Clasificación</th>
-                                        <th className="text-center">Asignador</th>
-                                        <th className="text-center">Encargado</th>
-                                        <th className="text-center">Fecha Inicio</th>
                                         <th className="text-center">Fecha Fin</th>
+                                        <th className="text-center">Ver detalle</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -61,12 +61,27 @@ const ListaCasosAsignados = () => {
                                         casosPrueba.map((caso) => (
                                             <tr key={caso.external_id}>
                                                 <td>{caso.nombre_caso_prueba}</td>
-                                                <td>{caso.descripcion}</td>
                                                 <td>{caso.clasificacion}</td>
-                                                <td>{caso.persona_que_asigno}</td>
-                                                <td>{caso.persona_asignada}</td>
-                                                <td>{formatDate(caso.fecha_inicio)}</td>
                                                 <td>{formatDate(caso.fecha_fin)}</td>
+                                                <td className="text-center">
+                                                <Button
+                                                    variant="btn btn-outline-info btn-rounded"
+                                                    onClick={() => handleNavigateToDetail(caso.external_id)}
+                                                    className="btn-icon"
+                                                >
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="24"
+                                                        height="24"
+                                                        fill="currentColor"
+                                                        className="bi bi-arrow-right-circle-fill"
+                                                        viewBox="0 0 16 16"
+                                                    >
+                                                        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z" />
+                                                    </svg>
+                                                </Button>
+
+                                            </td>
                                             </tr>
                                         ))
                                     )}

@@ -202,6 +202,7 @@ router.get('/proyecto/listar/tester/:external_id',proyectoController.obtenerTest
 /** CONTRATO */
 router.post('/contrato/caso/prueba', contratoController.asignarTesters);
 router.get('/contrato/asignados', contratoController.obtenerDatosTabla);
+router.get('/contrato/asignado/:external_id', contratoController.obtenerDatosCasoAsignado);
 
 
 /** ROL_ENTIDAD */

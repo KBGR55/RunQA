@@ -98,16 +98,21 @@ const Login = () => {
                                 {errors.clave && <span className="mensajeerror">{errors.clave.message}</span>}
                             </div>
                             <button type="submit" className="btn btn-login w-100 mb-3">Ingresar</button>
-                            <div className="text-center">
-                            ¿No tienes una cuenta? 
-                                <button 
-                                    type="button" 
-                                    className="btn btn-link" 
+                            <div className="d-flex justify-content-center align-items-center mt-4">
+                                <p className="text-muted mb-0" style={{ color: 'var(--color-cuarto)', marginRight: '0.5rem' }}>
+                                    ¿No tienes una cuenta?
+                                </p>
+                                <button
+                                    type="button"
+                                    className="btn boton-custom"
                                     onClick={() => navegation("/registrarse")}
+                                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-terciario)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-cuarto)'}
                                 >
-                                   Regístrate
+                                    Regístrate
                                 </button>
                             </div>
+
                         </form>
                     </div>
                 </div>

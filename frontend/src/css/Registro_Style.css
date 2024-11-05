@@ -1,9 +1,3 @@
-body, html {
-    height: 100%;
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-}
-
 .custom-container-register {
     position: relative;
     height: 100vh;
@@ -11,40 +5,40 @@ body, html {
     overflow: hidden;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center
 }
 
-    .custom-container-register::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url('../img/fondo1.jpeg') no-repeat center center/cover;
-        filter: blur(2px);
-        background-size: cover; /* Mejora la calidad de la imagen de fondo */
-        clip-path: polygon(0 0, 80% 0, 40% 100%, 0% 100%);
-        z-index: -1;
-    }
+.custom-container-register::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('../img/fondo1.jpeg') no-repeat center center/cover;
+    filter: blur(2px);
+    background-size: cover;
+    clip-path: polygon(0 0, 74% 0, 27% 100%, 0% 100%);
+    z-index: -1;
+}
 
-    .custom-container-register::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 100%;
-        height: 100%;
-        background-color: white;
-        clip-path: polygon(80% 0, 100% 0, 100% 100%, 40% 100%);
-        z-index: -1;
-    }
+.custom-container-register::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    clip-path: polygon(80% 0, 100% 0, 100% 100%, 40% 100%);
+    z-index: -1;
+}
 
 .register-container {
     display: flow;
     width: 700px;
-    height: 750px;
-    background-color:  white;
+    height: auto;
+    background-color: white;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
@@ -82,7 +76,8 @@ body, html {
     max-width: 100%;
     border-radius: 10px;
     padding: 12px;
-    margin-bottom: 0px; /* A�ade espacio entre los elementos */
+    margin-bottom: 0px;
+    /* A�ade espacio entre los elementos */
     box-sizing: border-box;
 }
 
@@ -100,14 +95,15 @@ body, html {
     color: #ffffff;
 }
 
-.btn-guardar:hover, .btn-guardar:active{
+.btn-guardar:hover,
+.btn-guardar:active {
     color: #ffffff;
     background-color: #61428f;
     border-color: #61428f;
 }
 
-.btn-guardar:focus{
-    box-shadow: 0 0 0 3px rgba(121, 82, 179, 0,25);
+.btn-guardar:focus {
+    box-shadow: 0 0 0 3px rgba(121, 82, 179, 0, 25);
 }
 
 .btn-cancelar {
@@ -129,13 +125,14 @@ body, html {
     text-decoration: none;
 }
 
-.btn-cancelar:hover, .btn-cancelar:active{
+.btn-cancelar:hover,
+.btn-cancelar:active {
     color: #ffffff;
     background-color: #b0b4bb;
     border-color: #b0b4bb;
 }
 
-.btn-cancelar:focus{
+.btn-cancelar:focus {
     box-shadow: 0 0 0 3px #6B7280;
 }
 
@@ -159,12 +156,15 @@ body, html {
 
 .form-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Dos columnas de igual tama�o */
-    gap: 0px; /* Espacio entre las columnas */
+    grid-template-columns: 1fr 1fr;
+    /* Dos columnas de igual tama�o */
+    gap: 0px;
+    /* Espacio entre las columnas */
 }
 
 .form-full-width {
-    grid-column: span 2; /* Para los campos que ocupan todo el ancho */
+    grid-column: span 2;
+    /* Para los campos que ocupan todo el ancho */
 }
 
 
@@ -178,12 +178,14 @@ body, html {
         padding: 20px;
         border-radius: 8px;
     }
+
     .vh-100 {
         height: 100vh;
-      }
-    
+    }
 
-    .register-left, .register-right {
+
+    .register-left,
+    .register-right {
         width: 100%;
         height: 30px;
     }

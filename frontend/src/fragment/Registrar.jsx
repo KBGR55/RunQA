@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/Registro_Style.css';
-import '../css/Login_Style.css';
 import '../css/style.css';
 import { GuardarImages } from '../utilities/hooks/Conexion';
 import { useNavigate } from 'react-router';
@@ -51,9 +50,7 @@ const Registrar = () => {
                 navigate('/login');
             } else {
                 mensajes(info.msg);
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1200);
+                navigate('/login')
             }
         });
     };
@@ -68,20 +65,18 @@ const Registrar = () => {
         }).then((willCancel) => {
             if (willCancel) {
                 mensajes("Registro cancelado", "info", "Información");
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1200);
+                navigate('/login')
             }
         });
     };
 
     return (
-        <div className="container-fluid d-flex justify-content-center align-items-center vh-100 fondo-principal">
+        <div className="container-fluid d-flex justify-content-center align-items-center custom-container-register">
             <div className="register-container">
                 <div className="text-center mb-4" >
                     <img src="/logo192.png"alt="RunQA" style={{ width: '150px' }} />
                 </div>
-                <h2 className="text-center mb-4 titulo-primario">RunQA</h2>
+                <h2 className="text-center mb-4 titulo-primario">Registro</h2>
                 <form className="row g-3 p-2" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
                     <div className="col-md-6">
                         <label htmlFor="nombres" className="form-label">Ingrese sus nombres</label>
@@ -212,7 +207,7 @@ const Registrar = () => {
                                 className="btn btn-outline-secondary"
                                 onClick={togglePasswordVisibility}
                             >
-                                {showPassword ? '👁️' : '👁️‍🗨️'}
+                                {showPassword ? <i className="bi bi-eye-fill"></i> : <i className="bi bi-eye-slash-fill"></i>}
                             </button>
                         </div>
                         {errors.clave && <span className='mensajeerror'>{errors.clave.message}</span>}
@@ -240,7 +235,7 @@ const Registrar = () => {
                                 className="form-control"
                             />
                             <span className="input-group-text">
-                                {passwordMatch === null ? '' : passwordMatch ? '✔️' : '❌'}
+                                {passwordMatch === null ? '' : passwordMatch ? <i class="bi bi-check2"></i> : <i class="bi bi-x-lg"></i>}
                             </span>
                         </div>
                         {confirmPassword && !passwordMatch && (

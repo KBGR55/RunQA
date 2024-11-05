@@ -23,7 +23,7 @@ body, html {
   height: 100%;
   background: url('../img/fondo1.jpeg') no-repeat center center/cover;
   filter: blur(2px);
-  background-size: cover; /* Mejora la calidad de la imagen de fondo */
+  background-size: cover;
   clip-path: polygon(0 0, 80% 0, 40% 100%, 0% 100%);
   z-index: -1;
 }
