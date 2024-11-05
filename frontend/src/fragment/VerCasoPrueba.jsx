@@ -17,7 +17,7 @@ const VerCasoPrueba = () => {
     const [editingCaso, setEditingCaso] = useState(null);
     const [casosPrueba, setCasosPrueba] = useState({});
     const { external_id } = useParams();
-    const { setValue} = useForm();
+    const { setValue } = useForm();
 
     useEffect(() => {
         const fetchCasoPrueba = async () => {
@@ -87,6 +87,12 @@ const VerCasoPrueba = () => {
                         <div className="form-group">
                             <div className="row">
                                 <div className="col-md-6">
+                                    <label className="w-100 text-start titulo-secundario">Estado Actual</label>
+                                    <p className="w-100 text-start texto-normal">
+                                        <span className={`badge ${casosPrueba?.estadoActual === 'NUEVO' ? 'bg-info' : casosPrueba?.estadoActual === 'EN_PROGRESO' ? 'bg-warning' : casosPrueba?.estadoActual === 'CERRADO' ? 'bg-success' : 'bg-danger'}`}>
+                                            {casosPrueba?.estadoActual}
+                                        </span>
+                                    </p>
                                     <label className="w-100 text-start titulo-secundario">Título</label>
                                     <p className="w-100 text-start texto-normal">{casosPrueba?.nombre}</p>
 
@@ -106,6 +112,12 @@ const VerCasoPrueba = () => {
                                     <p className="w-100 text-start texto-normal">
                                         <span className={`badge ${casosPrueba?.estado === 'APROBADO' ? 'bg-success' : casosPrueba?.estado === 'RECHAZADO' ? 'bg-danger' : 'bg-warning'}`}>
                                             {casosPrueba?.estado}
+                                        </span>
+                                    </p>
+                                    <label className="w-100 text-start titulo-secundario">Estado de Asignación</label>
+                                    <p className="w-100 text-start texto-normal">
+                                        <span className={`badge ${casosPrueba?.estadoAsignacion === 'ASIGNADO' ? 'bg-primary' : casosPrueba?.estadoAsignacion === 'REASIGNADO' ? 'bg-warning' : 'bg-secondary'}`}>
+                                            {casosPrueba?.estadoAsignacion}
                                         </span>
                                     </p>
 
