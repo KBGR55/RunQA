@@ -196,6 +196,7 @@ class ProyectoController {
     
             const rolProyectos = await models.rol_proyecto.findAll({
                 where: { id_proyecto: proyecto.id },
+                attributes: ['id'],
                 include: [
                     {
                         model: models.rol_entidad,
@@ -212,9 +213,13 @@ class ProyectoController {
                                 attributes: ['nombre'],
                             }
                         ]
+                    },
+                    {
+                        model: models.proyecto,
+                        as: 'proyecto',
+                        attributes: ['nombre', 'descripcion']
                     }
                 ],
-                attributes: ['id']
             });
     
             res.status(200).json({ msg: "OK!", code: 200, info: rolProyectos });
