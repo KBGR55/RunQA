@@ -219,6 +219,13 @@ label{
   z-index: 10; 
 }
 
+.card-custom-bord { 
+  border-radius: 10px;
+  background-color: white;
+  border-left: 7px solid var(--color-terciario);
+  border: 1px solid #dadada;
+}
+
 
 @media (max-width: 500px) {
   .box-of-users {

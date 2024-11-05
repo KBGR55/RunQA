@@ -16,6 +16,7 @@ import AsignarCasosPrueba from './fragment/AsignarCasosPrueba';
 import ListaCasosAsignados from './fragment/ListaCasosAsignados';
 import LayoutComponent from './fragment/LayoutComponent';
 import VerCasoPrueba from './fragment/VerCasoPrueba';
+import CasoPruebaAsignado from './fragment/CasoPruebaAsignado';
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <Route path="/proyecto/:external_id" element={<RolMenu />} />
           <Route path='/asignar/tester/:external_id' element={<AsignarCasosPrueba />} />
           <Route path='/casos/prueba/asignados' element={<ListaCasosAsignados />} />
+          <Route path='/casos/prueba-asignado/:external_id' element={<CasoPruebaAsignado />} />
         </Route>
       </Routes>
     </div>
