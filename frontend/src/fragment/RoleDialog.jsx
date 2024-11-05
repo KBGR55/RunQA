@@ -16,6 +16,7 @@ const RoleDialog = ({ handleClose, external_id }) => {
     const [selectedRole, setSelectedRole] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
+    const [horasDiarias, setHorasDiarias] = useState(2); // Valor inicial de horasDiarias
 
     const handleAssignRole = async () => {
         if (!selectedRole || users.length === 0) {
@@ -26,11 +27,12 @@ const RoleDialog = ({ handleClose, external_id }) => {
         const datos = {
             id_proyect: external_id,
             users: users.map(user => ({ id_entidad: user.id })),
+            horasDiarias: horasDiarias,
             id_rol: selectedRole,
         };
 
         try {
-            const response = await peticionPost('key', 'proyecto/asignar', datos);
+            const response = await peticionPost(getToken(), 'proyecto/asignar', datos);
             if (response.code !== 200) {
                 mensajes(response.msg, 'error', 'Error');
             } else {
@@ -143,7 +145,6 @@ const RoleDialog = ({ handleClose, external_id }) => {
 
                             <button
                                 className="btn btn-danger boton-eliminar-pequeno"
-
                                 onClick={() => removeUser(user.id)}
                             >
                                 <FontAwesomeIcon icon={faTrash} />
@@ -162,6 +163,18 @@ const RoleDialog = ({ handleClose, external_id }) => {
                             </option>
                         ))}
                     </Form.Control>
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="horasDiariasInput">
+                    <Form.Label>Horas Diarias</Form.Label>
+                    <Form.Control
+                        type="number"
+                        value={horasDiarias}
+                        onChange={(e) => setHorasDiarias(Number(e.target.value))}
+                        min="2"
+                        max="8"
+                        onKeyDown={(e) => e.preventDefault()}
+                    />
                 </Form.Group>
 
                 <Form.Group className="contenedor-filo">

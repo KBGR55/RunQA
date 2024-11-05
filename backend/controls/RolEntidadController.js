@@ -130,7 +130,7 @@ class RolEntidadController {
     
                 const nuevaAsignacion = await models.rol_entidad.create({
                     id_entidad: lider.id_entidad,
-                    id_rol: nameRole,id, 
+                    id_rol: nameRole.id, 
                     external_id: uuid.v4()
                 }, { transaction });
                 asignaciones.push(nuevaAsignacion);
@@ -151,8 +151,6 @@ class RolEntidadController {
             res.status(500).json({ msg: error.message || "Error interno del servicio", code: 500 });
         }
     }
-    
-
 
 }
 

@@ -20,7 +20,7 @@ async listar(req, res) {
                 {
                     model: models.entidad,
                     where: { estado: true },
-                    attributes: ['id', 'external_id', 'nombres', 'apellidos', 'fecha_nacimiento', 'telefono', 'estado']
+                    attributes: ['id', 'external_id', 'nombres', 'apellidos', 'fecha_nacimiento', 'telefono', 'estado','horasDisponibles']
                 }
             ]
         });
@@ -63,7 +63,6 @@ console.log(adminRol);
     }
 }
 
-
     async listar_roles_entidad(req, res) {
         try {
             const { id_entidad, external_id_proyecto } = req.query;
@@ -78,7 +77,7 @@ console.log(adminRol);
                     {
                         model: models.entidad,
                         where: { estado: true },
-                        attributes: ['id', 'external_id', 'nombres', 'apellidos', 'fecha_nacimiento', 'telefono', 'estado']
+                        attributes: ['id', 'external_id', 'nombres', 'apellidos', 'fecha_nacimiento', 'telefono', 'estado','horasDisponibles']
                     }
                 ]
             });
@@ -129,10 +128,10 @@ console.log(adminRol);
             res.json({ msg: 'OK!', code: 200, info: response });
         } catch (error) {
             console.error(error);
+            console.log(error);
             res.status(500).json({ msg: 'Se produjo un error en listar roles', code: 500, info: error.message });
         }
     }
-    
     
 }
 

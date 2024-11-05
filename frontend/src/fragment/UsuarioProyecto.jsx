@@ -34,6 +34,7 @@ const UsuarioProyecto = () => {
 
         fetchData();
     }, [navigate, external_id]);
+    console.log(data);
 
     const handleShowModal = (id) => {
         setUserIdToDelete(id);
@@ -107,6 +108,7 @@ const UsuarioProyecto = () => {
                                             <th className="text-center">Nombres</th>
                                             <th className="text-center">Apellidos</th>
                                             <th className="text-center">Rol</th>
+                                            <th className="text-center">Horas diarias</th>
                                             <th className="text-center"> </th>
                                         </tr>
                                     </thead>
@@ -118,9 +120,10 @@ const UsuarioProyecto = () => {
                                                 </td>
                                                 <td className="text-center">{user.rol_entidad.entidad.nombres}</td>
                                                 <td className="text-center">{user.rol_entidad.entidad.apellidos}</td>
-                                                <td className="text-center">{user.rol_entidad.entidad.nombre}</td>
+                                                <td className="text-center">{user.rol_entidad.rol.nombre}</td>
+                                                <td className="text-center">{user.horasDiarias}</td>
                                                 <td className="text-center">
-                                                    <Button className="btn btn-danger" onClick={() => handleShowModal(user.entidad.id)}>
+                                                    <Button className="btn btn-danger" onClick={() => handleShowModal(user.rol_entidad.entidad.id)}>
                                                         <FontAwesomeIcon icon={faTrash} />
                                                     </Button>
                                                 </td>

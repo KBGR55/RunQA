@@ -14,7 +14,7 @@ class EntidadController {
     async listar(req, res) {
         try {
             var listar = await entidad.findAll({
-                attributes: ['apellidos', 'nombres', 'external_id', 'foto', 'telefono', 'fecha_nacimiento', 'estado'],
+                attributes: ['apellidos', 'nombres', 'external_id', 'foto', 'telefono', 'fecha_nacimiento', 'estado','horasDisponibles'],
                 include: [
                     {
                         model: models.cuenta, 
@@ -40,7 +40,7 @@ class EntidadController {
         try {
             var listar = await entidad.findAll({
                 where:  { estado: 1 },
-                attributes: ['id', 'apellidos', 'nombres', 'external_id', 'foto', 'telefono', 'fecha_nacimiento', 'estado'],
+                attributes: ['id', 'apellidos', 'nombres', 'external_id', 'foto', 'telefono', 'fecha_nacimiento', 'estado','horasDisponibles'],
                 include: [
                     {
                         model: models.cuenta, 
@@ -71,6 +71,7 @@ class EntidadController {
                 'fecha_nacimiento',
                 'telefono',
                 'estado',
+                'horasDisponibles',
                 'foto'
             ],
         });
