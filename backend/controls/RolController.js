@@ -10,7 +10,7 @@ class RolController {
             var listar = await rol.findAll({
                 attributes: ['nombre', 'external_id', 'id', 'estado'],
                 where: {
-                    nombre: { [models.Sequelize.Op.not]: superUsuario } 
+                    nombre: { [models.Sequelize.Op.not]: [superUsuario, 'LIDER DE CALIDAD']  } 
                 }
             });
             res.json({ msg: 'OK!', code: 200, info: listar });
