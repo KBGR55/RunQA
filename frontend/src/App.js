@@ -25,8 +25,8 @@ function App() {
         <Route path='*' element={<Navigate to='/login' />} />
         <Route path='/login' element={<Login />} />
         <Route path='/registrarse' element={<Registrar />} />
-        <Route path='/usuarios' element={<ListaUsuarios />} />
         <Route path="/" element={<LayoutComponent />}>
+          <Route path='/usuarios' element={<ListaUsuarios />} />
           <Route path='/caso/prueba' element={<CasoPrueba />} />
           <Route path='/proyecto/nuevo' element={<NuevoProyecto />} />
           <Route path='/proyectos' element={<ListaProyectos />} />
