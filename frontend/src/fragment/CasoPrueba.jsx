@@ -225,20 +225,6 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                             )}
                         </div>
                     </div>
-
-                    <div className="col-md-6">
-                        <div className="form-group">
-                            <label>Fecha de Ejecución</label>
-                            <input
-                                type="date"
-                                className="form-control"
-                                {...register('fecha_ejecucion_prueba', { required: false })}
-                            />
-                            {errors.fecha_ejecucion_prueba && (
-                                <div className='alert alert-danger'>Ingrese la fecha de ejecución de la prueba</div>
-                            )}
-                        </div>
-                    </div>
                 </div>
                 <div className="contenedor-filo">
                     <button type="button" onClick={() => window.location.reload()} className="btn-negativo">

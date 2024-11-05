@@ -91,8 +91,6 @@ class CasoPruebaController {
                     clasificacion: req.body.clasificacion,
                     tipo_prueba: req.body.tipo_prueba,
                     precondiciones: req.body.precondiciones,
-                    fecha_disenio: req.body.fecha_disenio,
-                    fecha_ejecucion_prueba: req.body.fecha_ejecucion_prueba,
                     id_proyecto: id_proyecto
                 });
     
