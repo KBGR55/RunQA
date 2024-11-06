@@ -14,8 +14,7 @@ class EntidadController {
     async listar(req, res) {
         try {
             var listar = await entidad.findAll({
-                attributes: ['apellidos', 'nombres', 'external_id', 'foto', 'telefono', 'fecha_nacimiento', 'estado','horasDisponibles'],
-                include: [
+                 include: [
                     {
                         model: models.cuenta, 
                         as: 'cuenta', 
@@ -62,17 +61,11 @@ class EntidadController {
         var lista = await entidad.findOne({
             where: {
                 external_id: external
-            },
-            attributes: [
-                'id',
-                'apellidos',
-                'nombres',
-                'external_id',
-                'fecha_nacimiento',
-                'telefono',
-                'estado',
-                'horasDisponibles',
-                'foto'
+            },   attributes: ['id', 'apellidos', 'nombres', 'external_id', 'foto', 'telefono', 'fecha_nacimiento', 'estado','horasDisponibles'],
+            include: [  {
+                    model: models.cuenta, 
+                    as: 'cuenta', 
+                },
             ],
         });
         if (lista === null) {
@@ -175,6 +168,14 @@ class EntidadController {
     async modificar(req, res) {
         
         try {
+
+               const claveHash = (clave) => {
+                if (!clave) {
+                    throw new Error("La clave es obligatoria");
+                }
+                const salt = bcrypt.genSaltSync(saltRounds);
+                return bcrypt.hashSync(clave, salt);
+            };
             const entidadAux = await entidad.findOne({
                 where: { external_id: req.body.external_id }
             });
@@ -205,6 +206,8 @@ class EntidadController {
                     });
                 }
                 imagenAnterior = req.file.filename; 
+            }else{
+                imagenAnterior = entidadAux.foto; 
             }
     
             entidadAux.nombres = req.body.nombres;
@@ -212,14 +215,14 @@ class EntidadController {
             entidadAux.estado = req.body.estado;
             entidadAux.telefono = req.body.telefono;
             entidadAux.fecha_nacimiento = req.body.fecha_nacimiento;
-            cuentaAux.estado = req.body.estado;
             entidadAux.foto = imagenAnterior; 
             entidadAux.external_id = uuid.v4();
-    
+            cuentaAux.external_id = uuid.v4();
+            cuentaAux.correo=req.body.correo;
+            cuentaAux.clave= claveHash(req.body.clave);
             const result = await entidadAux.save();
-            await cuentaAux.save();
-    
-            if (!result) {
+            const cuantaActualizada =  await cuentaAux.save();
+            if (!result && !cuantaActualizada) {
                 return res.status(400).json({ msg: "NO SE HAN MODIFICADO SUS DATOS, VUELVA A INTENTAR", code: 400 });
             }
     

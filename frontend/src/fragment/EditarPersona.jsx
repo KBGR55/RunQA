@@ -28,17 +28,17 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
         const formData = new FormData();
         formData.append('nombres', data.nombres);
         formData.append('apellidos', data.apellidos);
-        formData.append('fecha_nacimiento', data.fecha_nacimiento);
+        formData.append('fecha_nacimiento', data.fecha_nacimiento);  // Agregado
         formData.append('telefono', data.telefono);
         formData.append('estado', estadoInicial ? !estado : estado);
         formData.append('external_id', personaObtenida.external_id);
         formData.append('entidad_id', personaObtenida.id);
+        formData.append('correo', data.correo);
+        formData.append('clave', data.clave);
 
         if (file) {
             formData.append('foto', file);
-        } else {
-            formData.append('foto_actual', personaObtenida.foto);
-        }
+        } 
 
         ActualizarImagenes(formData, getToken(), "/modificar/entidad")
             .then((info) => {
@@ -63,8 +63,9 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
     useEffect(() => {
         setValue('nombres', personaObtenida.nombres);
         setValue('apellidos', personaObtenida.apellidos);
-        setValue('fecha_nacimiento', personaObtenida.fecha_nacimiento);
+        setValue('fecha_nacimiento', personaObtenida.fecha_nacimiento);  // Agregado
         setValue('telefono', personaObtenida.telefono);
+        setValue('correo', personaObtenida.cuenta.correo);
     }, [personaObtenida, setValue]);
 
     const handleCancelClick = () => {
@@ -117,6 +118,17 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
                             </div>
                             <div className="col-md-6">
                                 <div className="form-group">
+                                    <label>Fecha de Nacimiento</label>
+                                    <input
+                                        type="date"
+                                        className="form-control"
+                                        {...register('fecha_nacimiento', { required: true })}
+                                    />
+                                    {errors.fecha_nacimiento && <div className='alert alert-danger'>Ingrese una fecha de nacimiento</div>}
+                                </div>
+                            </div>
+                            <div className="col-md-6">
+                                <div className="form-group">
                                     <label>Número telefónico</label>
                                     <input
                                         type="text"
@@ -136,6 +148,31 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
                                         className="form-control"
                                         onChange={selectedHandler}
                                     />
+                                </div>
+                            </div>
+                            <div className="col-md-6">
+                                <div className="form-group">
+                                    <label>Correo</label>
+                                    <input
+                                        type="email"
+                                        className="form-control"
+                                        placeholder="Ingrese su correo"
+                                        onChange={handleChange}
+                                        {...register('correo', { required: true })}
+                                    />
+                                    {errors.correo && <div className='alert alert-danger'>Ingrese un correo</div>}
+                                </div>
+                            </div>
+                            <div className="col-md-6">
+                                <div className="form-group">
+                                    <label>Clave</label>
+                                    <input
+                                        type="password"
+                                        className="form-control"
+                                        onChange={handleChange}
+                                        {...register('clave', { required: true })}
+                                    />
+                                    {errors.clave && <div className='alert alert-danger'>Ingrese la clave</div>}
                                 </div>
                             </div>
                             <div className="col-md-12">

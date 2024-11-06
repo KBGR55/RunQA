@@ -59,11 +59,10 @@ const ListaUsuarios = () => {
 
     const obtenerId = (externalId) => {
         peticionGet(getToken(), `obtener/entidad/${externalId}`).then((info) => {
-            var datos = info.info;
-            if (info.code !== 200 || info.msg === "TOKEN NO VALIDO O EXPIRADO") {
+            if (info.code !== 200 ) {
                 mensajes(info.msg, "error", "error");
             } else {
-                setpersonaObtenida(datos);
+                setpersonaObtenida(info.info);
             }
         });
     };
