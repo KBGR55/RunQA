@@ -10,7 +10,7 @@ import { Button, Modal, FormControl, InputGroup } from 'react-bootstrap';
 
 const ListaCasosAsignados = () => {
     const [casosPrueba, setCasosPrueba] = useState([]);
-    const { id } = useParams();
+    const { external_id } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -24,7 +24,7 @@ const ListaCasosAsignados = () => {
             }
         });
 
-    }, [navigate, id]);
+    }, [navigate, external_id]);
     
 
     const formatDate = (dateString) => {

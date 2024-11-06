@@ -15,7 +15,7 @@ class RolEntidadController {
             if (!id_entidad) {
                 return res.status(400).json({ msg: "ID de entidad no proporcionado", code: 400 });
             }
-    
+
             const listar = await models.rol_entidad.findAll({
                 where: { id_entidad: id_entidad },
                 include: [
@@ -30,13 +30,13 @@ class RolEntidadController {
             if (listar.length === 0) {
                 return res.status(404).json({ msg: "No se encontraron roles para la entidad proporcionada", code: 404 });
             }
-    
+
             res.json({ msg: 'Roles encontrados', code: 200, info: listar });
         } catch (error) {
             console.error("Error al listar roles:", error);
             res.status(500).json({ msg: 'Error al listar roles', code: 500, info: error.message });
         }
-    }    
+    }
     async obtenerLider(req, res) {
         try {
             const id_entidad = req.query.id_entidad;
@@ -44,13 +44,13 @@ class RolEntidadController {
             if (!id_entidad) {
                 return res.status(400).json({ msg: "ID de entidad no proporcionado", code: 400 });
             }
-    
+
             const listar = await models.rol_entidad.findAll({
                 where: { id_entidad: id_entidad },
                 include: [
                     {
                         model: models.rol,
-                        where: { estado: true ,nombre:rolLider},
+                        where: { estado: true, nombre: rolLider },
                         attributes: ['external_id', 'nombre', 'estado']
                     }
                 ]
@@ -59,14 +59,14 @@ class RolEntidadController {
             if (listar.length === 0) {
                 return res.status(404).json({ msg: "No es lider de calidad", code: 404 });
             }
-    
+
             res.json({ msg: 'Es lider de calidad', code: 200, info: listar });
         } catch (error) {
             console.error("Error al listar roles:", error);
             res.status(500).json({ msg: 'Error al listar', code: 500, info: error.message });
         }
-    }    
-    
+    }
+
     async obtenerAdministrador(req, res) {
         try {
             const id_entidad = req.query.id_entidad;
@@ -74,13 +74,13 @@ class RolEntidadController {
             if (!id_entidad) {
                 return res.status(400).json({ msg: "ID de entidad no proporcionado", code: 400 });
             }
-    
+
             const listar = await models.rol_entidad.findAll({
                 where: { id_entidad: id_entidad },
                 include: [
                     {
                         model: models.rol,
-                        where: { estado: true ,nombre:rolAdministrador},
+                        where: { estado: true, nombre: rolAdministrador },
                         attributes: ['external_id', 'nombre', 'estado']
                     }
                 ]
@@ -89,28 +89,28 @@ class RolEntidadController {
             if (listar.length === 0) {
                 return res.status(404).json({ msg: "No es administrador del sistema", code: 404 });
             }
-    
-            res.json({ msg: 'Es administrador del sistema', code: 200, info: listar});
+
+            res.json({ msg: 'Es administrador del sistema', code: 200, info: listar });
         } catch (error) {
             console.error("Error al listar roles:", error);
             res.status(500).json({ msg: 'Error al listar', code: 500, info: error.message });
         }
-    }  
+    }
 
     async asignarLideres(req, res) {
         let transaction;
         try {
             transaction = await models.sequelize.transaction();
-    
+
             const { lideres } = req.body;
-    
+
             if (!lideres) {
                 return res.status(400).json({ msg: "Faltan datos requeridos", code: 400 });
             }
             if (!Array.isArray(lideres) || lideres.length === 0) {
                 return res.status(400).json({ msg: "No se pueden asignar lideres vacíos", code: 400 });
             }
-    
+
             let asignaciones = [];
             for (const lider of lideres) {
                 const entidad = await models.entidad.findOne({
@@ -120,24 +120,24 @@ class RolEntidadController {
                 if (!entidad) {
                     return res.status(404).json({ msg: `Entidad con ID ${lider.id_entidad} no encontrada o inactiva`, code: 404 });
                 }
-    
+
                 const rolExistente = await models.rol_entidad.findOne({
-                    where: { id_entidad: lider.id_entidad, id_rol: nameRole.id } 
+                    where: { id_entidad: lider.id_entidad, id_rol: nameRole.id }
                 });
                 if (rolExistente) {
                     return res.status(409).json({ msg: 'Ya tiene asignado el rol de LÍDER DE CALIDAD', code: 409 });
                 }
-    
+
                 const nuevaAsignacion = await models.rol_entidad.create({
                     id_entidad: lider.id_entidad,
-                    id_rol: nameRole.id, 
+                    id_rol: nameRole.id,
                     external_id: uuid.v4()
                 }, { transaction });
                 asignaciones.push(nuevaAsignacion);
             }
-    
+
             await transaction.commit();
-    
+
             res.json({
                 msg: asignaciones.length > 1 ? "Líderes asignados correctamente" : "Líder asignado correctamente",
                 code: 200,
@@ -152,6 +152,57 @@ class RolEntidadController {
         }
     }
 
+    async asignarAdministrador(req, res) {
+        try {
+            const { external_id_entidad, nuevo_admin_id } = req.body;
+    
+            if (!external_id_entidad || !nuevo_admin_id) {
+                return res.status(400).json({ msg: "External ID de entidad o nuevo administrador no proporcionado", code: 400 });
+            }
+    
+            const entidad = await models.entidad.findOne({
+                where: { external_id: external_id_entidad }
+            });
+    
+            if (!entidad) {
+                return res.status(404).json({ msg: "Entidad no encontrada", code: 404 });
+            }
+    
+            const id_entidad = entidad.id;
+    
+            const nuevoAdmin = await models.rol_entidad.create({
+                id_entidad: id_entidad,
+                id_usuario: nuevo_admin_id,
+                estado: true,
+                rol: {
+                    nombre: rolAdministrador
+                }
+            }, {
+                include: [models.rol]
+            });
+    
+            const nuevoProyecto = await models.proyecto.create({
+                external_id: uuid.v4(),
+                estado: true,
+                nombre: 'ADMINISTRADOR SYS',
+                fecha_inicio: new Date(),
+                descripcion: 'Encargado de gestionar el sistema'
+            });
+    
+            await models.rol_proyecto.create({
+                external_id: uuid.v4(),
+                estado: true,
+                horasDiarias: 2, 
+                id_proyecto: nuevoProyecto.id,
+                id_rol_entidad: nuevoAdmin.id
+            });
+    
+            res.json({ msg: 'Nuevo administrador asignado correctamente', code: 200, info: { nuevoAdmin, nuevoProyecto } });
+        } catch (error) {
+            console.error("Error al asignar administrador:", error);
+            res.status(500).json({ msg: 'Error al asignar administrador', code: 500, info: error.message });
+        }
+    }
 }
 
 module.exports = RolEntidadController;

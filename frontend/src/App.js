@@ -41,7 +41,7 @@ function App() {
           <Route path='/proyecto/usuarios/:external_id' element={<UsuarioProyecto />} />
           <Route path="/proyecto/:external_id" element={<RolMenu />} />
           <Route path='/asignar/tester/:external_id' element={<AsignarCasosPrueba />} />
-          <Route path='/casos/prueba/asignados' element={<ListaCasosAsignados />} />
+          <Route path='/casos/prueba/asignados/:external_id' element={<ListaCasosAsignados />} />
           <Route path='/casos/prueba-asignado/:external_id' element={<CasoPruebaAsignado />} />
         </Route>
       </Routes>
