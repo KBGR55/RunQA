@@ -197,9 +197,10 @@ const Registrar = () => {
                                         message: "La contraseña debe tener al menos 5 caracteres"
                                     },
                                     pattern: {
-                                        value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
-                                        message: "La clave debe contener al menos una letra y un número"
+                                        value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+\-=[\]{}|\\:";'?/.,`~]+$/,
+                                        message: "La clave debe contener al menos una letra, un número y puede incluir caracteres especiales, excepto < y >"
                                     }
+
                                 })}
                                 className="form-control"
                             />
@@ -247,19 +248,25 @@ const Registrar = () => {
                         <div className="registro-col">
                             <label className="form-label" htmlFor="peticion">Petición</label>
                             <div className="input-group">
-                                <textarea className="registro-input registro-peticion input-group-text" name='peticion' id="peticion" placeholder="Petición..." {...register("peticion", {
-                                    required: {
-                                        value: true,
-                                        message: "Petición es requerida"
-                                    },
-                                    maxLength: {
-                                        value: 300,
-                                        message: "Este campo debe tener un máximo de 300 caracteres"
-                                    }
-                                })} />    </div>
-                            {
-                                errors.peticion && <span className="registro-span">{errors.peticion.message}</span>
-                            }
+                                <textarea 
+                                    className="registro-input registro-peticion input-group-text form-control" 
+                                    name='peticion' 
+                                    id="peticion" 
+                                    placeholder="Petición..." 
+                                    {...register("peticion", {
+                                        required: {
+                                            value: true,
+                                            message: "Petición es requerida"
+                                        },
+                                        maxLength: {
+                                            value: 300,
+                                            message: "Este campo debe tener un máximo de 300 caracteres"
+                                        }
+                                    })}
+                                    style={{ width: '100%' }} 
+                                />    
+                            </div>
+                            {errors.peticion && <span className="mensajeerror">{errors.peticion.message}</span>}
                         </div>
                     </div>
                     <div className="contenedor-filo">

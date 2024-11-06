@@ -40,11 +40,16 @@ class CuentaController {
             var esClaveValida = function (clave, claveUser) {
                 return bcrypt.compareSync(claveUser, clave);
             }
-            
+
             if (!login.estado) {
                 return res.status(400).json({
                     msg: "CUENTA DESACTIVADA",
                     code: 400
+                });
+            } else if (login.estado === "ESPERA") {
+                res.json({
+                    msg: "SU PETICIÓN SE ENCUENTRA EN ESPERA",
+                    code: 201
                 });
             }
             if (esClaveValida(login.clave, req.body.clave)) {
@@ -111,21 +116,21 @@ class CuentaController {
                 [Op.or]: [
                     {
                         nombres: {
-                            [Op.like]: `%${nombreCompleto}%` 
+                            [Op.like]: `%${nombreCompleto}%`
                         }
                     },
                     {
                         apellidos: {
-                            [Op.like]: `%${nombreCompleto}%` 
+                            [Op.like]: `%${nombreCompleto}%`
                         }
                     }
                 ]
             };
-            var cuentasEncontradas = await models.entidad.findAll({ 
+            var cuentasEncontradas = await models.entidad.findAll({
                 where: condicionesBusqueda,
                 limit: 10 // Limitar los resultados a 10
             });
-            
+
             if (cuentasEncontradas.length === 0) {
                 return res.status(404).json({
                     msg: "NO SE ENCONTRARON USUARIOS",
@@ -138,7 +143,7 @@ class CuentaController {
                 id: entidad.id,
                 foto: entidad.foto
             }));
-    
+
             return res.status(200).json({
                 msg: "Usuarios Encontrados",
                 info: cuentasInfo,
@@ -151,8 +156,8 @@ class CuentaController {
                 code: 500
             });
         }
-    }    
-    
+    }
+
 
 }
 module.exports = CuentaController;
