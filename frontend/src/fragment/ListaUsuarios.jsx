@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, Modal } from 'react-bootstrap';
+import { Button, Modal, FormControl, InputGroup } from 'react-bootstrap';
 import '../css/style.css';
 import '../css/Usuarios_Style.css';
 import { peticionGet, URLBASE } from '../utilities/hooks/Conexion';
@@ -9,10 +9,11 @@ import { getToken, borrarSesion } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 import EditarPersona from './EditarPersona';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTimes, faCheck, faSearch } from '@fortawesome/free-solid-svg-icons';
 import Registrar from '../fragment/Registrar';
 import AsignarLideres from './AsignarLideres';
 import AsignarAdmin from './AsignarAdmin';
+import TablePagination from '@mui/material/TablePagination';
 
 const ListaUsuarios = () => {
     const [data, setData] = useState([]);
@@ -24,6 +25,9 @@ const ListaUsuarios = () => {
     const [showNewProjectModal, setShowNewProjectModal] = useState(false);
     const [showAsignarModal, setShowAsignarModal] = useState(false);
     const [showAsignarAdminModal, setShowAsignarAdminModal] = useState(false);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         peticionGet(getToken(), '/listar/entidad').then((info) => {
@@ -35,7 +39,6 @@ const ListaUsuarios = () => {
                 setData(info.info);
             }
         });
-
     }, [navigate]);
 
     //CAMBIAR FORMATO FECHA
@@ -95,7 +98,29 @@ const ListaUsuarios = () => {
     const handleCloseAsignarAdminModal = () => {
         setShowAsignarAdminModal(false);
     };
-    
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0); // Reiniciar la página a 0 cuando se cambia el número de filas por página
+    };
+
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    const filteredData = data.filter((user) => {
+        const lowerCaseSearchTerm = searchTerm.toLowerCase();
+        return (
+            (user.nombres && user.nombres.toLowerCase().includes(lowerCaseSearchTerm)) ||
+            (user.apellidos && user.apellidos.toLowerCase().includes(lowerCaseSearchTerm)) ||
+            (user.telefono && user.telefono.toLowerCase().includes(lowerCaseSearchTerm))
+        );
+    });
+
     return (
         <div>
             <div className="contenedor-centro">
@@ -110,6 +135,17 @@ const ListaUsuarios = () => {
                     <main className="table">
                         <section className='table_header'>
                             <h1 className="titulo-primario">Lista de Usuarios</h1>
+
+                            <InputGroup className="mb-3">
+                                <InputGroup.Text>
+                                    <FontAwesomeIcon icon={faSearch} />
+                                </InputGroup.Text>
+                                <FormControl
+                                    placeholder="Buscar por: Nombres, Apellidos, Telefono"
+                                    value={searchTerm}
+                                    onChange={handleSearchChange}
+                                />
+                            </InputGroup>
                         </section>
                         <section className='table_body'>
                             <div className="table-responsive">
@@ -126,14 +162,14 @@ const ListaUsuarios = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {data.length === 0 ? (
+                                        {filteredData.length === 0 ? (
                                             <tr>
                                                 <td colSpan="7" className="text-center">
                                                     No existen usuarios registrados.
                                                 </td>
                                             </tr>
                                         ) : (
-                                            data.map((data) => (
+                                            filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => (
                                                 <tr key={data.id}>
                                                     <td className="text-center" style={{ backgroundColor: "#FFFFFF", border: "none" }}>
                                                         <img src={URLBASE + "/images/users/" + data.foto} alt="Avatar" style={{ width: '50px', height: '50px' }} />
@@ -172,17 +208,23 @@ const ListaUsuarios = () => {
                                                             </svg>
                                                         </Button>
                                                     </td>
-
                                                 </tr>
                                             ))
                                         )}
                                     </tbody>
-
                                 </table>
                             </div>
                         </section>
+                        <TablePagination
+                            rowsPerPageOptions={[10, 25, 100]}
+                            component="div"
+                            count={filteredData.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
                     </main>
-
                 </div>
                 {/* < VENTANA MODAL EDITAR> */}
                 <Modal
@@ -198,7 +240,7 @@ const ListaUsuarios = () => {
                         <EditarPersona personaObtenida={personaObtenida} handleChange={handleChange} />
 
                     </Modal.Body>
-                </Modal>
+                </Modal>               
 
                 {/* Modal para asignar líderes */}
                 <Modal show={showAsignarModal} onHide={handleCloseAsignarModal} backdrop="static" keyboard={false}>
@@ -219,7 +261,6 @@ const ListaUsuarios = () => {
                         <AsignarAdmin personaObtenida={personaObtenida} />
                     </Modal.Body>
                 </Modal>
-
             </div>
         </div>
     );
