@@ -387,3 +387,10 @@ label {
 .peticion-card-header p {
   margin: 0;
 }
+.sin-peticiones {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #888;
+  font-weight: bold;
+  margin-top: 50px;
+}

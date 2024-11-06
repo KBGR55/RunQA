@@ -16,7 +16,7 @@ const CasoPruebaAsignado = () => {
     useEffect(() => {
         const fetchCasoPrueba = async () => {
             try {
-                const response = await peticionGet(getToken(), `/contrato/asignado/${external_id}`);
+                const response = await peticionGet(getToken(), `contrato/asignado/${external_id}`);
                 if (response.code === 200) {
                     setCasosPrueba(response.info);
                 } else {

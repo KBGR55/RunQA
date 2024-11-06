@@ -10,7 +10,7 @@ const VerPeticion = () => {
 
     useEffect(() => {
         if (!bucle) {
-            peticionGet(getToken(), "/peticion").then((info) => {
+            peticionGet(getToken(), "peticion").then((info) => {
                 if (info.code !== 200 && (info.msg === "No existe token" || info.msg === "Token no valido")) {
                     mensajes(info.msg);
                 } else {
@@ -39,10 +39,10 @@ const VerPeticion = () => {
         };
 
         const acepReac = (datac) => {
-            peticionGet(getToken(), `/aceptarechazar/peticiones/${external_id}/${datac}`).then((info) => {
-                if (info.code !== 200 ) {
+            peticionGet(getToken(), `aceptarechazar/peticiones/${external_id}/${datac}`).then((info) => {
+                if (info.code !== 200) {
                     mensajes(info.msg);
-                }else{
+                } else {
                     mensajes(info.msg, "success", "Éxito");
                     setTimeout(() => {
                         window.location.reload();
@@ -79,12 +79,16 @@ const VerPeticion = () => {
     return (
         <div className="main-container">
             <div className="header">
-                <h1 className="titulo-primario ">Listado de Peticiones</h1>
+                <h1 className="titulo-primario">Listado de Peticiones</h1>
             </div>
             <div className="peticiones-container">
-                {peticiones.map((peticion) => (
-                    <PeticionCard key={peticion.id} {...peticion} />
-                ))}
+                {peticiones.length === 0 ? (
+                    <p className="sin-peticiones">Sin Peticiones</p>
+                ) : (
+                    peticiones.map((peticion) => (
+                        <PeticionCard key={peticion.id} {...peticion} />
+                    ))
+                )}
             </div>
         </div>
     );

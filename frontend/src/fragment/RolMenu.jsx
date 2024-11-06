@@ -45,7 +45,7 @@ const RoleMenu = () => {
             try {
                 const info = await peticionGet(
                     getToken(),
-                    `/rol/entidad/obtener/administrador?id_entidad=${getUser().user.id}`
+                    `rol/entidad/obtener/administrador?id_entidad=${getUser().user.id}`
                 );
                 if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
                     borrarSesion();
