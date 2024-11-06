@@ -22,6 +22,8 @@ const RolEntidadController = require('../controls/RolEntidadController');
 const rolEntidadController = new RolEntidadController();
 const ContratoController = require('../controls/ContratoController');
 const contratoController = new ContratoController();
+const PeticionController = require('../controls/PeticionController');
+const peticionController = new PeticionController();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -211,5 +213,11 @@ router.post('/asignar/lideres', rolEntidadController.asignarLideres);
 router.post('/asignar/admin', rolEntidadController.asignarAdministrador);
 router.get('/rol/entidad/obtener/lider', rolEntidadController.obtenerLider);
 router.get('/rol/entidad/obtener/administrador', rolEntidadController.obtenerAdministrador);
+
+
+/** PETICION */
+router.get('/peticion', peticionController.listar);
+router.get('/aceptarechazar/peticiones/:external/:estado', /*auth,*/ peticionController.aceptarRechazar);
+
 
 module.exports = router;  

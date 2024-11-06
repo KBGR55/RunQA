@@ -8,6 +8,7 @@ import mensajes from '../utilities/Mensajes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import swal from 'sweetalert';
+import '../css/style.css';
 
 const AsignarAdmin = ({ personaObtenida }) => {
     const navigate = useNavigate();
@@ -58,20 +59,21 @@ const AsignarAdmin = ({ personaObtenida }) => {
     return (
         <div>
             <div className='contenedor-fluid'>
-                <div className="contenedor-carta">
+                <div className="contenedor-carta ">
                     <Form.Group controlId="formEntidades">
-                        <Form.Check 
-                            type="checkbox" 
-                            label="Asignar como administrador del sistema" 
+                        <Form.Check
+                            type="checkbox"
+                            label="Asignar como administrador del sistema"
                         />
                     </Form.Group>
-
-                    <Button variant="secondary" className="btn-negativo" onClick={handleCancelClick}>
-                        <FontAwesomeIcon icon={faTimes} /> Cancelar
-                    </Button>
-                    <Button className="btn-positivo" onClick={handleAsignarAdmin}>
-                        <FontAwesomeIcon icon={faCheck} /> Aceptar
-                    </Button>
+                    <div className='contenedor-filo'>
+                        <Button variant="secondary" className="btn-negativo" onClick={handleCancelClick}>
+                            <FontAwesomeIcon icon={faTimes} /> Cancelar
+                        </Button>
+                        <Button className="btn-positivo " onClick={handleAsignarAdmin}>
+                            <FontAwesomeIcon icon={faCheck} /> Aceptar
+                        </Button>
+                    </div>
                 </div>
             </div>
         </div>

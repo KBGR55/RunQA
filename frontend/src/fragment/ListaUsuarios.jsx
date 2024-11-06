@@ -193,7 +193,7 @@ const ListaUsuarios = () => {
                     backdrop="static"
                     keyboard={false}
                 >
-                    <Modal.Header>
+                    <Modal.Header closeButton>
                         <Modal.Title className='titulo-primario'>Editar persona</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>

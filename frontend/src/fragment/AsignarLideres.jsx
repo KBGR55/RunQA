@@ -119,12 +119,15 @@ const AsignarLideres = () => {
                         </div>
                     )}
 
-                    <Button variant="secondary" className="btn-negativo" onClick={handleCancelClick}>
-                        <FontAwesomeIcon icon={faTimes} /> Cancelar
-                    </Button>
-                    <Button className="btn-positivo" onClick={handleAsignarLideres}>
-                        <FontAwesomeIcon icon={faCheck} /> Aceptar
-                    </Button>
+                    <div className='contenedor-filo'>
+                        <Button variant="secondary" className="btn-negativo" onClick={handleCancelClick}>
+                            <FontAwesomeIcon icon={faTimes} /> Cancelar
+                        </Button>
+                        <Button className="btn-positivo" onClick={handleAsignarLideres}>
+                            <FontAwesomeIcon icon={faCheck} /> Aceptar
+                        </Button>
+
+                    </div>
                 </div>
             </div>
         </div>
