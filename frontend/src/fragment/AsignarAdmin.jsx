@@ -25,7 +25,7 @@ const AsignarAdmin = ({ personaObtenida }) => {
         };
 
         try {
-            const response = await peticionPost(getToken(), '/asignar/admin', body);
+            const response = await peticionPost(getToken(), 'asignar/admin', body);
             if (response.code === 200) {
                 setTimeout(() => {
                     window.location.reload();

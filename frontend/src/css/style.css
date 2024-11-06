@@ -280,3 +280,117 @@ label {
   align-items: center;
   /* Para alinear verticalmente la imagen y el texto */
 }
+
+.main-container {
+  background-color: #f4f4f9;
+  padding: 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.titulo-principal {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.peticiones-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.peticion-card-container {
+  display: flex;
+  justify-content: center;
+}
+
+.peticion-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.peticion-card.abierto {
+  transform: translateY(-5px);
+}
+
+.peticion-card-header {
+  margin-bottom: 15px;
+}
+
+.peticion-titulo {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.peticion-correo,
+.peticion-fecha {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.peticion-details {
+  margin-top: 15px;
+}
+
+.peticion-mensaje {
+  font-size: 1rem;
+  color: #444;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-rechazar {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.btn-rechazar:hover {
+  background-color: #c0392b;
+}
+
+.btn-aceptar {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.btn-aceptar:hover {
+  background-color: #27ae60;
+}
+
+.peticion-card:hover {
+  transform: translateY(-2px);
+}
+
+.peticion-card-header p {
+  margin: 0;
+}
+.sin-peticiones {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #888;
+  font-weight: bold;
+  margin-top: 50px;
+}

@@ -19,6 +19,7 @@ import LayoutComponent from './fragment/LayoutComponent';
 import VerCasoPrueba from './fragment/VerCasoPrueba';
 import CasoPruebaAsignado from './fragment/CasoPruebaAsignado';
 import PresentacionProyecto from './fragment/PresentacionProyecto';
+import VerPeticion from './fragment/VerPeticion';
 import Principal from './fragment/Principal'; 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
         <Route element={<LayoutComponent />}>
           <Route path='/presentacion/:external_id' element={<PresentacionProyecto />} />
           <Route path='/usuarios' element={<ListaUsuarios />} />
+          <Route path='/peticiones' element={<VerPeticion />} />
           <Route path='/caso/prueba' element={<CasoPrueba />} />
           <Route path='/proyecto/nuevo' element={<NuevoProyecto />} />
           <Route path='/proyectos' element={<ListaProyectos />} />

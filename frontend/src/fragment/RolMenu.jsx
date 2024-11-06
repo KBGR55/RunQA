@@ -5,15 +5,15 @@ import { getToken, getUser, borrarSesion } from '../utilities/Sessionutil';
 import { Button, Collapse, Modal } from 'react-bootstrap';
 import mensajes from '../utilities/Mensajes';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import NuevoProyecto from './NuevoProyecto'; 
+import NuevoProyecto from './NuevoProyecto';
 
 const RoleMenu = () => {
     const [roles, setRoles] = useState([]);
-    const [rolesEntida, setRolesEntidad]= useState([]);
-    const [rolAdministrador, setRolAdministrador]= useState('');
+    const [rolesEntida, setRolesEntidad] = useState([]);
+    const [rolAdministrador, setRolAdministrador] = useState('');
     const [proyecto, setProyecto] = useState({});
-    const [isOpen, setIsOpen] = useState(true); 
-    const [activeMenu, setActiveMenu] = useState(null); 
+    const [isOpen, setIsOpen] = useState(true);
+    const [activeMenu, setActiveMenu] = useState(null);
     const { external_id } = useParams();
     const navigate = useNavigate();
     const [selectedRoleId, setSelectedRoleId] = useState(null);
@@ -41,11 +41,11 @@ const RoleMenu = () => {
                 console.error('Error en la solicitud:', error);
             }
         };
-        const fetchRolAdministrador= async () => {
+        const fetchRolAdministrador = async () => {
             try {
                 const info = await peticionGet(
                     getToken(),
-                    `/rol/entidad/obtener/administrador?id_entidad=${getUser().user.id}`
+                    `rol/entidad/obtener/administrador?id_entidad=${getUser().user.id}`
                 );
                 if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
                     borrarSesion();
@@ -81,7 +81,7 @@ const RoleMenu = () => {
                 console.error('Error en la solicitud:', error);
             }
         };
-        
+
         fetchRoles();
         fetchRolAdministrador();
         fetchRolesEntidad();
@@ -92,7 +92,7 @@ const RoleMenu = () => {
             if (window.innerWidth < 768) {
                 setIsOpen(false);
             } else {
-                setIsOpen(true); 
+                setIsOpen(true);
             }
         };
 
@@ -106,7 +106,7 @@ const RoleMenu = () => {
     }, []);
 
     const roleOptions = {
-        'LIDER DE CALIDAD': ['Asignar testers', 'Generar reportes', 'Casos de prueba','Editar proyecto', 'Miembros', 'Casos de prueba asignados'],
+        'LIDER DE CALIDAD': ['Asignar testers', 'Generar reportes', 'Casos de prueba', 'Editar proyecto', 'Miembros', 'Casos de prueba asignados'],
         'ANALISTA DE PRUEBAS': ['Casos de prueba', 'Asignar testers', 'Lista de casos de prueba asignados'],
         'TESTER': ['Ejecutar casos de prueba', 'Registrar errores'],
         'DESARROLLADOR': ['Actualizar el estado de los errores', 'Consultar errores asignados']
@@ -141,24 +141,24 @@ const RoleMenu = () => {
         } else if (option === 'Asignar testers') {
             navigate(`/asignar/tester/${external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Casos de prueba asignados') {
-            navigate (`/casos/prueba/asignados/${proyecto.external_id}`,{ state: { proyecto } });
+            navigate(`/casos/prueba/asignados/${proyecto.external_id}`, { state: { proyecto } });
         }
     };
 
     const handleCloseNewProjectModal = () => {
         setShowNewProjectModal(false);
     };
-    
+
 
     return (
         <div className="sidebar d-flex flex-column justify-content-between" style={{
-            width: isOpen ? '250px' : '80px', 
-            backgroundColor: 'var(--color-cuarto)', 
-            transition: 'width 0.3s ease', 
-            height: '100vh', 
+            width: isOpen ? '250px' : '80px',
+            backgroundColor: 'var(--color-cuarto)',
+            transition: 'width 0.3s ease',
+            height: '100vh',
             color: 'var(--blanco)'
         }}>
-            <div style={{ overflow: 'hidden', flexGrow: 1, marginTop:'50px' }}>
+            <div style={{ overflow: 'hidden', flexGrow: 1, marginTop: '50px' }}>
                 <div className="text-center mt-3 mb-4">
                     <img src="/logo192.png" alt="Logo" className="rounded-circle" style={{ width: isOpen ? '150px' : '40px' }} />
                 </div>
@@ -166,60 +166,76 @@ const RoleMenu = () => {
                 {/* Opciones de navegación */}
                 <div className="p-2 mb-3" style={{ backgroundColor: 'var(--color-cuarto)' }}>
                     <ul className="list-unstyled mb-0">
-                        <li className="p-2 mb-1" onClick={() => navigate('/main')} 
-                            style={{ 
-                                cursor: 'pointer', 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                backgroundColor: selectedOption === 'Inicio' ? 'var(--color-terciario)' : 'transparent', 
+                        <li className="p-2 mb-1" onClick={() => navigate('/main')}
+                            style={{
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                backgroundColor: selectedOption === 'Inicio' ? 'var(--color-terciario)' : 'transparent',
                                 transition: 'background-color 0.3s',
                                 color: 'var(--blanco)'
                             }}>
                             <i className="bi bi-house-fill me-2"></i>
                             {isOpen && <span>Inicio</span>}
                         </li>
-                        <li className="p-2 mb-1" onClick={() => navigate('/proyectos')} 
-                            style={{ 
-                                cursor: 'pointer', 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                backgroundColor: selectedOption === 'Proyectos' ? 'var(--color-terciario)' : 'transparent', 
+                        <li className="p-2 mb-1" onClick={() => navigate('/proyectos')}
+                            style={{
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                backgroundColor: selectedOption === 'Proyectos' ? 'var(--color-terciario)' : 'transparent',
                                 transition: 'background-color 0.3s',
                                 color: 'var(--blanco)'
                             }}>
                             <i className="bi bi-clipboard-data-fill me-2"></i>
                             {isOpen && <span>Proyectos</span>}
                         </li>
-                        { rolAdministrador===200 &&
-                                <li className="p-2 mb-1" onClick={() => navigate('/usuarios')} 
-                                style={{ 
-                                    cursor: 'pointer', 
-                                    display: 'flex', 
-                                    alignItems: 'center', 
-                                    backgroundColor: selectedOption === 'Gestionar usuarios' ? 'var(--color-terciario)' : 'transparent', 
-                                    transition: 'background-color 0.3s',
-                                    color: 'var(--blanco)'
-                                }}>
-                                <i className="bi bi-person-lines-fill me-2"></i>
-                                {isOpen && <span>Gestionar usuarios</span>}
-                            </li>
-                        }
+                        {rolAdministrador === 200 && (
+    <div>
+        <li className="p-2 mb-1" onClick={() => navigate('/usuarios')}
+            style={{
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                backgroundColor: selectedOption === 'Gestionar usuarios' ? 'var(--color-terciario)' : 'transparent',
+                transition: 'background-color 0.3s',
+                color: 'var(--blanco)'
+            }}>
+            <i className="bi bi-person-lines-fill me-2"></i>
+            {isOpen && <span>Gestionar usuarios</span>}
+        </li>
+
+        {/* Nueva opción agregada */}
+        <li className="p-2 mb-1" onClick={() => navigate('/peticiones')}
+            style={{
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                backgroundColor: selectedOption === 'Ver peticiones' ? 'var(--color-terciario)' : 'transparent',
+                transition: 'background-color 0.3s',
+                color: 'var(--blanco)'
+            }}>
+            <i className="bi bi-gear-fill me-2"></i>
+            {isOpen && <span>Ver peticiones</span>}
+        </li>
+    </div>
+)}
                     </ul>
                 </div>
 
                 {/* Roles del Proyecto */}
                 <div className="sidebar-heading" style={{ marginLeft: isOpen ? '10px' : '0', color: 'var(--blanco)', fontWeight: 'bold' }}>
                     {isOpen ? proyecto.nombre : ''}
-                </div>                
+                </div>
 
                 <ul className="list-unstyled">
                     {roles.map((role) => (
                         <li className="mb-1" key={role.id}>
-                            <div className="p-2" style={{ 
-                                backgroundColor: activeMenu === role.nombre ? 'var(--color-terciario)' : 'var(--color-cuarto)', 
-                                cursor: 'pointer', 
-                                display: 'flex', 
-                                justifyContent: 'space-between', 
+                            <div className="p-2" style={{
+                                backgroundColor: activeMenu === role.nombre ? 'var(--color-terciario)' : 'var(--color-cuarto)',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                justifyContent: 'space-between',
                                 transition: 'background-color 0.3s'
                             }}
                                 onClick={() => toggleMenu(role.nombre)}>

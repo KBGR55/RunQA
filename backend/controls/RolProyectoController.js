@@ -8,7 +8,6 @@ const { Op } = require('sequelize'); // Ensure Sequelize operators are available
 
 class RolProyectoController {
 
-   
 async listar(req, res) {
     try {
         const id_entidad = req.query.id_entidad;
@@ -26,7 +25,7 @@ async listar(req, res) {
         });
 
         const adminRol = await models.rol.findOne({ where: { nombre: rolAdministrador }, attributes: ['id'] });
-console.log(adminRol);
+
         if (!entidadAux) {
             return res.status(404).json({ msg: "No se encontró la entidad activa", code: 404 });
         }

@@ -19,7 +19,7 @@ const ListaCasosAsignados = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        peticionGet(getToken(), '/contrato/asignados').then((info) => {
+        peticionGet(getToken(), 'contrato/asignados').then((info) => {
             if (info.code !== 200 && info.msg === 'Acceso denegado. Token a expirado') {
                 borrarSesion();
                 mensajes(info.mensajes);
