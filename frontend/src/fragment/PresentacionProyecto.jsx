@@ -11,7 +11,7 @@ const PresentacionProyecto = () => {
     useEffect(() => {
         const fetchProject = async () => {
             try {
-                const info = await peticionGet(getToken(), `/proyecto/${external_id}`);
+                const info = await peticionGet(getToken(), `proyecto/${external_id}`);
                 if (info.code === 200) {
                     setProyecto(info.info);
                 } else {
