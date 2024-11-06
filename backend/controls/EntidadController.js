@@ -126,19 +126,22 @@ class EntidadController {
                 apellidos: req.body.apellidos,
                 fecha_nacimiento: req.body.fecha_nacimiento,
                 telefono: req.body.telefono,
+                estado: false,
                 foto: fotoFilename,
                 cuenta: {
                     correo: req.body.correo,
-                    clave: claveHash(req.body.clave)
+                    clave: claveHash(req.body.clave),
+                    peticion: {
+                        peticion:req.body.peticion
+                    }
+
                 },
                 external_id: uuid.v4()
             };
-    
             const entidad = await models.entidad.create(data, {
-                include: [{ model: models.cuenta, as: "cuenta" }],
+                include: [{ model: models.cuenta, as: "cuenta", include: { model: models.peticion, as: 'peticion'}  }],
                 transaction
             });
-    
             await transaction.commit();
     
             return res.status(200).json({

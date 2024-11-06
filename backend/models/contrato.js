@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'id_caso_prueba',
             as: 'caso_prueba'
         });
+        
     };
 
     return contrato;
