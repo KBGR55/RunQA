@@ -9,38 +9,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import swal from 'sweetalert';
 
-const AsignarAdmin = ({ external_id }) => {
-    const [entidades, setEntidades] = useState([]);
-    const [selectedEntidad, setSelectedEntidad] = useState(null);
+const AsignarAdmin = ({ personaObtenida }) => {
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const fetchEntidades = async () => {
-            try {
-                const info = await peticionGet(getToken(), '/listar/entidad/activos');
-                if (info.code === 200) {
-                    setEntidades(info.info);
-                } else {
-                    mensajes(info.msg, 'error');
-                }
-            } catch (error) {
-                console.error('Error al cargar las entidades:', error);
-            }
-        };
-
-        fetchEntidades();
-    });
-
-    console.log("222222", external_id);
-    
-    const handleEntidadSelect = (e) => {
-        const entidadId = e.target.value;
-        const selectedEntidad = entidades.find(entidad => entidad.id === parseInt(entidadId));
-        setSelectedEntidad(selectedEntidad);
-    };
+    const external_id = personaObtenida.external_id;
 
     const handleAsignarAdmin = async () => {
-        if (!selectedEntidad) {
+        if (!external_id) {
             mensajes('Seleccione una entidad para asignar como administrador.', 'error');
             return;
         }
@@ -89,7 +63,6 @@ const AsignarAdmin = ({ external_id }) => {
                         <Form.Check 
                             type="checkbox" 
                             label="Asignar como administrador del sistema" 
-                            onChange={handleEntidadSelect} 
                         />
                     </Form.Group>
 

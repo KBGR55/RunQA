@@ -154,14 +154,14 @@ class RolEntidadController {
 
     async asignarAdministrador(req, res) {
         try {
-            const { external_id_entidad, nuevo_admin_id } = req.body;
+            const { external_id } = req.body;
     
-            if (!external_id_entidad || !nuevo_admin_id) {
-                return res.status(400).json({ msg: "External ID de entidad o nuevo administrador no proporcionado", code: 400 });
+            if (!external_id) {
+                return res.status(400).json({ msg: "External ID de entidad no proporcionado", code: 400 });
             }
     
             const entidad = await models.entidad.findOne({
-                where: { external_id: external_id_entidad }
+                where: { external_id: external_id }
             });
     
             if (!entidad) {
@@ -170,34 +170,23 @@ class RolEntidadController {
     
             const id_entidad = entidad.id;
     
-            const nuevoAdmin = await models.rol_entidad.create({
+            const rol = await models.rol.findOne({
+                where: { nombre: rolAdministrador, estado: true }
+            });
+    
+            if (!rol) {
+                return res.status(404).json({ msg: "Rol de administrador no encontrado", code: 404 });
+            }
+    
+            const id_rol = rol.id;
+    
+            await models.rol_entidad.create({
                 id_entidad: id_entidad,
-                id_usuario: nuevo_admin_id,
-                estado: true,
-                rol: {
-                    nombre: rolAdministrador
-                }
-            }, {
-                include: [models.rol]
+                id_rol: id_rol,
+                estado: true
             });
     
-            const nuevoProyecto = await models.proyecto.create({
-                external_id: uuid.v4(),
-                estado: true,
-                nombre: 'ADMINISTRADOR SYS',
-                fecha_inicio: new Date(),
-                descripcion: 'Encargado de gestionar el sistema'
-            });
-    
-            await models.rol_proyecto.create({
-                external_id: uuid.v4(),
-                estado: true,
-                horasDiarias: 2, 
-                id_proyecto: nuevoProyecto.id,
-                id_rol_entidad: nuevoAdmin.id
-            });
-    
-            res.json({ msg: 'Nuevo administrador asignado correctamente', code: 200, info: { nuevoAdmin, nuevoProyecto } });
+            res.json({ msg: 'Nuevo administrador asignado correctamente', code: 200 });
         } catch (error) {
             console.error("Error al asignar administrador:", error);
             res.status(500).json({ msg: 'Error al asignar administrador', code: 500, info: error.message });
