@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import Registrar from '../fragment/Registrar';
 import AsignarLideres from './AsignarLideres';
+import AsignarAdmin from './AsignarAdmin';
 
 const ListaUsuarios = () => {
     const [data, setData] = useState([]);
@@ -22,6 +23,7 @@ const ListaUsuarios = () => {
     const handleShowEdit = () => setShowEdit(true);
     const [showNewProjectModal, setShowNewProjectModal] = useState(false);
     const [showAsignarModal, setShowAsignarModal] = useState(false);
+    const [showAsignarAdminModal, setShowAsignarAdminModal] = useState(false);
 
     useEffect(() => {
         peticionGet(getToken(), '/listar/entidad').then((info) => {
@@ -84,7 +86,18 @@ const ListaUsuarios = () => {
         setShowAsignarModal(false);
     };
 
+    // Abrir modal de asignación de líderes
+    const handleShowAsignarAdminModal = () => {
+        setShowAsignarModal(true);
+    };
 
+    // Cerrar modal de asignación de líderes
+    const handleCloseAsignarAdminModal = () => {
+        setShowAsignarModal(false);
+    };
+
+    console.log("33333333", data);
+    
     return (
         <div>
             <div className="contenedor-centro">
@@ -133,7 +146,7 @@ const ListaUsuarios = () => {
                                                     <td className="text-center">{obtenerFechaFormateada(data.fecha_nacimiento)}</td>
                                                     <td className="text-center">{data.telefono}</td>
                                                     <td className="text-center">
-                                                        <Button
+                                                        <Button style={{ margin: '5px' }}
                                                             variant="btn btn-outline-info btn-rounded"
                                                             disabled={data.rol_entidad.length > 0 && data.rol_entidad[0].id_rol === 1}
                                                             onClick={() => {
@@ -145,6 +158,18 @@ const ListaUsuarios = () => {
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
                                                                 <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
                                                                 <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                                            </svg>
+                                                        </Button>
+
+                                                        <Button
+                                                            variant="btn btn-outline-primary btn-rounded"
+                                                            onClick={() => {
+                                                                handleShowAsignarAdminModal();
+                                                                obtenerId(data.external_id);
+                                                            }}
+                                                        >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-gear" viewBox="0 0 16 16">
+                                                                <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m.256 7a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1zm3.63-4.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0" />
                                                             </svg>
                                                         </Button>
                                                     </td>
@@ -183,6 +208,16 @@ const ListaUsuarios = () => {
                     </Modal.Header>
                     <Modal.Body>
                         <AsignarLideres />
+                    </Modal.Body>
+                </Modal>
+
+                {/* Modal para asignar admins */}
+                <Modal show={showAsignarModal} onHide={handleCloseAsignarAdminModal} backdrop="static" keyboard={false}>
+                    <Modal.Header closeButton>
+                        <Modal.Title className="titulo-primario">Asignar administrador del sistema</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <AsignarAdmin personaObtenida={personaObtenida} />
                     </Modal.Body>
                 </Modal>
 

@@ -208,6 +208,7 @@ router.get('/contrato/asignado/:external_id', contratoController.obtenerDatosCas
 /** ROL_ENTIDAD */
 router.get('/rol/entidad/listar', rolEntidadController.listar);
 router.post('/asignar/lideres', rolEntidadController.asignarLideres);
+router.post('/asignar/admin', rolEntidadController.asignarAdministrador);
 router.get('/rol/entidad/obtener/lider', rolEntidadController.obtenerLider);
 router.get('/rol/entidad/obtener/administrador', rolEntidadController.obtenerAdministrador);
 

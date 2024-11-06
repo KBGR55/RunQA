@@ -183,7 +183,7 @@ class CasoPruebaController {
 
         try {
             const caso = await caso_prueba.findAll({
-                where: { id_proyecto: proyectoAux.id, estado: "APROBADO" || "BLOQUEADO" || "NUEVO", estadoAsignacion: "NO_ASIGNADO", estadoActual: "EN_PROGRESO" },
+                where: { id_proyecto: proyectoAux.id, estado: "APROBADO" || "BLOQUEADO", estadoActual: "NUEVO" , estadoAsignacion: "NO_ASIGNADO", estadoActual: "EN_PROGRESO" },
                 attributes: [
                     'nombre', 'estado', 'external_id', 'descripcion', 
                     'pasos', 'resultado_esperado',
