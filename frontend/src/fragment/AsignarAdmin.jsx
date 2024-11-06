@@ -31,6 +31,8 @@ const AsignarAdmin = ({ external_id }) => {
         fetchEntidades();
     });
 
+    console.log("222222", external_id);
+    
     const handleEntidadSelect = (e) => {
         const entidadId = e.target.value;
         const selectedEntidad = entidades.find(entidad => entidad.id === parseInt(entidadId));

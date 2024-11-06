@@ -88,15 +88,15 @@ const ListaUsuarios = () => {
 
     // Abrir modal de asignación de líderes
     const handleShowAsignarAdminModal = () => {
-        setShowAsignarModal(true);
+        setShowAsignarAdminModal(true);
     };
 
     // Cerrar modal de asignación de líderes
     const handleCloseAsignarAdminModal = () => {
-        setShowAsignarModal(false);
+        setShowAsignarAdminModal(false);
     };
 
-    console.log("33333333", data);
+    console.log("33333333", personaObtenida);
     
     return (
         <div>
@@ -212,12 +212,12 @@ const ListaUsuarios = () => {
                 </Modal>
 
                 {/* Modal para asignar admins */}
-                <Modal onHide={handleCloseAsignarAdminModal} backdrop="static" keyboard={false}>
+                <Modal show={showAsignarAdminModal} onHide={handleCloseAsignarAdminModal} backdrop="static" keyboard={false}>
                     <Modal.Header closeButton>
                         <Modal.Title className="titulo-primario">Asignar administrador del sistema</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <AsignarAdmin personaObtenida={personaObtenida} />
+                        <AsignarAdmin personaObtenida={personaObtenida.external_id} />
                     </Modal.Body>
                 </Modal>
 
