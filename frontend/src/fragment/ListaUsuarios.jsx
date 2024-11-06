@@ -26,7 +26,7 @@ const ListaUsuarios = () => {
     const [showAsignarAdminModal, setShowAsignarAdminModal] = useState(false);
 
     useEffect(() => {
-        peticionGet(getToken(), '/listar/entidad').then((info) => {
+        peticionGet(getToken(), 'listar/entidad').then((info) => {
             if (info.code !== 200 && info.msg === 'Acceso denegado. Token a expirado') {
                 borrarSesion();
                 mensajes(info.mensajes);
@@ -120,8 +120,9 @@ const ListaUsuarios = () => {
                                             <th className="text-center">Nombres</th>
                                             <th className="text-center">Apellidos</th>
                                             <th className="text-center">Estado</th>
-                                            <th className="text-center">Fecha de Nacimiento</th>
+                                            <th className="text-center">Fecha de nacimiento</th>
                                             <th className="text-center">Telefono</th>
+                                            <th className="text-center">Horas disponibles</th>
                                             <th className="text-center">Acciones</th>
                                         </tr>
                                     </thead>
@@ -143,6 +144,7 @@ const ListaUsuarios = () => {
                                                     <td className="text-center">{data.estado ? 'Activo' : 'Desactivo'}</td>
                                                     <td className="text-center">{obtenerFechaFormateada(data.fecha_nacimiento)}</td>
                                                     <td className="text-center">{data.telefono}</td>
+                                                    <td className="text-center">{data.horasDisponibles}</td>
                                                     <td className="text-center">
                                                         <Button style={{ margin: '5px' }}
                                                             variant="btn btn-outline-info btn-rounded"

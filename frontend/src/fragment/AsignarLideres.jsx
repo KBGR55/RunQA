@@ -18,7 +18,7 @@ const AsignarLideres = () => {
     useEffect(() => {
         const fetchEntidades = async () => {
             try {
-                const info = await peticionGet(getToken(), '/listar/entidad/activos');
+                const info = await peticionGet(getToken(), 'listar/entidad/activos');
                 if (info.code === 200) {
                     setEntidades(info.info);
                 } else {
@@ -55,7 +55,7 @@ const AsignarLideres = () => {
         };
 
         try {
-            const response = await peticionPost(getToken(), '/asignar/lideres', body);
+            const response = await peticionPost(getToken(), 'asignar/lideres', body);
             if (response.code === 200) {
                 setTimeout(() => {
                     window.location.reload();

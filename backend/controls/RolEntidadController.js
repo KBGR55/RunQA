@@ -5,6 +5,7 @@ var rol_proyecto = models.rol_proyecto;
 const rolLider = 'LIDER DE CALIDAD';
 const rolAdministrador = 'ADMINISTRADOR SYS';
 const uuid = require('uuid');
+const horasDefault=2;
 
 class RolEntidadController {
 
@@ -114,7 +115,7 @@ class RolEntidadController {
             let asignaciones = [];
             for (const lider of lideres) {
                 const entidad = await models.entidad.findOne({
-                    where: { id: lider.id_entidad, estado: 1 }
+                    where: { id: lider.id_entidad, estado: 1 },attributes: ['id', 'nombres','horasDisponibles']
                 });
                 const nameRole = await models.rol.findOne({ where: { nombre: rolLider }, attributes: ['id'] });
                 if (!entidad) {
@@ -125,15 +126,22 @@ class RolEntidadController {
                     where: { id_entidad: lider.id_entidad, id_rol: nameRole.id }
                 });
                 if (rolExistente) {
-                    return res.status(409).json({ msg: 'Ya tiene asignado el rol de LÍDER DE CALIDAD', code: 409 });
+                    return res.status(409).json({ msg: `${entidad.nombres} Ya tiene asignado el rol de LÍDER DE CALIDAD`, code: 409 });
                 }
-
-                const nuevaAsignacion = await models.rol_entidad.create({
-                    id_entidad: lider.id_entidad,
-                    id_rol: nameRole.id,
-                    external_id: uuid.v4()
-                }, { transaction });
-                asignaciones.push(nuevaAsignacion);
+                if (entidad.horasDisponibles >= horasDefault) {
+                    entidad.horasDisponibles -= horasDefault;
+                    await entidad.save({ transaction });
+    
+                    const nuevaAsignacion = await models.rol_entidad.create({
+                        id_entidad: lider.id_entidad,
+                        id_rol: nameRole.id,
+                        external_id: uuid.v4()
+                    }, { transaction });
+                    asignaciones.push(nuevaAsignacion);
+                } else {
+                    return res.status(409).json({ msg: `${entidad.nombres} no tiene suficientes horas disponibles`, code: 409 });                   
+                }
+               
             }
 
             await transaction.commit();
