@@ -212,7 +212,7 @@ const ListaUsuarios = () => {
                 </Modal>
 
                 {/* Modal para asignar admins */}
-                <Modal show={showAsignarModal} onHide={handleCloseAsignarAdminModal} backdrop="static" keyboard={false}>
+                <Modal onHide={handleCloseAsignarAdminModal} backdrop="static" keyboard={false}>
                     <Modal.Header closeButton>
                         <Modal.Title className="titulo-primario">Asignar administrador del sistema</Modal.Title>
                     </Modal.Header>

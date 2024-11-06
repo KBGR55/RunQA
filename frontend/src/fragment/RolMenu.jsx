@@ -141,7 +141,7 @@ const RoleMenu = () => {
         } else if (option === 'Asignar testers') {
             navigate(`/asignar/tester/${external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Casos de prueba asignados') {
-            navigate ('/casos/prueba/asignados',{ state: { proyecto } });
+            navigate (`/casos/prueba/asignados/${proyecto.external_id}`,{ state: { proyecto } });
         }
     };
 
