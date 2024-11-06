@@ -2,15 +2,14 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Modal, FormControl, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
 import CasoPrueba from './CasoPrueba';
 import { peticionGet } from '../utilities/hooks/Conexion';
-import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../css/style.css';
 import mensajes from '../utilities/Mensajes';
 import { getToken } from '../utilities/Sessionutil';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { useLocation } from 'react-router-dom';
+import TablePagination from '@mui/material/TablePagination';
 
 const ListaCasoPrueba = () => {
     const [casosPrueba, setCasosPrueba] = useState([]);
@@ -19,9 +18,10 @@ const ListaCasoPrueba = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const proyecto = location.state?.proyecto;
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     useEffect(() => {
-
         const fetchCasosPrueba = async () => {
             if (proyecto.id) {
                 const response = await peticionGet(getToken(), `caso/prueba/listar?id_proyecto=${proyecto.id}`);
@@ -36,8 +36,7 @@ const ListaCasoPrueba = () => {
         };
 
         fetchCasosPrueba();
-    }, [proyecto]); // Add 'proyecto' as a dependency for useEffect
-
+    }, [proyecto]);
 
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
@@ -60,9 +59,17 @@ const ListaCasoPrueba = () => {
         setShowNewProjectModal(false);
     };
 
-    // Navigate to another view with the external_id
     const handleNavigateToDetail = (external_id) => {
-        navigate(`/caso-prueba/${external_id}`); // Update the path as needed
+        navigate(`/caso-prueba/${external_id}`);
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
     };
 
     return (
@@ -104,7 +111,7 @@ const ListaCasoPrueba = () => {
                                         <td colSpan="12" className="text-center">No hay casos de prueba disponibles.</td>
                                     </tr>
                                 ) : (
-                                    filteredCasosPrueba.map((caso) => (
+                                    filteredCasosPrueba.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((caso) => (
                                         <tr key={caso.external_id}>
                                             <td>{caso.nombre}</td>
                                             <td className="text-center">{caso.estado}</td>
@@ -125,8 +132,6 @@ const ListaCasoPrueba = () => {
                                                         <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z" />
                                                     </svg>
                                                 </Button>
-
-
                                             </td>
                                         </tr>
                                     ))
@@ -134,6 +139,15 @@ const ListaCasoPrueba = () => {
                             </tbody>
                         </table>
                     </div>
+                    <TablePagination
+                        rowsPerPageOptions={[10, 25, 100]}
+                        component="div"
+                        count={filteredCasosPrueba.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
                 </div>
             </div>
 
