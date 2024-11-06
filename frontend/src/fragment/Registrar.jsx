@@ -36,6 +36,7 @@ const Registrar = () => {
         formData.append('fecha_nacimiento', data.fecha_nacimiento);
         formData.append('telefono', data.telefono);
         formData.append('clave', data.clave);
+        formData.append('peticion', data.peticion);
         if (data.foto && data.foto.length > 0) {
             formData.append('foto', data.foto[0]);
         } else {
@@ -74,7 +75,7 @@ const Registrar = () => {
         <div className="container-fluid d-flex justify-content-center align-items-center custom-container-register">
             <div className="register-container">
                 <div className="text-center mb-4" >
-                    <img src="/logo192.png"alt="RunQA" style={{ width: '150px' }} />
+                    <img src="/logo192.png" alt="RunQA" style={{ width: '150px' }} />
                 </div>
                 <h2 className="text-center mb-4 titulo-primario">Registro</h2>
                 <form className="row g-3 p-2" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
@@ -241,6 +242,25 @@ const Registrar = () => {
                         {confirmPassword && !passwordMatch && (
                             <span className='mensajeerror'>Las claves no coinciden</span>
                         )}
+                    </div>
+                    <div className="registro-row">
+                        <div className="registro-col">
+                            <label className="form-label" htmlFor="peticion">Petición</label>
+                            <div className="input-group">
+                                <textarea className="registro-input registro-peticion input-group-text" name='peticion' id="peticion" placeholder="Petición..." {...register("peticion", {
+                                    required: {
+                                        value: true,
+                                        message: "Petición es requerida"
+                                    },
+                                    maxLength: {
+                                        value: 300,
+                                        message: "Este campo debe tener un máximo de 300 caracteres"
+                                    }
+                                })} />    </div>
+                            {
+                                errors.peticion && <span className="registro-span">{errors.peticion.message}</span>
+                            }
+                        </div>
                     </div>
                     <div className="contenedor-filo">
                         <button type="button" onClick={handleCancelClick} className="btn-negativo">Cancelar</button>
