@@ -21,7 +21,7 @@ const MenuBar = () => {
 
     const handleCerrarSesion = () => {
         borrarSesion();
-        navigate('/login');
+        navigate('/');
     };
 
     return (

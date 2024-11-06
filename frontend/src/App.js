@@ -1,3 +1,4 @@
+// App.js
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -18,15 +19,17 @@ import LayoutComponent from './fragment/LayoutComponent';
 import VerCasoPrueba from './fragment/VerCasoPrueba';
 import CasoPruebaAsignado from './fragment/CasoPruebaAsignado';
 import PresentacionProyecto from './fragment/PresentacionProyecto';
+import Principal from './fragment/Principal'; 
 
 function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path='*' element={<Navigate to='/login' />} />
+        <Route path='*' element={<Navigate to='/login' />} />  
+        <Route path='/' element={<Principal />} />
         <Route path='/login' element={<Login />} />
         <Route path='/registrarse' element={<Registrar />} />
-        <Route path="/" element={<LayoutComponent />}>
+        <Route element={<LayoutComponent />}>
           <Route path='/presentacion/:external_id' element={<PresentacionProyecto />} />
           <Route path='/usuarios' element={<ListaUsuarios />} />
           <Route path='/caso/prueba' element={<CasoPrueba />} />
@@ -35,7 +38,6 @@ function App() {
           <Route path='/casos/prueba/:external_id' element={<ListaCasoPrueba />} />
           <Route path='/caso-prueba/:external_id' element={<VerCasoPrueba />} />
           <Route path='/perfil' element={<Perfil />} />
-          <Route path='proyecto/nuevo' element={<NuevoProyecto />} />
           <Route path='/proyecto/usuarios/:external_id' element={<UsuarioProyecto />} />
           <Route path="/proyecto/:external_id" element={<RolMenu />} />
           <Route path='/asignar/tester/:external_id' element={<AsignarCasosPrueba />} />

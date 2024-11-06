@@ -8,7 +8,6 @@ const LayoutComponent = () => {
         <div>
             <NavbarComponent />
             <div style={{ marginTop: '56px', display: 'flex', height: 'calc(100vh - 56px)' }}>
-                {/* Sidebar tiene un ancho fijo */}
                 <div style={{ width: '250px', flexShrink: 0 }}>
                     <SidebarComponent />
                 </div>
