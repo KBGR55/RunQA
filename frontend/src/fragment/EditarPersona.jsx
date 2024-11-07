@@ -38,7 +38,7 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
 
         if (file) {
             formData.append('foto', file);
-        } 
+        }
 
         ActualizarImagenes(formData, getToken(), "/modificar/entidad")
             .then((info) => {
@@ -62,10 +62,13 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
 
     useEffect(() => {
         setValue('nombres', personaObtenida.nombres);
-        setValue('apellidos', personaObtenida.apellidos);
-        setValue('fecha_nacimiento', personaObtenida.fecha_nacimiento);  // Agregado
+        setValue('apellidos', personaObtenida.apellidos); 
+        const formattedDate = personaObtenida.fecha_nacimiento
+            ? new Date(personaObtenida.fecha_nacimiento).toISOString().split('T')[0]
+            : '';
+        setValue('fecha_nacimiento', formattedDate);
         setValue('telefono', personaObtenida.telefono);
-        setValue('correo', personaObtenida.cuenta.correo);
+        setValue('correo', personaObtenida.correo);
     }, [personaObtenida, setValue]);
 
     const handleCancelClick = () => {
