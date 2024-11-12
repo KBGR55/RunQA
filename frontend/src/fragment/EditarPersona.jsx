@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import mensajes from '../utilities/Mensajes';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faCheck, faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
 import { getToken, borrarSesion } from '../utilities/Sessionutil';
 import { ActualizarImagenes } from '../utilities/hooks/Conexion';
 import swal from 'sweetalert';
@@ -15,6 +15,8 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
     const [file, setFile] = useState(null);
     const [estado, setEstado] = useState(false);
     const estadoInicial = personaObtenida.estado;
+    const [uploadedPhoto, setUploadedPhoto] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
     const selectedHandler = e => {
         setFile(e.target.files[0]);
@@ -24,11 +26,27 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
         setEstado(!estado);
     };
 
+    const handlePhotoChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setUploadedPhoto(file);
+        }
+    };
+
+    const handleRemovePhoto = () => {
+        setUploadedPhoto(null);
+        setValue("foto", null);
+    };
+
+    const toggleModal = () => {
+        setShowModal(!showModal);
+    };
+
     const onSubmit = async (data) => {
         const formData = new FormData();
         formData.append('nombres', data.nombres);
         formData.append('apellidos', data.apellidos);
-        formData.append('fecha_nacimiento', data.fecha_nacimiento);  // Agregado
+        formData.append('fecha_nacimiento', data.fecha_nacimiento);
         formData.append('telefono', data.telefono);
         formData.append('estado', estadoInicial ? !estado : estado);
         formData.append('external_id', personaObtenida.external_id);
@@ -62,7 +80,7 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
 
     useEffect(() => {
         setValue('nombres', personaObtenida.nombres);
-        setValue('apellidos', personaObtenida.apellidos); 
+        setValue('apellidos', personaObtenida.apellidos);
         const formattedDate = personaObtenida.fecha_nacimiento
             ? new Date(personaObtenida.fecha_nacimiento).toISOString().split('T')[0]
             : '';
@@ -144,15 +162,61 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
                                 </div>
                             </div>
                             <div className="col-md-6">
-                                <div className="form-group">
-                                    <label>Foto</label>
-                                    <input
-                                        type="file"
-                                        className="form-control"
-                                        onChange={selectedHandler}
-                                    />
-                                </div>
+                                <label htmlFor="foto" className="form-label">Foto</label>
+                                <input
+                                    type="file"
+                                    {...register("foto")}
+                                    onChange={handlePhotoChange}
+                                    className="form-control"
+                                    accept="image/*"
+                                />
+                                {uploadedPhoto && (
+                                    <div className="d-flex align-items-center mt-3 justify-content-center">
+                                        <button
+                                            type="button"
+                                            className="btn btn-info btn-sm me-2 btn-mini"
+                                            onClick={toggleModal}
+                                        >
+                                            <FontAwesomeIcon icon={faEye} /> Previsualizar
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="btn btn-danger btn-sm btn-mini"
+                                            onClick={handleRemovePhoto}
+                                        >
+                                            <FontAwesomeIcon icon={faTrash} /> Eliminar foto
+                                        </button>
+                                    </div>
+                                )}
                             </div>
+
+                            {/* Modal de Previsualización */}
+                            {showModal && (
+                                <div className="modal show" tabIndex="-1" style={{ display: 'block' }}>
+                                    <div className="modal-dialog modal-dialog-centered">
+                                        <div className="modal-content">
+                                            <div className="modal-header">
+                                                <h5 className="modal-title titulo-secundario">Previsualización de la Foto</h5>
+                                                <button
+                                                    type="button"
+                                                    className="btn-close"
+                                                    onClick={toggleModal}
+                                                    onChange={handleChange}
+                                                    aria-label="Close"
+                                                ></button>
+                                            </div>
+                                            <div className="modal-body text-center">
+                                                <img
+                                                    src={URL.createObjectURL(uploadedPhoto)}
+                                                    alt="Vista previa"
+                                                    className="img-fluid"
+                                                    style={{ maxWidth: '100%' }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                             <div className="col-md-6">
                                 <div className="form-group">
                                     <label>Correo</label>
