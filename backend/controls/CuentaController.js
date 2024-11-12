@@ -8,6 +8,7 @@ const saltRounds = 8;
 
 let jwt = require('jsonwebtoken');
 const { Op } = require('sequelize');
+const e = require('express');
 class CuentaController {
 
     async sesion(req, res) {
@@ -124,10 +125,11 @@ class CuentaController {
                             [Op.like]: `%${nombreCompleto}%`
                         }
                     }
-                ]
+                ],
+                estado: true
             };
             var cuentasEncontradas = await models.entidad.findAll({
-                where: condicionesBusqueda,
+                where:condicionesBusqueda ,
                 limit: 10 // Limitar los resultados a 10
             });
 
