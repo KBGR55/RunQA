@@ -80,7 +80,7 @@ const Registrar = () => {
                 <h2 className="text-center mb-4 titulo-primario">Registro</h2>
                 <form className="row g-3 p-2" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
                     <div className="col-md-6">
-                        <label htmlFor="nombres" className="form-label">Ingrese sus nombres</label>
+                        <label htmlFor="nombres" className="form-label">Ingrese sus nombres *</label>
                         <input
                             type="text"
                             {...register("nombres", {
@@ -99,7 +99,7 @@ const Registrar = () => {
                     </div>
 
                     <div className="col-md-6">
-                        <label htmlFor="apellidos" className="form-label">Ingrese sus apellidos</label>
+                        <label htmlFor="apellidos" className="form-label">Ingrese sus apellidos *</label>
                         <input
                             type="text"
                             {...register("apellidos", {
@@ -118,7 +118,7 @@ const Registrar = () => {
                     </div>
 
                     <div className="col-md-6">
-                        <label htmlFor="fecha_nacimiento" className="form-label">Ingrese su fecha de nacimiento</label>
+                        <label htmlFor="fecha_nacimiento" className="form-label">Ingrese su fecha de nacimiento *</label>
                         <input type="date"
                             {...register("fecha_nacimiento", {
                                 required: {
@@ -139,7 +139,7 @@ const Registrar = () => {
                     </div>
 
                     <div className="col-md-6">
-                        <label htmlFor="telefono" className="form-label">Ingrese su telefono</label>
+                        <label htmlFor="telefono" className="form-label">Ingrese su telefono *</label>
                         <input type="text"
                             {...register("telefono", {
                                 required: {
@@ -165,7 +165,7 @@ const Registrar = () => {
                     </div>
 
                     <div className="col-md-6">
-                        <label htmlFor="correo" className="form-label">Ingrese su correo electrónico</label>
+                        <label htmlFor="correo" className="form-label">Ingrese su correo electrónico *</label>
                         <input type="email"
                             {...register("correo", {
                                 required: {
@@ -183,7 +183,7 @@ const Registrar = () => {
                     </div>
 
                     <div className="col-md-6">
-                        <label htmlFor="clave" className="form-label">Ingrese su clave</label>
+                        <label htmlFor="clave" className="form-label">Ingrese su clave *</label>
                         <div className="input-group">
                             <input
                                 type={showPassword ? "text" : "password"}
@@ -228,7 +228,7 @@ const Registrar = () => {
                         {errors.foto && <span className='mensajeerror'>{errors.foto.message}</span>}
                     </div>
                     <div className="col-md-6">
-                        <label htmlFor="confirmPassword" className="form-label">Confirme su clave</label>
+                        <label htmlFor="confirmPassword" className="form-label">Confirme su clave *</label>
                         <div className="input-group">
                             <input
                                 type={showPassword ? "text" : "password"}
@@ -246,7 +246,7 @@ const Registrar = () => {
                     </div>
                     <div className="registro-row">
                         <div className="registro-col">
-                            <label className="form-label" htmlFor="peticion">Petición</label>
+                            <label className="form-label" htmlFor="peticion">Petición *</label>
                             <div className="input-group">
                                 <textarea 
                                     className="registro-input registro-peticion input-group-text form-control" 
