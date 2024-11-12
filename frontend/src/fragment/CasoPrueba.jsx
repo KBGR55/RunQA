@@ -103,11 +103,11 @@ const CasoPrueba = ({ projectId, id_editar }) => {
     return (
         <div className="contenedor-carta">
             <form className="form-sample" onSubmit={handleSubmit(onSubmit)}>
-                <p className="nombre-secundario">Datos del caso de prueba</p>
+                {!id_editar ? (<h2 className='titulo-primario '>Registrar caso de prueba</h2>) : <p className="nombre-secundario">Datos del caso de prueba</p>}  
                 <div className="row">
                     <div className="col-md-6">
                         <div className="form-group">
-                            <label>Título</label>
+                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Título</label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -125,73 +125,10 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                             )}
                         </div>
                     </div>
+
                     <div className="col-md-6">
                         <div className="form-group">
-                            <label>Clasificación</label>
-                            <select
-                                className="form-control"
-                                value={clasificacionSeleccionada}
-                                onChange={(e) => setClasificacionSeleccionada(e.target.value)}
-                            >
-                                {clasificaciones.map((clasificacion, index) => (
-                                    <option key={index} value={clasificacion}>
-                                        {clasificacion}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                    <div className="col-md-12">
-                        <div className="form-group">
-                            <label>Pasos</label>
-                            <textarea
-                                className="form-control"
-                                {...register('pasos', { required: true })}
-                            />
-                            {errors.pasos && (
-                                <div className='alert alert-danger'>Ingrese los pasos del caso de prueba</div>
-                            )}
-                        </div>
-                    </div>
-                    <div className="col-md-6">
-                        <div className="form-group">
-                            <label>Resultado Esperado</label>
-                            <textarea
-                                className="form-control"
-                                {...register('resultado_esperado', {
-                                    required: 'El resultado esperado es obligatorio',
-                                    maxLength: {
-                                        value: 255,
-                                        message: 'El resultado esperado no puede tener más de 255 caracteres'
-                                    }
-                                })}
-                            />
-                            {errors.resultado_esperado && (
-                                <div className='alert alert-danger'>{errors.resultado_esperado.message}</div>
-                            )}
-                        </div>
-                    </div>
-                    <div className="col-md-6">
-                        <div className="form-group">
-                            <label>Descripción</label>
-                            <textarea
-                                className="form-control"
-                                {...register('descripcion', {
-                                    required: 'La descripción es obligatoria',
-                                    maxLength: {
-                                        value: 150,
-                                        message: 'La descripción no puede tener más de 150 caracteres'
-                                    }
-                                })}
-                            />
-                            {errors.descripcion && (
-                                <div className='alert alert-danger'>{errors.descripcion.message}</div>
-                            )}
-                        </div>
-                    </div>
-                    <div className="col-md-6">
-                        <div className="form-group">
-                            <label>Tipo de Prueba</label>
+                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Tipo de Prueba</label>
                             <select
                                 className="form-control"
                                 {...register('tipo_prueba', { required: true })}
@@ -207,9 +144,46 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                             )}
                         </div>
                     </div>
+
                     <div className="col-md-6">
                         <div className="form-group">
-                            <label>Precondiciones</label>
+                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Clasificación</label>
+                            <select
+                                className="form-control"
+                                value={clasificacionSeleccionada}
+                                onChange={(e) => setClasificacionSeleccionada(e.target.value)}
+                            >
+                                {clasificaciones.map((clasificacion, index) => (
+                                    <option key={index} value={clasificacion}>
+                                        {clasificacion}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="col-md-6">
+                        <div className="form-group">
+                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Datos de entrada</label>
+                            <textarea
+                                className="form-control"
+                                {...register('datos_entrada', {
+                                    required: 'Los datos de entrada son obligatorios',
+                                    maxLength: {
+                                        value: 50,
+                                        message: 'El resultado esperado no puede tener más de 50 caracteres'
+                                    }
+                                })}
+                            />
+                            {errors.datos_entrada && (
+                                <div className='alert alert-danger'>{errors.datos_entrada.message}</div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="col-md-12">
+                        <div className="form-group">
+                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Precondiciones</label>
                             <textarea
                                 className="form-control"
                                 {...register('precondiciones', {
@@ -225,6 +199,58 @@ const CasoPrueba = ({ projectId, id_editar }) => {
                             )}
                         </div>
                     </div>
+
+                    <div className="col-md-12">
+                        <div className="form-group">
+                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Descripción</label>
+                            <textarea
+                                className="form-control"
+                                {...register('descripcion', {
+                                    required: 'La descripción es obligatoria',
+                                    maxLength: {
+                                        value: 150,
+                                        message: 'La descripción no puede tener más de 150 caracteres'
+                                    }
+                                })}
+                            />
+                            {errors.descripcion && (
+                                <div className='alert alert-danger'>{errors.descripcion.message}</div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="col-md-12">
+                        <div className="form-group">
+                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Pasos</label>
+                            <textarea
+                                className="form-control"
+                                {...register('pasos', { required: true })}
+                            />
+                            {errors.pasos && (
+                                <div className='alert alert-danger'>Ingrese los pasos del caso de prueba</div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="col-md-12">
+                        <div className="form-group">
+                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Resultado Esperado</label>
+                            <textarea
+                                className="form-control"
+                                {...register('resultado_esperado', {
+                                    required: 'El resultado esperado es obligatorio',
+                                    maxLength: {
+                                        value: 255,
+                                        message: 'El resultado esperado no puede tener más de 255 caracteres'
+                                    }
+                                })}
+                            />
+                            {errors.resultado_esperado && (
+                                <div className='alert alert-danger'>{errors.resultado_esperado.message}</div>
+                            )}
+                        </div>
+                    </div>
+
                 </div>
                 <div className="contenedor-filo">
                     <button type="button" onClick={() => window.location.reload()} className="btn-negativo">

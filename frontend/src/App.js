@@ -34,7 +34,7 @@ function App() {
           <Route path='/presentacion/:external_id' element={<PresentacionProyecto />} />
           <Route path='/usuarios' element={<ListaUsuarios />} />
           <Route path='/peticiones' element={<VerPeticion />} />
-          <Route path='/caso/prueba' element={<CasoPrueba />} />
+          <Route path='/registrar/caso/prueba' element={<CasoPrueba />} />
           <Route path='/proyecto/nuevo' element={<NuevoProyecto />} />
           <Route path='/proyectos' element={<ListaProyectos />} />
           <Route path='/casos/prueba/:external_id' element={<ListaCasoPrueba />} />
@@ -43,8 +43,8 @@ function App() {
           <Route path='/proyecto/usuarios/:external_id' element={<UsuarioProyecto />} />
           <Route path="/proyecto/:external_id" element={<RolMenu />} />
           <Route path='/asignar/tester/:external_id' element={<AsignarCasosPrueba />} />
-          <Route path='/casos/prueba/asignados/:external_id' element={<ListaCasosAsignados />} />
-          <Route path='/casos/prueba-asignado/:external_id' element={<CasoPruebaAsignado />} />
+          <Route path='/casos/prueba/asignados/:external_id_proyecto' element={<ListaCasosAsignados />} />
+          <Route path='/casos/prueba-asignado/:external_id_proyecto/:external_id' element={<CasoPruebaAsignado />} />
         </Route>
       </Routes>
     </div>

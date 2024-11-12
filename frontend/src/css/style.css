@@ -394,3 +394,8 @@ label {
   font-weight: bold;
   margin-top: 50px;
 }
+
+.titulo-campos{
+  font-weight: bold;
+  text-justify: initial;
+}

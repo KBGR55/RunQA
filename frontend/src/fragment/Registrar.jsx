@@ -8,13 +8,16 @@ import { useForm } from 'react-hook-form';
 import { borrarSesion, getToken } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 import swal from 'sweetalert';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faTimes, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const Registrar = () => {
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm();
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordMatch, setPasswordMatch] = useState(null);
+    const [uploadedPhoto, setUploadedPhoto] = useState(null);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -69,6 +72,16 @@ const Registrar = () => {
                 navigate('/login')
             }
         });
+    };
+
+    const handlePhotoChange = (event) => {
+        const file = event.target.files[0];
+        setUploadedPhoto(file);
+    };
+
+    const handleRemovePhoto = () => {
+        setUploadedPhoto(null);
+        setValue("foto", null);
     };
 
     return (
@@ -164,22 +177,53 @@ const Registrar = () => {
                         {errors.telefono && <span className='mensajeerror'>{errors.telefono.message}</span>}
                     </div>
 
-                    <div className="col-md-6">
+                    <div className="col-md-12">
                         <label htmlFor="correo" className="form-label">Ingrese su correo electrónico</label>
-                        <input type="email"
+                        <input
+                            type="email"
                             {...register("correo", {
                                 required: {
                                     value: true,
                                     message: "Ingrese un correo"
                                 },
-                                pattern: {
-                                    value: /^[a-zA-Z0-9._%+-]+@unl\.edu\.ec$/,
-                                    message: "Ingrese un correo válido institucional UNL (@unl.edu.ec)"
+                                validate: {
+                                    isValidEmail: (value) => {
+                                        const emailRegex = /^[a-zA-Z0-9._%+-]+@unl\.edu\.ec$/;
+                                        if (!emailRegex.test(value)) {
+                                            return "Ingrese un correo válido institucional UNL (@unl.edu.ec)";
+                                        }
+
+                                        const [username, domain] = value.split('@');
+                                        if (!username) {
+                                            return "Ingrese un nombre de usuario antes de '@unl.edu.ec'";
+                                        }
+                                        return true;
+                                    }
                                 }
                             })}
                             className="form-control"
                         />
                         {errors.correo && <span className='mensajeerror'>{errors.correo.message}</span>}
+                    </div>
+
+                    <div className="col-md-12">
+                        <label htmlFor="foto" className="form-label">Seleccionar foto</label>
+                        <input
+                            type="file"
+                            {...register("foto")}
+                            onChange={handlePhotoChange}
+                            className="form-control"
+                        />
+
+                        {uploadedPhoto && (
+                            <div className="photo-preview mt-3 text-center">
+                                <img src={URL.createObjectURL(uploadedPhoto)} alt="Vista previa" className="img-thumbnail" style={{ maxWidth: '250px', marginBottom: '10px' }} />
+                                <button type="button" className="btn btn-danger btn-sm mt-2" onClick={handleRemovePhoto}>
+                                <FontAwesomeIcon icon={faTrash} />
+                                </button>
+                            </div>
+                        )}
+                        {errors.foto && <span className='mensajeerror'>{errors.foto.message}</span>}
                     </div>
 
                     <div className="col-md-6">
@@ -216,18 +260,6 @@ const Registrar = () => {
                     </div>
 
                     <div className="col-md-6">
-                        <label htmlFor="foto" className="form-label">Seleccionar foto</label>
-                        <input type="file"
-                            {...register("foto", {
-                                required: {
-                                    message: "Seleccione una foto"
-                                }
-                            })}
-                            className="form-control"
-                        />
-                        {errors.foto && <span className='mensajeerror'>{errors.foto.message}</span>}
-                    </div>
-                    <div className="col-md-6">
                         <label htmlFor="confirmPassword" className="form-label">Confirme su clave</label>
                         <div className="input-group">
                             <input
@@ -244,15 +276,16 @@ const Registrar = () => {
                             <span className='mensajeerror'>Las claves no coinciden</span>
                         )}
                     </div>
+
                     <div className="registro-row">
                         <div className="registro-col">
                             <label className="form-label" htmlFor="peticion">Petición</label>
                             <div className="input-group">
-                                <textarea 
-                                    className="registro-input registro-peticion input-group-text form-control" 
-                                    name='peticion' 
-                                    id="peticion" 
-                                    placeholder="Petición..." 
+                                <textarea
+                                    className="registro-input registro-peticion input-group-text form-control"
+                                    name='peticion'
+                                    id="peticion"
+                                    placeholder="Petición..."
                                     {...register("peticion", {
                                         required: {
                                             value: true,
@@ -263,8 +296,8 @@ const Registrar = () => {
                                             message: "Este campo debe tener un máximo de 300 caracteres"
                                         }
                                     })}
-                                    style={{ width: '100%' }} 
-                                />    
+                                    style={{ width: '100%' }}
+                                />
                             </div>
                             {errors.peticion && <span className="mensajeerror">{errors.peticion.message}</span>}
                         </div>

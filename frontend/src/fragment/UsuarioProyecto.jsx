@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { peticionGet, peticionDelete, URLBASE } from '../utilities/hooks/Conexion';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getToken } from '../utilities/Sessionutil';
+import { getToken, borrarSesion, getUser } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 import RoleDialog from './RoleDialog';
 
@@ -13,6 +13,7 @@ const UsuarioProyecto = () => {
     const [data, setData] = useState([]);
     const [showModalAddMembers, setShowModalAddMembers] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [rolLider, setRolLider] = useState([]);
     const [userIdToDelete, setUserIdToDelete] = useState(null);
     const { external_id } = useParams();
     const navigate = useNavigate();
@@ -31,6 +32,28 @@ const UsuarioProyecto = () => {
                 mensajes(error.message || 'Error al hacer la petición');
             }
         };
+
+        const fetchRolesLiderCalidad= async () => {
+            try {
+                const info = await peticionGet(
+                    getToken(),
+                    `rol/entidad/obtener/lider?id_entidad=${getUser().user.id}`
+                );
+                if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
+                    borrarSesion();
+                    mensajes(info.mensajes);
+                    navigate("/main");
+                } else if (info.code === 200) {
+                    setRolLider(info.info);
+                } else {
+                    console.error('Error al obtener roles:', info.msg);
+                }
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+            }
+        };
+
+        fetchRolesLiderCalidad();
 
         fetchData();
     }, [navigate, external_id]);
@@ -123,7 +146,9 @@ const UsuarioProyecto = () => {
                                                 <td className="text-center">{user.rol_entidad.rol.nombre}</td>
                                                 <td className="text-center">{user.horasDiarias}</td>
                                                 <td className="text-center">
-                                                    <Button className="btn btn-danger" onClick={() => handleShowModal(user.rol_entidad.entidad.id)}>
+                                                    <Button className="btn btn-danger" 
+                                                        disabled = {user.rol_entidad.rol.nombre == rolLider[0].rol.nombre}
+                                                        onClick={() => handleShowModal(user.rol_entidad.entidad.id)}>
                                                         <FontAwesomeIcon icon={faTrash} />
                                                     </Button>
                                                 </td>

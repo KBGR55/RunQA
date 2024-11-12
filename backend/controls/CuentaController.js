@@ -113,6 +113,7 @@ class CuentaController {
             }
             const nombreCompleto = req.params.nombreCompleto.trim();
             const condicionesBusqueda = {
+                estado: true,
                 [Op.or]: [
                     {
                         nombres: {

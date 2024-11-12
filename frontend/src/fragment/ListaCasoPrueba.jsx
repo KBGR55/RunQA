@@ -51,14 +51,6 @@ const ListaCasoPrueba = () => {
         );
     });
 
-    const handleShowNewProjectModal = () => {
-        setShowNewProjectModal(true);
-    };
-
-    const handleCloseNewProjectModal = () => {
-        setShowNewProjectModal(false);
-    };
-
     const handleNavigateToDetail = (external_id) => {
         navigate(`/caso-prueba/${external_id}`);
     };
@@ -79,7 +71,7 @@ const ListaCasoPrueba = () => {
                     <div className='contenedor-filo'>
                         <Button
                             className="btn-normal mb-3"
-                            onClick={handleShowNewProjectModal}
+                            onClick={() => navigate('/registrar/caso/prueba/')}
                         >
                             <FontAwesomeIcon icon={faPlus} /> Crear
                         </Button>
@@ -150,15 +142,6 @@ const ListaCasoPrueba = () => {
                     />
                 </div>
             </div>
-
-            <Modal show={showNewProjectModal} onHide={handleCloseNewProjectModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title className='titulo-primario'>Crear Caso Prueba</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <CasoPrueba projectId={proyecto.id} onClose={handleCloseNewProjectModal} />
-                </Modal.Body>
-            </Modal>
         </div>
     );
 };

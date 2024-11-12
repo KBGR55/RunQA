@@ -131,7 +131,7 @@ const RoleMenu = () => {
         event.preventDefault();
         setSelectedRoleId(roleId);
         setSelectedOption(option);
-
+    
         if (option === 'Casos de prueba') {
             navigate(`/casos/prueba/${proyecto.external_id}`, { state: { proyecto } });
         } else if (option === 'Editar proyecto') {
@@ -139,7 +139,7 @@ const RoleMenu = () => {
         } else if (option === 'Miembros') {
             navigate(`/proyecto/usuarios/${proyecto.external_id}`, { state: { proyecto } });
         } else if (option === 'Asignar testers') {
-            navigate(`/asignar/tester/${external_id}`, { state: { selectedRoleId: roleId } });
+            navigate(`/asignar/tester/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Casos de prueba asignados') {
             navigate(`/casos/prueba/asignados/${proyecto.external_id}`, { state: { proyecto } });
         }

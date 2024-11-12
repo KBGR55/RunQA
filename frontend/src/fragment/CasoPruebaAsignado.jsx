@@ -10,7 +10,7 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 const CasoPruebaAsignado = () => {
     const [casosPrueba, setCasosPrueba] = useState({});
-    const { external_id } = useParams();
+    const { external_id_proyecto, external_id } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -38,7 +38,7 @@ const CasoPruebaAsignado = () => {
                 <div className="d-flex align-items-center mb-3">
                     <FontAwesomeIcon
                         icon={faArrowLeft}
-                        onClick={() => navigate(-1)}
+                        onClick={() => navigate(`/casos/prueba/asignados/${external_id_proyecto}`, { replace: true })}
                         style={{ cursor: 'pointer', fontSize: '20px', marginRight: '10px', color: 'var(--color-cuarto)' }}
                     />
                     <h4 className="titulo-primario">Caso de Prueba: {casosPrueba?.nombre_caso_prueba || 'No disponible'}</h4>
