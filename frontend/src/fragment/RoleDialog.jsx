@@ -123,7 +123,7 @@ const RoleDialog = ({ handleClose, external_id }) => {
                         <ul className="dropdown-menu show contenedor-filo"  >
                             {searchResults.map((user, index) => (
                                 <li key={index} className="dropdown-item" onClick={() => addUser(user)}>
-                                    <img src={URLBASE + "/images/users/" + user.foto} className='imagen-pequena' />
+                                    <img src={URLBASE + "images/users/" + user.foto} className='imagen-pequena' />
                                     <strong> {user.nombres + ' ' + user.apellidos}</strong>
                                     <p className='margen-usuarios-pequenos'>{user.direccion}</p>
                                 </li>
@@ -136,7 +136,7 @@ const RoleDialog = ({ handleClose, external_id }) => {
                     {users.map((user, index) => (
                         <div key={index} className="box-of-users">
                             <div className="user-container">
-                            <img src={URLBASE + "/images/users/" + user.foto} className="imagen-pequena" alt="Avatar" />
+                            <img src={URLBASE + "images/users/" + user.foto} className="imagen-pequena" alt="Avatar" />
                                     <p className="margen-usuarios-pequenos">
                                         <strong>{user.nombres + ' ' + user.apellidos}</strong>
                                     </p>
