@@ -8,13 +8,17 @@ import { useForm } from 'react-hook-form';
 import { borrarSesion, getToken } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 import swal from 'sweetalert';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
 
 const Registrar = () => {
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm();
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordMatch, setPasswordMatch] = useState(null);
+    const [uploadedPhoto, setUploadedPhoto] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -71,13 +75,29 @@ const Registrar = () => {
         });
     };
 
+    const handlePhotoChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setUploadedPhoto(file);
+        }
+    };
+
+    const handleRemovePhoto = () => {
+        setUploadedPhoto(null);
+        setValue("foto", null);
+    };
+
+    const toggleModal = () => {
+        setShowModal(!showModal);
+    };
+
     return (
-        <div className="container-fluid d-flex justify-content-center align-items-center custom-container-register">
+        <div className="container-fluid custom-container-register">
             <div className="register-container">
                 <div className="text-center mb-4" >
                     <img src="/logo192.png" alt="RunQA" style={{ width: '150px' }} />
                 </div>
-                <h2 className="text-center mb-4 titulo-primario">Registro</h2>
+                <h2 className="text-center mb-4 titulo-primario">RunQA</h2>
                 <form className="row g-3 p-2" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
                     <div className="col-md-6">
                         <label htmlFor="nombres" className="form-label">Ingrese sus nombres *</label>
@@ -118,7 +138,7 @@ const Registrar = () => {
                     </div>
 
                     <div className="col-md-6">
-                        <label htmlFor="fecha_nacimiento" className="form-label">Ingrese su fecha de nacimiento *</label>
+                        <label htmlFor="fecha_nacimiento" className="form-label">Ingrese su fecha de nacimiento*</label>
                         <input type="date"
                             {...register("fecha_nacimiento", {
                                 required: {
@@ -163,6 +183,63 @@ const Registrar = () => {
                         />
                         {errors.telefono && <span className='mensajeerror'>{errors.telefono.message}</span>}
                     </div>
+
+                    <div className="col-md-6">
+                        <label htmlFor="foto" className="form-label">Foto</label>
+                        <input
+                            type="file"
+                            {...register("foto")}
+                            onChange={handlePhotoChange}
+                            className="form-control"
+                            accept="image/*"
+                        />
+                        {uploadedPhoto && (
+                            <div className="d-flex align-items-center mt-3 justify-content-center">
+                                <button
+                                    type="button"
+                                    className="btn btn-info btn-sm me-2 btn-mini"
+                                    onClick={toggleModal}
+                                >
+                                    <FontAwesomeIcon icon={faEye} /> Previsualizar
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-danger btn-sm btn-mini"
+                                    onClick={handleRemovePhoto}
+                                >
+                                    <FontAwesomeIcon icon={faTrash} /> Eliminar foto
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Modal de Previsualización */}
+                    {showModal && (
+                        <div className="modal show" tabIndex="-1" style={{ display: 'block' }}>
+                            <div className="modal-dialog modal-dialog-centered">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title titulo-secundario">Previsualización de la Foto</h5>
+                                        <button
+                                            type="button"
+                                            className="btn-close"
+                                            onClick={toggleModal}
+                                            aria-label="Close"
+                                        ></button>
+                                    </div>
+                                    <div className="modal-body text-center">
+                                        <img
+                                            src={URL.createObjectURL(uploadedPhoto)}
+                                            alt="Vista previa"
+                                            className="img-fluid"
+                                            style={{ maxWidth: '100%' }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
 
                     <div className="col-md-6">
                         <label htmlFor="correo" className="form-label">Ingrese su correo electrónico *</label>
@@ -216,18 +293,6 @@ const Registrar = () => {
                     </div>
 
                     <div className="col-md-6">
-                        <label htmlFor="foto" className="form-label">Seleccionar foto</label>
-                        <input type="file"
-                            {...register("foto", {
-                                required: {
-                                    message: "Seleccione una foto"
-                                }
-                            })}
-                            className="form-control"
-                        />
-                        {errors.foto && <span className='mensajeerror'>{errors.foto.message}</span>}
-                    </div>
-                    <div className="col-md-6">
                         <label htmlFor="confirmPassword" className="form-label">Confirme su clave *</label>
                         <div className="input-group">
                             <input
@@ -248,11 +313,11 @@ const Registrar = () => {
                         <div className="registro-col">
                             <label className="form-label" htmlFor="peticion">Petición *</label>
                             <div className="input-group">
-                                <textarea 
-                                    className="registro-input registro-peticion input-group-text form-control" 
-                                    name='peticion' 
-                                    id="peticion" 
-                                    placeholder="Petición..." 
+                                <textarea
+                                    className="registro-input registro-peticion input-group-text form-control"
+                                    name='peticion'
+                                    id="peticion"
+                                    placeholder="Petición..."
                                     {...register("peticion", {
                                         required: {
                                             value: true,
@@ -263,8 +328,8 @@ const Registrar = () => {
                                             message: "Este campo debe tener un máximo de 300 caracteres"
                                         }
                                     })}
-                                    style={{ width: '100%' }} 
-                                />    
+                                    style={{ width: '100%' }}
+                                />
                             </div>
                             {errors.peticion && <span className="mensajeerror">{errors.peticion.message}</span>}
                         </div>

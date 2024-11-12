@@ -394,3 +394,10 @@ label {
   font-weight: bold;
   margin-top: 50px;
 }
+
+.btn-mini {
+  padding: 4px 8px;
+  font-size: 0.85rem; 
+  line-height: 1.3;
+}
+
