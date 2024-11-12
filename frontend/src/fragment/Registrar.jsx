@@ -258,23 +258,31 @@ const Registrar = () => {
                         </div>
                     )}
 
-
                     <div className="col-md-6">
-                        <label htmlFor="correo" className="form-label d-flex align-items-center">Ingrese su correo electrónico *</label>
-                        <input type="email"
+                        <label htmlFor="correo" className="form-label d-flex align-items-center">
+                            Ingrese su correo electrónico *
+                        </label>
+                        <input
+                            type="text"
                             {...register("correo", {
                                 required: {
                                     value: true,
                                     message: "Ingrese un correo"
                                 },
-                                pattern: {
-                                    value: /^[a-zA-Z0-9._%+-]+@unl\.edu\.ec$/,
-                                    message: "Ingrese un correo válido institucional UNL (@unl.edu.ec)"
+                                validate: {
+                                    isEmail: (value) => {
+                                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                        return emailRegex.test(value) || "Ingrese un correo válido";
+                                    },
+                                    isInstitutionalEmail: (value) => {
+                                        const institutionalEmailRegex = /^[a-zA-Z0-9._%+-]+@unl\.edu\.ec$/;
+                                        return institutionalEmailRegex.test(value) || "Ingrese un correo válido institucional UNL (@unl.edu.ec)";
+                                    }
                                 }
                             })}
                             className="form-control"
                         />
-                        {errors.correo && <span className='mensajeerror'>{errors.correo.message}</span>}
+                        {errors.correo && <span className="mensajeerror">{errors.correo.message}</span>}
                     </div>
 
                     <div className="col-md-6">
