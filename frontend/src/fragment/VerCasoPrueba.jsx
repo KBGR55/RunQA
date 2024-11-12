@@ -133,6 +133,9 @@ const VerCasoPrueba = () => {
                                     <label className="w-100 text-start titulo-secundario">Precondiciones</label>
                                     <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.precondiciones ? casosPrueba?.precondiciones.replace(/\n/g, '<br />') : '' }} />
 
+                                    <label className="w-100 text-start titulo-secundario">Datos entrada</label>
+                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.datos_entrada ? casosPrueba?.datos_entrada.replace(/\n/g, '<br />') : '' }} />
+
                                     <label className="w-100 text-start titulo-secundario">Pasos</label>
                                     <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.pasos ? casosPrueba?.pasos.replace(/\n/g, '<br />') : '' }} />
 
