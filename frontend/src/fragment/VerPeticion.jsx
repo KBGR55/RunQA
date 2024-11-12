@@ -66,7 +66,7 @@ const VerPeticion = () => {
                         <div className="peticion-details">
                             <p className="peticion-mensaje">Petición: {peticion} </p>
                             <div className="contenedor-filo">
-                                <button type="button" onClick={handleRechazar} className="btn-negativo">Cancelar</button>
+                                <button type="button" onClick={handleRechazar} className="btn-negativo">Rechazar</button>
                                 <button type="submit" onClick={handleAceptar} className="btn-positivo">Aceptar</button>
                             </div>
                         </div>
@@ -77,13 +77,15 @@ const VerPeticion = () => {
     };
 
     return (
-        <div className="main-container">
+        <div className="contenedor-carta">
             <div className="header">
                 <h1 className="titulo-primario">Listado de Peticiones</h1>
             </div>
             <div className="peticiones-container">
                 {peticiones.length === 0 ? (
-                    <p className="sin-peticiones">Sin Peticiones</p>
+                   <div className="text-center">
+                   <p className="text-muted">No hay peticiones pendientes</p>
+               </div>
                 ) : (
                     peticiones.map((peticion) => (
                         <PeticionCard key={peticion.id} {...peticion} />

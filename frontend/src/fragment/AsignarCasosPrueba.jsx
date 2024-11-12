@@ -116,7 +116,7 @@ const AsignarCasosPrueba = () => {
         };
 
         try {
-            const response = await peticionPost(getToken(), '/contrato/caso/prueba', body);
+            const response = await peticionPost(getToken(), 'contrato/caso/prueba', body);
             if (response.code === 200) {
                 setTimeout(() => {
                     window.location.reload();

@@ -48,6 +48,7 @@ class EntidadController {
                     },
                 ],
             });
+            
             res.json({ msg: 'OK!', code: 200, info: listar });
         } catch (error) {
             res.status(500);
@@ -58,7 +59,7 @@ class EntidadController {
 
     async obtener(req, res) {
         const external = req.params.external;
-        var lista = await entidad.findOne({
+        var listar = await entidad.findOne({
             where: {
                 external_id: external
             },   attributes: ['id', 'apellidos', 'nombres', 'external_id', 'foto', 'telefono', 'fecha_nacimiento', 'estado','horasDisponibles'],
@@ -68,17 +69,31 @@ class EntidadController {
                 },
             ],
         });
-        if (lista === null) {
+
+
+        if (listar=== null) {
             return res.status(400).json({
                 msg: 'NO EXISTE EL REGISTRO',
                 code: 400,
                 info: listar
             });
         }
+       
         return res.status(200).json({
             msg: 'OK!',
             code: 200,
-            info: lista
+            info:  {
+                id: listar.id,
+                nombres: listar.nombres,
+                apellidos: listar.apellidos,
+                fecha_nacimiento: listar.fecha_nacimiento,
+                external_id: listar.external_id,
+                foto: listar.foto,
+                telefono: listar.telefono,
+                estado: listar.estado,
+                horasDisponibles: listar.horasDisponibles,
+               correo:listar.cuenta.correo
+            }
         });
     }
 
