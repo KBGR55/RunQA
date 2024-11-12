@@ -9,7 +9,9 @@ import { borrarSesion, getToken } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 import swal from 'sweetalert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faEye, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 
 const Registrar = () => {
     const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm();
@@ -100,7 +102,15 @@ const Registrar = () => {
                 <h2 className="text-center mb-4 titulo-primario">RunQA</h2>
                 <form className="row g-3 p-2" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
                     <div className="col-md-6">
-                        <label htmlFor="nombres" className="form-label">Ingrese sus nombres *</label>
+                        <label htmlFor="nombres" className="form-label d-flex align-items-center">
+                            Ingrese sus nombres *
+                            <OverlayTrigger
+                                placement="top"
+                                overlay={<Tooltip>Este campo debe llenarse con mayúsculas</Tooltip>}
+                            >
+                                <FontAwesomeIcon icon={faQuestionCircle} className="ms-2 text-info" />
+                            </OverlayTrigger>
+                        </label>
                         <input
                             type="text"
                             {...register("nombres", {
@@ -119,7 +129,15 @@ const Registrar = () => {
                     </div>
 
                     <div className="col-md-6">
-                        <label htmlFor="apellidos" className="form-label">Ingrese sus apellidos *</label>
+                        <label htmlFor="apellidos" className="form-label d-flex align-items-center">
+                            Ingrese sus apellidos *
+                            <OverlayTrigger
+                                placement="top"
+                                overlay={<Tooltip>Este campo debe llenarse con mayúsculas</Tooltip>}
+                            >
+                                <FontAwesomeIcon icon={faQuestionCircle} className="ms-2 text-info" />
+                            </OverlayTrigger>
+                        </label>
                         <input
                             type="text"
                             {...register("apellidos", {
