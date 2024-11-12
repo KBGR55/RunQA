@@ -32,6 +32,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(150),
             allowNull: true
         },
+        datos_entrada: {
+            type: DataTypes.STRING(100),
+            allowNull: true
+        },
         pasos: {
             type: DataTypes.TEXT,
             allowNull: true

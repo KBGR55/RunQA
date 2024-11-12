@@ -13,7 +13,7 @@ class CasoPruebaController {
                     'nombre', 'estado', 'external_id', 'descripcion', 'estadoActual','estadoAsignacion',
                     'pasos', 'resultado_esperado', 'resultado_obtenido',
                     'clasificacion', 'tipo_prueba', 'precondiciones',
-                    'fecha_disenio', 'fecha_ejecucion_prueba'
+                    'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada'
                 ]
             });
             res.json({ msg: 'OK!', code: 200, info: listar });
@@ -34,7 +34,7 @@ class CasoPruebaController {
                     'nombre', 'estado', 'external_id', 'descripcion', 'estadoActual','estadoAsignacion',
                     'pasos', 'resultado_esperado', 'resultado_obtenido',
                     'clasificacion', 'tipo_prueba', 'precondiciones',
-                    'fecha_disenio', 'fecha_ejecucion_prueba'
+                    'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada'
                 ]
             });
             
@@ -56,7 +56,7 @@ class CasoPruebaController {
                     'nombre', 'estado', 'external_id', 'descripcion',  'estadoActual','estadoAsignacion',
                     'pasos', 'resultado_esperado', 'resultado_obtenido',
                     'clasificacion', 'tipo_prueba', 'precondiciones',
-                    'fecha_disenio', 'fecha_ejecucion_prueba','id_proyecto'
+                    'fecha_disenio', 'fecha_ejecucion_prueba','id_proyecto', 'datos_entrada'
                 ]
             });
     
@@ -91,6 +91,7 @@ class CasoPruebaController {
                     clasificacion: req.body.clasificacion,
                     tipo_prueba: req.body.tipo_prueba,
                     precondiciones: req.body.precondiciones,
+                    datos_entrada: req.body.datos_entrada,
                     id_proyecto: id_proyecto
                 });
     
@@ -125,6 +126,7 @@ class CasoPruebaController {
                 caso.tipo_prueba = req.body.tipo_prueba || caso.tipo_prueba;
                 caso.precondiciones = req.body.precondiciones || caso.precondiciones;
                 caso.fecha_ejecucion_prueba = req.body.fecha_ejecucion_prueba || caso.fecha_ejecucion_prueba;
+                caso.datos_entrada = req.body.datos_entrada || caso.datos_entrada;
     
                 await caso.save();
     
@@ -188,7 +190,7 @@ class CasoPruebaController {
                     'nombre', 'estado', 'external_id', 'descripcion', 
                     'pasos', 'resultado_esperado',
                     'clasificacion', 'tipo_prueba', 'precondiciones',
-                    'fecha_disenio', 'fecha_ejecucion_prueba'
+                    'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada'
                 ]
             });
     

@@ -7,6 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { peticionPost, peticionGet, peticionPut } from '../utilities/hooks/Conexion';
 import mensajes from '../utilities/Mensajes';
 import { getToken, getUser } from '../utilities/Sessionutil';
+import swal from 'sweetalert';
 
 const NuevoProyecto = () => {
     const [name, setName] = useState('');
@@ -80,7 +81,9 @@ const NuevoProyecto = () => {
                     mensajes(info.msg, "error", "Error");
                 } else {
                     mensajes(info.msg, "success", "Éxito");
-                    navigate('/proyecto/'+info.info);
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1200);
                 }
             }).catch((error) => {
                 mensajes("Error al guardar el proyecto", "error", "Error");
@@ -88,6 +91,23 @@ const NuevoProyecto = () => {
             });
         }
 
+    };
+
+    const handleCancelClick = () => {
+        swal({
+            title: "¿Está seguro de cancelar el registro?",
+            text: "Una vez cancelado, no podrá revertir esta acción",
+            icon: "warning",
+            buttons: ["No", "Sí"],
+            dangerMode: true,
+        }).then((willCancel) => {
+            if (willCancel) {
+                mensajes("Actualización cancelada", "info", "Información");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1200);
+            }
+        });
     };
 
     return (
@@ -121,7 +141,7 @@ const NuevoProyecto = () => {
                         <small className="text-muted">{description.length}/50 caracteres</small>
                     </div>
                     <div className="contenedor-filo">
-                        <button type="button" onClick={() => window.location.reload()}  className="btn-negativo">
+                        <button type="button" onClick={handleCancelClick} className="btn-negativo">
                             <FontAwesomeIcon icon={faTimes} /> Cancelar
                         </button>
                         <button className="btn-positivo" type="submit">

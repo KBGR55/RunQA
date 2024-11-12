@@ -16,7 +16,7 @@ const RoleDialog = ({ handleClose, external_id }) => {
     const [selectedRole, setSelectedRole] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
-    const [horasDiarias, setHorasDiarias] = useState(2); // Valor inicial de horasDiarias
+    const [horasDiarias, setHorasDiarias] = useState(2);
 
     const handleAssignRole = async () => {
         if (!selectedRole || users.length === 0) {
@@ -120,11 +120,11 @@ const RoleDialog = ({ handleClose, external_id }) => {
                         autoComplete="off"
                     />
                     {showDropdown && (
-                        <ul className="dropdown-menu show contenedor-filo"  >
+                        <ul className="dropdown-menu show contenedor-filo">
                             {searchResults.map((user, index) => (
                                 <li key={index} className="dropdown-item" onClick={() => addUser(user)}>
-                                    <img src={URLBASE + "/images/users/" + user.foto} className='imagen-pequena' />
-                                    <strong> {user.nombres + ' ' + user.apellidos}</strong>
+                                    <img src={URLBASE + "/images/users/" + user.foto} className='imagen-pequena' alt="User" />
+                                    <strong>{user.nombres + ' ' + user.apellidos}</strong>
                                     <p className='margen-usuarios-pequenos'>{user.direccion}</p>
                                 </li>
                             ))}
@@ -136,16 +136,19 @@ const RoleDialog = ({ handleClose, external_id }) => {
                     {users.map((user, index) => (
                         <div key={index} className="box-of-users">
                             <div className="user-container">
-                            <img src={URLBASE + "/images/users/" + user.foto} className="imagen-pequena" alt="Avatar" />
-                                    <p className="margen-usuarios-pequenos">
-                                        <strong>{user.nombres + ' ' + user.apellidos}</strong>
-                                    </p>
-                                   
+                                <img src={URLBASE + "/images/users/" + user.foto} className="imagen-pequena" alt="Avatar" />
+                                <p className="margen-usuarios-pequenos">
+                                    <strong>{user.nombres + ' ' + user.apellidos}</strong>
+                                </p>
                             </div>
-
                             <button
+                                type="button"
                                 className="btn btn-danger boton-eliminar-pequeno"
-                                onClick={() => removeUser(user.id)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    removeUser(user.id);
+                                }}
                             >
                                 <FontAwesomeIcon icon={faTrash} />
                             </button>

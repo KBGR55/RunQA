@@ -139,7 +139,7 @@ const RoleMenu = () => {
         } else if (option === 'Miembros') {
             navigate(`/proyecto/usuarios/${proyecto.external_id}`, { state: { proyecto } });
         } else if (option === 'Asignar testers') {
-            navigate(`/asignar/tester/${external_id}`, { state: { selectedRoleId: roleId } });
+            navigate(`/asignar/tester/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Casos de prueba asignados') {
             navigate(`/casos/prueba/asignados/${proyecto.external_id}`, { state: { proyecto } });
         }
@@ -191,35 +191,35 @@ const RoleMenu = () => {
                             {isOpen && <span>Proyectos</span>}
                         </li>
                         {rolAdministrador === 200 && (
-    <div>
-        <li className="p-2 mb-1" onClick={() => navigate('/usuarios')}
-            style={{
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                backgroundColor: selectedOption === 'Gestionar usuarios' ? 'var(--color-terciario)' : 'transparent',
-                transition: 'background-color 0.3s',
-                color: 'var(--blanco)'
-            }}>
-            <i className="bi bi-person-lines-fill me-2"></i>
-            {isOpen && <span>Gestionar usuarios</span>}
-        </li>
+                            <div>
+                                <li className="p-2 mb-1" onClick={() => navigate('/usuarios')}
+                                    style={{
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        backgroundColor: selectedOption === 'Gestionar usuarios' ? 'var(--color-terciario)' : 'transparent',
+                                        transition: 'background-color 0.3s',
+                                        color: 'var(--blanco)'
+                                    }}>
+                                    <i className="bi bi-person-lines-fill me-2"></i>
+                                    {isOpen && <span>Gestionar usuarios</span>}
+                                </li>
 
-        {/* Nueva opción agregada */}
-        <li className="p-2 mb-1" onClick={() => navigate('/peticiones')}
-            style={{
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                backgroundColor: selectedOption === 'Ver peticiones' ? 'var(--color-terciario)' : 'transparent',
-                transition: 'background-color 0.3s',
-                color: 'var(--blanco)'
-            }}>
-            <i className="bi bi-gear-fill me-2"></i>
-            {isOpen && <span>Ver peticiones</span>}
-        </li>
-    </div>
-)}
+                                {/* Nueva opción agregada */}
+                                <li className="p-2 mb-1" onClick={() => navigate('/peticiones')}
+                                    style={{
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        backgroundColor: selectedOption === 'Ver peticiones' ? 'var(--color-terciario)' : 'transparent',
+                                        transition: 'background-color 0.3s',
+                                        color: 'var(--blanco)'
+                                    }}>
+                                    <i className="bi bi-gear-fill me-2"></i>
+                                    {isOpen && <span>Ver peticiones</span>}
+                                </li>
+                            </div>
+                        )}
                     </ul>
                 </div>
 

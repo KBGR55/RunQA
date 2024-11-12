@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import CasoPrueba from './CasoPrueba';
 import { peticionGet } from '../utilities/hooks/Conexion';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import '../css/style.css';
 import mensajes from '../utilities/Mensajes';
 import { getToken } from '../utilities/Sessionutil';
@@ -13,11 +13,11 @@ import { useForm } from 'react-hook-form';
 import swal from 'sweetalert';
 
 const VerCasoPrueba = () => {
-    const [showModal, setShowModal] = useState(false);
-    const [editingCaso, setEditingCaso] = useState(null);
     const [casosPrueba, setCasosPrueba] = useState({});
-    const { external_id } = useParams();
+    const { external_id_proyecto, external_id } = useParams();
     const { setValue } = useForm();
+    const navigate = useNavigate();
+    
 
     useEffect(() => {
         const fetchCasoPrueba = async () => {
@@ -39,16 +39,7 @@ const VerCasoPrueba = () => {
 
         fetchCasoPrueba();
     }, [setValue]);
-
-    const handleShowModal = (casoId) => {
-        setEditingCaso(casoId);
-        setShowModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setEditingCaso(null);
-        setShowModal(false);
-    };
+    
 
     const handleDeleteCasoPrueba = async (external_id) => {
         swal({
@@ -154,7 +145,7 @@ const VerCasoPrueba = () => {
                             </div>
                         </div>
                         <div className='contenedor-filo'>
-                            <Button variant="btn btn-outline-info btn-rounded" onClick={() => handleShowModal(casosPrueba.external_id)} >
+                            <Button variant="btn btn-outline-info btn-rounded" onClick={() => navigate(`/editar/caso/prueba/${external_id_proyecto}/${casosPrueba.external_id}`)} >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
                                     <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
                                     <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
@@ -169,19 +160,6 @@ const VerCasoPrueba = () => {
                         </div>
                     </div>
                 </div>
-
-                <Modal show={showModal} onHide={handleCloseModal}>
-                    <Modal.Header closeButton>
-                        <Modal.Title className='titulo-primario'>
-                            {editingCaso ? 'Editar Caso de Prueba' : 'Agregar Caso de Prueba'}
-                        </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <CasoPrueba
-                            id_editar={editingCaso}
-                        />
-                    </Modal.Body>
-                </Modal>
 
             </div>
 
