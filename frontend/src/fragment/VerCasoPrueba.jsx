@@ -15,6 +15,7 @@ import swal from 'sweetalert';
 const VerCasoPrueba = () => {
     const [casosPrueba, setCasosPrueba] = useState({});
     const { external_id_proyecto, external_id } = useParams();
+    const [infoProyecto,setProyecto] = useState([]);
     const { setValue } = useForm();
     const navigate = useNavigate();
     
@@ -23,6 +24,18 @@ const VerCasoPrueba = () => {
         const fetchCasoPrueba = async () => {
 
             try {
+                if (external_id_proyecto) {
+                    peticionGet(getToken(), `proyecto/obtener/${external_id_proyecto}`).then((info) => {
+                        if (info.code === 200) {
+                            setProyecto(info.info);
+                        } else {
+                            mensajes(info.msg, "error", "Error");
+                        }
+                    }).catch((error) => {
+                        mensajes("Error al cargar el proyecto", "error", "Error");
+                        console.error(error);
+                    });
+                } 
                 const response = await peticionGet(getToken(), `caso/prueba/obtener?external_id=${external_id}`);
                 if (response.code === 200) {
                     const casoPruebaData = response.info;
@@ -73,6 +86,7 @@ const VerCasoPrueba = () => {
         <div>
             <div className='container-fluid'>
                 <div className='contenedor-centro'>
+                <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
                     <div className="contenedor-carta">
                         <p className="titulo-primario">Caso de Prueba</p>
                         <div className="form-group">

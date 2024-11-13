@@ -12,6 +12,7 @@ import swal from 'sweetalert';
 const CasoPrueba = ({ projectId}) => {
     const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm();
     const { external_id_proyecto, external_id } = useParams();
+    const [infoProyecto,setProyecto] = useState([]);
     const navigate = useNavigate();
 
     const [clasificaciones] = useState(['ALTA', 'MEDIA', 'BAJA']);
@@ -28,7 +29,20 @@ const CasoPrueba = ({ projectId}) => {
 
     useEffect(() => {
         const fetchCasoPrueba = async () => {
+            if (external_id_proyecto) {
+                peticionGet(getToken(), `proyecto/obtener/${external_id_proyecto}`).then((info) => {
+                    if (info.code === 200) {
+                        setProyecto(info.info);
+                    } else {
+                        mensajes(info.msg, "error", "Error");
+                    }
+                }).catch((error) => {
+                    mensajes("Error al cargar el proyecto", "error", "Error");
+                    console.error(error);
+                });
+            } 
             if (external_id) {
+
                 try {
                     const response = await peticionGet(getToken(), `caso/prueba/obtener?external_id=${external_id}`);
                     if (response.code === 200) {
@@ -137,6 +151,7 @@ const CasoPrueba = ({ projectId}) => {
     return (
         <div className="contenedor-carta">
             <form className="form-sample" onSubmit={handleSubmit(onSubmit)}>
+            <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
                 {!external_id ? (<h2 className='titulo-primario '>Registrar caso de prueba</h2>) : <p className="titulo-primario">Editar caso de prueba</p>}
                 <div className="row">
                     <div className="col-md-6">

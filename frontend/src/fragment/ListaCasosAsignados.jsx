@@ -17,8 +17,21 @@ const ListaCasosAsignados = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
+    const [infoProyecto, setProyecto] = useState([]);
 
     useEffect(() => {
+        if (external_id_proyecto) {
+            peticionGet(getToken(), `proyecto/obtener/${external_id_proyecto}`).then((info) => {
+                if (info.code === 200) {
+                    setProyecto(info.info);
+                } else {
+                    mensajes(info.msg, "error", "Error");
+                }
+            }).catch((error) => {
+                mensajes("Error al cargar el proyecto", "error", "Error");
+                console.error(error);
+            });
+        }
         peticionGet(getToken(), 'contrato/asignados').then((info) => {
             if (info.code !== 200 && info.msg === 'Acceso denegado. Token a expirado') {
                 borrarSesion();
@@ -30,9 +43,9 @@ const ListaCasosAsignados = () => {
         });
 
     }, [navigate, external_id_proyecto, external_id_casoprueba]);
-    
+
     const formatDate = (dateString) => {
-        return new Date(dateString).toISOString().slice(0, 10); 
+        return new Date(dateString).toISOString().slice(0, 10);
     }
 
     const handleNavigateToDetail = (external_id_proyecto, external_id_casoprueba) => {
@@ -65,8 +78,8 @@ const ListaCasosAsignados = () => {
             <div className='container-fluid'>
                 <div className='contenedor-centro'>
                     <div className="contenedor-carta">
+                        <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
                         <p className="titulo-primario">Lista de Casos de Prueba Asignados</p>
-
                         <InputGroup className="mb-3">
                             <InputGroup.Text>
                                 <FontAwesomeIcon icon={faSearch} />

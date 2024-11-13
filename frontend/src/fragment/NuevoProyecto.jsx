@@ -12,14 +12,14 @@ import swal from 'sweetalert';
 const NuevoProyecto = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const { external_id} = useParams();
+    const { external_id_proyecto} = useParams();
 
     const navigate = useNavigate();
     const [proyecto, setProyecto] = useState([]);
 
     useEffect(() => {
-        if (external_id) {
-            peticionGet(getToken(), `proyecto/obtener/${external_id}`).then((info) => {
+        if (external_id_proyecto) {
+            peticionGet(getToken(), `proyecto/obtener/${external_id_proyecto}`).then((info) => {
                 if (info.code === 200) {
                     setName(info.info.nombre);
                     setDescription(info.info.descripcion);
@@ -32,7 +32,7 @@ const NuevoProyecto = () => {
                 console.error(error);
             });
         }
-    }, [external_id]);
+    }, [external_id_proyecto]);
 
     const onSubmit = (event) => {
         event.preventDefault();
@@ -51,7 +51,7 @@ const NuevoProyecto = () => {
             mensajes('La descripción no puede exceder los 50 caracteres', "error", "Error");
             return;
         }
-        if (external_id) {
+        if (external_id_proyecto) {
             const datos = {
                 id_proyect: proyecto.id,
                 name: name,
@@ -145,7 +145,7 @@ const NuevoProyecto = () => {
                             <FontAwesomeIcon icon={faTimes} /> Cancelar
                         </button>
                         <button className="btn-positivo" type="submit">
-                            <FontAwesomeIcon icon={faCheck} /> {external_id ? 'Actualizar' : 'Registrar'}
+                            <FontAwesomeIcon icon={faCheck} /> {external_id_proyecto ? 'Actualizar' : 'Registrar'}
                         </button>
                     </div>
                 </form>

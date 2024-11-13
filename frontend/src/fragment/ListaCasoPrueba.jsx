@@ -21,10 +21,24 @@ const ListaCasoPrueba = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const { external_id_proyecto } = useParams();
+    const [infoProyecto,setProyecto] = useState([]);
+    
 
-    useEffect(() => {
+    useEffect(() => {        
         const fetchCasosPrueba = async () => {
             if (proyecto.id) {
+                if (external_id_proyecto) {
+                    peticionGet(getToken(), `proyecto/obtener/${external_id_proyecto}`).then((info) => {
+                        if (info.code === 200) {
+                            setProyecto(info.info);
+                        } else {
+                            mensajes(info.msg, "error", "Error");
+                        }
+                    }).catch((error) => {
+                        mensajes("Error al cargar el proyecto", "error", "Error");
+                        console.error(error);
+                    });
+                } 
                 const response = await peticionGet(getToken(), `caso/prueba/listar?id_proyecto=${proyecto.id}`);
                 if (response.code === 200) {
                     setCasosPrueba(response.info);
@@ -69,6 +83,7 @@ const ListaCasoPrueba = () => {
         <div className='container-fluid'>
             <div className='contenedor-centro'>
                 <div className="contenedor-carta">
+                <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
                     <div className='contenedor-filo'>
                         <Button
                             className="btn-normal mb-3"

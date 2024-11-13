@@ -22,12 +22,17 @@
   color: var(--color-primario);
 }
 
-.titulo-primario {
+.titulo-primario , .titulo-proyecto{
   color: var(--color-cuarto);
   font-size: 30px;
   font-weight: bold;
   padding-left: 10px;
   position: relative;
+  text-align: left;
+}
+
+.titulo-proyecto{
+  text-align: center;
 }
 
 .titulo-primario::before {
@@ -46,6 +51,11 @@
   font-size: 20px;
   font-weight: bold;
 }
+.card-titulo{
+  background-color:  var(--color-cuarto);
+  border-radius: 5px;
+}
+
 
 .titulo-terciario {
   color: var(#F4EEFF) !important;
