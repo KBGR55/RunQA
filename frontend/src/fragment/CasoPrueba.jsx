@@ -88,10 +88,7 @@ const CasoPrueba = ({ projectId}) => {
                     "info", 
                     "Información"
                 );
-                navigate(isEditMode 
-                    ? `/caso-prueba/${external_id}`  
-                    : -1 
-                );
+                navigate(-1);
             }
         });
     };
