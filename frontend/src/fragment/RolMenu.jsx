@@ -279,7 +279,7 @@ const RoleMenu = () => {
                     <Modal.Title>Editar Proyecto</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <NuevoProyecto external_id={external_id} /> {/* Pasa el external_id al componente */}
+                    <NuevoProyecto external_id_proyecto={external_id} /> 
                 </Modal.Body>
             </Modal>
 

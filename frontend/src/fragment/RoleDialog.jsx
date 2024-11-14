@@ -177,7 +177,6 @@ const RoleDialog = ({ handleClose, external_id }) => {
                         onChange={(e) => setHorasDiarias(Number(e.target.value))}
                         min="2"
                         max="8"
-                        onKeyDown={(e) => e.preventDefault()}
                     />
                 </Form.Group>
 

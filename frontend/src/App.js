@@ -41,7 +41,7 @@ function App() {
           <Route path='/casos/prueba/:external_id_proyecto' element={<ListaCasoPrueba />} />
           <Route path='/caso-prueba/:external_id_proyecto/:external_id' element={<VerCasoPrueba />} />
           <Route path='/perfil' element={<Perfil />} />
-          <Route path='/proyecto/usuarios/:external_id' element={<UsuarioProyecto />} />
+          <Route path='/proyecto/usuarios/:external_id_proyecto' element={<UsuarioProyecto />} />
           <Route path="/proyecto/:external_id" element={<RolMenu />} />
           <Route path='/asignar/tester/:external_id' element={<AsignarCasosPrueba />} />
           <Route path='/casos/prueba/asignados/:external_id_proyecto' element={<ListaCasosAsignados />} />

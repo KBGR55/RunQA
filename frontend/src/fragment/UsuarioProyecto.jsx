@@ -15,13 +15,26 @@ const UsuarioProyecto = () => {
     const [showModal, setShowModal] = useState(false);
     const [rolLider, setRolLider] = useState([]);
     const [userIdToDelete, setUserIdToDelete] = useState(null);
-    const { external_id } = useParams();
+    const { external_id_proyecto} = useParams();
+    const [infoProyecto,setProyecto] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const info = await peticionGet(getToken(), `proyecto/${external_id}`);
+                if (external_id_proyecto) {
+                    peticionGet(getToken(), `proyecto/obtener/${external_id_proyecto}`).then((info) => {
+                        if (info.code === 200) {
+                            setProyecto(info.info);
+                        } else {
+                            mensajes(info.msg, "error", "Error");
+                        }
+                    }).catch((error) => {
+                        mensajes("Error al cargar el proyecto", "error", "Error");
+                        console.error(error);
+                    });
+                } 
+                const info = await peticionGet(getToken(), `proyecto/${external_id_proyecto}`);
                 if (info.code !== 200) {
                     mensajes(info.msg || 'Error al obtener datos del proyecto');
                     navigate("/main");
@@ -56,7 +69,7 @@ const UsuarioProyecto = () => {
         fetchRolesLiderCalidad();
 
         fetchData();
-    }, [navigate, external_id]);
+    }, [navigate, external_id_proyecto]);
     console.log(data);
 
     const handleShowModal = (id) => {
@@ -79,7 +92,7 @@ const UsuarioProyecto = () => {
 
     const handleDeleteUser = async () => {
         try {
-            const response = await peticionDelete(getToken(), `proyecto/${external_id}/${userIdToDelete}`);
+            const response = await peticionDelete(getToken(), `proyecto/${external_id_proyecto}/${userIdToDelete}`);
             if (response.code === 200) {
                 mensajes('Usuario eliminado exitosamente', 'success', 'Éxito');
                 setTimeout(() => {
@@ -101,6 +114,7 @@ const UsuarioProyecto = () => {
         <div>
             <div className="contenedor-centro">
                 <div className='contenedor-carta'>
+                <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
                     <div className="contenedor-filo">
                         <td className="text-center">
                             <Button className="btn-normal" onClick={handleShowModalAddMembers}>
@@ -113,7 +127,7 @@ const UsuarioProyecto = () => {
                                 <Modal.Title className='titulo-primario'>Agregar miembros</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                            {showModalAddMembers && <RoleDialog handleClose={handleCloseModalAddMembers} external_id={external_id} />}
+                            {showModalAddMembers && <RoleDialog handleClose={handleCloseModalAddMembers} external_id={external_id_proyecto} />}
                             </Modal.Body>
                         </Modal>
                     </div>

@@ -172,7 +172,7 @@ class ProyectoController {
                             external_id: uuid.v4(),
                         }, { transaction });
                     } else {
-                        errorMessages.push(`La entidad ${entidad.nombres} no tiene suficientes horas disponibles.`);
+                        errorMessages.push(`${entidad.nombres} no tiene suficientes horas disponibles, ya que solo tiene ${entidad.horasDisponibles} de horas disponibles`);
                         hasErrors = true;
                         continue;
                     }
@@ -184,7 +184,7 @@ class ProyectoController {
                     await transaction.rollback();
                 }
                 const errorMsg = errorMessages.join(", ");
-                res.status(500).json({ msg: `Error asignando roles: ${errorMsg}. Se deshacen los cambios.`,code: 500 });
+                res.status(500).json({ msg: `Error asignando roles: ${errorMsg}.`,code: 500 });
             } else {
                 await transaction.commit();
                 res.json({msg: users.length > 1 ? "Roles asignados correctamente" : "Rol asignado correctamente", code: 200 });
