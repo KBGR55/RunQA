@@ -19,13 +19,15 @@ const ListaProyectos = () => {
     useEffect(() => {
         const fetchProyectos = async () => {
             try {
-                const info = await peticionGet(getToken(), `rol_proyecto/listar?id_entidad=${getUser().user.id}`);
+                const info = await peticionGet(getToken(), `rol_proyecto/listar/proyectos?id_entidad=${getUser().user.id}`);
                 if (info.code !== 200 && info.msg === 'Acceso denegado. Token a expirado') {
                     borrarSesion();
                     mensajes(info.mensajes);
                     navigate("/main");
                 } else if (info.code === 200) {
                     setProyectos(info.info);
+                    console.log("4444444", info.info);
+                    
                 } else {
                     console.error('Error al obtener proyectos:', info.msg);
                 }
@@ -70,6 +72,12 @@ const ListaProyectos = () => {
         navigate(`/presentacion/${proyecto.proyecto.external_id}`);
     };
 
+    console.log("9999999999999999", proyectos);
+
+    console.log("wwwwwwwwwwwwwww");
+    
+    
+
     return (
         <div>
             <div className='contenedor-centro'>
@@ -100,7 +108,7 @@ const ListaProyectos = () => {
                                     </div>
                                 </div>
                             ))}
-                        </div>
+                        </div> 
                     )}
                 </div>
             </div>

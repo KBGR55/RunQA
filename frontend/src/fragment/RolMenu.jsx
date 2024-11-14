@@ -20,73 +20,75 @@ const RoleMenu = () => {
     const [selectedOption, setSelectedOption] = useState('');
     const [showNewProjectModal, setShowNewProjectModal] = useState(false);
 
-    useEffect(() => {
-        const fetchRoles = async () => {
-            try {
-                const info = await peticionGet(
-                    getToken(),
-                    `rol_proyecto/listar/entidad?id_entidad=${getUser().user.id}&external_id_proyecto=${external_id}`
-                );
-                if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
-                    borrarSesion();
-                    mensajes(info.mensajes);
-                    navigate("/main");
-                } else if (info.code === 200) {
-                    setRoles(info.info.roles);
-                    setProyecto(info.info.proyecto);
-                } else {
-                    console.error('Error al obtener roles:', info.msg);
+    
+    useEffect(() => { 
+            const fetchRoles = async () => {
+                try {
+                    const info = await peticionGet(
+                        getToken(),
+                        `rol_proyecto/listar/entidad?id_entidad=${getUser().user.id}&external_id_proyecto=${external_id}`
+                    );
+                    if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
+                        borrarSesion();
+                        mensajes(info.mensajes);
+                        navigate("/main");
+                    } else if (info.code === 200) {
+                        setRoles(info.info.roles);
+                        setProyecto(info.info.proyecto);
+                    } else {
+                        console.error('Error al obtener roles:', info.msg);
+                    }
+                } catch (error) {
+                    console.error('Error en la solicitud:', error);
                 }
-            } catch (error) {
-                console.error('Error en la solicitud:', error);
-            }
-        };
-        const fetchRolAdministrador = async () => {
-            try {
-                const info = await peticionGet(
-                    getToken(),
-                    `rol/entidad/obtener/administrador?id_entidad=${getUser().user.id}`
-                );
-                if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
-                    borrarSesion();
-                    mensajes(info.mensajes);
-                    navigate("/main");
-                } else if (info.code === 200) {
-                    setRolAdministrador(info.code);
-                } else {
-                    setRolAdministrador(info.code);
-                    console.error('Error al obtener roles:', info.msg);
+            };
+
+            const fetchRolAdministrador = async () => {
+                try {
+                    const info = await peticionGet(
+                        getToken(),
+                        `rol/entidad/obtener/administrador?id_entidad=${getUser().user.id}`
+                    );
+                    if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
+                        borrarSesion();
+                        mensajes(info.mensajes);
+                        navigate("/main");
+                    } else if (info.code === 200) {
+                        setRolAdministrador(info.code);
+                    } else {
+                        console.error('Error al obtener roles:', info.msg);
+                    }
+                } catch (error) {
+                    console.error('Error en la solicitud:', error);
                 }
-            } catch (error) {
-                console.error('Error en la solicitud:', error);
-            }
-        };
+            };
 
-        const fetchRolesEntidad = async () => {
-            try {
-                const info = await peticionGet(
-                    getToken(),
-                    `rol/entidad/listar?id_entidad=${getUser().user.id}`
-                );
-                if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
-                    borrarSesion();
-                    mensajes(info.mensajes);
-                    navigate("/main");
-                } else if (info.code === 200) {
-                    setRolesEntidad(info.info);
-                } else {
-                    console.error('Error al obtener roles:', info.msg);
+            const fetchRolesEntidad = async () => {
+                try {
+                    const info = await peticionGet(
+                        getToken(),
+                        `rol/entidad/listar?id_entidad=${getUser().user.id}`
+                    );
+                    if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
+                        borrarSesion();
+                        mensajes(info.mensajes);
+                        navigate("/main");
+                    } else if (info.code === 200) {
+                        setRolesEntidad(info.info);
+                    } else {
+                        console.error('Error al obtener roles:', info.msg);
+                    }
+                } catch (error) {
+                    console.error('Error en la solicitud:', error);
                 }
-            } catch (error) {
-                console.error('Error en la solicitud:', error);
-            }
-        };
+            };
 
-        fetchRoles();
-        fetchRolAdministrador();
-        fetchRolesEntidad();
-    }, [external_id, navigate]);
+            fetchRoles();
+            fetchRolAdministrador();
+            fetchRolesEntidad();
+        }, [external_id, navigate]);
 
+    
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth < 768) {
@@ -147,8 +149,7 @@ const RoleMenu = () => {
 
     const handleCloseNewProjectModal = () => {
         setShowNewProjectModal(false);
-    };
-
+    };    
 
     return (
         <div className="sidebar d-flex flex-column justify-content-between" style={{
