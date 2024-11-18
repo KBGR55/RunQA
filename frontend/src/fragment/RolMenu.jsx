@@ -142,6 +142,16 @@ const RoleMenu = () => {
             navigate(`/asignar/tester/${external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Casos de prueba asignados') {
             navigate(`/casos/prueba/asignados/${proyecto.external_id}`, { state: { proyecto } });
+        }else if (option === 'Ver peticiones') {
+            window.location.assign('/peticiones/RI');
+            setTimeout(() => {
+                window.location.reload();
+            }, 100);
+        } else if (option === 'Peticiones de cambio de clave') {
+            window.location.assign('/peticiones/CC');
+            setTimeout(() => {
+                window.location.reload();
+            }, 100);
         }
     };
 
@@ -191,35 +201,48 @@ const RoleMenu = () => {
                             {isOpen && <span>Proyectos</span>}
                         </li>
                         {rolAdministrador === 200 && (
-    <div>
-        <li className="p-2 mb-1" onClick={() => navigate('/usuarios')}
-            style={{
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                backgroundColor: selectedOption === 'Gestionar usuarios' ? 'var(--color-terciario)' : 'transparent',
-                transition: 'background-color 0.3s',
-                color: 'var(--blanco)'
-            }}>
-            <i className="bi bi-person-lines-fill me-2"></i>
-            {isOpen && <span>Gestionar usuarios</span>}
-        </li>
+                            <div>
+                                <li className="p-2 mb-1" onClick={() => navigate('/usuarios')}
+                                    style={{
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        backgroundColor: selectedOption === 'Gestionar usuarios' ? 'var(--color-terciario)' : 'transparent',
+                                        transition: 'background-color 0.3s',
+                                        color: 'var(--blanco)'
+                                    }}>
+                                    <i className="bi bi-person-lines-fill me-2"></i>
+                                    {isOpen && <span>Gestionar usuarios</span>}
+                                </li>
 
-        {/* Nueva opción agregada */}
-        <li className="p-2 mb-1" onClick={() => navigate('/peticiones')}
-            style={{
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                backgroundColor: selectedOption === 'Ver peticiones' ? 'var(--color-terciario)' : 'transparent',
-                transition: 'background-color 0.3s',
-                color: 'var(--blanco)'
-            }}>
-            <i className="bi bi-gear-fill me-2"></i>
-            {isOpen && <span>Ver peticiones</span>}
-        </li>
-    </div>
-)}
+                                {/* Nueva opción agregada */}
+                                <li className="p-2 mb-1" onClick={() => navigate('/peticiones/registro')}
+                                    style={{
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        backgroundColor: selectedOption === 'Ver peticiones' ? 'var(--color-terciario)' : 'transparent',
+                                        transition: 'background-color 0.3s',
+                                        color: 'var(--blanco)'
+                                    }}>
+                                    <i className="bi bi-gear-fill me-2"></i>
+                                    {isOpen && <span>Peticiones de registro</span>}
+                                </li>
+                                   {/* [Petciones cambio clave] */}
+                                <li className="p-2 mb-1" onClick={() =>   navigate('/peticiones/clave')}
+                                    style={{
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        backgroundColor: selectedOption === 'Ver cambio clave' ? 'var(--color-terciario)' : 'transparent',
+                                        transition: 'background-color 0.3s',
+                                        color: 'var(--blanco)'
+                                    }}>
+                                    <i className="bi bi-gear-fill me-2"></i>
+                                    {isOpen && <span>Peticiones de cambio de clave</span>}
+                                </li>
+                            </div>
+                        )}
                     </ul>
                 </div>
 

@@ -10,7 +10,7 @@ const VerPeticion = () => {
 
     useEffect(() => {
         if (!bucle) {
-            peticionGet(getToken(), "peticion").then((info) => {
+            peticionGet(getToken(), "peticion/RI").then((info) => {
                 if (info.code !== 200 && (info.msg === "No existe token" || info.msg === "Token no valido")) {
                     mensajes(info.msg);
                 } else {

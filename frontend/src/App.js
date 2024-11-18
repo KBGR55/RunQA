@@ -19,7 +19,10 @@ import VerCasoPrueba from './fragment/VerCasoPrueba';
 import CasoPruebaAsignado from './fragment/CasoPruebaAsignado';
 import PresentacionProyecto from './fragment/PresentacionProyecto';
 import VerPeticion from './fragment/VerPeticion';
+import VerPeticionesClave from './fragment/VerPeticionesClave';
 import Principal from './fragment/Principal';
+import OlvidoClave from './fragment/OlvidoClave';
+import CambioClave from './fragment/CambioClave';
 import { getToken } from './utilities/Sessionutil';
 
 function App() {
@@ -39,10 +42,13 @@ function App() {
         <Route path='/' element={<Principal />} />
         <Route path='/login' element={<Login />} />
         <Route path='/registrarse' element={<Registrar />} />
-         <Route element={<LayoutComponent />}>
+        <Route path='/olvidar/clave' element={<OlvidoClave />} />
+        <Route path='/cambio/clave/restablecer/:external_id/:token' element={<CambioClave />} />
+        <Route element={<LayoutComponent />}>
           <Route path='/presentacion/:external_id' element={<MiddewareSesion><PresentacionProyecto /></MiddewareSesion>} />
           <Route path='/usuarios' element={<MiddewareSesion><ListaUsuarios /></MiddewareSesion>} />
-          <Route path='/peticiones' element={<MiddewareSesion><VerPeticion /></MiddewareSesion>} />
+          <Route path='/peticiones/registro' element={<MiddewareSesion><VerPeticion /></MiddewareSesion>} />
+          <Route path='/peticiones/clave' element={<MiddewareSesion><VerPeticionesClave /></MiddewareSesion>} />
           <Route path='/caso/prueba' element={<MiddewareSesion><CasoPrueba /></MiddewareSesion>} />
           <Route path='/proyecto/nuevo' element={<MiddewareSesion><NuevoProyecto /></MiddewareSesion>} />
           <Route path='/proyectos' element={<MiddewareSesion><ListaProyectos /></MiddewareSesion>} />

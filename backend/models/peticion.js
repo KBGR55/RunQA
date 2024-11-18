@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     const peticion = sequelize.define('peticion', {
         peticion: { type: DataTypes.STRING(300), defaultValue: "NO_DATA" },
         external_id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4},
-        estado:{type: DataTypes.ENUM('ES', 'AC', 'RE'), defaultValue: 'ES'}
+        estado:{type: DataTypes.ENUM('ES', 'AC', 'RE'), defaultValue: 'ES'},
+        tipo : {type: DataTypes.ENUM('RI', 'CC'), defaultValue: 'RI'} //RI: Registro de ingreso, CC: Cambio de clave
     }, {
         freezeTableName: true
     });

@@ -7,13 +7,13 @@ const uuid = require('uuid');
 
 const { body, validationResult,isDate } = require('express-validator');
 const RolController = require('../controls/RolController');
-var rolController = new RolController();
+const rolController = new RolController();
 const EntidadController = require('../controls/EntidadController');
-var entidadController = new EntidadController();
+const entidadController = new EntidadController();
 const CuentaController = require('../controls/CuentaController');
-var cuentaController = new CuentaController();
+const cuentaController = new CuentaController();
 const CasoPruebaController=require('../controls/CasoPruebaController');
-var casoPruebaController=new CasoPruebaController();
+const casoPruebaController=new CasoPruebaController();
 const ProyectoController = require('../controls/ProyectoController');
 const proyectoController = new ProyectoController();
 const RolProyectoController = require('../controls/RolProyectoController');
@@ -121,6 +121,17 @@ router.post('/sesion', [
   body('correo', 'Ingrese un correo valido').exists().not().isEmpty().isEmail(),
   body('clave', 'Ingrese una clave valido').exists().not().isEmpty(),
 ], cuentaController.sesion)
+//CAMBIAR CLAVE
+router.put('/cuenta/clave/:external_id', [
+  body('clave_vieja', 'Ingrese una clave valido').exists().not().isEmpty(),
+  body('clave_nueva', 'Ingrese una clave valido').exists().not().isEmpty()
+], cuentaController.cambioClave)
+router.put('/cuenta/restablecer/clave/:external_id', auth, [
+  body('clave_nueva', 'Ingrese una clave valido').exists().not().isEmpty()
+], cuentaController.cambioClaveSoloNueva)
+router.get('/cuenta/token/:external_id', cuentaController.tokenCambioClave)
+router.put('/cuenta/validar',[
+  body('correo', 'Ingrese un correo valido').exists().not().isEmpty().isEmail()], cuentaController.validarCambioClave)
 
 //GET-ROL
 router.get('/rol/listar', rolController.listar);
@@ -216,7 +227,7 @@ router.get('/rol/entidad/obtener/administrador', rolEntidadController.obtenerAdm
 
 
 /** PETICION */
-router.get('/peticion', peticionController.listar);
+router.get('/peticion/:tipo', peticionController.listarPeticiones);
 router.get('/aceptarechazar/peticiones/:external/:estado', /*auth,*/ peticionController.aceptarRechazar);
 
 

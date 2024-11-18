@@ -4,12 +4,16 @@ var models = require('../models/');
 var peticion = models.peticion;
 
 class PeticionController {
-    async listar(req, res) {
+    async listarPeticiones(req, res) {
         try {
+            if (!req.params.tipo) {
+                res.status(400);
+                res.json({ msg: 'Se requiere un tipo de peticion', code: 400 });
+            }
             var listar = await peticion.findAll({
-                where: { estado: 'ES' },
+                where: { estado: 'ES', tipo: req.params.tipo },
                 include: {
-                    model: models.cuenta, foreignKey: 'id_cuenta', attributes: ['correo'],
+                    model: models.cuenta,foreignKey: 'id_cuenta', attributes: ['correo', 'external_id'], 
                     include: { model: models.entidad, foreignKey: 'id_entidad', attributes: ['nombres', 'apellidos'] }
                 },
                 attributes: ['peticion', 'external_id', 'createdAt']
@@ -57,7 +61,7 @@ class PeticionController {
                     res.status(200);
                     res.json({
                         msg: ((req.params.estado === '1') ? 'Se ha aceptado la petición' : 'Se ha rechazado la petición'),
-                        code: 200
+                        code: 200, info: resultCuenta.external_id
                     });
                 }
             }
@@ -66,7 +70,6 @@ class PeticionController {
             res.status(500);
             res.json({ msg: 'Algo salio mal en peticiones', code: 500, info: error });
         }
-
     }
 
 }
