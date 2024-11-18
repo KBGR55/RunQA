@@ -54,7 +54,7 @@ function App() {
           <Route path='/editar/caso/prueba/:external_id_proyecto/:external_id' element={<CasoPrueba />} />
           <Route path='/proyecto/nuevo' element={<MiddewareSesion><NuevoProyecto /></MiddewareSesion>} />
           <Route path='/proyectos' element={<MiddewareSesion><ListaProyectos /></MiddewareSesion>} />
-          <Route path='/casos/prueba/:external_id' element={<MiddewareSesion><ListaCasoPrueba /></MiddewareSesion>} />
+          <Route path='/casos/prueba/:external_id_proyecto' element={<MiddewareSesion><ListaCasoPrueba /></MiddewareSesion>} />
           <Route path='/caso-prueba/:external_id_proyecto/:external_id' element={<MiddewareSesion><VerCasoPrueba /></MiddewareSesion>} />
           <Route path='/perfil' element={<MiddewareSesion><Perfil /></MiddewareSesion>} />
           <Route path='/proyecto/usuarios/:external_id_proyecto' element={<MiddewareSesion><UsuarioProyecto /></MiddewareSesion>} />
