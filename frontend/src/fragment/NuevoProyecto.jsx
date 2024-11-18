@@ -7,18 +7,19 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { peticionPost, peticionGet, peticionPut } from '../utilities/hooks/Conexion';
 import mensajes from '../utilities/Mensajes';
 import { getToken, getUser } from '../utilities/Sessionutil';
+import swal from 'sweetalert';
 
 const NuevoProyecto = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const { external_id} = useParams();
+    const { external_id_proyecto} = useParams();
 
     const navigate = useNavigate();
     const [proyecto, setProyecto] = useState([]);
 
     useEffect(() => {
-        if (external_id) {
-            peticionGet(getToken(), `proyecto/obtener/${external_id}`).then((info) => {
+        if (external_id_proyecto) {
+            peticionGet(getToken(), `proyecto/obtener/${external_id_proyecto}`).then((info) => {
                 if (info.code === 200) {
                     setName(info.info.nombre);
                     setDescription(info.info.descripcion);
@@ -31,7 +32,7 @@ const NuevoProyecto = () => {
                 console.error(error);
             });
         }
-    }, [external_id]);
+    }, [external_id_proyecto]);
 
     const onSubmit = (event) => {
         event.preventDefault();
@@ -50,7 +51,7 @@ const NuevoProyecto = () => {
             mensajes('La descripción no puede exceder los 50 caracteres', "error", "Error");
             return;
         }
-        if (external_id) {
+        if (external_id_proyecto) {
             const datos = {
                 id_proyect: proyecto.id,
                 name: name,
@@ -80,7 +81,9 @@ const NuevoProyecto = () => {
                     mensajes(info.msg, "error", "Error");
                 } else {
                     mensajes(info.msg, "success", "Éxito");
-                    navigate('/proyecto/'+info.info);
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1200);
                 }
             }).catch((error) => {
                 mensajes("Error al guardar el proyecto", "error", "Error");
@@ -88,6 +91,23 @@ const NuevoProyecto = () => {
             });
         }
 
+    };
+
+    const handleCancelClick = () => {
+        swal({
+            title: "¿Está seguro de cancelar el registro?",
+            text: "Una vez cancelado, no podrá revertir esta acción",
+            icon: "warning",
+            buttons: ["No", "Sí"],
+            dangerMode: true,
+        }).then((willCancel) => {
+            if (willCancel) {
+                mensajes("Actualización cancelada", "info", "Información");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1200);
+            }
+        });
     };
 
     return (
@@ -121,11 +141,11 @@ const NuevoProyecto = () => {
                         <small className="text-muted">{description.length}/50 caracteres</small>
                     </div>
                     <div className="contenedor-filo">
-                        <button type="button" onClick={() => window.location.reload()}  className="btn-negativo">
+                        <button type="button" onClick={handleCancelClick} className="btn-negativo">
                             <FontAwesomeIcon icon={faTimes} /> Cancelar
                         </button>
                         <button className="btn-positivo" type="submit">
-                            <FontAwesomeIcon icon={faCheck} /> {external_id ? 'Actualizar' : 'Registrar'}
+                            <FontAwesomeIcon icon={faCheck} /> {external_id_proyecto ? 'Actualizar' : 'Registrar'}
                         </button>
                     </div>
                 </form>

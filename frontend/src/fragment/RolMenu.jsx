@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router';
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import { getToken, getUser, borrarSesion } from '../utilities/Sessionutil';
 import { Button, Collapse, Modal } from 'react-bootstrap';
@@ -16,9 +16,12 @@ const RoleMenu = () => {
     const [activeMenu, setActiveMenu] = useState(null);
     const { external_id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const [selectedRoleId, setSelectedRoleId] = useState(null);
     const [selectedOption, setSelectedOption] = useState('');
     const [showNewProjectModal, setShowNewProjectModal] = useState(false);
+    const isFirstLoad = useRef(true);
+
 
     useEffect(() => {
         const fetchRoles = async () => {
@@ -41,6 +44,7 @@ const RoleMenu = () => {
                 console.error('Error en la solicitud:', error);
             }
         };
+
         const fetchRolAdministrador = async () => {
             try {
                 const info = await peticionGet(
@@ -54,7 +58,6 @@ const RoleMenu = () => {
                 } else if (info.code === 200) {
                     setRolAdministrador(info.code);
                 } else {
-                    setRolAdministrador(info.code);
                     console.error('Error al obtener roles:', info.msg);
                 }
             } catch (error) {
@@ -86,6 +89,17 @@ const RoleMenu = () => {
         fetchRolAdministrador();
         fetchRolesEntidad();
     }, [external_id, navigate]);
+
+    useEffect(() => {
+        if (isFirstLoad.current) {
+            isFirstLoad.current = false;
+        } else if (location.pathname === '/proyectos' || location.pathname === '/usuarios'|| location.pathname === '/peticiones') {
+            setRoles([]);
+            setProyecto({});
+            setSelectedOption('');
+            setActiveMenu(null);
+        }
+    }, [location.pathname]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -139,7 +153,7 @@ const RoleMenu = () => {
         } else if (option === 'Miembros') {
             navigate(`/proyecto/usuarios/${proyecto.external_id}`, { state: { proyecto } });
         } else if (option === 'Asignar testers') {
-            navigate(`/asignar/tester/${external_id}`, { state: { selectedRoleId: roleId } });
+            navigate(`/asignar/tester/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Casos de prueba asignados') {
             navigate(`/casos/prueba/asignados/${proyecto.external_id}`, { state: { proyecto } });
         }else if (option === 'Ver peticiones') {
@@ -158,7 +172,6 @@ const RoleMenu = () => {
     const handleCloseNewProjectModal = () => {
         setShowNewProjectModal(false);
     };
-
 
     return (
         <div className="sidebar d-flex flex-column justify-content-between" style={{
@@ -301,7 +314,7 @@ const RoleMenu = () => {
                     <Modal.Title>Editar Proyecto</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <NuevoProyecto external_id={external_id} /> {/* Pasa el external_id al componente */}
+                    <NuevoProyecto external_id_proyecto={external_id} />
                 </Modal.Body>
             </Modal>
 

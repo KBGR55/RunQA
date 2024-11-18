@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
 import CasoPrueba from './CasoPrueba';
 import { peticionGet } from '../utilities/hooks/Conexion';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import '../css/style.css';
 import mensajes from '../utilities/Mensajes';
 import { getToken } from '../utilities/Sessionutil';
@@ -20,10 +20,25 @@ const ListaCasoPrueba = () => {
     const proyecto = location.state?.proyecto;
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const { external_id_proyecto } = useParams();
+    const [infoProyecto,setProyecto] = useState([]);
+    
 
-    useEffect(() => {
+    useEffect(() => {        
         const fetchCasosPrueba = async () => {
             if (proyecto.id) {
+                if (external_id_proyecto) {
+                    peticionGet(getToken(), `proyecto/obtener/${external_id_proyecto}`).then((info) => {
+                        if (info.code === 200) {
+                            setProyecto(info.info);
+                        } else {
+                            mensajes(info.msg, "error", "Error");
+                        }
+                    }).catch((error) => {
+                        mensajes("Error al cargar el proyecto", "error", "Error");
+                        console.error(error);
+                    });
+                } 
                 const response = await peticionGet(getToken(), `caso/prueba/listar?id_proyecto=${proyecto.id}`);
                 if (response.code === 200) {
                     setCasosPrueba(response.info);
@@ -51,16 +66,8 @@ const ListaCasoPrueba = () => {
         );
     });
 
-    const handleShowNewProjectModal = () => {
-        setShowNewProjectModal(true);
-    };
-
-    const handleCloseNewProjectModal = () => {
-        setShowNewProjectModal(false);
-    };
-
     const handleNavigateToDetail = (external_id) => {
-        navigate(`/caso-prueba/${external_id}`);
+        navigate(`/caso-prueba/${external_id_proyecto}/${external_id}`);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -76,10 +83,11 @@ const ListaCasoPrueba = () => {
         <div className='container-fluid'>
             <div className='contenedor-centro'>
                 <div className="contenedor-carta">
+                <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
                     <div className='contenedor-filo'>
                         <Button
                             className="btn-normal mb-3"
-                            onClick={handleShowNewProjectModal}
+                            onClick={() => navigate(`/registrar/caso/prueba/${external_id_proyecto}`)}
                         >
                             <FontAwesomeIcon icon={faPlus} /> Crear
                         </Button>
@@ -150,15 +158,6 @@ const ListaCasoPrueba = () => {
                     />
                 </div>
             </div>
-
-            <Modal show={showNewProjectModal} onHide={handleCloseNewProjectModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title className='titulo-primario'>Crear Caso Prueba</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <CasoPrueba projectId={proyecto.id} onClose={handleCloseNewProjectModal} />
-                </Modal.Body>
-            </Modal>
         </div>
     );
 };

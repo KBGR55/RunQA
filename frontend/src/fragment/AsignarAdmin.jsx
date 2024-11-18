@@ -54,8 +54,6 @@ const AsignarAdmin = ({ personaObtenida }) => {
         });
     };
 
-    console.log("22222", external_id);
-
     return (
         <div>
             <div className='contenedor-fluid'>

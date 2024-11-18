@@ -12,13 +12,26 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const ListaCasosAsignados = () => {
     const [casosPrueba, setCasosPrueba] = useState([]);
-    const { external_id } = useParams();
+    const { external_id_proyecto, external_id_casoprueba } = useParams();
     const navigate = useNavigate();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
+    const [infoProyecto, setProyecto] = useState([]);
 
     useEffect(() => {
+        if (external_id_proyecto) {
+            peticionGet(getToken(), `proyecto/obtener/${external_id_proyecto}`).then((info) => {
+                if (info.code === 200) {
+                    setProyecto(info.info);
+                } else {
+                    mensajes(info.msg, "error", "Error");
+                }
+            }).catch((error) => {
+                mensajes("Error al cargar el proyecto", "error", "Error");
+                console.error(error);
+            });
+        }
         peticionGet(getToken(), 'contrato/asignados').then((info) => {
             if (info.code !== 200 && info.msg === 'Acceso denegado. Token a expirado') {
                 borrarSesion();
@@ -29,14 +42,14 @@ const ListaCasosAsignados = () => {
             }
         });
 
-    }, [navigate, external_id]);
-    
+    }, [navigate, external_id_proyecto, external_id_casoprueba]);
+
     const formatDate = (dateString) => {
-        return new Date(dateString).toISOString().slice(0, 10); 
+        return new Date(dateString).toISOString().slice(0, 10);
     }
 
-    const handleNavigateToDetail = (external_id) => {
-        navigate(`/casos/prueba-asignado/${external_id}`);
+    const handleNavigateToDetail = (external_id_proyecto, external_id_casoprueba) => {
+        navigate(`/casos/prueba-asignado/${external_id_proyecto}/${external_id_casoprueba}`);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -65,8 +78,8 @@ const ListaCasosAsignados = () => {
             <div className='container-fluid'>
                 <div className='contenedor-centro'>
                     <div className="contenedor-carta">
+                        <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
                         <p className="titulo-primario">Lista de Casos de Prueba Asignados</p>
-
                         <InputGroup className="mb-3">
                             <InputGroup.Text>
                                 <FontAwesomeIcon icon={faSearch} />
@@ -102,7 +115,7 @@ const ListaCasosAsignados = () => {
                                                 <td className="text-center">
                                                     <Button
                                                         variant="btn btn-outline-info btn-rounded"
-                                                        onClick={() => handleNavigateToDetail(caso.external_id)}
+                                                        onClick={() => handleNavigateToDetail(external_id_proyecto, caso.external_id)}
                                                         className="btn-icon"
                                                     >
                                                         <svg

@@ -1,9 +1,9 @@
+// App.js
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Login from './fragment/Login';
 import Registrar from './fragment/Registrar';
-import Main from './fragment/Main';
 import Perfil from './fragment/Perfil';
 import CasoPrueba from './fragment/CasoPrueba';
 import ListaProyectos from './fragment/ListaProyectos';
@@ -23,22 +23,13 @@ import VerPeticionesClave from './fragment/VerPeticionesClave';
 import Principal from './fragment/Principal';
 import OlvidoClave from './fragment/OlvidoClave';
 import CambioClave from './fragment/CambioClave';
-import { getToken } from './utilities/Sessionutil';
+import Principal from './fragment/Principal'; 
 
 function App() {
-  const MiddewareSesion = ({ children }) => {
-    const autenticado = getToken();
-    if (autenticado) {
-      return children;
-    } else {
-      return <Navigate to='/login' />;
-    }
-  };
-
   return (
     <div className="App">
       <Routes>
-        <Route path='*' element={<Navigate to='/login' />} />
+        <Route path='*' element={<Navigate to='/login' />} />  
         <Route path='/' element={<Principal />} />
         <Route path='/login' element={<Login />} />
         <Route path='/registrarse' element={<Registrar />} />

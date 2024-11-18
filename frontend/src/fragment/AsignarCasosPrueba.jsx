@@ -25,10 +25,23 @@ const AsignarCasosPrueba = () => {
     const usuario = getUser();
     const location = useLocation();
     const selectedRoleId = location.state?.selectedRoleId || null;
+    const [infoProyecto,setProyecto] = useState([]);
 
     useEffect(() => {
         const fetchDataOut = async () => {
             try {
+                if (external_id) {
+                    peticionGet(getToken(), `proyecto/obtener/${external_id}`).then((info) => {
+                        if (info.code === 200) {
+                            setProyecto(info.info);
+                        } else {
+                            mensajes(info.msg, "error", "Error");
+                        }
+                    }).catch((error) => {
+                        mensajes("Error al cargar el proyecto", "error", "Error");
+                        console.error(error);
+                    });
+                } 
                 const info = await peticionGet(getToken(), `caso/obtener/proyecto/${external_id}`);
                 if (info.code !== 200) {
                     mensajes(info.msg, 'error');
@@ -153,6 +166,7 @@ const AsignarCasosPrueba = () => {
             <div className='contenedor-fluid'>
                 <div className='contenedor-centro'>
                     <div className="contenedor-carta">
+                    <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
                         <div className='contenedor-filo'>
                             <Button
                                 className="btn-login"

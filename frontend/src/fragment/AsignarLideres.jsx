@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Form } from 'react-bootstrap';
-import { peticionGet, peticionPost } from '../utilities/hooks/Conexion';
+import { peticionGet, peticionPost, URLBASE } from '../utilities/hooks/Conexion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getToken } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
@@ -11,47 +11,49 @@ import swal from 'sweetalert';
 
 const AsignarLideres = () => {
     const { external_id } = useParams();
-    const [entidades, setEntidades] = useState([]);
-    const [selectedLideres, setSelectedLideres] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [users, setUsers] = useState([]);
+    const [searchResults, setSearchResults] = useState([]);
+    const [showDropdown, setShowDropdown] = useState(false);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const fetchEntidades = async () => {
-            try {
-                const info = await peticionGet(getToken(), 'listar/entidad/activos');
-                if (info.code === 200) {
-                    setEntidades(info.info);
-                } else {
-                    mensajes(info.msg, 'error');
-                }
-            } catch (error) {
-                console.error('Error al cargar las entidades:', error);
-            }
-        };
-
-        fetchEntidades();
-    }, [external_id]);
-
-
-    const handleEntidadSelect = (e) => {
-        const entidadId = e.target.value;
-        const selectedEntidad = entidades.find(entidad => entidad.id === parseInt(entidadId));
-        if (selectedEntidad && !selectedLideres.some(l => l.id === selectedEntidad.id)) {
-            setSelectedLideres(prevSelected => [...prevSelected, selectedEntidad]);
-            setEntidades(prevEntidades => prevEntidades.filter(ent => ent.id !== parseInt(entidadId)));
-            e.target.selectedIndex = 0;
-        }
+    
+    const handleSearchTermChange = (e) => {
+        setSearchTerm(e.target.value);
     };
 
-    const handleRemoveLider = (id) => {
-        const removedLider = selectedLideres.find(l => l.id === id);
-        setSelectedLideres(prevSelected => prevSelected.filter(l => l.id !== id));
-        setEntidades(prevEntidades => [...prevEntidades, removedLider]);
+    useEffect(() => {
+        fetchUsersByName(searchTerm);
+    }, [searchTerm]);
+
+    const addUser = (user) => {
+        if (!users.some(u => u.id === user.id)) {
+            setUsers([...users, user]);
+        }
+        setShowDropdown(false);
+    };
+    const fetchUsersByName = async (name) => {
+        if (!name) {
+            setSearchResults([]);
+            setShowDropdown(false);
+            return;
+        }
+
+        try {
+            const response = await peticionGet(getToken(), `cuenta/${name}`);
+            if (response.info && response.info.length > 0) {
+                setSearchResults(response.info);
+                setShowDropdown(true);
+            } else {
+                setShowDropdown(false);
+            }
+        } catch (error) {
+            console.error("Error al buscar usuarios:", error);
+        }
     };
 
     const handleAsignarLideres = async () => {
         const body = {
-            lideres: selectedLideres.map(l => ({ id_entidad: l.id }))
+            lideres: users.map(l => ({ id_entidad: l.id }))
         };
 
         try {
@@ -83,41 +85,55 @@ const AsignarLideres = () => {
             }
         });
     };
+    const removeUser = (id) => {
+        setUsers(users.filter((user) => user.id !== id));
+    };
 
     return (
         <div>
             <div className='contenedor-fluid'>
                 <div className="contenedor-carta">
-                    <Form.Group controlId="formEntidades">
-                        <Form.Control as="select" onChange={handleEntidadSelect} defaultValue="">
-                            <option value="" disabled>Selecciona una persona</option>
-                            {entidades.map(entidad => (
-                                <option key={entidad.id} value={entidad.id}>
-                                    {entidad.nombres} {entidad.apellidos}
-                                </option>
+                <Form.Group className="mb-3" controlId="userSearch">
+                    <Form.Label>Buscar Persona</Form.Label>
+                    <Form.Control
+                        type="text"
+                        placeholder="Ingrese el nombre de la persona"
+                        value={searchTerm}
+                        onChange={handleSearchTermChange}
+                        autoComplete="off"
+                    />
+                    {showDropdown && (
+                        <ul className="dropdown-menu show contenedor-filo"  >
+                            {searchResults.map((user, index) => (
+                                <li key={index} className="dropdown-item" onClick={() => addUser(user)}>
+                                    <img src={URLBASE + "images/users/" + user.foto} className='imagen-pequena' />
+                                    <strong> {user.nombres + ' ' + user.apellidos}</strong>
+                                    <p className='margen-usuarios-pequenos'>{user.direccion}</p>
+                                </li>
                             ))}
-                        </Form.Control>
-                    </Form.Group>
-
-                    {selectedLideres.length > 0 && (
-                        <div className="mt-4">
-                            <h6 style={{ fontWeight: 'bold', color: '#3FA2F6' }}>Líderes Seleccionados:</h6>
-                            <ul className="list-group">
-                                {selectedLideres.map(lider => (
-                                    <li key={lider.id} className="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>{lider.nombres} {lider.apellidos}</strong>
-                                            <br />
-                                            <span>{lider.correo}</span>
-                                        </div>
-                                        <Button variant="danger" size="sm" onClick={() => handleRemoveLider(lider.id)}>
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </Button>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+                        </ul>
                     )}
+                </Form.Group>
+                <div className="users-container">
+                    {users.map((user, index) => (
+                        <div key={index} className="box-of-users">
+                            <div className="user-container">
+                            <img src={URLBASE + "images/users/" + user.foto} className="imagen-pequena" alt="Avatar" />
+                                    <p className="margen-usuarios-pequenos">
+                                        <strong>{user.nombres + ' ' + user.apellidos}</strong>
+                                    </p>
+                                   
+                            </div>
+
+                            <button
+                                className="btn btn-danger boton-eliminar-pequeno"
+                                onClick={() => removeUser(user.id)}
+                            >
+                                <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                        </div>
+                    ))}
+                </div>
 
                     <div className='contenedor-filo'>
                         <Button variant="secondary" className="btn-negativo" onClick={handleCancelClick}>

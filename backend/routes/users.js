@@ -199,7 +199,7 @@ router.get('/caso/prueba/eliminar',casoPruebaController.cambiar_estado_obsoleto)
 router.get('/caso/obtener/proyecto/:external_id', casoPruebaController.obtenerCasosProyecto);
 
 
-router.get('/rol_proyecto/listar', rolProyectoController.listar.bind(rolProyectoController));
+router.get('/rol_proyecto/listar/proyectos', rolProyectoController.listar.bind(rolProyectoController));
 router.get('/rol_proyecto/listar/entidad',rolProyectoController.listar_roles_entidad);
 router.get('/cuenta/:nombreCompleto',cuentaController.obtenerCuenta);
 

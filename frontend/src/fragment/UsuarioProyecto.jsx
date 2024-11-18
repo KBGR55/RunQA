@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { peticionGet, peticionDelete, URLBASE } from '../utilities/hooks/Conexion';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getToken } from '../utilities/Sessionutil';
+import { getToken, borrarSesion, getUser } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 import RoleDialog from './RoleDialog';
 
@@ -13,14 +13,28 @@ const UsuarioProyecto = () => {
     const [data, setData] = useState([]);
     const [showModalAddMembers, setShowModalAddMembers] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [rolLider, setRolLider] = useState([]);
     const [userIdToDelete, setUserIdToDelete] = useState(null);
-    const { external_id } = useParams();
+    const { external_id_proyecto} = useParams();
+    const [infoProyecto,setProyecto] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const info = await peticionGet(getToken(), `proyecto/${external_id}`);
+                if (external_id_proyecto) {
+                    peticionGet(getToken(), `proyecto/obtener/${external_id_proyecto}`).then((info) => {
+                        if (info.code === 200) {
+                            setProyecto(info.info);
+                        } else {
+                            mensajes(info.msg, "error", "Error");
+                        }
+                    }).catch((error) => {
+                        mensajes("Error al cargar el proyecto", "error", "Error");
+                        console.error(error);
+                    });
+                } 
+                const info = await peticionGet(getToken(), `proyecto/${external_id_proyecto}`);
                 if (info.code !== 200) {
                     mensajes(info.msg || 'Error al obtener datos del proyecto');
                     navigate("/main");
@@ -32,8 +46,30 @@ const UsuarioProyecto = () => {
             }
         };
 
+        const fetchRolesLiderCalidad= async () => {
+            try {
+                const info = await peticionGet(
+                    getToken(),
+                    `rol/entidad/obtener/lider?id_entidad=${getUser().user.id}`
+                );
+                if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
+                    borrarSesion();
+                    mensajes(info.mensajes);
+                    navigate("/main");
+                } else if (info.code === 200) {
+                    setRolLider(info.info);
+                } else {
+                    console.error('Error al obtener roles:', info.msg);
+                }
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+            }
+        };
+
+        fetchRolesLiderCalidad();
+
         fetchData();
-    }, [navigate, external_id]);
+    }, [navigate, external_id_proyecto]);
     console.log(data);
 
     const handleShowModal = (id) => {
@@ -56,7 +92,7 @@ const UsuarioProyecto = () => {
 
     const handleDeleteUser = async () => {
         try {
-            const response = await peticionDelete(getToken(), `proyecto/${external_id}/${userIdToDelete}`);
+            const response = await peticionDelete(getToken(), `proyecto/${external_id_proyecto}/${userIdToDelete}`);
             if (response.code === 200) {
                 mensajes('Usuario eliminado exitosamente', 'success', 'Éxito');
                 setTimeout(() => {
@@ -78,6 +114,7 @@ const UsuarioProyecto = () => {
         <div>
             <div className="contenedor-centro">
                 <div className='contenedor-carta'>
+                <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
                     <div className="contenedor-filo">
                         <td className="text-center">
                             <Button className="btn-normal" onClick={handleShowModalAddMembers}>
@@ -90,7 +127,7 @@ const UsuarioProyecto = () => {
                                 <Modal.Title className='titulo-primario'>Agregar miembros</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                            {showModalAddMembers && <RoleDialog handleClose={handleCloseModalAddMembers} external_id={external_id} />}
+                            {showModalAddMembers && <RoleDialog handleClose={handleCloseModalAddMembers} external_id={external_id_proyecto} />}
                             </Modal.Body>
                         </Modal>
                     </div>
@@ -123,7 +160,9 @@ const UsuarioProyecto = () => {
                                                 <td className="text-center">{user.rol_entidad.rol.nombre}</td>
                                                 <td className="text-center">{user.horasDiarias}</td>
                                                 <td className="text-center">
-                                                    <Button className="btn btn-danger" onClick={() => handleShowModal(user.rol_entidad.entidad.id)}>
+                                                    <Button className="btn btn-danger" 
+                                                        disabled = {user.rol_entidad.rol.nombre == rolLider[0].rol.nombre}
+                                                        onClick={() => handleShowModal(user.rol_entidad.entidad.id)}>
                                                         <FontAwesomeIcon icon={faTrash} />
                                                     </Button>
                                                 </td>
