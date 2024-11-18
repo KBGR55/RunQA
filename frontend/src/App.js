@@ -4,6 +4,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Login from './fragment/Login';
 import Registrar from './fragment/Registrar';
+import Main from './fragment/Main';
 import Perfil from './fragment/Perfil';
 import CasoPrueba from './fragment/CasoPrueba';
 import ListaProyectos from './fragment/ListaProyectos';
@@ -23,9 +24,18 @@ import VerPeticionesClave from './fragment/VerPeticionesClave';
 import Principal from './fragment/Principal';
 import OlvidoClave from './fragment/OlvidoClave';
 import CambioClave from './fragment/CambioClave';
-import Principal from './fragment/Principal'; 
+import { getToken } from './utilities/Sessionutil';
 
 function App() {
+  const MiddewareSesion = ({ children }) => {
+    const autenticado = getToken();
+    if (autenticado) {
+      return children;
+    } else {
+      return <Navigate to='/login' />;
+    }
+  };
+
   return (
     <div className="App">
       <Routes>
@@ -40,17 +50,18 @@ function App() {
           <Route path='/usuarios' element={<MiddewareSesion><ListaUsuarios /></MiddewareSesion>} />
           <Route path='/peticiones/registro' element={<MiddewareSesion><VerPeticion /></MiddewareSesion>} />
           <Route path='/peticiones/clave' element={<MiddewareSesion><VerPeticionesClave /></MiddewareSesion>} />
-          <Route path='/caso/prueba' element={<MiddewareSesion><CasoPrueba /></MiddewareSesion>} />
+          <Route path='/registrar/caso/prueba/:external_id_proyecto' element={<MiddewareSesion><CasoPrueba /></MiddewareSesion>} />
+          <Route path='/editar/caso/prueba/:external_id_proyecto/:external_id' element={<CasoPrueba />} />
           <Route path='/proyecto/nuevo' element={<MiddewareSesion><NuevoProyecto /></MiddewareSesion>} />
           <Route path='/proyectos' element={<MiddewareSesion><ListaProyectos /></MiddewareSesion>} />
           <Route path='/casos/prueba/:external_id' element={<MiddewareSesion><ListaCasoPrueba /></MiddewareSesion>} />
-          <Route path='/caso-prueba/:external_id' element={<MiddewareSesion><VerCasoPrueba /></MiddewareSesion>} />
+          <Route path='/caso-prueba/:external_id_proyecto/:external_id' element={<MiddewareSesion><VerCasoPrueba /></MiddewareSesion>} />
           <Route path='/perfil' element={<MiddewareSesion><Perfil /></MiddewareSesion>} />
-          <Route path='/proyecto/usuarios/:external_id' element={<MiddewareSesion><UsuarioProyecto /></MiddewareSesion>} />
+          <Route path='/proyecto/usuarios/:external_id_proyecto' element={<MiddewareSesion><UsuarioProyecto /></MiddewareSesion>} />
           <Route path="/proyecto/:external_id" element={<MiddewareSesion><RolMenu /></MiddewareSesion>} />
           <Route path='/asignar/tester/:external_id' element={<MiddewareSesion><AsignarCasosPrueba /></MiddewareSesion>} />
-          <Route path='/casos/prueba/asignados/:external_id' element={<MiddewareSesion><ListaCasosAsignados /></MiddewareSesion>} />
-          <Route path='/casos/prueba-asignado/:external_id' element={<MiddewareSesion><CasoPruebaAsignado /></MiddewareSesion>} />
+          <Route path='/casos/prueba/asignados/:external_id_proyecto' element={<MiddewareSesion><ListaCasosAsignados /></MiddewareSesion>} />
+          <Route path='/casos/prueba-asignado/:external_id_proyecto/:external_id' element={<MiddewareSesion><CasoPruebaAsignado /></MiddewareSesion>} />
         </Route>
       </Routes>
     </div>
