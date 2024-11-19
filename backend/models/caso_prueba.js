@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         estadoActual: {
-            type: DataTypes.ENUM('NUEVO', 'EN_PROGRESO', 'CERRADO', 'NEED_INFO'),
+            type: DataTypes.ENUM('NUEVO', 'EN PROGRESO', 'CERRADO', 'NEED INFO'),
             allowNull: false,
             defaultValue: 'NUEVO'
         },
@@ -20,9 +20,9 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: 'PENDIENTE'
         },
         estadoAsignacion: {
-            type: DataTypes.ENUM('ASIGNADO', 'NO_ASIGNADO', 'REASIGNADO'),
+            type: DataTypes.ENUM('ASIGNADO', 'NO ASIGNADO', 'REASIGNADO'),
             allowNull: false,
-            defaultValue: 'NO_ASIGNADO'
+            defaultValue: 'NO ASIGNADO'
         },
         descripcion: {
             type: DataTypes.STRING(150),
