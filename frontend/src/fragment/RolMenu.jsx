@@ -120,8 +120,8 @@ const RoleMenu = () => {
     }, []);
 
     const roleOptions = {
-        'LIDER DE CALIDAD': ['Asignar testers', 'Generar reportes', 'Casos de prueba', 'Editar proyecto', 'Miembros', 'Casos de prueba asignados'],
-        'ANALISTA DE PRUEBAS': ['Casos de prueba', 'Asignar testers', 'Lista de casos de prueba asignados'],
+        'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Casos de prueba asignados', 'Editar proyecto', 'Generar reportes', 'Miembros'],
+        'ANALISTA DE PRUEBAS': ['Asignar testers', 'Casos de prueba', 'Lista de casos de prueba asignados'],
         'TESTER': ['Ejecutar casos de prueba', 'Registrar errores'],
         'DESARROLLADOR': ['Actualizar el estado de los errores', 'Consultar errores asignados']
     };
@@ -228,19 +228,6 @@ const RoleMenu = () => {
                                     {isOpen && <span>Gestionar usuarios</span>}
                                 </li>
 
-                                {/* Nueva opción agregada */}
-                                <li className="p-2 mb-1" onClick={() => navigate('/peticiones/registro')}
-                                    style={{
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        backgroundColor: selectedOption === 'Ver peticiones' ? 'var(--color-terciario)' : 'transparent',
-                                        transition: 'background-color 0.3s',
-                                        color: 'var(--blanco)'
-                                    }}>
-                                    <i className="bi bi-gear-fill me-2"></i>
-                                    {isOpen && <span>Peticiones de registro</span>}
-                                </li>
                                    {/* [Petciones cambio clave] */}
                                 <li className="p-2 mb-1" onClick={() =>   navigate('/peticiones/clave')}
                                     style={{
@@ -253,6 +240,20 @@ const RoleMenu = () => {
                                     }}>
                                     <i className="bi bi-gear-fill me-2"></i>
                                     {isOpen && <span>Peticiones de cambio de clave</span>}
+                                </li>
+
+                                {/* Nueva opción agregada */}
+                                <li className="p-2 mb-1" onClick={() => navigate('/peticiones/registro')}
+                                    style={{
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        backgroundColor: selectedOption === 'Ver peticiones' ? 'var(--color-terciario)' : 'transparent',
+                                        transition: 'background-color 0.3s',
+                                        color: 'var(--blanco)'
+                                    }}>
+                                    <i className="bi bi-gear-fill me-2"></i>
+                                    {isOpen && <span>Peticiones de registro</span>}
                                 </li>
                             </div>
                         )}

@@ -52,8 +52,9 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
         formData.append('external_id', personaObtenida.external_id);
         formData.append('entidad_id', personaObtenida.id);
         formData.append('correo', data.correo);
-        formData.append('clave', data.clave);
-
+        if (data.clave) {
+            formData.append('clave', data.clave);
+        }
         if (file) {
             formData.append('foto', file);
         }
@@ -237,7 +238,7 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
                                         type="password"
                                         className="form-control"
                                         onChange={handleChange}
-                                        {...register('clave', { required: true })}
+                                        {...register('clave', { required: false })}
                                     />
                                     {errors.clave && <div className='alert alert-danger'>Ingrese la clave</div>}
                                 </div>

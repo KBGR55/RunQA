@@ -234,7 +234,9 @@ class EntidadController {
             entidadAux.external_id = uuid.v4();
             cuentaAux.external_id = uuid.v4();
             cuentaAux.correo=req.body.correo;
-            cuentaAux.clave= claveHash(req.body.clave);
+            if (req.body.clave) {
+                cuentaAux.clave= claveHash(req.body.clave);
+            }
             const result = await entidadAux.save();
             const cuantaActualizada =  await cuentaAux.save();
             if (!result && !cuantaActualizada) {

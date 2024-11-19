@@ -54,7 +54,6 @@ const Registrar = () => {
             if (info.code !== 200) {
                 mensajes(info.msg, 'error', 'Error');
                 borrarSesion();
-                navigate('/login');
             } else {
                 mensajes(info.msg);
                 navigate('/login')
