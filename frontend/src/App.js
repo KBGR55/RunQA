@@ -62,6 +62,7 @@ function App() {
           <Route path='/asignar/tester/:external_id' element={<MiddewareSesion><AsignarCasosPrueba /></MiddewareSesion>} />
           <Route path='/casos/prueba/asignados/:external_id_proyecto' element={<MiddewareSesion><ListaCasosAsignados /></MiddewareSesion>} />
           <Route path='/casos/prueba-asignado/:external_id_proyecto/:external_id' element={<MiddewareSesion><CasoPruebaAsignado /></MiddewareSesion>} />
+          <Route path='/cambio/clave' element={<MiddewareSesion><CambioClave /></MiddewareSesion>} />
         </Route>
       </Routes>
     </div>

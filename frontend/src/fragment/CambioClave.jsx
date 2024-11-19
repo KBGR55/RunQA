@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/Registro_Style.css';
 import '../css/style.css';
@@ -6,32 +6,35 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router';
 import mensajes from '../utilities/Mensajes';
 import { peticionPut } from '../utilities/hooks/Conexion';
-import { borrarSesion } from '../utilities/Sessionutil';
+import { borrarSesion, getUser } from '../utilities/Sessionutil';
 
 const CambioClave = () => {
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const navigate = useNavigate();
-    const { external_id, token } = useParams(); // Extraer external_id y token de la URL
+    const { external_id, token } = useParams();
     const [claveCoincide, setClaveCoincide] = useState(false);
+    const [mostrarClaveActual, setMostrarClaveActual] = useState(false);
     const [mostrarClave, setMostrarClave] = useState(false);
     const [mostrarConfirmarClave, setMostrarConfirmarClave] = useState(false);
 
     const nuevaClave = watch('nuevaClave');
     const confirmarClave = watch('confirmarClave');
 
-    const validarClaves = () => {
-        if (nuevaClave && confirmarClave) {
-            setClaveCoincide(nuevaClave === confirmarClave);
-        } else {
-            setClaveCoincide(false);
-        }
-    };
+    useEffect(() => {
+        // Valida las claves cada vez que cualquiera de los campos cambia
+        setClaveCoincide(nuevaClave === confirmarClave && nuevaClave?.length > 0);
+    }, [nuevaClave, confirmarClave]);
 
     const onSubmit = async (data) => {
-        const datos = {
-            clave_nueva: data.nuevaClave
-        };
-        const response = await peticionPut(token, `cuenta/restablecer/clave/${external_id}`, datos);
+        const datos = token && external_id
+            ? { clave_nueva: data.nuevaClave }
+            : { clave_vieja: data.claveActual, clave_nueva: data.nuevaClave };
+
+        const endpoint = token && external_id
+            ? `cuenta/restablecer/clave/${external_id}`
+            : `cuenta/clave/${getUser().external_cuenta}`;
+
+        const response = await peticionPut(token, endpoint, datos);
         if (response.code === 200) {
             mensajes("La contraseña ha sido actualizada exitosamente", 'success', 'Éxito');
             setTimeout(() => {
@@ -51,9 +54,33 @@ const CambioClave = () => {
                 </div>
                 <h2 className="text-center mb-4 titulo-primario">Cambio de Clave</h2>
                 <p className="text-center">
-                    Establezca su nueva contraseña.
+                    {token && external_id
+                        ? 'Establezca su nueva contraseña.'
+                        : 'Ingrese su contraseña actual y establezca una nueva.'}
                 </p>
                 <form className="row g-3 p-2" onSubmit={handleSubmit(onSubmit)}>
+                    {!token || !external_id ? (
+                        <div className="col-12">
+                            <label htmlFor="claveActual" className="form-label">Clave Actual</label>
+                            <div className="input-group">
+                                <input
+                                    type={mostrarClaveActual ? "text" : "password"}
+                                    className={`form-control ${errors.claveActual ? 'is-invalid' : ''}`}
+                                    id="claveActual"
+                                    placeholder="Ingrese su contraseña actual"
+                                    {...register('claveActual', { required: 'La contraseña actual es obligatoria' })}
+                                />
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-secondary"
+                                    onClick={() => setMostrarClaveActual(!mostrarClaveActual)}
+                                >
+                                    <i className={`bi ${mostrarClaveActual ? 'bi-eye-slash' : 'bi-eye'}`}></i>
+                                </button>
+                                {errors.claveActual && <div className="invalid-feedback">{errors.claveActual.message}</div>}
+                            </div>
+                        </div>
+                    ) : null}
                     <div className="col-12">
                         <label htmlFor="nuevaClave" className="form-label">Nueva Clave</label>
                         <div className="input-group">
@@ -63,13 +90,16 @@ const CambioClave = () => {
                                 id="nuevaClave"
                                 placeholder="Ingrese su nueva clave"
                                 {...register('nuevaClave', {
-                                    required: 'La nueva clave es obligatoria',
+                                    required: "Ingrese una clave",
+                                    minLength: {
+                                        value: 5,
+                                        message: "La contraseña debe tener al menos 5 caracteres"
+                                    },
                                     pattern: {
                                         value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+\-=[\]{}|\\:";'?/.,`~]+$/,
-                                        message: "La clave debe contener al menos una letra, un número y puede incluir caracteres especiales, excepto < y >"
-                                    },
+                                        message: "Debe incluir al menos una letra, un número, y no usar < o >"
+                                    }
                                 })}
-                                onChange={validarClaves}
                             />
                             <button
                                 type="button"
@@ -90,10 +120,9 @@ const CambioClave = () => {
                                 id="confirmarClave"
                                 placeholder="Confirme su clave"
                                 {...register('confirmarClave', {
-                                    required: 'La confirmación de la clave es obligatoria',
+                                    required: "La confirmación de la clave es obligatoria",
                                     validate: value => value === nuevaClave || "Las claves no coinciden"
                                 })}
-                                onChange={validarClaves}
                             />
                             <button
                                 type="button"

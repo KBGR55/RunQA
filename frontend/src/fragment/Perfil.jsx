@@ -2,9 +2,11 @@ import '../css/Perfil_Style.css';
 import { getUser } from '../utilities/Sessionutil';
 import React, { useEffect, useState } from 'react';
 import { URLBASE } from '../utilities/hooks/Conexion';
+import { useNavigate } from 'react-router-dom';
 
 const Perfil = () => {
     const usuario = getUser();
+    const navigate = useNavigate();
     const [nombreUsuario, setNombreUsuario] = useState('');
 
 
@@ -52,6 +54,32 @@ const Perfil = () => {
                                             <h6 className="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-globe mr-2 icon-inline"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>Proyecto de Software Quality</h6>
 
                                         </li>
+                                        <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                            <button
+                                                className="btn btn-link p-0"
+                                                onClick={() => navigate('/cambio/clave')}
+                                                style={{ textDecoration: 'none', color: 'inherit', fontWeight: 'bold', border: 'none', background: 'none' }}
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="24"
+                                                    height="24"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    className="feather feather-key mr-2 icon-inline"
+                                                >
+                                                    <circle cx="12" cy="12" r="10"></circle>
+                                                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                                                </svg>
+                                                Cambiar Clave
+                                            </button>
+                                        </li>
+
                                     </ul>
                                 </div>
                             </div>

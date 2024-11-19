@@ -76,6 +76,7 @@ class CuentaController {
                         token: token,
                         user: {
                             correo: login.correo,
+                            external_cuenta: login.external_id,
                             nombres: login.entidad.nombres,
                             apellidos: login.entidad.apellidos,
                             user: login.entidad,
@@ -293,7 +294,6 @@ class CuentaController {
     }
 
     async validarCambioClave(req, res) {
-
         const transaction = await models.sequelize.transaction();
         try {
             const errors = validationResult(req);
