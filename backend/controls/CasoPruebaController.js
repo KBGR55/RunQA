@@ -74,11 +74,13 @@ class CasoPruebaController {
         let errors = validationResult(req);
         if (errors.isEmpty()) {
             try {
-                const id_proyecto = req.body.id_proyecto;
-                if (!id_proyecto) {
-                    return res.status(400).json({ msg: "Falta el 'id_proyecto'", code: 400 });
+                console.log('8888', req.body);
+                
+                const external_proyecto = req.body.external_proyecto;
+                if (!external_proyecto) {
+                    return res.status(400).json({ msg: "Falta proyecto", code: 400 });
                 }
-                const proyecto = await models.proyecto.findOne({ where: { id: id_proyecto } });
+                const proyecto = await models.proyecto.findOne({ where: { external_id: external_proyecto } });
                 if (!proyecto) {
                     return res.status(404).json({ msg: "No existe el proyecto con el ID proporcionado", code: 404 });
                 }
@@ -92,7 +94,7 @@ class CasoPruebaController {
                     tipo_prueba: req.body.tipo_prueba,
                     precondiciones: req.body.precondiciones,
                     datos_entrada: req.body.datos_entrada,
-                    id_proyecto: id_proyecto
+                    id_proyecto: proyecto.id
                 });
     
                 res.json({ msg: "Caso de prueba registrado con éxito", code: 200, info: nuevoCaso.external_id });
