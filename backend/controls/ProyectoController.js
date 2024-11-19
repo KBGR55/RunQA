@@ -74,25 +74,54 @@ class ProyectoController {
         }
     }
 
+    async modificarProyecto(req, res) {
+        
+        try {
+
+            const proyectoAux = await proyecto.findOne({
+                where: { external_id: req.body.external_id }
+            });
+    
+            if (!proyectoAux) {
+                return res.status(400).json({ msg: "NO EXISTE EL REGISTRO", code: 400 });
+            }
+            proyectoAux.nombre = req.body.nombre;
+            proyectoAux.descripcion = req.body.descripcion;
+            proyectoAux.external_id = uuid.v4();
+            const result = await proyectoAux.save();
+            if (!result && !cuantaActualizada) {
+                return res.status(400).json({ msg: "NO SE HAN MODIFICADO LOS DATOS, VUELVA A INTENTAR", code: 400 });
+            }
+    
+            return res.status(200).json({ msg: "SE HAN MODIFICADO LOS DATOS CON ÉXITO", code: 200 });
+        } catch (error) {
+            console.error("Error en el servidor:", error);
+            return res.status(400).json({ msg: "Error en el servidor", error, code: 400 });
+        }
+    }
+
     async actualizarProyecto(req, res) {
         let transaction;
+        
         try {
             transaction = await models.sequelize.transaction();
             const oldProyect = await models.proyecto.findOne({ where: { id: req.body.id_proyect } });
             const rolProyect = await models.rol_proyecto.findOne({ where: { id_proyecto: req.body.id_proyect } });
          
             if (oldProyect) {
-                const nameRole = await models.rol.findOne({ where: { nombre: rolLider }, attributes: ['id'] });
+                /*const nameRole = await models.rol.findOne({ where: { nombre: rolLider }, attributes: ['id'] });
+                console.log('757575757575', rolProyect);
+                
                 const resultado = await models.rol_proyecto.findOne({
-                    where: { id_rol: nameRole.id, id_entidad: rolProyect.id_entidad },
+                    where: { id_rol: nameRole.id, id_rol_entidad: rolProyect.id_entidad },
                     include: {
                         model: models.proyecto,
                         where: { nombre: req.body.name },
                         attributes: ['id', 'nombre']
                     },
                     attributes: ['id_entidad']
-                });
-                if (resultado && (oldProyect.descripcion ==req.body.description)) {
+                });*/
+                if (/*resultado && */(oldProyect.descripcion ==req.body.description)) {
                     res.status(200).json({ msg: "El proyecto ya existe", code: 409 });
                 } else {
                     oldProyect.nombre = req.body.name;
@@ -109,7 +138,7 @@ class ProyectoController {
             if (error.errors && error.errors[0].message) {
                 res.json({ msg: "Hubo un problema al actualizar el proyecto", code: 500 });
             } else {
-                res.json({ msg: "Hubo un problema al actualizar el proyecto", code: 500 });
+                res.json({ msg: "Hubo un problema al actualizar el proyecto", code: 400 });
             }
         }
     }

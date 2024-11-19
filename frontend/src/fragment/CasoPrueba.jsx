@@ -9,7 +9,7 @@ import { getToken } from '../utilities/Sessionutil';
 import { useNavigate, useParams } from 'react-router-dom';
 import swal from 'sweetalert';
 
-const CasoPrueba = ({ projectId}) => {
+const CasoPrueba = () => {
     const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm();
     const { external_id_proyecto, external_id } = useParams();
     const [infoProyecto,setProyecto] = useState([]);
@@ -95,7 +95,10 @@ const CasoPrueba = ({ projectId}) => {
 
     const onSubmit = async (data) => {
 
+        console.log('888888', external_id_proyecto);
+
         const casoPruebaData = {
+            
             "nombre": data.nombre.toUpperCase(),
             "descripcion": data.descripcion,
             "pasos": data.pasos,
@@ -107,7 +110,7 @@ const CasoPrueba = ({ projectId}) => {
             "precondiciones": data.precondiciones,
             "datos_entrada": data.datos_entrada,
             "fecha_ejecucion_prueba": data.fecha_ejecucion_prueba,
-            "id_proyecto": projectId
+            "external_proyecto": external_id_proyecto
         };
 
         try {
@@ -193,20 +196,18 @@ const CasoPrueba = ({ projectId}) => {
                         </div>
                     </div>
 
-
                     <div className="col-md-6">
                         <div className="form-group">
                             <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Clasificación</label>
                             <select
                                 className="form-control"
-                                value={clasificacionSeleccionada}
-                                onChange={(e) => setClasificacionSeleccionada(e.target.value)}
-                                {...register('clasificacion', { required: "Seleccione una clasificación" })}
+                                defaultValue=""  // Establece el valor predeterminado en vacío
+                                {...register('clasificacion', { required: "Seleccione una Clasificación" })}
                             >
                                 <option value="" disabled>Seleccione</option>  {/* Opción predeterminada */}
-                                {clasificaciones.map((clasificacion, index) => (
-                                    <option key={index} value={clasificacion}>
-                                        {clasificacion}
+                                {clasificaciones.map((nombre, index) => (
+                                    <option key={index} value={nombre}>
+                                        {nombre}
                                     </option>
                                 ))}
                             </select>
