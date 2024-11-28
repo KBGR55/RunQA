@@ -12,7 +12,7 @@ import swal from 'sweetalert';
 const CasoPrueba = () => {
     const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm();
     const { external_id_proyecto, external_id } = useParams();
-    const [infoProyecto,setProyecto] = useState([]);
+    const [infoProyecto, setProyecto] = useState([]);
     const navigate = useNavigate();
 
     const [clasificaciones] = useState(['ALTA', 'MEDIA', 'BAJA']);
@@ -25,7 +25,7 @@ const CasoPrueba = () => {
         'FUNCIONAL', 'INTEGRACION', 'SISTEMA', 'REGRESION', 'EXPLORATORIA',
         'ACEPTACION_USUARIO', 'RENDIMIENTO', 'SEGURIDAD'
     ]);
-    
+
 
     useEffect(() => {
         const fetchCasoPrueba = async () => {
@@ -40,7 +40,7 @@ const CasoPrueba = () => {
                     mensajes("Error al cargar el proyecto", "error", "Error");
                     console.error(error);
                 });
-            } 
+            }
             if (external_id) {
 
                 try {
@@ -73,8 +73,8 @@ const CasoPrueba = () => {
         const isEditMode = Boolean(external_id);
 
         swal({
-            title: isEditMode 
-                ? "¿Está seguro de cancelar la edición del caso de prueba?" 
+            title: isEditMode
+                ? "¿Está seguro de cancelar la edición del caso de prueba?"
                 : "¿Está seguro de cancelar la creación del caso de prueba?",
             text: "Una vez cancelado, no podrá revertir esta acción",
             icon: "warning",
@@ -82,10 +82,10 @@ const CasoPrueba = () => {
             dangerMode: true,
         }).then((willCancel) => {
             if (willCancel) {
-                mensajes(isEditMode 
-                    ? "Edición del caso de prueba cancelada" 
-                    : "Creación del caso de prueba cancelada", 
-                    "info", 
+                mensajes(isEditMode
+                    ? "Edición del caso de prueba cancelada"
+                    : "Creación del caso de prueba cancelada",
+                    "info",
                     "Información"
                 );
                 navigate(-1);
@@ -98,7 +98,7 @@ const CasoPrueba = () => {
         console.log('888888', external_id_proyecto);
 
         const casoPruebaData = {
-            
+
             "nombre": data.nombre.toUpperCase(),
             "descripcion": data.descripcion,
             "pasos": data.pasos,
@@ -151,7 +151,7 @@ const CasoPrueba = () => {
     return (
         <div className="contenedor-carta">
             <form className="form-sample" onSubmit={handleSubmit(onSubmit)}>
-            <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
+                <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
                 {!external_id ? (<h2 className='titulo-primario '>Registrar caso de prueba</h2>) : <p className="titulo-primario">Editar caso de prueba</p>}
                 <div className="row">
                     <div className="col-md-6">
@@ -201,14 +201,13 @@ const CasoPrueba = () => {
                             <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Clasificación</label>
                             <select
                                 className="form-control"
-                                defaultValue=""  // Establece el valor predeterminado en vacío
-                                {...register('clasificacion', { required: "Seleccione una Clasificación" })}
+                                {...register('clasificacion', { required: 'Seleccione una clasificación' })}
+                                value={clasificacionSeleccionada}
+                                onChange={e => setClasificacionSeleccionada(e.target.value)}
                             >
-                                <option value="" disabled>Seleccione</option>  {/* Opción predeterminada */}
-                                {clasificaciones.map((nombre, index) => (
-                                    <option key={index} value={nombre}>
-                                        {nombre}
-                                    </option>
+                                <option value="">Seleccione</option>
+                                {clasificaciones.map(clasificacion => (
+                                    <option key={clasificacion} value={clasificacion}>{clasificacion}</option>
                                 ))}
                             </select>
                             {errors.clasificacion && (
