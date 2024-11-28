@@ -187,7 +187,7 @@ class CasoPruebaController {
 
         try {
             const caso = await caso_prueba.findAll({
-                where: { id_proyecto: proyectoAux.id, estadoActual: "NUEVO" , estadoAsignacion: "NO_ASIGNADO"},
+                where: { id_proyecto: proyectoAux.id, estadoActual: "NUEVO" , estadoAsignacion: "NO ASIGNADO"},
                 attributes: [
                     'nombre', 'estado', 'external_id', 'descripcion', 
                     'pasos', 'resultado_esperado',
@@ -199,7 +199,7 @@ class CasoPruebaController {
             if (!caso) {
                 return res.status(404).json({ msg: 'Caso de prueba no encontrado', code: 404 });
             }
-            
+
             res.json({ msg: 'OK!', code: 200, info: caso });
         } catch (error) {
             console.error('Database error:', error);
