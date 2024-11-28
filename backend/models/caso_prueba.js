@@ -60,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
                 'SISTEMA',
                 'REGRESION',
                 'EXPLORATORIA',
-                'ACEPTACION_USUARIO',
+                'ACEPTACION USUARIO',
                 'RENDIMIENTO',
                 'SEGURIDAD'
             ),
