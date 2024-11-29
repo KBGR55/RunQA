@@ -206,6 +206,27 @@ class CasoPruebaController {
             res.status(500).json({ msg: 'Error al obtener caso de prueba', code: 500, error: error.message });
         }
     }
+
+    async ejecutarCasoPrueba(req, res) {
+        try {
+            const external_id = req.body.external_id;
+            const resultado_obtenido = req.body.resultado_obtenido;
+            if (!external_id || !resultado_obtenido) {
+                return res.status(400).json({ msg: "Faltan datos de búsqueda", code: 400 });
+            }
+            const caso = await caso_prueba.findOne({ where: { external_id: external_id } });
+            if (!caso) {
+                return res.status(404).json({ msg: "Caso de prueba no encontrado", code: 404 });
+            }
+            caso.estadoActual = "CERRADO";
+            caso.resultado_obtenido = resultado_obtenido;
+            await caso.save();
+            res.json({ msg: "Caso de prueba ejecutado correctamente", code: 200 });
+        } catch (error) {
+            res.status(500).json({ msg: 'Error al ejecutar el caso de prueba', code: 500, error: error.message });
+        }
+        
+    }
     
 }
 
