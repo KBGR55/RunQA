@@ -113,12 +113,7 @@ const VerCasoPrueba = () => {
                                     <p className="w-100 text-start texto-normal">{casosPrueba?.tipo_prueba}</p>
                                 </div>
                                 <div className="col-md-6">
-                                    <label className="w-100 text-start titulo-secundario">Estado</label>
-                                    <p className="w-100 text-start texto-normal">
-                                        <span className={`badge ${casosPrueba?.estado === 'APROBADO' ? 'bg-success' : casosPrueba?.estado === 'RECHAZADO' ? 'bg-danger' : 'bg-warning'}`}>
-                                            {casosPrueba?.estado}
-                                        </span>
-                                    </p>
+                            
                                     <label className="w-100 text-start titulo-secundario">Estado de Asignación</label>
                                     <p className="w-100 text-start texto-normal">
                                         <span className={`badge ${casosPrueba?.estadoAsignacion === 'ASIGNADO' ? 'bg-primary' : casosPrueba?.estadoAsignacion === 'REASIGNADO' ? 'bg-warning' : 'bg-secondary'}`}>
