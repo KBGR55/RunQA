@@ -86,8 +86,9 @@ const VerCasoPrueba = () => {
         <div>
             <div className='container-fluid'>
                 <div className='contenedor-centro'>
-                <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
+              
                     <div className="contenedor-carta">
+                    <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
                         <p className="titulo-primario">Caso de Prueba</p>
                         <div className="form-group">
                             <div className="row">
@@ -131,6 +132,12 @@ const VerCasoPrueba = () => {
                                     <p className="w-100 text-start texto-normal">
                                         {casosPrueba?.fecha_ejecucion_prueba ? formatDate(casosPrueba.fecha_ejecucion_prueba) : 'No disponible'}
                                     </p>
+                                    <label className="w-100 text-start titulo-secundario">Resultado esperado</label>
+                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.resultado_esperado ? casosPrueba?.resultado_esperado.replace(/\n/g, '<br />') : '' }} />
+
+                                    <label className="w-100 text-start titulo-secundario">Resultado obtenido</label>
+                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.resultado_obtenido ? casosPrueba?.resultado_obtenido.replace(/\n/g, '<br />') : '' }} />
+                               
                                 </div>
 
                                 <div className="col-md-12">
@@ -148,12 +155,7 @@ const VerCasoPrueba = () => {
                                     <label className="w-100 text-start titulo-secundario">Pasos</label>
                                     <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.pasos ? casosPrueba?.pasos.replace(/\n/g, '<br />') : '' }} />
 
-                                    <label className="w-100 text-start titulo-secundario">Resultado esperado</label>
-                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.resultado_esperado ? casosPrueba?.resultado_esperado.replace(/\n/g, '<br />') : '' }} />
-
-                                    <label className="w-100 text-start titulo-secundario">Resultado obtenido</label>
-                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.resultado_obtenido ? casosPrueba?.resultado_obtenido.replace(/\n/g, '<br />') : '' }} />
-                                </div>
+                             </div>
                             </div>
                         </div>
                         <div className='contenedor-filo'>
