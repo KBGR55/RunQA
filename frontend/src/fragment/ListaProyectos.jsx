@@ -69,12 +69,9 @@ const ListaProyectos = () => {
     };
 
     const handleProjectClick = (proyecto) => {
-        navigate(`/presentacion/${proyecto.proyecto.external_id}`);
+        navigate(`/presentacion/${proyecto.external_id}`);
     };
 
-    console.log("9999999999999999", proyectos);
-
-    console.log("wwwwwwwwwwwwwww");
     
     
 
@@ -100,10 +97,10 @@ const ListaProyectos = () => {
                     ) : (
                         <div className="row">
                             {proyectos.map((proyecto) => (
-                                <div className="col-md-4 mb-4" onClick={() => handleProjectClick(proyecto)} key={proyecto.proyecto.id}>
+                                <div className="col-md-4 mb-4" onClick={() => handleProjectClick(proyecto)} key={proyecto.id}>
                                     <div className="card shadow h-100 py-2">
                                         <div className="card-body text-center">
-                                            <h5 className="card-title">{proyecto.proyecto.nombre}</h5>
+                                            <h5 className="card-title">{proyecto.nombre}</h5>
                                         </div>
                                     </div>
                                 </div>

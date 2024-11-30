@@ -23,7 +23,7 @@ class RolEntidadController {
                     {
                         model: models.rol,
                         where: { estado: true },
-                        attributes: ['external_id', 'nombre', 'estado']
+                        attributes: ['external_id', 'nombre', 'estado'],
                     }
                 ]
             });

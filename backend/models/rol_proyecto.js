@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     rol_proyecto.associate = function (models) {
-        rol_proyecto.belongsTo(models.rol_entidad, { foreignKey: 'id_rol_entidad' });
-        rol_proyecto.belongsTo(models.proyecto, { foreignKey: 'id_proyecto' });
+        rol_proyecto.belongsTo(models.rol_entidad, { foreignKey: 'id_rol_entidad',as:'rol_entidad' });
+        rol_proyecto.belongsTo(models.proyecto, { foreignKey: 'id_proyecto',as:'proyecto_rol' });
         rol_proyecto.hasMany(models.contrato, { foreignKey: 'id_rol_proyecto_asignado', as: 'contratos_asignados' });
         rol_proyecto.hasMany(models.contrato, { foreignKey: 'id_rol_proyecto_responsable', as: 'contratos_responsables' });
     };

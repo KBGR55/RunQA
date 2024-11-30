@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         freezeTableName: true
     });
     proyecto.associate = function (models){
-        proyecto.hasMany(models.rol_proyecto, {foreignKey: 'id_proyecto',as:'rol_proyecto'});
+        proyecto.hasMany(models.rol_proyecto, {foreignKey: 'id_proyecto',as:'proyecto_rol'});
         proyecto.hasMany(models.caso_prueba, {foreignKey: 'id_proyecto',as:'caso_prueba'});
     };
  

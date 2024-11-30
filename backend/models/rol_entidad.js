@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     rol_entidad.associate = function (models) {
         rol_entidad.belongsTo(models.rol, {foreignKey: 'id_rol'});
         rol_entidad.belongsTo(models.entidad, {foreignKey: 'id_entidad'});
-        rol_entidad.hasMany(models.rol_proyecto, { foreignKey: 'id_rol_entidad', as: 'rol_proyecto' });
+        rol_entidad.hasMany(models.rol_proyecto, { foreignKey: 'id_rol_entidad', as: 'rol_entidad' });
     }
 
     return rol_entidad;    
