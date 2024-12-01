@@ -206,6 +206,21 @@ class CasoPruebaController {
             res.status(500).json({ msg: 'Error al obtener caso de prueba', code: 500, error: error.message });
         }
     }
+
+    async ejecutarCasoPrueba(req, res) {
+
+        try {
+            const caso = await caso_prueba.findOne({ where: { external_id: req.params.external_id } });
+            if (!caso) {
+                return res.status(404).json({ msg: "Caso de prueba no encontrado", code: 404 });
+            }
+            caso.estado = "EJECUCION";
+            await caso.save();
+            res.json({ msg: "Caso de prueba ejecutado correctamente", code: 200 });
+        } catch (error) {
+            res.status(500).json({ msg: 'Error al ejecutar el caso de prueba', code: 500, error: error.message });
+        }
+    }
     
 }
 
