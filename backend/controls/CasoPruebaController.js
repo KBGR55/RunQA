@@ -214,7 +214,7 @@ class CasoPruebaController {
             if (!caso) {
                 return res.status(404).json({ msg: "Caso de prueba no encontrado", code: 404 });
             }
-            caso.estado = "EJECUCION";
+            caso.estado = "EXITOSO";
             await caso.save();
             res.json({ msg: "Caso de prueba ejecutado correctamente", code: 200 });
         } catch (error) {
