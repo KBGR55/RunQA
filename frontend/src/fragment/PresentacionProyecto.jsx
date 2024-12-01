@@ -137,15 +137,14 @@ const PresentacionProyecto = () => {
     };
 
     if (!proyecto) return <p>Cargando...</p>;
-
-
+    
     return (
         <div className="project-page">
             <div className="header-section">
                 <img src="/img/fondo1.jpeg" alt="Project Background" className="background-image" />
                 <div className="header-overlay">
-                    <h1 className="project-title">{proyectoEntidad[0].proyecto.nombre}</h1>
-                    <p>{proyectoEntidad[0].proyecto.descripcion || 'Descripción del proyecto.'}</p>
+                    <h1 className="project-title">{proyectoEntidad[0].proyecto_rol.nombre}</h1>
+                    <p>{proyectoEntidad[0].proyecto_rol.descripcion || 'Descripción del proyecto.'}</p>
                 </div>
             </div>
 

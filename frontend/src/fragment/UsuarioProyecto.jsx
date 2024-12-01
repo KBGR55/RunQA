@@ -90,6 +90,8 @@ const UsuarioProyecto = () => {
         setShowModalAddMembers(false);
     };
 
+    console.log(rolLider[0]);
+    
     const handleDeleteUser = async () => {
         try {
             const response = await peticionDelete(getToken(), `proyecto/${external_id_proyecto}/${userIdToDelete}`);
@@ -161,7 +163,7 @@ const UsuarioProyecto = () => {
                                                 <td className="text-center">{user.horasDiarias}</td>
                                                 <td className="text-center">
                                                     <Button className="btn btn-danger" 
-                                                        disabled = {user.rol_entidad.rol.nombre == rolLider[0].rol.nombre}
+                                                        disabled = {user.rol_entidad.rol.nombre == rolLider[0].nombre}
                                                         onClick={() => handleShowModal(user.rol_entidad.entidad.id)}>
                                                         <FontAwesomeIcon icon={faTrash} />
                                                     </Button>

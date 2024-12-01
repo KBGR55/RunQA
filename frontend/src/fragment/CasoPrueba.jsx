@@ -163,7 +163,7 @@ const CasoPrueba = () => {
                                 {...register('nombre', {
                                     required: 'El título es obligatorio',
                                     maxLength: {
-                                        value: 50,
+                                        value: 100,
                                         message: 'El título no puede tener más de 50 caracteres'
                                     },
                                     validate: (value) => /^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9,.#\s-]+$/.test(value) || "El título solo puede contener letras, números, comas, puntos, '#', y '-'."
@@ -225,7 +225,7 @@ const CasoPrueba = () => {
                                 {...register('datos_entrada', {
                                     required: 'Los datos de entrada son obligatorios',
                                     maxLength: {
-                                        value: 100,
+                                        value: 350,
                                         message: 'Los datos de entrada no pueden tener más de 100 caracteres'
                                     }
                                 })}
@@ -244,7 +244,7 @@ const CasoPrueba = () => {
                                 {...register('precondiciones', {
                                     required: 'Las precondiciones son obligatorias',
                                     maxLength: {
-                                        value: 150,
+                                        value: 350,
                                         message: 'Las precondiciones no pueden tener más de 150 caracteres'
                                     }
                                 })}
@@ -263,7 +263,7 @@ const CasoPrueba = () => {
                                 {...register('descripcion', {
                                     required: 'La descripción es obligatoria',
                                     maxLength: {
-                                        value: 150,
+                                        value: 350,
                                         message: 'La descripción no puede tener más de 150 caracteres'
                                     }
                                 })}
@@ -295,7 +295,7 @@ const CasoPrueba = () => {
                                 {...register('resultado_esperado', {
                                     required: 'El resultado esperado es obligatorio',
                                     maxLength: {
-                                        value: 255,
+                                        value: 350,
                                         message: 'El resultado esperado no puede tener más de 255 caracteres'
                                     }
                                 })}

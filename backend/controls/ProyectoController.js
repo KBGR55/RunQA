@@ -44,7 +44,9 @@ class ProyectoController {
                 const resultado = await models.rol_proyecto.findOne({
                     where: { id_rol_entidad: rolEntidad.id },
                     include: {
-                        model: models.proyecto, where: { nombre: req.body.name },
+                        model: models.proyecto,
+                        as: 'proyecto_rol',
+                        where: { nombre: req.body.name },
                         attributes: ['id', 'nombre']
                     }, attributes: ['id_rol_entidad']
                 });
@@ -260,7 +262,7 @@ class ProyectoController {
                     },
                     {
                         model: models.proyecto,
-                        as: 'proyecto',
+                        as: 'proyecto_rol',
                         attributes: ['nombre', 'descripcion']
                     }
                 ],

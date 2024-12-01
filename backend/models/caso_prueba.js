@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: DataTypes.UUIDV4, unique: true
         },
         nombre: {
-            type: DataTypes.STRING(50),
+            type: DataTypes.STRING(100),
             allowNull: false
         },
         estado: {
@@ -31,27 +31,27 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: 'NO ASIGNADO'
         },
         descripcion: {
-            type: DataTypes.STRING(150),
+            type: DataTypes.STRING(350),
             allowNull: true
         },
         precondiciones: {
-            type: DataTypes.STRING(150),
+            type: DataTypes.STRING(350),
             allowNull: true
         },
         datos_entrada: {
-            type: DataTypes.STRING(100),
+            type: DataTypes.STRING(350),
             allowNull: true
         },
         pasos: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING(350),
             allowNull: true
         },
         resultado_esperado: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.STRING(350),
             allowNull: false
         },
         resultado_obtenido: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING(350),
             allowNull: true
         },
         clasificacion: {
@@ -66,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
                 'SISTEMA',
                 'REGRESION',
                 'EXPLORATORIA',
-                'ACEPTACION_USUARIO',
+                'ACEPTACION USUARIO',
                 'RENDIMIENTO',
                 'SEGURIDAD'
             ),
