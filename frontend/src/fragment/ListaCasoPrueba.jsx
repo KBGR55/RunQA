@@ -8,7 +8,7 @@ import { peticionGet } from '../utilities/hooks/Conexion';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import '../css/style.css';
 import mensajes from '../utilities/Mensajes';
-import { getToken } from '../utilities/Sessionutil';
+import { getToken, getUser } from '../utilities/Sessionutil';
 import TablePagination from '@mui/material/TablePagination';
 
 const ListaCasoPrueba = () => {
@@ -39,7 +39,7 @@ const ListaCasoPrueba = () => {
                         console.error(error);
                     });
                 } 
-                const response = await peticionGet(getToken(), `caso/prueba/listar?id_proyecto=${proyecto.id}`);
+                const response = await peticionGet(getToken(), `caso/prueba/listar/${getUser().user.id}?id_proyecto=${proyecto.id}`);
                 if (response.code === 200) {
                     setCasosPrueba(response.info);
                 } else {

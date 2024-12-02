@@ -194,7 +194,7 @@ router.post('/caso/prueba/actualizar', [
   body('descripcion').trim().optional().notEmpty().withMessage('La descripción no puede estar vacía'),
   body('resultado_esperado').trim().optional().notEmpty().withMessage('El resultado esperado no puede estar vacío'),
 ], casoPruebaController.actualizar);
-router.get('/caso/prueba/listar',casoPruebaController.listar);
+router.get('/caso/prueba/listar/:id_entidad',casoPruebaController.listar);
 router.get('/caso/prueba/obtener',casoPruebaController.obtener);
 router.put('/caso/prueba/cambiar/estado',casoPruebaController.cambiar_estado);
 router.get('/caso/prueba/eliminar',casoPruebaController.cambiar_estado_obsoleto);
@@ -212,6 +212,8 @@ router.post('/error/guardar', [
   body('razon').optional().isString().withMessage('La razón debe ser un texto'),
   body('fecha_reporte').optional().isISO8601().withMessage('La fecha de reporte debe ser una fecha válida ISO 8601')
 ],errorController.guardar);
+router.put('/caso/prueba/ejecutar/:external_id',casoPruebaController.ejecutarCasoPrueba);
+
 
 router.get('/rol_proyecto/listar/proyectos', rolProyectoController.listar.bind(rolProyectoController));
 router.get('/rol_proyecto/listar/entidad',rolProyectoController.listar_roles_entidad);
