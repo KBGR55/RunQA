@@ -47,7 +47,7 @@ class ContratoController {
                     {
                         model: models.caso_prueba,
                         as: 'caso_prueba',
-                        attributes: ['nombre', 'descripcion', 'clasificacion', 'estadoAsignacion', 'estadoActual']
+                        attributes: ['nombre', 'descripcion', 'clasificacion', 'estadoAsignacion', 'estado']
                     }
                 ]
             });
@@ -63,7 +63,7 @@ class ContratoController {
                     descripcion: contrato.caso_prueba.descripcion,
                     clasificacion: contrato.caso_prueba.clasificacion,
                     estadoAsignacion: contrato.caso_prueba.estadoAsignacion,
-                    estadoActual: contrato.caso_prueba.estadoActual,
+                    estado: contrato.caso_prueba.estado,
                 };
             });
 
@@ -121,7 +121,7 @@ class ContratoController {
                     {
                         model: models.caso_prueba,
                         as: 'caso_prueba',
-                        attributes: ['nombre', 'descripcion', 'clasificacion', 'estadoAsignacion', 'estadoActual']
+                        attributes: ['nombre', 'descripcion', 'clasificacion', 'estadoAsignacion', 'estado']
                     }
                 ]
             });
@@ -136,7 +136,7 @@ class ContratoController {
                 descripcion: contrato.caso_prueba.descripcion,
                 clasificacion: contrato.caso_prueba.clasificacion,
                 estadoAsignacion: contrato.caso_prueba.estadoAsignacion,
-                estadoActual: contrato.caso_prueba.estadoActual,
+                estado: contrato.caso_prueba.estado,
             };
 
             return res.json({

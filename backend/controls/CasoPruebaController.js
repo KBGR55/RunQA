@@ -1,6 +1,7 @@
 'use strict';
 const { body, validationResult } = require('express-validator');
 var models = require('../models/');
+const { where, Op } = require('sequelize');
 const caso_prueba = models.caso_prueba;
 const proyecto = models.proyecto;
 
@@ -10,7 +11,7 @@ class CasoPruebaController {
         try {
             const listar = await caso_prueba.findAll({
                 attributes: [
-                    'nombre', 'estado', 'external_id', 'descripcion', 'estadoActual','estadoAsignacion',
+                    'nombre', 'estado', 'external_id', 'descripcion','estadoAsignacion',
                     'pasos', 'resultado_esperado', 'resultado_obtenido',
                     'clasificacion', 'tipo_prueba', 'precondiciones',
                     'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada'
@@ -23,26 +24,77 @@ class CasoPruebaController {
     }
     async listar(req, res) {
         try {
-            const id_proyecto = req.query.id_proyecto; 
-            if (!id_proyecto) {
-                return res.status(400).json({ msg: "Falta el 'id_proyecto'", code: 400 });
+            const id_proyecto = req.query.id_proyecto;
+            const id_entidad = req.params.id_entidad;
+    
+            if (!id_proyecto || !id_entidad) {
+                return res.status(400).json({ msg: "Faltan datos", code: 400 });
             }
     
-            const listar = await caso_prueba.findAll({
-                where: { id_proyecto: id_proyecto }, 
-                attributes: [
-                    'nombre', 'estado', 'external_id', 'descripcion', 'estadoActual','estadoAsignacion',
-                    'pasos', 'resultado_esperado', 'resultado_obtenido',
-                    'clasificacion', 'tipo_prueba', 'precondiciones',
-                    'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada'
-                ]
+            // Obtener los roles de la entidad dentro del proyecto
+            const rolesEntidad = await models.rol_proyecto.findAll({
+                where: { id_proyecto },
+                include: {
+                    model: models.rol_entidad,
+                    as: 'rol_entidad', // Especifica el alias aquí
+                    where: { id_entidad },
+                    include: {
+                        model: models.rol,
+                        attributes: ['nombre'], // Obtener el nombre del rol
+                    }
+                }
             });
-            
-            res.json({ msg: 'OK!', code: 200, info: listar });
+    
+            // Extraer los nombres de los roles
+            const nombresRoles = rolesEntidad.map(item => item.rol_entidad.rol.nombre);
+    console.log('nombresRoles:', nombresRoles);
+            // Verificar si tiene roles de calidad
+            const rolesCalidad = ['LIDER DE CALIDAD', 'ANALISTA DE PRUEBAS'];
+            const tieneRolCalidad = nombresRoles.some(rol => rolesCalidad.includes(rol));
+            if (tieneRolCalidad) {
+                // Retornar todos los casos de prueba
+                const listar = await caso_prueba.findAll({
+                    where: { id_proyecto },
+                    attributes: [
+                        'nombre', 'estado', 'external_id', 'descripcion', 'estadoAsignacion',
+                        'pasos', 'resultado_esperado', 'resultado_obtenido',
+                        'clasificacion', 'tipo_prueba', 'precondiciones',
+                        'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada'
+                    ]
+                });
+    
+                return res.json({ msg: 'OK!', code: 200, info: listar });
+            } else {
+                // Retornar casos de prueba específicos según el contrato
+                const listar = await caso_prueba.findAll({
+                    where: { id_proyecto },
+                    include: {
+                        model: models.contrato,
+                        as: 'contrato',
+                        required: true,
+                        where: {
+                            [Op.or]: [
+                                { id_rol_proyecto_asignado: rolesEntidad.map(rp => rp.id) },
+                                { id_rol_proyecto_responsable: rolesEntidad.map(rp => rp.id) }
+                            ]
+                        }
+                    },
+                    attributes: [
+                        'nombre', 'estado', 'external_id', 'descripcion', 'estadoAsignacion',
+                        'pasos', 'resultado_esperado', 'resultado_obtenido',
+                        'clasificacion', 'tipo_prueba', 'precondiciones',
+                        'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada'
+                    ]
+                });
+    
+                return res.json({ msg: 'OK!', code: 200, info: listar });
+            }
+    
         } catch (error) {
-            res.status(500).json({ msg: 'Error al listar casos de prueba', code: 500, error: error.message });
+            return res.status(500).json({ msg: 'Error al listar casos de prueba', code: 500, error: error.message });
         }
     }
+    
 
     async obtener(req, res) {
         const external_id = req.query.external_id;
@@ -53,7 +105,7 @@ class CasoPruebaController {
             const caso = await caso_prueba.findOne({
                 where: { external_id: external_id },
                 attributes: [
-                    'nombre', 'estado', 'external_id', 'descripcion',  'estadoActual','estadoAsignacion',
+                    'nombre', 'estado', 'external_id', 'descripcion','estadoAsignacion',
                     'pasos', 'resultado_esperado', 'resultado_obtenido',
                     'clasificacion', 'tipo_prueba', 'precondiciones',
                     'fecha_disenio', 'fecha_ejecucion_prueba','id_proyecto', 'datos_entrada'
@@ -187,7 +239,7 @@ class CasoPruebaController {
 
         try {
             const caso = await caso_prueba.findAll({
-                where: { id_proyecto: proyectoAux.id, estadoActual: "NUEVO" , estadoAsignacion: "NO ASIGNADO"},
+                where: { id_proyecto: proyectoAux.id, estado: "DISEÑADO" , estadoAsignacion: "NO ASIGNADO"},
                 attributes: [
                     'nombre', 'estado', 'external_id', 'descripcion', 
                     'pasos', 'resultado_esperado',

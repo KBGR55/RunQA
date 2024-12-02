@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import CasoPrueba from './CasoPrueba';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -11,14 +11,26 @@ import mensajes from '../utilities/Mensajes';
 import { getToken } from '../utilities/Sessionutil';
 import { useForm } from 'react-hook-form';
 import swal from 'sweetalert';
+import EjecutarCasoPrueba from './EjecutarCasoPrueba';
 
 const VerCasoPrueba = () => {
     const [casosPrueba, setCasosPrueba] = useState({});
     const { external_id_proyecto, external_id } = useParams();
-    const [infoProyecto,setProyecto] = useState([]);
+    const [infoProyecto, setProyecto] = useState([]);
     const { setValue } = useForm();
     const navigate = useNavigate();
-    
+    const [shoModal, setshoModal] = useState(false);
+
+
+    const handleshoModal = () => {
+        console.log('handleshoModal ejecutado');
+        setshoModal(true);
+    };
+
+
+    const handleCloseModal = () => {
+        setshoModal(false);
+    };
 
     useEffect(() => {
         const fetchCasoPrueba = async () => {
@@ -35,7 +47,7 @@ const VerCasoPrueba = () => {
                         mensajes("Error al cargar el proyecto", "error", "Error");
                         console.error(error);
                     });
-                } 
+                }
                 const response = await peticionGet(getToken(), `caso/prueba/obtener?external_id=${external_id}`);
                 if (response.code === 200) {
                     const casoPruebaData = response.info;
@@ -52,7 +64,7 @@ const VerCasoPrueba = () => {
 
         fetchCasoPrueba();
     }, [setValue]);
-    
+
 
     const handleDeleteCasoPrueba = async (external_id) => {
         swal({
@@ -86,17 +98,17 @@ const VerCasoPrueba = () => {
         <div>
             <div className='container-fluid'>
                 <div className='contenedor-centro'>
-              
+
                     <div className="contenedor-carta">
-                    <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
+                        <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
                         <p className="titulo-primario">Caso de Prueba</p>
                         <div className="form-group">
                             <div className="row">
                                 <div className="col-md-6">
-                                    <label className="w-100 text-start titulo-secundario">Estado Actual</label>
+                                    <label className="w-100 text-start titulo-secundario">Estado</label>
                                     <p className="w-100 text-start texto-normal">
-                                        <span className={`badge ${casosPrueba?.estadoActual === 'NUEVO' ? 'bg-info' : casosPrueba?.estadoActual === 'EN_PROGRESO' ? 'bg-warning' : casosPrueba?.estadoActual === 'CERRADO' ? 'bg-success' : 'bg-danger'}`}>
-                                            {casosPrueba?.estadoActual}
+                                        <span className={`badge ${casosPrueba?.estado === 'NUEVO' ? 'bg-info' : casosPrueba?.estado === 'EN PROGRESO' ? 'bg-warning' : casosPrueba?.estado === 'CERRADO' ? 'bg-success' : 'bg-danger'}`}>
+                                            {casosPrueba?.estado}
                                         </span>
                                     </p>
                                     <label className="w-100 text-start titulo-secundario">Título</label>
@@ -114,7 +126,7 @@ const VerCasoPrueba = () => {
                                     <p className="w-100 text-start texto-normal">{casosPrueba?.tipo_prueba}</p>
                                 </div>
                                 <div className="col-md-6">
-                            
+
                                     <label className="w-100 text-start titulo-secundario">Estado de Asignación</label>
                                     <p className="w-100 text-start texto-normal">
                                         <span className={`badge ${casosPrueba?.estadoAsignacion === 'ASIGNADO' ? 'bg-primary' : casosPrueba?.estadoAsignacion === 'REASIGNADO' ? 'bg-warning' : 'bg-secondary'}`}>
@@ -137,7 +149,7 @@ const VerCasoPrueba = () => {
 
                                     <label className="w-100 text-start titulo-secundario">Resultado obtenido</label>
                                     <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.resultado_obtenido ? casosPrueba?.resultado_obtenido.replace(/\n/g, '<br />') : '' }} />
-                               
+
                                 </div>
 
                                 <div className="col-md-12">
@@ -155,10 +167,17 @@ const VerCasoPrueba = () => {
                                     <label className="w-100 text-start titulo-secundario">Pasos</label>
                                     <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.pasos ? casosPrueba?.pasos.replace(/\n/g, '<br />') : '' }} />
 
-                             </div>
+                                </div>
                             </div>
                         </div>
                         <div className='contenedor-filo'>
+                            <Button
+                                className="btn-normal mb-3"
+                                onClick={handleshoModal}
+                            >
+                                <FontAwesomeIcon icon={faPlus} /> Ejecutar
+                            </Button>
+
                             <Button variant="btn btn-outline-info btn-rounded" onClick={() => navigate(`/editar/caso/prueba/${external_id_proyecto}/${casosPrueba.external_id}`)} >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
                                     <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
@@ -176,6 +195,15 @@ const VerCasoPrueba = () => {
                 </div>
 
             </div>
+            <Modal show={shoModal} onHide={handleCloseModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title className="titulo-primario">Crear Nuevo Proyecto</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <EjecutarCasoPrueba onClose={handleCloseModal} />
+                </Modal.Body>
+            </Modal>
+
 
         </div>
     );

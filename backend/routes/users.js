@@ -192,7 +192,7 @@ router.post('/caso/prueba/actualizar', [
   body('descripcion').trim().optional().notEmpty().withMessage('La descripción no puede estar vacía'),
   body('resultado_esperado').trim().optional().notEmpty().withMessage('El resultado esperado no puede estar vacío'),
 ], casoPruebaController.actualizar);
-router.get('/caso/prueba/listar',casoPruebaController.listar);
+router.get('/caso/prueba/listar/:id_entidad',casoPruebaController.listar);
 router.get('/caso/prueba/obtener',casoPruebaController.obtener);
 router.put('/caso/prueba/cambiar/estado',casoPruebaController.cambiar_estado);
 router.get('/caso/prueba/eliminar',casoPruebaController.cambiar_estado_obsoleto);
