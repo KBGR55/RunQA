@@ -197,6 +197,7 @@ router.get('/caso/prueba/obtener',casoPruebaController.obtener);
 router.put('/caso/prueba/cambiar/estado',casoPruebaController.cambiar_estado);
 router.get('/caso/prueba/eliminar',casoPruebaController.cambiar_estado_obsoleto);
 router.get('/caso/obtener/proyecto/:external_id', casoPruebaController.obtenerCasosProyecto);
+router.put('/caso/prueba/ejecutar/:external_id',casoPruebaController.ejecutarCasoPrueba);
 
 
 router.get('/rol_proyecto/listar/proyectos', rolProyectoController.listar.bind(rolProyectoController));

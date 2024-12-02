@@ -259,6 +259,7 @@ class CasoPruebaController {
         }
     }
 
+    //Cuarto Sprint
     async ejecutarCasoPrueba(req, res) {
 
         try {
@@ -267,6 +268,8 @@ class CasoPruebaController {
                 return res.status(404).json({ msg: "Caso de prueba no encontrado", code: 404 });
             }
             caso.estado = "EXITOSO";
+            caso.fecha_ejecucion_prueba = new Date();
+            caso.resultado_obtenido = req.body.resultado_obtenido;
             await caso.save();
             res.json({ msg: "Caso de prueba ejecutado correctamente", code: 200 });
         } catch (error) {

@@ -197,7 +197,7 @@ const VerCasoPrueba = () => {
             </div>
             <Modal show={shoModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
-                    <Modal.Title className="titulo-primario">Crear Nuevo Proyecto</Modal.Title>
+                   
                 </Modal.Header>
                 <Modal.Body>
                     <EjecutarCasoPrueba onClose={handleCloseModal} />
