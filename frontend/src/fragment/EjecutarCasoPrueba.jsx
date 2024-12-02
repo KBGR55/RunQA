@@ -8,10 +8,14 @@ import { useParams } from 'react-router-dom';
 import { peticionPut } from '../utilities/hooks/Conexion';
 import { getToken } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
+import { Modal, Button } from 'react-bootstrap';
+import AgregarErrores from './AgregarErrores'; 
+
 
 const EjecutarCasoPrueba = () => {
     const [resultadoObtenido, setResultadoObtenido] = useState('');
-    const { external_id } = useParams();
+    const [showModal, setShowModal] = useState(false);
+    const { external_id_proyecto, external_id } = useParams();
 
     const handleTerminarClick = () => {
         if (!resultadoObtenido.trim()) {
@@ -49,22 +53,11 @@ const EjecutarCasoPrueba = () => {
     };
 
     const handleAgregarErroresClick = () => {
-        swal({
-            title: "Agregar Errores",
-            text: "Describe los errores encontrados:",
-            content: {
-                element: "textarea",
-                attributes: {
-                    placeholder: "Describe los errores...",
-                },
-            },
-            buttons: ["Cancelar", "Guardar"],
-        }).then((value) => {
-            if (value) {
-                // Aquí iría la lógica para guardar los errores
-                swal("Errores agregados correctamente", { icon: "success" });
-            }
-        });
+        setShowModal(true); // Show the modal
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false); // Close the modal
     };
 
     return (
@@ -91,6 +84,17 @@ const EjecutarCasoPrueba = () => {
                     <FontAwesomeIcon icon={faExclamationTriangle} /> Agregar Errores
                 </button>
             </div>
+
+            {/* Modal for adding errors */}
+            <Modal show={showModal} onHide={handleCloseModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Agregar Errores</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <AgregarErrores external_id_proyecto={external_id_proyecto}
+                        external_id={external_id} onClose={handleCloseModal} /> {/* Include AgregarErrores component */}
+                </Modal.Body>
+            </Modal>
         </div>
     );
 };

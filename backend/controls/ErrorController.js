@@ -30,22 +30,27 @@ class ErrorController {
 
     // Listar errores por caso de prueba
     async listarPorCasoPrueba(req, res) {
-        const { id_caso_prueba } = req.query;
-
-        if (!id_caso_prueba) {
-            return res.status(400).json({
-                msg: "El parámetro 'id_caso_prueba' es obligatorio",
-                code: 400
+        const {external_caso_prueba } = req.query;
+        // Buscar el caso de prueba usando el external_caso_prueba
+        const casoPrueba = await models.caso_prueba.findOne({
+            where: { external_id: external_caso_prueba }
+        });
+        // Si no se encuentra el caso de prueba, retornar un error
+        if (!casoPrueba) {
+            return res.status(404).json({
+                msg: 'Caso de prueba no encontrado',
+                code: 404
             });
         }
 
+        const id_caso= casoPrueba.id;
         try {
             const errores = await error.findAll({
-                where: { id_caso_prueba },
+                where: {id_caso_prueba:id_caso},
                 attributes: [
-                    'external_id', 'funcionalidad', 'titulo', 'pasos_reproducir',
-                    ' persona_asignada', 'severidad', 'prioridad', 'estado',
-                    'ciclo_error', 'razon', 'fecha_reporte', 'fecha_resolucion'
+                    'id', 'external_id', 'funcionalidad', 'titulo', 'pasos_reproducir',
+                    'persona_asignada', 'severidad', 'prioridad', 'estado',
+                    'razon', 'fecha_reporte', 'fecha_resolucion'
                 ]
             });
 
@@ -74,37 +79,48 @@ class ErrorController {
     async guardar(req, res) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ 
-                msg: 'Error de validación', 
-                code: 400, 
-                errors: errors.array() 
+            return res.status(400).json({
+                msg: 'Error de validación',
+                code: 400,
+                errors: errors.array()
             });
         }
-    
+
         const {
-            funcionalidad, titulo, pasos_reproducir,  persona_asignada,
+            funcionalidad, titulo, pasos_reproducir, persona_asignada,
             severidad, prioridad, estado, razon,
-            fecha_reporte, fecha_resolucion, id_caso_prueba
+            fecha_reporte, fecha_resolucion, external_caso_prueba
         } = req.body;
-    
         try {
+            // Buscar el caso de prueba usando el external_caso_prueba
+            const casoPrueba = await models.caso_prueba.findOne({
+                where: { external_id: external_caso_prueba }
+            });
+            // Si no se encuentra el caso de prueba, retornar un error
+            if (!casoPrueba) {
+                return res.status(404).json({
+                    msg: 'Caso de prueba no encontrado',
+                    code: 404
+                });
+            }
+            // Crear el nuevo error con el id del caso de prueba encontrado
             const nuevoError = await error.create({
                 funcionalidad: funcionalidad || "SIN_DATOS",
                 titulo: titulo || "SIN_DATOS",
                 pasos_reproducir: pasos_reproducir || null,
-                persona_asignada:  persona_asignada || "SIN_DATOS",
+                persona_asignada: persona_asignada || "SIN_DATOS",
                 severidad: severidad || "BAJA",
                 prioridad: prioridad || 0,
                 estado: estado || "PENDIENTE",
                 razon: razon || "SIN_DATOS",
                 fecha_reporte: fecha_reporte || new Date(),
                 fecha_resolucion: fecha_resolucion || null,
-                id_caso_prueba: id_caso_prueba
+                id_caso_prueba: casoPrueba.id  // Usar el id del caso de prueba encontrado
             });
-    
+
             res.status(201).json({
                 msg: 'Error registrado exitosamente',
-                code: 201,
+                code: 200,
                 info: nuevoError
             });
         } catch (err) {
@@ -116,7 +132,8 @@ class ErrorController {
             });
         }
     }
-    
+
+
 }
 
 module.exports = ErrorController;

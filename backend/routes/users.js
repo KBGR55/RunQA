@@ -200,6 +200,7 @@ router.put('/caso/prueba/cambiar/estado',casoPruebaController.cambiar_estado);
 router.get('/caso/prueba/eliminar',casoPruebaController.cambiar_estado_obsoleto);
 router.get('/caso/obtener/proyecto/:external_id', casoPruebaController.obtenerCasosProyecto);
 router.get('/error/listar', errorController.listar);
+router.get('/error/obtener', errorController.listarPorCasoPrueba);
 router.get('/error/caso/prueba', errorController.listarPorCasoPrueba);
 router.post('/error/guardar', [
   body('funcionalidad').optional().isString().withMessage('La funcionalidad debe ser un texto'),
