@@ -228,6 +228,7 @@ router.get('/proyecto/:id_proyect',proyectoController.getEntidadProyecto);
 router.get('/proyecto/obtener/:external_id',proyectoController.getProyecto);
 router.delete('/proyecto/:id_proyect/:id_entidad',proyectoController.removerEntidad);
 router.get('/proyecto/listar/tester/:external_id',proyectoController.obtenerTestersPorProyecto);
+router.get('/proyecto/tester/desarrollador/:id_proyect',proyectoController.getEntidadProyectoTesterDesarrollador);
 
 /** CONTRATO */
 router.post('/contrato/caso/prueba', contratoController.asignarTesters);

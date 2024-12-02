@@ -44,6 +44,8 @@ class ErrorController {
         }
 
         const id_caso= casoPrueba.id;
+
+
         try {
             const errores = await error.findAll({
                 where: {id_caso_prueba:id_caso},
@@ -92,10 +94,11 @@ class ErrorController {
             fecha_reporte, fecha_resolucion, external_caso_prueba
         } = req.body;
         try {
-            // Buscar el caso de prueba usando el external_caso_prueba
+            // Buscar solo cuando su  estadoAsignacion no sea  'NO ASIGNADO' y el estado este en 
             const casoPrueba = await models.caso_prueba.findOne({
-                where: { external_id: external_caso_prueba }
+                where: { external_id: external_caso_prueba}
             });
+
             // Si no se encuentra el caso de prueba, retornar un error
             if (!casoPrueba) {
                 return res.status(404).json({
@@ -103,6 +106,8 @@ class ErrorController {
                     code: 404
                 });
             }
+            casoPrueba.estado ='FALLIDO';
+            await casoPrueba.save();
             // Crear el nuevo error con el id del caso de prueba encontrado
             const nuevoError = await error.create({
                 funcionalidad: funcionalidad || "SIN_DATOS",

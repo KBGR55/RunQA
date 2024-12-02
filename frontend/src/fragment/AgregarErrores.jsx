@@ -63,6 +63,7 @@ const AgregarErrores = () => {
         });
     };
 
+    //buscar un get router.get('/proyecto/:id_proyect',proyectoController.getEntidadProyecto);
     return (
         <div className="contenedor-carta">
             <form className="form-sample" onSubmit={handleSubmit(onSubmit)}>

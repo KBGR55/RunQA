@@ -2,6 +2,7 @@
 const { validationResult } = require('express-validator');
 var models = require('../models/');
 const uuid = require('uuid');
+const { where } = require('sequelize');
 const proyecto = models.proyecto; 
 const cuenta = models.cuenta; 
 const rolLider = 'LIDER DE CALIDAD';
@@ -275,7 +276,54 @@ class ProyectoController {
             console.error("Error:", error);
             res.status(500).json({ msg: "Estamos teniendo problemas", code: 500 });
         }
-    }    
+    }   
+    
+    async getEntidadProyectoTesterDesarrollador(req, res) {
+        try {
+            const proyecto = await models.proyecto.findOne({ where: { external_id: req.params.id_proyect } });
+            if (!proyecto) {
+                return res.status(400).json({ msg: "No se encontró el proyecto", code: 400 });
+            }
+    
+            const rolProyectos = await models.rol_proyecto.findAll({
+                where: { id_proyecto: proyecto.id },
+                attributes: ['id','external_id'],
+                include: [
+                    {
+                        model: models.rol_entidad,
+                        as: 'rol_entidad',
+                        include: [
+                            {
+                                model: models.entidad,
+                                as: 'entidad',
+                                attributes: ['nombres', 'apellidos', 'foto', 'id','horasDisponibles', 'external_id'],
+                            },
+                            {
+                                model: models.rol,
+                                as: 'rol',
+                                attributes: ['nombre'],
+                                where: {
+                                    nombre: ['TESTER', 'DESARROLLADOR']
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        model: models.proyecto,
+                        as: 'proyecto_rol',
+                        attributes: ['nombre', 'descripcion']
+                    }
+                ],
+                attributes: ['id','horasDiarias']
+            });
+    
+            res.status(200).json({ msg: "OK!", code: 200, info: rolProyectos });
+    
+        } catch (error) {
+            console.error("Error:", error);
+            res.status(500).json({ msg: "Estamos teniendo problemas", code: 500 });
+        }
+    }   
 
     async removerEntidad(req, res) {
         try {
