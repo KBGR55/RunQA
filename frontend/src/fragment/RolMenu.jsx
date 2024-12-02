@@ -33,7 +33,7 @@ const RoleMenu = () => {
                 if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
                     borrarSesion();
                     mensajes(info.mensajes);
-                    navigate("/main");
+                    navigate("/");
                 } else if (info.code === 200) {
                     setRoles(info.info.roles);
                     setProyecto(info.info.proyecto);
@@ -189,18 +189,6 @@ const RoleMenu = () => {
                 {/* Opciones de navegación */}
                 <div className="p-2 mb-3" style={{ backgroundColor: 'var(--color-cuarto)' }}>
                     <ul className="list-unstyled mb-0">
-                        <li className="p-2 mb-1" onClick={() => navigate('/main')}
-                            style={{
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                backgroundColor: selectedOption === 'Inicio' ? 'var(--color-terciario)' : 'transparent',
-                                transition: 'background-color 0.3s',
-                                color: 'var(--blanco)'
-                            }}>
-                            <i className="bi bi-house-fill me-2"></i>
-                            {isOpen && <span>Inicio</span>}
-                        </li>
                         <li className="p-2 mb-1" onClick={() => navigate('/proyectos')}
                             style={{
                                 cursor: 'pointer',
