@@ -181,7 +181,7 @@ const ListaUsuarios = () => {
                                                     </td>
                                                     <td className="text-center">{data.nombres}</td>
                                                     <td className="text-center">{data.apellidos}</td>
-                                                    <td className="text-center">{data.estado ? 'Activo' : 'Desactivo'}</td>
+                                                    <td className="text-center">{data.cuenta.estado}</td>
                                                     <td className="text-center">{obtenerFechaFormateada(data.fecha_nacimiento)}</td>
                                                     <td className="text-center">{data.telefono}</td>
                                                     <td className="text-center">{data.horasDisponibles}</td>
