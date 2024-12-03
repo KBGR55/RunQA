@@ -4,13 +4,13 @@ var models = require('../models/');
 const error = models.error;
 
 class ErrorController {
-    // Listar todos los errores
+
     async listar(req, res) {
         try {
             const errores = await error.findAll({
                 attributes: [
                     'external_id', 'funcionalidad', 'titulo', 'pasos_reproducir',
-                    'persona_asignada', 'severidad', 'prioridad', 'estado',
+                    'persona_asignada', 'severidad', 'estado',
                     'razon', 'fecha_reporte', 'fecha_resolucion'
                 ]
             });
@@ -28,10 +28,13 @@ class ErrorController {
         }
     }
 
-    // Listar errores por caso de prueba
     async listarPorCasoPrueba(req, res) {
+        console.log('fffffffffff');
+        
         const {external_caso_prueba } = req.query;
         // Buscar el caso de prueba usando el external_caso_prueba
+        console.log(external_caso_prueba);
+        
         const casoPrueba = await models.caso_prueba.findOne({
             where: { external_id: external_caso_prueba }
         });
@@ -51,7 +54,7 @@ class ErrorController {
                 where: {id_caso_prueba:id_caso},
                 attributes: [
                     'id', 'external_id', 'funcionalidad', 'titulo', 'pasos_reproducir',
-                    'persona_asignada', 'severidad', 'prioridad', 'estado',
+                    'persona_asignada', 'severidad', 'estado',
                     'razon', 'fecha_reporte', 'fecha_resolucion'
                 ]
             });
@@ -78,6 +81,52 @@ class ErrorController {
         }
     }
 
+    // Agregar este método en el controlador ErrorController
+
+// Buscar error por external_id
+async obtener(req, res) {
+    const { external_id } = req.query; // Obtener el external_id desde los parámetros de la query
+    if (!external_id) {
+        return res.status(400).json({
+            msg: 'El external_id es requerido',
+            code: 400
+        });
+    }
+
+    try {
+        const errorEncontrado = await error.findOne({
+            where: { external_id: external_id }, // Buscar el error usando el external_id
+            attributes: [
+                'external_id', 'funcionalidad', 'titulo', 'pasos_reproducir',
+                'persona_asignada', 'severidad', 'estado',
+                'razon', 'fecha_reporte', 'fecha_resolucion'
+            ]
+        });
+
+        if (!errorEncontrado) {
+            return res.status(404).json({
+                msg: 'Error no encontrado',
+                code: 404
+            });
+        }
+
+        res.json({
+            msg: 'Error encontrado correctamente',
+            code: 200,
+            info: errorEncontrado
+        });
+    } catch (err) {
+        console.error("Error al buscar el error por external_id:", err);
+        res.status(500).json({
+            msg: 'Ocurrió un error al intentar buscar el error',
+            code: 500,
+            error: err.message
+        });
+    }
+}
+
+
+
     async guardar(req, res) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -90,7 +139,7 @@ class ErrorController {
 
         const {
             funcionalidad, titulo, pasos_reproducir, persona_asignada,
-            severidad, prioridad, estado, razon,
+            severidad, estado, razon,
             fecha_reporte, fecha_resolucion, external_caso_prueba
         } = req.body;
         try {
@@ -115,7 +164,6 @@ class ErrorController {
                 pasos_reproducir: pasos_reproducir || null,
                 persona_asignada: persona_asignada || "SIN_DATOS",
                 severidad: severidad || "BAJA",
-                prioridad: prioridad || 0,
                 estado: estado || "PENDIENTE",
                 razon: razon || "SIN_DATOS",
                 fecha_reporte: fecha_reporte || new Date(),

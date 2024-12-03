@@ -26,6 +26,7 @@ import OlvidoClave from './fragment/OlvidoClave';
 import CambioClave from './fragment/CambioClave';
 import AgregarErrores from './fragment/AgregarErrores';
 import { getToken } from './utilities/Sessionutil';
+import VerError from './fragment/VerError';
 
 function App() {
   const MiddewareSesion = ({ children }) => {
@@ -65,6 +66,7 @@ function App() {
           <Route path='/casos/prueba-asignado/:external_id_proyecto/:external_id' element={<MiddewareSesion><CasoPruebaAsignado /></MiddewareSesion>} />
           <Route path='/cambio/clave' element={<MiddewareSesion><CambioClave /></MiddewareSesion>} />
           <Route path='/error/:external_id_proyecto/:external_id' element={<MiddewareSesion><AgregarErrores/></MiddewareSesion>} />
+          <Route path='/error/visualizar/:external_id_proyecto/:external_id/:external_id_error' element={<MiddewareSesion><VerError/></MiddewareSesion>} />
         </Route>
       </Routes>
     </div>

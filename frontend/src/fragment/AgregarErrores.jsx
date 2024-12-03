@@ -49,7 +49,6 @@ const AgregarErrores = () => {
             pasos_reproducir: data.pasos_reproducir,
             persona_asignada: data.persona_asignada,
             severidad: clasificacionSeleccionada,
-            prioridad: data.prioridad,
             estado: estadoSeleccionado,
             razon: data.razon,
             fecha_reporte: new Date().toISOString(),
@@ -94,6 +93,19 @@ const AgregarErrores = () => {
             <p className="titulo-primario">Error</p>
             <form className="form-sample" onSubmit={handleSubmit(onSubmit)}>
                 <div className="row">
+                <div className="col-md-6">
+                        <div className="form-group">
+                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Título</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                {...register('titulo', { required: 'El título es obligatorio' })}
+                            />
+                            {errors.titulo && (
+                                <div className='alert alert-danger'>{errors.titulo.message}</div>
+                            )}
+                        </div>
+                    </div>
                     <div className="col-md-6">
                         <div className="form-group">
                             <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Funcionalidad</label>
@@ -104,20 +116,6 @@ const AgregarErrores = () => {
                             />
                             {errors.funcionalidad && (
                                 <div className='alert alert-danger'>{errors.funcionalidad.message}</div>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="col-md-6">
-                        <div className="form-group">
-                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Título</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                {...register('titulo', { required: 'El título es obligatorio' })}
-                            />
-                            {errors.titulo && (
-                                <div className='alert alert-danger'>{errors.titulo.message}</div>
                             )}
                         </div>
                     </div>
@@ -133,16 +131,6 @@ const AgregarErrores = () => {
                         <div className='alert alert-danger'>{errors.pasos_reproducir.message}</div>
                     )}
                 </div>
-
-                <div className="form-group">
-                    <label className='titulo-campos'>Persona asignada</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        {...register('persona_asignada')}
-                    />
-                </div>
-
                 <div className="row">
                     <div className="col-md-6">
                         <div className="form-group">
@@ -164,19 +152,15 @@ const AgregarErrores = () => {
                             )}
                         </div>
                     </div>
-
                     <div className="col-md-6">
-                        <div className="form-group">
-                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Prioridad</label>
-                            <input
-                                type="number"
-                                className="form-control"
-                                {...register('prioridad', { required: 'La prioridad es obligatoria' })}
-                            />
-                            {errors.prioridad && (
-                                <div className='alert alert-danger'>{errors.prioridad.message}</div>
-                            )}
-                        </div>
+                    <div className="form-group">
+                    <label className='titulo-campos'>Persona asignada</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        {...register('persona_asignada')}
+                    />
+                </div>
                     </div>
                 </div>
 
