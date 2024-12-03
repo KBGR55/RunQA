@@ -9,8 +9,7 @@ import { getToken, borrarSesion } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 import EditarPersona from './EditarPersona';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTimes, faCheck, faSearch } from '@fortawesome/free-solid-svg-icons';
-import Registrar from '../fragment/Registrar';
+import { faPlus, faTimes, faCheck, faSearch, faPerson } from '@fortawesome/free-solid-svg-icons';
 import AsignarLideres from './AsignarLideres';
 import AsignarAdmin from './AsignarAdmin';
 import TablePagination from '@mui/material/TablePagination';
@@ -125,10 +124,16 @@ const ListaUsuarios = () => {
             <div className="contenedor-centro">
                 <div className='contenedor-carta '>
                     <div className='contenedor-filo'>
+                        
                         <Button
                             className="btn-normal mb-3"
                             onClick={handleShowAsignarModal}
                         >  <FontAwesomeIcon icon={faPlus} /> Crear Lideres de Calidad
+                        </Button>
+                        <Button
+                            className="btn-opcional mb-3"
+                            onClick={handleShowAsignarModal}
+                        >  <FontAwesomeIcon icon={faPerson} /> Usuarios No Autorizados
                         </Button>
                     </div>
                     <main className="table">
