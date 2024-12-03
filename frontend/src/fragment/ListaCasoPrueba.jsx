@@ -22,6 +22,7 @@ const ListaCasoPrueba = () => {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const { external_id_proyecto } = useParams();
     const [infoProyecto,setProyecto] = useState([]);
+    const [rol, SetRol] = useState('false');
     
 
     useEffect(() => {        
@@ -42,6 +43,7 @@ const ListaCasoPrueba = () => {
                 const response = await peticionGet(getToken(), `caso/prueba/listar/${getUser().user.id}?id_proyecto=${proyecto.id}`);
                 if (response.code === 200) {
                     setCasosPrueba(response.info);
+                    SetRol(response.rol);
                 } else {
                     console.error('Error al obtener casos de prueba:', response.msg);
                 }
@@ -67,7 +69,7 @@ const ListaCasoPrueba = () => {
     });
 
     const handleNavigateToDetail = (external_id) => {
-        navigate(`/caso-prueba/${external_id_proyecto}/${external_id}`);
+        navigate(`/caso-prueba/${external_id_proyecto}/${external_id}/${rol}`);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -126,7 +128,7 @@ const ListaCasoPrueba = () => {
                                             <td className="text-center">
                                                 <Button
                                                     variant="btn btn-outline-info btn-rounded"
-                                                    onClick={() => handleNavigateToDetail(caso.external_id)}
+                                                    onClick={() => handleNavigateToDetail(caso.external_id,rol)}
                                                     className="btn-icon"
                                                 >
                                                     <svg

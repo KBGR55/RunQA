@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import { getToken } from '../utilities/Sessionutil';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import mensajes from '../utilities/Mensajes';
+import swal from 'sweetalert';
 
 const VerPeticion = () => {
     const [peticiones, setPeticiones] = useState([]);
@@ -27,16 +28,37 @@ const VerPeticion = () => {
         const { nombres, apellidos } = entidad;
         var fechaHora = format(new Date(createdAt), 'yyyy-MM-dd HH:mm:ss');
 
-        const handleAceptar = () => {
+      const handleAceptar = () => {
+    swal({
+        title: "¿Está seguro de aceptar la petición?",
+        text: "Esta acción no se podrá deshacer.",
+        icon: "warning",
+        buttons: ["No", "Sí"],
+        dangerMode: true,
+    }).then((willAccept) => {
+        if (willAccept) {
             acepReac(1);
-        };
+        }
+    });
+};
 
-        const handleRechazar = () => {
+const handleRechazar = () => {
+    swal({
+        title: "¿Está seguro de rechazar la petición?",
+        text: "Esta acción no se podrá deshacer.",
+        icon: "warning",
+        buttons: ["No", "Sí"],
+        dangerMode: true,
+    }).then((willReject) => {
+        if (willReject) {
             acepReac(0);
             setPeticiones((prevPeticiones) =>
                 prevPeticiones.filter((p) => p.external_id !== external_id)
             );
-        };
+        }
+    });
+};
+
 
         const acepReac = (datac) => {
             peticionGet(getToken(), `aceptarechazar/peticiones/${external_id}/${datac}`).then((info) => {

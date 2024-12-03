@@ -7,7 +7,7 @@ const LayoutComponent = () => {
     return (
         <div>
             <NavbarComponent />
-            <div style={{ marginTop: '56px', display: 'flex', height: 'calc(100vh - 56px)' }}>
+            <div style={{ display: 'flex', height: 'calc(100vh - 56px)' }}>
                 <div style={{ width: '250px', flexShrink: 0 }}>
                     <SidebarComponent />
                 </div>

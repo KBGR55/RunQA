@@ -87,7 +87,7 @@ class CasoPruebaController {
                     ]
                 });
     
-                return res.json({ msg: 'OK!', code: 200, info: listar });
+                return res.json({ msg: 'OK!', code: 200, info: listar, rol: true });
             }
     
         } catch (error) {
