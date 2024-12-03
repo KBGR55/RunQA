@@ -1,12 +1,12 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import mensajes from '../utilities/Mensajes';
-import { peticionPost } from '../utilities/hooks/Conexion';
+import { peticionGet, peticionPost } from '../utilities/hooks/Conexion';
 import { getToken } from '../utilities/Sessionutil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';import swal from 'sweetalert';
-import { useNavigate } from 'react-router-dom';  
+import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons'; import swal from 'sweetalert';
+import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
 const AgregarErrores = () => {
@@ -16,10 +16,34 @@ const AgregarErrores = () => {
     const [estadoSeleccionado, setEstadoSeleccionado] = useState('PENDIENTE');
     const [clasificacionSeleccionada, setClasificacionSeleccionada] = useState([]);
     const { external_id_proyecto, external_id } = useParams();
-    const navigate = useNavigate(); 
+    const [infoProyecto, setProyecto] = useState([]);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchCasoPrueba = async () => {
+            try {
+                if (external_id_proyecto) {
+                    peticionGet(getToken(), `proyecto/obtener/${external_id_proyecto}`).then((info) => {
+                        if (info.code === 200) {
+                            setProyecto(info.info);
+                        } else {
+                            mensajes(info.msg, "error", "Error");
+                        }
+                    }).catch((error) => {
+                        mensajes("Error al cargar el proyecto", "error", "Error");
+                        console.error(error);
+                    });
+                }
+            } catch (error) {
+                mensajes('Error al procesar la solicitud', 'error');
+            }
+        };
+        fetchCasoPrueba();
+    }, [external_id_proyecto]);
+
 
     const onSubmit = async (data) => {
-         const errorData = {
+        const errorData = {
             funcionalidad: data.funcionalidad,
             titulo: data.titulo,
             pasos_reproducir: data.pasos_reproducir,
@@ -66,6 +90,8 @@ const AgregarErrores = () => {
     //buscar un get router.get('/proyecto/:id_proyect',proyectoController.getEntidadProyecto);
     return (
         <div className="contenedor-carta">
+            <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
+            <p className="titulo-primario">Error</p>
             <form className="form-sample" onSubmit={handleSubmit(onSubmit)}>
                 <div className="row">
                     <div className="col-md-6">

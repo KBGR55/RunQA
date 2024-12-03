@@ -4,18 +4,17 @@ import '../css/style.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import swal from 'sweetalert';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { peticionPut } from '../utilities/hooks/Conexion';
 import { getToken } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
-import { Modal, Button } from 'react-bootstrap';
-import AgregarErrores from './AgregarErrores'; 
 
 
 const EjecutarCasoPrueba = () => {
     const [resultadoObtenido, setResultadoObtenido] = useState('');
     const [showModal, setShowModal] = useState(false);
     const { external_id_proyecto, external_id } = useParams();
+    const navigate = useNavigate();
 
     const handleTerminarClick = () => {
         if (!resultadoObtenido.trim()) {
@@ -53,11 +52,7 @@ const EjecutarCasoPrueba = () => {
     };
 
     const handleAgregarErroresClick = () => {
-        setShowModal(true); // Show the modal
-    };
-
-    const handleCloseModal = () => {
-        setShowModal(false); // Close the modal
+        navigate(`/error/${external_id_proyecto}/${external_id}`);
     };
 
     return (
@@ -84,17 +79,6 @@ const EjecutarCasoPrueba = () => {
                     <FontAwesomeIcon icon={faExclamationTriangle} /> Agregar Errores
                 </button>
             </div>
-
-            {/* Modal for adding errors */}
-            <Modal show={showModal} onHide={handleCloseModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Agregar Errores</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <AgregarErrores external_id_proyecto={external_id_proyecto}
-                        external_id={external_id} onClose={handleCloseModal} /> {/* Include AgregarErrores component */}
-                </Modal.Body>
-            </Modal>
         </div>
     );
 };
