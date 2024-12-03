@@ -18,7 +18,7 @@ class EntidadController {
                     {
                         model: models.cuenta, 
                         as: 'cuenta', 
-                        attributes: ['correo'],
+                        attributes: ['correo','estado'],
                     },
                     {
                         model: models.rol_entidad,
