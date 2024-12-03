@@ -153,7 +153,7 @@ class EntidadController {
             await transaction.commit();
     
             return res.status(200).json({
-                msg: "SE HAN REGISTRADO LOS DATOS CON ÉXITO",
+                msg: "Se ha registrado su petición con éxito",
                 code: 200
             });
     
@@ -164,6 +164,13 @@ class EntidadController {
     
             if (transaction && !transaction.finished) {
                 await transaction.rollback();
+            }
+
+            if (error.name === 'SequelizeUniqueConstraintError' && error.errors[0].path === 'telefono') {
+                return res.status(400).json({
+                    msg: "ESTE NÚMERO DE TELÉFONO SE ENCUENTRA REGISTRADO EN EL SISTEMA",
+                    code: 400
+                });
             }
     
             if (error.name === 'SequelizeUniqueConstraintError' && error.errors[0].path === 'correo') {

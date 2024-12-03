@@ -123,6 +123,7 @@ router.post('/sesion', [
   body('correo', 'Ingrese un correo valido').exists().not().isEmpty().isEmail(),
   body('clave', 'Ingrese una clave valido').exists().not().isEmpty(),
 ], cuentaController.sesion)
+
 //CAMBIAR CLAVE
 router.put('/cuenta/clave/:external_id', [
   body('clave_vieja', 'Ingrese una clave valido').exists().not().isEmpty(),
