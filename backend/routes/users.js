@@ -24,6 +24,8 @@ const ContratoController = require('../controls/ContratoController');
 const contratoController = new ContratoController();
 const PeticionController = require('../controls/PeticionController');
 const peticionController = new PeticionController();
+const ErrorController = require('../controls/ErrorController');
+const errorController = new ErrorController();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -197,6 +199,20 @@ router.get('/caso/prueba/obtener',casoPruebaController.obtener);
 router.put('/caso/prueba/cambiar/estado',casoPruebaController.cambiar_estado);
 router.get('/caso/prueba/eliminar',casoPruebaController.cambiar_estado_obsoleto);
 router.get('/caso/obtener/proyecto/:external_id', casoPruebaController.obtenerCasosProyecto);
+router.get('/error/listar', errorController.listar);
+router.get('/error/obtener', errorController.listarPorCasoPrueba);
+router.get('/error/caso/prueba', errorController.listarPorCasoPrueba);
+router.post('/error/guardar', [
+  body('funcionalidad').optional().isString().withMessage('La funcionalidad debe ser un texto'),
+  body('titulo').optional().isString().withMessage('El título debe ser un texto'),
+  body('pasos_reproducir').optional().isString().withMessage('Los pasos deben ser un texto'),
+  body('persona_asignada').optional().isString().withMessage('La perona asignada debe ser un texto'),
+  body('severidad').optional().isIn(['ALTA', 'MEDIA', 'BAJA', 'CRITICO']).withMessage('La severidad debe ser ALTA, MEDIA, BAJA o CRITICO'),
+  body('prioridad').optional().isInt({ min: 0 }).withMessage('La prioridad debe ser un número entero mayor o igual a 0'),
+  body('estado').optional().isIn(['PENDIENTE', 'RESUELTO', 'NO_REPUDIO', 'EN_PROCESO']).withMessage('El estado debe ser PENDIENTE, RESUELTO, NO_REPUDIO o EN_PROCESO'),
+  body('razon').optional().isString().withMessage('La razón debe ser un texto'),
+  body('fecha_reporte').optional().isISO8601().withMessage('La fecha de reporte debe ser una fecha válida ISO 8601')
+],errorController.guardar);
 router.put('/caso/prueba/ejecutar/:external_id',casoPruebaController.ejecutarCasoPrueba);
 
 
@@ -212,6 +228,7 @@ router.get('/proyecto/:id_proyect',proyectoController.getEntidadProyecto);
 router.get('/proyecto/obtener/:external_id',proyectoController.getProyecto);
 router.delete('/proyecto/:id_proyect/:id_entidad',proyectoController.removerEntidad);
 router.get('/proyecto/listar/tester/:external_id',proyectoController.obtenerTestersPorProyecto);
+router.get('/proyecto/tester/desarrollador/:id_proyect',proyectoController.getEntidadProyectoTesterDesarrollador);
 
 /** CONTRATO */
 router.post('/contrato/caso/prueba', contratoController.asignarTesters);

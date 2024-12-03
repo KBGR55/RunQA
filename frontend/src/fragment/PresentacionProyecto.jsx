@@ -104,7 +104,7 @@ const PresentacionProyecto = () => {
     const roleOptions = {
         'LIDER DE CALIDAD': ['Asignar testers', 'Generar reportes', 'Casos de prueba', 'Editar proyecto', 'Miembros', 'Casos de prueba asignados'],
         'ANALISTA DE PRUEBAS': ['Casos de prueba', 'Asignar testers', 'Lista de casos de prueba asignados'],
-        'TESTER': ['Ejecutar casos de prueba', 'Registrar errores'],
+        'TESTER': ['Casos de prueba', 'Registrar errores'],
         'DESARROLLADOR': ['Actualizar el estado de los errores', 'Consultar errores asignados']
     };
 

@@ -125,7 +125,7 @@ Antes de ejecutar el proyecto, asegúrate de configurar la base de datos. Sigue 
     npm start
     ```
 
-6. Para crear las tablas necesarias en la base de datos, accede a [http://localhost:3006/privado/NOCHE_RunQA](http://localhost:3006/privado/NOCHE_RunQA). Cuando veas un mensaje que diga "OK!", significa que la configuración de la base de datos ha sido exitosa.
+6. Para crear las tablas necesarias en la base de datos, accede a [http://localhost:3008/privado/NOCHE_RunQA](http://localhost:3008/privado/NOCHE_RunQA). Cuando veas un mensaje que diga "OK!", significa que la configuración de la base de datos ha sido exitosa.
 
 7. Para completar la configuración de la base de datos, ejecuta los siguientes comandos SQL para insertar roles, personas, asociar personas y roles, insertar cuentas, insertar periodo, e insertar ciclo:
 

@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         pasos: {
-            type: DataTypes.STRING(350),
+            type: DataTypes.TEXT,
             allowNull: true
         },
         resultado_esperado: {
