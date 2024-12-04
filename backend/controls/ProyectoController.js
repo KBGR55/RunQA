@@ -52,7 +52,7 @@ class ProyectoController {
                     }, attributes: ['id_rol_entidad']
                 });
                 if (resultado) {
-                    res.status(200).json({ msg: "El proyecto ya existe", code: 200 });
+                    res.status(200).json({ msg: "El proyecto ya existe", code: 204 });
                 } else {
                     const data = {
                         nombre: req.body.name,
