@@ -70,7 +70,6 @@ const UsuarioProyecto = () => {
 
         fetchData();
     }, [navigate, external_id_proyecto]);
-    console.log(data);
 
     const handleShowModal = (id) => {
         setUserIdToDelete(id);

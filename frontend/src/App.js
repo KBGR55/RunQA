@@ -66,6 +66,7 @@ function App() {
           <Route path='/casos/prueba-asignado/:external_id_proyecto/:external_id' element={<MiddewareSesion><CasoPruebaAsignado /></MiddewareSesion>} />
           <Route path='/cambio/clave' element={<MiddewareSesion><CambioClave /></MiddewareSesion>} />
           <Route path='/error/:external_id_proyecto/:external_id' element={<MiddewareSesion><AgregarErrores/></MiddewareSesion>} />
+          <Route path='/error/editar/:external_id_proyecto/:external_id/:external_id_error' element={<MiddewareSesion><AgregarErrores/></MiddewareSesion>} />
           <Route path='/error/visualizar/:external_id_proyecto/:external_id/:external_id_error' element={<MiddewareSesion><VerError/></MiddewareSesion>} />
         </Route>
       </Routes>

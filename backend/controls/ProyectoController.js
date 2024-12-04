@@ -113,7 +113,6 @@ class ProyectoController {
          
             if (oldProyect) {
                 /*const nameRole = await models.rol.findOne({ where: { nombre: rolLider }, attributes: ['id'] });
-                console.log('757575757575', rolProyect);
                 
                 const resultado = await models.rol_proyecto.findOne({
                     where: { id_rol: nameRole.id, id_rol_entidad: rolProyect.id_entidad },

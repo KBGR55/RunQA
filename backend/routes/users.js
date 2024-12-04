@@ -215,6 +215,8 @@ router.post('/error/guardar', [
 ],errorController.guardar);
 router.put('/caso/prueba/ejecutar/:external_id',casoPruebaController.ejecutarCasoPrueba);
 router.get('/error/obtener/external', errorController.obtener);
+router.post('/error/actualizar', errorController.editar);
+
 
 
 router.get('/rol_proyecto/listar/proyectos', rolProyectoController.listar.bind(rolProyectoController));

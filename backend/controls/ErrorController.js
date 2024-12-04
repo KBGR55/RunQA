@@ -29,12 +29,8 @@ class ErrorController {
     }
 
     async listarPorCasoPrueba(req, res) {
-        console.log('fffffffffff');
-        
-        const {external_caso_prueba } = req.query;
-        // Buscar el caso de prueba usando el external_caso_prueba
-        console.log(external_caso_prueba);
-        
+        const { external_caso_prueba } = req.query;
+
         const casoPrueba = await models.caso_prueba.findOne({
             where: { external_id: external_caso_prueba }
         });
@@ -46,12 +42,12 @@ class ErrorController {
             });
         }
 
-        const id_caso= casoPrueba.id;
+        const id_caso = casoPrueba.id;
 
 
         try {
             const errores = await error.findAll({
-                where: {id_caso_prueba:id_caso},
+                where: { id_caso_prueba: id_caso },
                 attributes: [
                     'id', 'external_id', 'funcionalidad', 'titulo', 'pasos_reproducir',
                     'persona_asignada', 'severidad', 'estado',
@@ -81,49 +77,119 @@ class ErrorController {
         }
     }
 
-    // Agregar este método en el controlador ErrorController
-
-// Buscar error por external_id
-async obtener(req, res) {
-    const { external_id } = req.query; // Obtener el external_id desde los parámetros de la query
-    if (!external_id) {
-        return res.status(400).json({
-            msg: 'El external_id es requerido',
-            code: 400
-        });
-    }
-
-    try {
-        const errorEncontrado = await error.findOne({
-            where: { external_id: external_id }, // Buscar el error usando el external_id
-            attributes: [
-                'external_id', 'funcionalidad', 'titulo', 'pasos_reproducir',
-                'persona_asignada', 'severidad', 'estado',
-                'razon', 'fecha_reporte', 'fecha_resolucion'
-            ]
-        });
-
-        if (!errorEncontrado) {
-            return res.status(404).json({
-                msg: 'Error no encontrado',
-                code: 404
+    async editar(req, res) {
+        const { external_id } = req.query;
+        if (!external_id) {
+            return res.status(400).json({
+                msg: 'El external_id es requerido',
+                code: 400
             });
         }
 
-        res.json({
-            msg: 'Error encontrado correctamente',
-            code: 200,
-            info: errorEncontrado
-        });
-    } catch (err) {
-        console.error("Error al buscar el error por external_id:", err);
-        res.status(500).json({
-            msg: 'Ocurrió un error al intentar buscar el error',
-            code: 500,
-            error: err.message
-        });
+        const {
+            funcionalidad, titulo, pasos_reproducir, persona_asignada,
+            severidad, estado, razon, fecha_resolucion
+        } = req.body;
+
+        try {
+            // Buscar el error por external_id
+            const errorEncontrado = await error.findOne({
+                where: { external_id: external_id },
+                attributes: [
+                    'external_id', 'funcionalidad', 'titulo', 'pasos_reproducir',
+                    'persona_asignada', 'severidad', 'estado',
+                    'razon', 'fecha_reporte', 'fecha_resolucion'
+                ]
+            });
+
+            if (!errorEncontrado) {
+                return res.status(404).json({
+                    msg: 'Error no encontrado',
+                    code: 404
+                });
+            }
+
+            // Actualizar el error encontrado
+            const [updated] = await error.update({
+                funcionalidad: funcionalidad || errorEncontrado.funcionalidad,
+                titulo: titulo || errorEncontrado.titulo,
+                pasos_reproducir: pasos_reproducir || errorEncontrado.pasos_reproducir,
+                persona_asignada: persona_asignada || errorEncontrado.persona_asignada,
+                severidad: severidad || errorEncontrado.severidad,
+                estado: estado || errorEncontrado.estado,
+                razon: razon || errorEncontrado.razon,
+                fecha_resolucion: fecha_resolucion || errorEncontrado.fecha_resolucion
+            }, {
+                where: { external_id: external_id }
+            });
+
+            // Verificar si se actualizó el error
+            if (!updated) {
+                return res.status(404).json({
+                    msg: 'No se pudo actualizar el error',
+                    code: 404
+                });
+            }
+
+            // Enviar respuesta exitosa
+            return res.json({
+                msg: 'Error actualizado correctamente',
+                code: 200,
+                info: { external_id, funcionalidad, titulo, pasos_reproducir, persona_asignada, severidad, estado, razon, fecha_resolucion }
+            });
+
+        } catch (err) {
+            console.error("Error al actualizar el error:", err);
+            if (!res.headersSent) {
+                return res.status(500).json({
+                    msg: 'Ocurrió un error al intentar actualizar el error',
+                    code: 500,
+                    error: err.message
+                });
+            }
+        }
     }
-}
+
+    async obtener(req, res) {
+        const { external_id } = req.query;
+        if (!external_id) {
+            return res.status(400).json({
+                msg: 'El external_id es requerido',
+                code: 400
+            });
+        }
+
+        try {
+            const errorEncontrado = await error.findOne({
+                where: { external_id: external_id },
+                attributes: [
+                    'external_id', 'funcionalidad', 'titulo', 'pasos_reproducir',
+                    'persona_asignada', 'severidad', 'estado',
+                    'razon', 'fecha_reporte', 'fecha_resolucion'
+                ]
+            });
+
+            if (!errorEncontrado) {
+                return res.status(404).json({
+                    msg: 'Error no encontrado',
+                    code: 404
+                });
+            }
+
+            res.json({
+                msg: 'Error encontrado correctamente',
+                code: 200,
+                info: errorEncontrado
+            });
+        } catch (err) {
+            console.error("Error al buscar el error por external_id:", err);
+            res.status(500).json({
+                msg: 'Ocurrió un error al intentar buscar el error',
+                code: 500,
+                error: err.message
+            });
+        }
+    }
 
 
 
@@ -145,7 +211,7 @@ async obtener(req, res) {
         try {
             // Buscar solo cuando su  estadoAsignacion no sea  'NO ASIGNADO' y el estado este en 
             const casoPrueba = await models.caso_prueba.findOne({
-                where: { external_id: external_caso_prueba}
+                where: { external_id: external_caso_prueba }
             });
 
             // Si no se encuentra el caso de prueba, retornar un error
@@ -155,7 +221,7 @@ async obtener(req, res) {
                     code: 404
                 });
             }
-            casoPrueba.estado ='FALLIDO';
+            casoPrueba.estado = 'FALLIDO';
             await casoPrueba.save();
             // Crear el nuevo error con el id del caso de prueba encontrado
             const nuevoError = await error.create({
