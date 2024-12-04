@@ -58,6 +58,11 @@ class CuentaController {
                     msg: "SU PETICIÓN SE ENCUENTRA EN ESPERA",
                     code: 201
                 });
+            } else if (login.estado === "DENEGADO") {
+                res.json({
+                    msg: "SU PETICIÓN SE HA DENEGADO",
+                    code: 201
+                });
             }
             if (esClaveValida(login.clave, req.body.clave)) {
                 const tokenData = {
