@@ -92,7 +92,8 @@ class EntidadController {
                 telefono: listar.telefono,
                 estado: listar.estado,
                 horasDisponibles: listar.horasDisponibles,
-               correo:listar.cuenta.correo
+               correo:listar.cuenta.correo,
+               estadoCuenta:listar.cuenta.estado
             }
         });
     }

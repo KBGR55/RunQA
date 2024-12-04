@@ -15,6 +15,7 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
     const [file, setFile] = useState(null);
     const [estado, setEstado] = useState(false);
     const estadoInicial = personaObtenida.estado;
+    const estadoCuenta = personaObtenida.estadoCuenta;
     const [uploadedPhoto, setUploadedPhoto] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
@@ -41,6 +42,7 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
     const toggleModal = () => {
         setShowModal(!showModal);
     };
+    
 
     const onSubmit = async (data) => {
         const formData = new FormData();
@@ -58,6 +60,8 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
         if (file) {
             formData.append('foto', file);
         }
+
+        console.log("555555", data);
 
         ActualizarImagenes(formData, getToken(), "/modificar/entidad")
             .then((info) => {

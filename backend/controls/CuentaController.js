@@ -42,9 +42,13 @@ class CuentaController {
                     code: 400
                 })
 
+            const estadoPersona = await models.entidad.findOne({
+                where: {
+                    id: login.id_entidad
+                },   attributes: ['estado']
+            });
 
-
-            if (!login.estado) {
+            if (!estadoPersona.estado) {
                 return res.status(400).json({
                     msg: "CUENTA DESACTIVADA",
                     code: 400
