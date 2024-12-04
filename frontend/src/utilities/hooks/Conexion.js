@@ -50,9 +50,7 @@ export const peticionGet = async (key, URL) => {
     const datos = await (await fetch(`${URL_BACKEND}/${URL}`, {
         method: "GET",
         headers: headers,
-    })).json();
-    console.log("datos", datos);
-    
+    })).json();    
     return datos;
 }
 
@@ -114,7 +112,6 @@ export const GuardarImages = async (data, key, urls) => {
 
 
 export const ActualizarImagenes = async (data, key, urls) => {
-    console.log(data);
     const headers = {
         "x-api-token": key,
     };

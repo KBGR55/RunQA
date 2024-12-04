@@ -24,7 +24,9 @@ import VerPeticionesClave from './fragment/VerPeticionesClave';
 import Principal from './fragment/Principal';
 import OlvidoClave from './fragment/OlvidoClave';
 import CambioClave from './fragment/CambioClave';
+import AgregarErrores from './fragment/AgregarErrores';
 import { getToken } from './utilities/Sessionutil';
+import VerError from './fragment/VerError';
 
 function App() {
   const MiddewareSesion = ({ children }) => {
@@ -55,7 +57,7 @@ function App() {
           <Route path='/proyecto/nuevo' element={<MiddewareSesion><NuevoProyecto /></MiddewareSesion>} />
           <Route path='/proyectos' element={<MiddewareSesion><ListaProyectos /></MiddewareSesion>} />
           <Route path='/casos/prueba/:external_id_proyecto' element={<MiddewareSesion><ListaCasoPrueba /></MiddewareSesion>} />
-          <Route path='/caso-prueba/:external_id_proyecto/:external_id' element={<MiddewareSesion><VerCasoPrueba /></MiddewareSesion>} />
+          <Route path='/caso-prueba/:external_id_proyecto/:external_id/:rol' element={<MiddewareSesion><VerCasoPrueba /></MiddewareSesion>} />
           <Route path='/perfil' element={<MiddewareSesion><Perfil /></MiddewareSesion>} />
           <Route path='/proyecto/usuarios/:external_id_proyecto' element={<MiddewareSesion><UsuarioProyecto /></MiddewareSesion>} />
           <Route path="/proyecto/:external_id" element={<MiddewareSesion><RolMenu /></MiddewareSesion>} />
@@ -63,6 +65,9 @@ function App() {
           <Route path='/casos/prueba/asignados/:external_id_proyecto' element={<MiddewareSesion><ListaCasosAsignados /></MiddewareSesion>} />
           <Route path='/casos/prueba-asignado/:external_id_proyecto/:external_id' element={<MiddewareSesion><CasoPruebaAsignado /></MiddewareSesion>} />
           <Route path='/cambio/clave' element={<MiddewareSesion><CambioClave /></MiddewareSesion>} />
+          <Route path='/error/:external_id_proyecto/:external_id' element={<MiddewareSesion><AgregarErrores/></MiddewareSesion>} />
+          <Route path='/error/editar/:external_id_proyecto/:external_id/:external_id_error' element={<MiddewareSesion><AgregarErrores/></MiddewareSesion>} />
+          <Route path='/error/visualizar/:external_id_proyecto/:external_id/:external_id_error' element={<MiddewareSesion><VerError/></MiddewareSesion>} />
         </Route>
       </Routes>
     </div>

@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,  
             defaultValue: 'BAJA'  // Nivel de severidad del error
         },
-        prioridad: { type: DataTypes.INTEGER, defaultValue: 0 },  // Prioridad del error (entero)
         estado: { 
             type: DataTypes.ENUM('PENDIENTE', 'RESUELTO', 'NO_REPUDIO', 'EN_PROCESO'), 
             defaultValue: 'PENDIENTE'  // Estado actual del error

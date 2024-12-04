@@ -95,8 +95,6 @@ const CasoPrueba = () => {
 
     const onSubmit = async (data) => {
 
-        console.log('888888', external_id_proyecto);
-
         const casoPruebaData = {
 
             "nombre": data.nombre.toUpperCase(),

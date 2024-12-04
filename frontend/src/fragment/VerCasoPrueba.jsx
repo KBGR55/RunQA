@@ -13,12 +13,11 @@ import { getToken } from '../utilities/Sessionutil';
 import { useForm } from 'react-hook-form';
 import swal from 'sweetalert';
 import EjecutarCasoPrueba from './EjecutarCasoPrueba';
-
 import TablePagination from '@mui/material/TablePagination';
 
 const VerCasoPrueba = () => {
     const [casosPrueba, setCasosPrueba] = useState({});
-    const { external_id_proyecto, external_id } = useParams();
+    const { external_id_proyecto, external_id, rol } = useParams();
     const [infoProyecto, setProyecto] = useState([]);
     const { setValue } = useForm();
     const navigate = useNavigate();
@@ -26,8 +25,9 @@ const VerCasoPrueba = () => {
     const [errores, setErrores] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const handleNavigateToDetail = (external_id) => {
-        navigate(`/caso-prueba/${external_id_proyecto}/${external_id}`);
+
+    const handleNavigateToDetail = (external_id_error) => {
+        navigate(`/error/visualizar/${external_id_proyecto}/${external_id}/${external_id_error}`);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -158,14 +158,12 @@ const VerCasoPrueba = () => {
                     <div className="contenedor-carta">
                         <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
                         <p className="titulo-primario">Caso de Prueba</p>
-                        {/**aca el acordion de errores */}
-                        {/* Accordion for error messages */}
-                        <div className="accordion" id="accordionExample">
-                            {errores.length > 0 ? (
-                                <div className="accordion-item">
-                                    <h2 className="accordion-header" id="headingErrors">
+                        {errores.length > 0 ? (
+                            <div className="accordion" id="accordionExample">
+                                <div className="accordion-item ">
+                                    <h2 className="accordion-header  " id="headingErrors">
                                         <button
-                                            className="accordion-button"
+                                            className="accordion-button alert-danger"
                                             type="button"
                                             data-bs-toggle="collapse"
                                             data-bs-target="#collapseErrors"
@@ -210,7 +208,7 @@ const VerCasoPrueba = () => {
                                                                     <td className="text-center">
                                                                         <Button
                                                                             variant="btn btn-outline-info btn-rounded"
-                                                                            onClick={() => handleNavigateToDetail(error.id)}
+                                                                            onClick={() => handleNavigateToDetail(error.external_id)}
                                                                             className="btn-icon"
                                                                         >
                                                                             <svg
@@ -243,17 +241,13 @@ const VerCasoPrueba = () => {
                                         </div>
                                     </div>
                                 </div>
-                            ) : (
-                                <div className="accordion-item">
-                                    <h2 className="accordion-header">
-                                        <button className="accordion-button" type="button" disabled>
-                                            No hay errores generados
-                                        </button>
-                                    </h2>
-                                </div>
-                            )}
-                        </div>
+                            </div>
 
+                        ) : (
+                            <div class="alert alert-success" role="alert">
+                                No hay errores generados
+                            </div>
+                        )}
                         <div className="form-group">
                             <div className="row">
                                 <div className="col-md-6">
@@ -323,12 +317,17 @@ const VerCasoPrueba = () => {
                             </div>
                         </div>
                         <div className='contenedor-filo'>
-                            <Button
-                                className="btn-normal mb-3"
-                                onClick={handleshoModal}
-                            >
-                                <FontAwesomeIcon icon={faPlus} /> Ejecutar
-                            </Button>
+
+                            {rol === 'true' && (
+                                <Button
+                                    className="btn-normal mb-3"
+                                    onClick={handleshoModal}
+                                >
+                                    <FontAwesomeIcon icon={faPlus} /> Ejecutar
+                                </Button>
+
+                            )
+                            }
 
                             <Button variant="btn btn-outline-info btn-rounded" onClick={() => navigate(`/editar/caso/prueba/${external_id_proyecto}/${casosPrueba.external_id}`)} >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">

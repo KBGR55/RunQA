@@ -52,7 +52,7 @@ class ProyectoController {
                     }, attributes: ['id_rol_entidad']
                 });
                 if (resultado) {
-                    res.status(200).json({ msg: "El proyecto ya existe", code: 200 });
+                    res.status(200).json({ msg: "El proyecto ya existe", code: 204 });
                 } else {
                     const data = {
                         nombre: req.body.name,
@@ -113,7 +113,6 @@ class ProyectoController {
          
             if (oldProyect) {
                 /*const nameRole = await models.rol.findOne({ where: { nombre: rolLider }, attributes: ['id'] });
-                console.log('757575757575', rolProyect);
                 
                 const resultado = await models.rol_proyecto.findOne({
                     where: { id_rol: nameRole.id, id_rol_entidad: rolProyect.id_entidad },

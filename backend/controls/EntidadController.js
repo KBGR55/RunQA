@@ -135,6 +135,7 @@ class EntidadController {
                 apellidos: req.body.apellidos,
                 fecha_nacimiento: req.body.fecha_nacimiento,
                 telefono: req.body.telefono,
+                horasDisponibles: req.body.horasDisponibles,
                 estado: false,
                 foto: fotoFilename,
                 cuenta: {

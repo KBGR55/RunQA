@@ -1,31 +1,70 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import mensajes from '../utilities/Mensajes';
-import { peticionPost } from '../utilities/hooks/Conexion';
+import { peticionGet, peticionPost } from '../utilities/hooks/Conexion';
 import { getToken } from '../utilities/Sessionutil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';import swal from 'sweetalert';
-import { useNavigate } from 'react-router-dom';  
-import { useParams } from 'react-router-dom';
+import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons'; import swal from 'sweetalert';
+import { useNavigate } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 
 const AgregarErrores = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
     const [clasificaciones] = useState(['ALTA', 'MEDIA', 'BAJA']);
     const [estados] = useState(['DUPLICADO', 'BLOQUEADO', 'RECHAZADO', 'APROBADO']);
     const [estadoSeleccionado, setEstadoSeleccionado] = useState('PENDIENTE');
     const [clasificacionSeleccionada, setClasificacionSeleccionada] = useState([]);
-    const { external_id_proyecto, external_id } = useParams();
-    const navigate = useNavigate(); 
+    const { external_id_proyecto, external_id, external_id_error } = useParams();
+    const location = useLocation();
+    const [infoProyecto, setProyecto] = useState([]);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchCasoPrueba = async () => {
+            try {
+                if (external_id_proyecto) {
+                    peticionGet(getToken(), `proyecto/obtener/${external_id_proyecto}`).then((info) => {
+                        if (info.code === 200) {
+                            setProyecto(info.info);
+                        } else {
+                            mensajes(info.msg, "error", "Error");
+                        }
+                    }).catch((error) => {
+                        mensajes("Error al cargar el proyecto", "error", "Error");
+                        console.error(error);
+                    });
+                }
+                if (external_id_error) {
+                    const response = await peticionGet(getToken(), `error/obtener/external?external_id=${external_id_error}`);
+                    if (response.code === 200) {
+                        const dataError = response.info;
+                        setValue('titulo', dataError.titulo || '');
+                        setValue('funcionalidad', dataError.funcionalidad || '');
+                        setValue('pasos_reproducir', dataError.pasos_reproducir || '');
+                        setValue('persona_asignada', dataError.persona_asignada || '');
+                        setValue('razon', dataError.razon || '');
+                        setClasificacionSeleccionada(dataError.severidad || '');
+                        setEstadoSeleccionado(dataError.estado || 'PENDIENTE');
+                    } else {
+                        mensajes(`Error al obtener error: ${response.msg}`, 'error');
+                    }
+                }
+            } catch (error) {
+                mensajes('Error al procesar la solicitud', 'error');
+            }
+        };
+        fetchCasoPrueba();
+    }, [external_id_proyecto]);
+
 
     const onSubmit = async (data) => {
-         const errorData = {
+        const errorData = {
             funcionalidad: data.funcionalidad,
             titulo: data.titulo,
             pasos_reproducir: data.pasos_reproducir,
             persona_asignada: data.persona_asignada,
             severidad: clasificacionSeleccionada,
-            prioridad: data.prioridad,
             estado: estadoSeleccionado,
             razon: data.razon,
             fecha_reporte: new Date().toISOString(),
@@ -34,14 +73,43 @@ const AgregarErrores = () => {
         };
 
         try {
-            const response = await peticionPost(getToken(), 'error/guardar', errorData);
-            if (response.code === 200) {
-                mensajes('Errores agregados correctamente', 'success');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1200);
+            if (external_id_error) {
+                errorData['external_id'] = external_id_error;
+                const response = await peticionPost(getToken(), `error/actualizar?external_id=${external_id_error}`, errorData);
+                if (response.code === 200) {
+                    mensajes('Error actualizado con exito', 'success');
+                    navigate(`/error/visualizar/${external_id_proyecto}/${external_id}/${external_id_error}`);
+                } else {
+                    mensajes(`Error al actualizar el error: ${response.msg}`, 'error');
+                }
             } else {
-                mensajes(`Error al agregar el error: ${response.msg}`, 'error');
+                const response = await peticionPost(getToken(), 'error/guardar', errorData);
+                if (response.code === 200) {
+                    mensajes('Errores agregados correctamente', 'success');
+                    if (response.code === 200) {
+                        mensajes('Errores agregados correctamente', 'success');
+                        setTimeout(() => {
+                            swal({
+                                title: "¿Desea seguir agregando errores?",
+                                text: "Puede continuar agregando errores o cancelar esta acción.",
+                                icon: "warning",
+                                buttons: ["Cancelar", "Seguir agregando"],
+                                dangerMode: true,
+                            }).then((willContinue) => {
+                                if (willContinue) {
+                                    setTimeout(() => {
+                                        window.location.reload();
+                                    }, 1000);  
+                                } else {
+                                    mensajes("Operación cancelada", "info", "Información");
+                                }
+                            });
+                        }, 2200);  
+                    }
+                                        
+                } else {
+                    mensajes(`Error al agregar el error: ${response.msg}`, 'error');
+                }
             }
         } catch (error) {
             mensajes('Error al procesar la solicitud', 'error');
@@ -49,39 +117,35 @@ const AgregarErrores = () => {
     };
 
     const handleCancelClick = () => {
+        const isEditMode = Boolean(external_id_error);
+
         swal({
-            title: "¿Está seguro de cancelar la creación del error?",
+            title: isEditMode
+                ? "¿Está seguro de cancelar la edición del error?"
+                : "¿Está seguro de cancelar la creación del error?",
             text: "Una vez cancelado, no podrá revertir esta acción",
             icon: "warning",
             buttons: ["No", "Sí"],
             dangerMode: true,
         }).then((willCancel) => {
             if (willCancel) {
-                mensajes("Creación del error cancelada", "info", "Información");
-                navigate(-1); // Regresa a la página anterior
+                mensajes(isEditMode
+                    ? "Edición del error cancelada"
+                    : "Creación del error cancelada",
+                    "info",
+                    "Información"
+                );
+                navigate(-1);
             }
         });
     };
 
-    //buscar un get router.get('/proyecto/:id_proyect',proyectoController.getEntidadProyecto);
     return (
         <div className="contenedor-carta">
+            <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
+            {!external_id_error ? (<h2 className='titulo-primario '>Agregar error</h2>) : <p className="titulo-primario">Editar error</p>}
             <form className="form-sample" onSubmit={handleSubmit(onSubmit)}>
                 <div className="row">
-                    <div className="col-md-6">
-                        <div className="form-group">
-                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Funcionalidad</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                {...register('funcionalidad', { required: 'La funcionalidad es obligatoria' })}
-                            />
-                            {errors.funcionalidad && (
-                                <div className='alert alert-danger'>{errors.funcionalidad.message}</div>
-                            )}
-                        </div>
-                    </div>
-
                     <div className="col-md-6">
                         <div className="form-group">
                             <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Título</label>
@@ -92,6 +156,19 @@ const AgregarErrores = () => {
                             />
                             {errors.titulo && (
                                 <div className='alert alert-danger'>{errors.titulo.message}</div>
+                            )}
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        <div className="form-group">
+                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Funcionalidad</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                {...register('funcionalidad', { required: 'La funcionalidad es obligatoria' })}
+                            />
+                            {errors.funcionalidad && (
+                                <div className='alert alert-danger'>{errors.funcionalidad.message}</div>
                             )}
                         </div>
                     </div>
@@ -107,16 +184,6 @@ const AgregarErrores = () => {
                         <div className='alert alert-danger'>{errors.pasos_reproducir.message}</div>
                     )}
                 </div>
-
-                <div className="form-group">
-                    <label className='titulo-campos'>Persona asignada</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        {...register('persona_asignada')}
-                    />
-                </div>
-
                 <div className="row">
                     <div className="col-md-6">
                         <div className="form-group">
@@ -138,18 +205,14 @@ const AgregarErrores = () => {
                             )}
                         </div>
                     </div>
-
                     <div className="col-md-6">
                         <div className="form-group">
-                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Prioridad</label>
+                            <label className='titulo-campos'>Persona asignada</label>
                             <input
-                                type="number"
+                                type="text"
                                 className="form-control"
-                                {...register('prioridad', { required: 'La prioridad es obligatoria' })}
+                                {...register('persona_asignada')}
                             />
-                            {errors.prioridad && (
-                                <div className='alert alert-danger'>{errors.prioridad.message}</div>
-                            )}
                         </div>
                     </div>
                 </div>
