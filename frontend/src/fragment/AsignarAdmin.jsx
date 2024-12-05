@@ -29,7 +29,7 @@ const AsignarAdmin = ({ personaObtenida }) => {
             if (response.code === 200) {
                 setTimeout(() => {
                     window.location.reload();
-                }, 1200);
+                }, 5000);
                 mensajes(response.msg);
             } else {
                 mensajes(response.msg, 'error');

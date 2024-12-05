@@ -45,22 +45,26 @@ const CasoPrueba = () => {
 
                 try {
                     const response = await peticionGet(getToken(), `caso/prueba/obtener/${getUser().user.id}?external_id=${external_id}`);
+                    console.log("6666666666666", response.info.caso);
+                    
                     if (response.code === 200) {
-                        const casoPruebaData = response.info;
+                        const casoPruebaData = response.info.caso;
                         setValue('nombre', casoPruebaData.nombre);
                         setValue('descripcion', casoPruebaData.descripcion);
                         setValue('pasos', casoPruebaData.pasos);
                         setValue('resultado_esperado', casoPruebaData.resultado_esperado);
                         setValue('precondiciones', casoPruebaData.precondiciones);
                         setValue('datos_entrada', casoPruebaData.datos_entrada);
-                        setValue('fecha_ejecucion_prueba', new Date(casoPruebaData.fecha_ejecucion_prueba).toISOString().slice(0, 10));
-                        setClasificacionSeleccionada(casoPruebaData.clasificacion);
+                        //setValue('fecha_ejecucion_prueba', new Date(casoPruebaData.fecha_ejecucion_prueba).toISOString().slice(0, 10));
+                        setValue('clasificacion', casoPruebaData.clasificacion);
                         setEstadoSeleccionado(casoPruebaData.estado);
                         setValue('tipo_prueba', casoPruebaData.tipo_prueba);
                     } else {
                         mensajes(`Error al obtener caso de prueba: ${response.msg}`, 'error');
                     }
                 } catch (error) {
+                    console.log("22222222", error);
+                    
                     mensajes('Error al procesar la solicitud', 'error');
                 }
             }
@@ -103,7 +107,7 @@ const CasoPrueba = () => {
             "resultado_esperado": data.resultado_esperado,
             "estado": estadoSeleccionado,
             "estadoActual": "PENDIENTE",
-            "clasificacion": clasificacionSeleccionada,
+            "clasificacion": data.clasificacion,
             "tipo_prueba": data.tipo_prueba,
             "precondiciones": data.precondiciones,
             "datos_entrada": data.datos_entrada,
@@ -117,9 +121,7 @@ const CasoPrueba = () => {
                 const response = await peticionPost(getToken(), 'caso/prueba/actualizar', casoPruebaData);
                 if (response.code === 200) {
                     mensajes('Caso de prueba actualizado con exito', 'success');
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1200);
+                    navigate(-1);
                 } else {
                     mensajes(`Error al actualizar caso de prueba: ${response.msg}`, 'error');
                 }
@@ -129,14 +131,10 @@ const CasoPrueba = () => {
                     mensajes('La fecha de ejecución no puede ser una fecha pasada', 'error');
                     return;
                 }
-                //permite realizar cuado la fexcha sea mayor o igual a la actual
                 const response = await peticionPost('', 'caso/prueba/guardar', casoPruebaData);
                 if (response.code === 200) {
                     mensajes('Caso de prueba registrado con éxito', 'success');
-                    reset();
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1200);
+                    navigate(-1);
                 } else {
                     mensajes(`Error al registrar caso de prueba: ${response.msg}`, 'error');
                 }
@@ -178,10 +176,10 @@ const CasoPrueba = () => {
                             <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Tipo de Prueba</label>
                             <select
                                 className="form-control"
-                                defaultValue=""  // Establece el valor predeterminado en vacío
+                                defaultValue=""  
                                 {...register('tipo_prueba', { required: "Seleccione el tipo de prueba" })}
                             >
-                                <option value="" disabled>Seleccione</option>  {/* Opción predeterminada */}
+                                <option value="" disabled>Seleccione</option> 
                                 {tiposPrueba.map((tipo, index) => (
                                     <option key={index} value={tipo}>
                                         {tipo}
@@ -199,9 +197,8 @@ const CasoPrueba = () => {
                             <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Clasificación</label>
                             <select
                                 className="form-control"
+                                defaultValue=""  
                                 {...register('clasificacion', { required: 'Seleccione una clasificación' })}
-                                value={clasificacionSeleccionada}
-                                onChange={e => setClasificacionSeleccionada(e.target.value)}
                             >
                                 <option value="">Seleccione</option>
                                 {clasificaciones.map(clasificacion => (

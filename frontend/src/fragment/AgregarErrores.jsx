@@ -99,7 +99,7 @@ const AgregarErrores = () => {
                                 if (willContinue) {
                                     setTimeout(() => {
                                         window.location.reload();
-                                    }, 1000);  
+                                    }, 5000);  
                                 } else {
                                     mensajes("Operación cancelada", "info", "Información");
                                 }
