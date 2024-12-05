@@ -4,24 +4,18 @@ import '../css/style.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import swal from 'sweetalert';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { peticionPut } from '../utilities/hooks/Conexion';
 import { getToken } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 
-
 const EjecutarCasoPrueba = () => {
     const [resultadoObtenido, setResultadoObtenido] = useState('');
-    const [showModal, setShowModal] = useState(false);
+    const [estadoPrueba, setEstadoPrueba] = useState(''); // Estado inicial vacío
     const { external_id_proyecto, external_id } = useParams();
     const navigate = useNavigate();
 
     const handleTerminarClick = () => {
-        if (!resultadoObtenido.trim()) {
-            mensajes("El resultado obtenido es obligatorio", "error", "Error");
-            return;
-        }
-
         swal({
             title: "¿Está seguro de marcar como terminado?",
             text: "Esta acción no se podrá deshacer.",
@@ -52,6 +46,10 @@ const EjecutarCasoPrueba = () => {
     };
 
     const handleAgregarErroresClick = () => {
+        if (!resultadoObtenido.trim()) {
+            mensajes("El resultado obtenido es obligatorio para fallido", "error", "Error");
+            return;
+        }
         navigate(`/error/${external_id_proyecto}/${external_id}`);
     };
 
@@ -59,26 +57,49 @@ const EjecutarCasoPrueba = () => {
         <div className="contenedor-carta">
             <h2>Ejecutar Caso de Prueba</h2>
             <div className="mb-3">
-                <label htmlFor="resultadoObtenido" className="form-label">Resultado Obtenido</label>
-                <textarea
+                <label htmlFor="estadoPrueba" className="form-label">Seleccione el estado del caso de prueba</label>
+                <select
                     className="form-control"
-                    id="resultadoObtenido"
-                    rows="3"
-                    placeholder="Escribe el resultado obtenido..."
-                    value={resultadoObtenido}
-                    onChange={(e) => setResultadoObtenido(e.target.value)}
-                    maxLength={350}
-                ></textarea>
-                <small className="text-muted">{resultadoObtenido.length}/350 caracteres</small>
+                    id="estadoPrueba"
+                    value={estadoPrueba}
+                    onChange={(e) => setEstadoPrueba(e.target.value)}
+                >
+                    <option value="">Seleccione...</option>
+                    <option value="EXITOSO">EXITOSO</option>
+                    <option value="FALLIDO">FALLIDO</option>
+                </select>
             </div>
-            <div className="contenedor-filo">
-                <button className="btn-positivo" onClick={handleTerminarClick}>
-                    <FontAwesomeIcon icon={faCheck} /> Terminar
-                </button>
-                <button className="btn-negativo" onClick={handleAgregarErroresClick}>
-                    <FontAwesomeIcon icon={faExclamationTriangle} /> Agregar Errores
-                </button>
-            </div>
+
+            {estadoPrueba === "EXITOSO" && (
+                <div className="contenedor-filo">
+                    <button className="btn-positivo" onClick={handleTerminarClick}>
+                        <FontAwesomeIcon icon={faCheck} /> Terminar
+                    </button>
+                </div>
+            )}
+
+            {estadoPrueba === "FALLIDO" && (
+                <>
+                    <div className="mb-3">
+                        <label htmlFor="resultadoObtenido" className="form-label">Resultado Obtenido</label>
+                        <textarea
+                            className="form-control"
+                            id="resultadoObtenido"
+                            rows="3"
+                            placeholder="Escribe el resultado obtenido..."
+                            value={resultadoObtenido}
+                            onChange={(e) => setResultadoObtenido(e.target.value)}
+                            maxLength={350}
+                        ></textarea>
+                        <small className="text-muted">{resultadoObtenido.length}/350 caracteres</small>
+                    </div>
+                    <div className="contenedor-filo">
+                        <button className="btn-negativo" onClick={handleAgregarErroresClick}>
+                            <FontAwesomeIcon icon={faExclamationTriangle} /> Agregar Errores
+                        </button>
+                    </div>
+                </>
+            )}
         </div>
     );
 };
