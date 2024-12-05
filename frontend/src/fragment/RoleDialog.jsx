@@ -39,7 +39,7 @@ const RoleDialog = ({ handleClose, external_id }) => {
                 mensajes(response.msg, 'success', 'Éxito');
                 setTimeout(() => {
                     window.location.reload();
-                }, 1200);
+                }, 5000);
             }
         } catch (error) {
             console.error("Error al asignar roles:", error);

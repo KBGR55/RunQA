@@ -98,19 +98,27 @@ const AgregarErrores = () => {
                 const response = await peticionPost(getToken(), 'error/guardar', errorData);
                 if (response.code === 200) {
                     mensajes('Errores agregados correctamente', 'success');
-                    swal({
-                        title: "¿Desea seguir agregando errores?",
-                        text: "Puede continuar agregando errores o cancelar esta acción.",
-                        icon: "warning",
-                        buttons: ["Cancelar", "Seguir agregando"],
-                        dangerMode: true,
-                    }).then((willContinue) => {
-                        if (willContinue) {
-                            window.location.reload();
-                        } else {
-                            mensajes("Operación cancelada", "info", "Información");
-                        }
-                    });
+                    if (response.code === 200) {
+                        mensajes('Errores agregados correctamente', 'success');
+                        setTimeout(() => {
+                            swal({
+                                title: "¿Desea seguir agregando errores?",
+                                text: "Puede continuar agregando errores o cancelar esta acción.",
+                                icon: "warning",
+                                buttons: ["Cancelar", "Seguir agregando"],
+                                dangerMode: true,
+                            }).then((willContinue) => {
+                                if (willContinue) {
+                                    setTimeout(() => {
+                                        window.location.reload();
+                                    }, 5000);  
+                                } else {
+                                    mensajes("Operación cancelada", "info", "Información");
+                                }
+                            });
+                        }, 2200);  
+                    }
+                                        
                 } else {
                     mensajes(`Error al agregar el error: ${response.msg}`, 'error');
                 }

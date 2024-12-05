@@ -174,8 +174,7 @@ const ListaUsuarios = () => {
                                             <th className="text-center">Avatar</th>
                                             <th className="text-center">Nombres</th>
                                             <th className="text-center">Apellidos</th>
-                                            <th className="text-center">Estado Cuenta</th>
-                                            <th className="text-center">Estado Persona</th>
+                                            <th className="text-center">Estado</th>
                                             <th className="text-center">Fecha de nacimiento</th>
                                             <th className="text-center">Telefono</th>
                                             <th className="text-center">Horas disponibles</th>
@@ -198,7 +197,6 @@ const ListaUsuarios = () => {
                                                     <td className="text-center">{data.nombres}</td>
                                                     <td className="text-center">{data.apellidos}</td>
                                                     <td className="text-center">{data.cuenta.estado}</td>
-                                                    <td className="text-center">{(data.estado===1) ? 'INHABILITADO' : 'ACTIVO'}</td>
                                                     <td className="text-center">{obtenerFechaFormateada(data.fecha_nacimiento)}</td>
                                                     <td className="text-center">{data.telefono}</td>
                                                     <td className="text-center">{data.horasDisponibles}</td>

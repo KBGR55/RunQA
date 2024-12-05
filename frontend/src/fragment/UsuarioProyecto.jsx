@@ -15,8 +15,8 @@ const UsuarioProyecto = () => {
     const [showModal, setShowModal] = useState(false);
     const [rolLider, setRolLider] = useState([]);
     const [userIdToDelete, setUserIdToDelete] = useState(null);
-    const { external_id_proyecto} = useParams();
-    const [infoProyecto,setProyecto] = useState([]);
+    const { external_id_proyecto } = useParams();
+    const [infoProyecto, setProyecto] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -33,7 +33,7 @@ const UsuarioProyecto = () => {
                         mensajes("Error al cargar el proyecto", "error", "Error");
                         console.error(error);
                     });
-                } 
+                }
                 const info = await peticionGet(getToken(), `proyecto/${external_id_proyecto}`);
                 if (info.code !== 200) {
                     mensajes(info.msg || 'Error al obtener datos del proyecto');
@@ -46,7 +46,7 @@ const UsuarioProyecto = () => {
             }
         };
 
-        const fetchRolesLiderCalidad= async () => {
+        const fetchRolesLiderCalidad = async () => {
             try {
                 const info = await peticionGet(
                     getToken(),
@@ -90,7 +90,7 @@ const UsuarioProyecto = () => {
     };
 
     console.log(rolLider[0]);
-    
+
     const handleDeleteUser = async () => {
         try {
             const response = await peticionDelete(getToken(), `proyecto/${external_id_proyecto}/${userIdToDelete}`);
@@ -98,7 +98,7 @@ const UsuarioProyecto = () => {
                 mensajes('Usuario eliminado exitosamente', 'success', 'Éxito');
                 setTimeout(() => {
                     window.location.reload();
-                }, 1200);
+                }, 5000);
             } else {
                 mensajes(response.msg || 'Error al eliminar usuario', 'error', 'Error');
             }
@@ -115,7 +115,7 @@ const UsuarioProyecto = () => {
         <div>
             <div className="contenedor-centro">
                 <div className='contenedor-carta'>
-                <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
+                    <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
                     <div className="contenedor-filo">
                         <td className="text-center">
                             <Button className="btn-normal" onClick={handleShowModalAddMembers}>
@@ -128,7 +128,7 @@ const UsuarioProyecto = () => {
                                 <Modal.Title className='titulo-primario'>Agregar miembros</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                            {showModalAddMembers && <RoleDialog handleClose={handleCloseModalAddMembers} external_id={external_id_proyecto} />}
+                                {showModalAddMembers && <RoleDialog handleClose={handleCloseModalAddMembers} external_id={external_id_proyecto} />}
                             </Modal.Body>
                         </Modal>
                     </div>
@@ -161,11 +161,15 @@ const UsuarioProyecto = () => {
                                                 <td className="text-center">{user.rol_entidad.rol.nombre}</td>
                                                 <td className="text-center">{user.horasDiarias}</td>
                                                 <td className="text-center">
-                                                    <Button className="btn btn-danger" 
-                                                        disabled = {user.rol_entidad.rol.nombre == rolLider[0].nombre}
-                                                        onClick={() => handleShowModal(user.rol_entidad.entidad.id)}>
+                                                    <Button
+                                                        className="btn btn-danger"
+                                                        disabled={rolLider && rolLider[0] && rolLider[0].nombre === user.rol_entidad.rol.nombre}
+                                                        onClick={() => handleShowModal(user.rol_entidad.entidad.id)}
+                                                    >
                                                         <FontAwesomeIcon icon={faTrash} />
                                                     </Button>
+
+
                                                 </td>
                                             </tr>
                                         ))}

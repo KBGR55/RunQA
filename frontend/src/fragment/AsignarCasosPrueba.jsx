@@ -179,7 +179,7 @@ const AsignarCasosPrueba = () => {
                         <p className="titulo-primario">Casos de Prueba</p>
                         {casosPrueba.length === 0 ? (
                             <div className="text-center">
-                                <p className="text-muted">No hay casos de prueba registrados</p>
+                                <p className="text-muted">No hay casos de prueba por asignar</p>
                             </div>
                         ) : (
                             <div className="row g-1">

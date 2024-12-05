@@ -73,7 +73,7 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
                 } else {
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1200);
+                    }, 5000);
                     mensajes(info.msg);
                 }
             })
@@ -106,7 +106,7 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
                 mensajes("Actualización cancelada", "info", "Información");
                 setTimeout(() => {
                     window.location.reload();
-                }, 1200);
+                }, 5000);
             }
         });
     };
