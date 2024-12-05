@@ -65,7 +65,7 @@ const AsignarCasosPrueba = () => {
     useEffect(() => {
         const fetchTesters = async () => {
             try {
-                const info = await peticionGet(getToken(), `proyecto/listar/tester/${external_id}`);
+                const info = await peticionGet(getToken(), `proyecto/listar/rol/TESTER/${external_id}`);
                 if (info.code === 200) {
                     setTester(info.info);
                     setRolId(info.id_rol);
