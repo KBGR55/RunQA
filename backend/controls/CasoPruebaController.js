@@ -11,7 +11,7 @@ class CasoPruebaController {
         try {
             const listar = await caso_prueba.findAll({
                 attributes: [
-                    'nombre', 'estado', 'external_id', 'descripcion','estadoAsignacion',
+                    'nombre', 'estado', 'external_id', 'descripcion', 'estadoAsignacion',
                     'pasos', 'resultado_esperado', 'resultado_obtenido',
                     'clasificacion', 'tipo_prueba', 'precondiciones',
                     'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada'
@@ -26,11 +26,11 @@ class CasoPruebaController {
         try {
             const id_proyecto = req.query.id_proyecto;
             const id_entidad = req.params.id_entidad;
-    
+
             if (!id_proyecto || !id_entidad) {
                 return res.status(400).json({ msg: "Faltan datos", code: 400 });
             }
-    
+
             // Obtener los roles de la entidad dentro del proyecto
             const rolesEntidad = await models.rol_proyecto.findAll({
                 where: { id_proyecto },
@@ -44,13 +44,14 @@ class CasoPruebaController {
                     }
                 }
             });
-    
+
             // Extraer los nombres de los roles
             const nombresRoles = rolesEntidad.map(item => item.rol_entidad.rol.nombre);
-    console.log('nombresRoles:', nombresRoles);
+
             // Verificar si tiene roles de calidad
             const rolesCalidad = ['LIDER DE CALIDAD', 'ANALISTA DE PRUEBAS'];
             const tieneRolCalidad = nombresRoles.some(rol => rolesCalidad.includes(rol));
+
             if (tieneRolCalidad) {
                 // Retornar todos los casos de prueba
                 const listar = await caso_prueba.findAll({
@@ -62,7 +63,7 @@ class CasoPruebaController {
                         'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada'
                     ]
                 });
-    
+
                 return res.json({ msg: 'OK!', code: 200, info: listar });
             } else {
                 // Retornar casos de prueba específicos según el contrato
@@ -86,48 +87,79 @@ class CasoPruebaController {
                         'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada'
                     ]
                 });
-    
-                return res.json({ msg: 'OK!', code: 200, info: listar, rol: true });
+
+                return res.json({ msg: 'OK!', code: 200, info: listar });
             }
-    
+
         } catch (error) {
             return res.status(500).json({ msg: 'Error al listar casos de prueba', code: 500, error: error.message });
         }
     }
-    
 
     async obtener(req, res) {
-        const external_id = req.query.external_id;
-        if (!external_id) {
-            return res.status(400).json({ msg: "Falta el 'external_id'", code: 400 });
+        const { external_id } = req.query;
+        const { entidad_id } = req.params;
+
+        if (!external_id && !entidad_id) {
+            return res.status(400).json({ msg: "Faltan datos", code: 400 });
         }
+
         try {
+            // Buscar el caso de prueba por external_id
             const caso = await caso_prueba.findOne({
-                where: { external_id: external_id },
+                where: { external_id },
                 attributes: [
-                    'nombre', 'estado', 'external_id', 'descripcion','estadoAsignacion',
-                    'pasos', 'resultado_esperado', 'resultado_obtenido',
-                    'clasificacion', 'tipo_prueba', 'precondiciones',
-                    'fecha_disenio', 'fecha_ejecucion_prueba','id_proyecto', 'datos_entrada'
+                    'id', 'nombre', 'estado', 'external_id', 'descripcion', 'estadoAsignacion',
+                    'pasos', 'resultado_esperado', 'resultado_obtenido', 'clasificacion',
+                    'tipo_prueba', 'precondiciones', 'fecha_disenio', 'fecha_ejecucion_prueba',
+                    'id_proyecto', 'datos_entrada'
                 ]
             });
-    
+
             if (!caso) {
                 return res.status(404).json({ msg: 'Caso de prueba no encontrado', code: 404 });
             }
-            res.json({ msg: 'OK!', code: 200, info: caso });
+
+            // Buscar contratos relacionados al caso de prueba y validar asignación
+            const contratos = await models.contrato.findAll({
+                where: { id_caso_prueba: caso.id, estado: 1 },
+                attributes: [ 'id_rol_proyecto_responsable'],
+            });
+
+            if (contratos.length === 0) {
+                return   res.json({ msg: 'OK!', code: 200, info: { caso } });
+            }
+            const rol_proyecto = await models.rol_proyecto.findOne({
+                where: { id: contratos[0].id_rol_proyecto_responsable },
+                include: {
+                    model: models.rol_entidad,
+                    as: 'rol_entidad',
+                    required: true,
+                    where: { id_entidad: entidad_id },
+                },
+                attributes: ['id_rol_entidad']
+
+            });
+            if (rol_proyecto) {
+                return  res.json({ msg: 'OK!', code: 200, info: { caso, rol_proyecto } });
+            } else {
+                return  res.json({ msg: 'OK!', code: 200, info: { caso } });
+            }
+
+
         } catch (error) {
             console.error('Database error:', error);
             res.status(500).json({ msg: 'Error al obtener caso de prueba', code: 500, error: error.message });
         }
-    }    
+    }
+
 
     async guardar(req, res) {
         let errors = validationResult(req);
         if (errors.isEmpty()) {
             try {
                 console.log('8888', req.body);
-                
+
                 const external_proyecto = req.body.external_proyecto;
                 if (!external_proyecto) {
                     return res.status(400).json({ msg: "Falta proyecto", code: 400 });
@@ -136,7 +168,7 @@ class CasoPruebaController {
                 if (!proyecto) {
                     return res.status(404).json({ msg: "No existe el proyecto con el ID proporcionado", code: 404 });
                 }
-    
+
                 const nuevoCaso = await caso_prueba.create({
                     nombre: req.body.nombre,
                     descripcion: req.body.descripcion,
@@ -148,7 +180,7 @@ class CasoPruebaController {
                     datos_entrada: req.body.datos_entrada,
                     id_proyecto: proyecto.id
                 });
-    
+
                 res.json({ msg: "Caso de prueba registrado con éxito", code: 200, info: nuevoCaso.external_id });
             } catch (error) {
                 console.error("Error al guardar el caso de prueba:", error);
@@ -167,12 +199,12 @@ class CasoPruebaController {
                 const external_id = req.body.external_id;
 
                 const caso = await caso_prueba.findOne({ where: { external_id: external_id } });
-                
+
                 if (!caso) {
                     return res.status(404).json({ msg: "Caso de prueba no encontrado", code: 404 });
                 }
-    
-                caso.nombre = req.body.nombre|| caso.nombre;
+
+                caso.nombre = req.body.nombre || caso.nombre;
                 caso.descripcion = req.body.descripcion || caso.descripcion;
                 caso.pasos = req.body.pasos || caso.pasos;
                 caso.resultado_esperado = req.body.resultado_esperado || caso.resultado_esperado;
@@ -181,9 +213,9 @@ class CasoPruebaController {
                 caso.precondiciones = req.body.precondiciones || caso.precondiciones;
                 caso.fecha_ejecucion_prueba = req.body.fecha_ejecucion_prueba || caso.fecha_ejecucion_prueba;
                 caso.datos_entrada = req.body.datos_entrada || caso.datos_entrada;
-    
+
                 await caso.save();
-    
+
                 res.json({ msg: "Caso de prueba actualizado con éxito", code: 200, info: caso });
             } catch (error) {
                 res.status(500).json({ msg: 'Error al actualizar el caso de prueba', code: 500, error: error.message });
@@ -192,7 +224,7 @@ class CasoPruebaController {
             console.log("Errores de validación:", errors.array());
             res.status(400).json({ msg: "Datos faltantes o inválidos", code: 400, errors: errors.array() });
         }
-    }    
+    }
 
     async cambiar_estado(req, res) {
         try {
@@ -219,7 +251,7 @@ class CasoPruebaController {
             if (!caso) {
                 return res.status(404).json({ msg: "Caso de prueba no encontrado", code: 404 });
             }
-            caso.estado = 'OBSOLETO'; 
+            caso.estado = 'OBSOLETO';
             await caso.save();
             res.json({ msg: "Caso de prueba marcado como obsoleto correctamente", code: 200 });
         } catch (error) {
@@ -229,25 +261,25 @@ class CasoPruebaController {
 
     /*SEGUNDO SPRINT*/
     async obtenerCasosProyecto(req, res) {
-        
+
         const proyecto_idExternal = req.params.external_id;
         if (!proyecto_idExternal) {
             return res.status(400).json({ msg: "Falta datos de búsqueda", code: 400 });
         }
 
-        let proyectoAux = await proyecto.findOne({ where: { external_id: proyecto_idExternal} });            
+        let proyectoAux = await proyecto.findOne({ where: { external_id: proyecto_idExternal } });
 
         try {
             const caso = await caso_prueba.findAll({
-                where: { id_proyecto: proyectoAux.id, estado: "DISEÑADO" , estadoAsignacion: "NO ASIGNADO"},
+                where: { id_proyecto: proyectoAux.id, estado: "DISEÑADO", estadoAsignacion: "NO ASIGNADO" },
                 attributes: [
-                    'nombre', 'estado', 'external_id', 'descripcion', 
+                    'nombre', 'estado', 'external_id', 'descripcion',
                     'pasos', 'resultado_esperado',
                     'clasificacion', 'tipo_prueba', 'precondiciones',
                     'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada'
                 ]
             });
-    
+
             if (!caso) {
                 return res.status(404).json({ msg: 'Caso de prueba no encontrado', code: 404 });
             }
@@ -276,7 +308,7 @@ class CasoPruebaController {
             res.status(500).json({ msg: 'Error al ejecutar el caso de prueba', code: 500, error: error.message });
         }
     }
-    
+
 }
 
 module.exports = CasoPruebaController;

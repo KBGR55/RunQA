@@ -69,7 +69,7 @@ const ListaCasoPrueba = () => {
     });
 
     const handleNavigateToDetail = (external_id) => {
-        navigate(`/caso-prueba/${external_id_proyecto}/${external_id}/${rol}`);
+        navigate(`/caso-prueba/${external_id_proyecto}/${external_id}`);
     };
 
     const handleChangePage = (event, newPage) => {

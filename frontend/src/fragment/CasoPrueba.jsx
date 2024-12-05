@@ -5,7 +5,7 @@ import mensajes from '../utilities/Mensajes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { peticionPost, peticionGet } from '../utilities/hooks/Conexion';
-import { getToken } from '../utilities/Sessionutil';
+import { getToken, getUser } from '../utilities/Sessionutil';
 import { useNavigate, useParams } from 'react-router-dom';
 import swal from 'sweetalert';
 
@@ -44,7 +44,7 @@ const CasoPrueba = () => {
             if (external_id) {
 
                 try {
-                    const response = await peticionGet(getToken(), `caso/prueba/obtener?external_id=${external_id}`);
+                    const response = await peticionGet(getToken(), `caso/prueba/obtener/${getUser().user.id}?external_id=${external_id}`);
                     if (response.code === 200) {
                         const casoPruebaData = response.info;
                         setValue('nombre', casoPruebaData.nombre);
