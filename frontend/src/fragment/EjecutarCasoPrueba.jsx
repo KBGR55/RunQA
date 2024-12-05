@@ -24,7 +24,8 @@ const EjecutarCasoPrueba = () => {
             dangerMode: true,
         }).then((willConfirm) => {
             if (willConfirm) {
-                const datos = { resultado_obtenido: resultadoObtenido };
+                const datos = { resultado_obtenido: resultadoObtenido, 
+                    estado: "EXITOSO"};
 
                 peticionPut(getToken(), `caso/prueba/ejecutar/${external_id}`, datos)
                     .then((info) => {
@@ -49,8 +50,28 @@ const EjecutarCasoPrueba = () => {
         if (!resultadoObtenido.trim()) {
             mensajes("El resultado obtenido es obligatorio para fallido", "error", "Error");
             return;
-        }
-        navigate(`/error/${external_id_proyecto}/${external_id}`);
+        }else{
+            const datos = { resultado_obtenido: resultadoObtenido ,
+                estado: "FALLIDO"
+            };
+
+                peticionPut(getToken(), `caso/prueba/ejecutar/${external_id}`, datos)
+                    .then((info) => {
+                        if (info.code !== 200) {
+                            mensajes(info.msg, "error", "Error");
+                        } else {
+                            mensajes(info.msg, "success", "Éxito");
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 5000);
+                            navigate(`/error/${external_id_proyecto}/${external_id}`);
+                        }
+                    })
+                    .catch((error) => {
+                        mensajes("Error al marcar el caso de prueba como terminado", "error", "Error");
+                        console.error(error);
+                    });
+        }        
     };
 
     return (
