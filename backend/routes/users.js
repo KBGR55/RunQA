@@ -248,7 +248,7 @@ router.get('/rol/entidad/obtener/administrador', rolEntidadController.obtenerAdm
 
 /** PETICION */
 router.get('/peticion/:tipo', peticionController.listarPeticiones);
-router.get('/aceptarechazar/peticiones/:external/:estado', /*auth,*/ peticionController.aceptarRechazar);
+router.get('/aceptarechazar/peticiones/:external/:estado/:motivo_rechazo/:id_rechazador', /*auth,*/ peticionController.aceptarRechazar);
 
 
 module.exports = router;  
