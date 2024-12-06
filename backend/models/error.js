@@ -7,13 +7,18 @@ module.exports = (sequelize, DataTypes) => {
         pasos_reproducir: { type: DataTypes.TEXT, allowNull: true },  // Pasos para reproducir el error
         persona_asignada: { type: DataTypes.STRING(80), defaultValue: "SIN_DATOS" },  // Persona o rol asignado
         severidad: { 
-            type: DataTypes.ENUM('ALTA', 'MEDIA', 'BAJA', 'CRITICO'), 
+            type: DataTypes.ENUM('MEDIA', 'BAJA', 'CRITICO'), 
             allowNull: false,  
-            defaultValue: 'BAJA'  // Nivel de severidad del error
+            defaultValue: 'BAJA'  
+        },
+        prioridad: { 
+            type: DataTypes.ENUM('ALTA', 'MEDIA', 'BAJA'), 
+            allowNull: false,  
+            defaultValue: 'BAJA' 
         },
         estado: { 
-            type: DataTypes.ENUM('PENDIENTE', 'RESUELTO', 'NO_REPUDIO', 'EN_PROCESO'), 
-            defaultValue: 'PENDIENTE'  // Estado actual del error
+            type: DataTypes.ENUM('NUEVO','CERRADO','PENDIENTE_VALIDACION', 'CORRECCION'), 
+            defaultValue: 'NUEVO' 
         },
         razon: { type: DataTypes.STRING(225), defaultValue: "SIN_DATOS" },  // Razón del estado actual del error
         fecha_reporte: { type: DataTypes.DATE },  // Fecha en la que se reportó el error

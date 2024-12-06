@@ -230,7 +230,7 @@ class ErrorController {
                 pasos_reproducir: pasos_reproducir || null,
                 persona_asignada: persona_asignada || "SIN_DATOS",
                 severidad: severidad || "BAJA",
-                estado: estado || "PENDIENTE",
+                estado: estado || "NUEVO",
                 razon: razon || "SIN_DATOS",
                 fecha_reporte: fecha_reporte || new Date(),
                 fecha_resolucion: fecha_resolucion || null,
