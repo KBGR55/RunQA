@@ -23,10 +23,12 @@ const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, ext
     useEffect(() => {
         const fetchTesters = async () => {
             try {
-                const info = await peticionGet(getToken(), `proyecto/listar/tester/${external_id_proyecto}`);
+                const info = await peticionGet(getToken(), `/proyecto/listar/rol/TESTER/${external_id_proyecto}`);
                 if (info.code === 200) {
                     setTester(info.info);
                     setRolId(info.id_rol);
+                    console.log("wwwwwwwww", info.info);
+                    
                 } else {
                     mensajes(info.msg, 'error');
                 }
@@ -80,6 +82,9 @@ const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, ext
             console.error('Error al asignar tester:', error);
         }
     };
+
+    console.log("qqqqqqqqqqqqqqq", tester);
+    
 
     const handleCancelClick = () => {
         swal({

@@ -381,8 +381,6 @@ class ProyectoController {
     async obtenerRolesPorProyecto(req, res) {
         try {
             
-            console.log("1111111111jsjsjsjsjaqui", req.params);
-            
             const proyecto = await models.proyecto.findOne({ where: { external_id: req.params.external_id } });
             if (!proyecto) {
                 return res.status(400).json({ msg: "Proyecto no encontrado", code: 400 });
@@ -423,7 +421,7 @@ class ProyectoController {
             if (testers.length === 0) {
                 return res.status(404).json({ msg: `No se encontraron ${req.params.rol_name} asignados a este proyecto`, code: 404 });
             }
-    
+
             res.json({
                 msg: "Testers encontrados correctamente",
                 code: 200,
