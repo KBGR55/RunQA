@@ -10,28 +10,24 @@ import mensajes from '../utilities/Mensajes';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import swal from 'sweetalert';
+import AsignarTesterModal from '../fragment/ModalAsignar';
 
-const AsignarCasosPrueba = () => {
-    const { external_id } = useParams();
+const AsignarCasosPrueba = ({ setShowModal}) => {
+    const { external_id, external_id_proyecto } = useParams();
     const [showNewProjectModal, setShowNewProjectModal] = useState(false);
     const [casosPrueba, setCasosPrueba] = useState([]);
     const [tester, setTester] = useState([]);
-    const [selectedTester, setSelectedTester] = useState(null);
     const [selectedCases, setSelectedCases] = useState([]);
-    const [fechaFinPrueba, setFechaFinPrueba] = useState(null);
-    const [fechaInicioPrueba, setFechaInicioPrueba] = useState(null);
     const [rolId, setRolId] = useState(null);
     const navigate = useNavigate();
     const usuario = getUser();
-    const location = useLocation();
-    const selectedRoleId = location.state?.selectedRoleId || null;
     const [infoProyecto,setProyecto] = useState([]);
 
     useEffect(() => {
         const fetchDataOut = async () => {
             try {
-                if (external_id) {
-                    peticionGet(getToken(), `proyecto/obtener/${external_id}`).then((info) => {
+                if (external_id_proyecto) {
+                    peticionGet(getToken(), `proyecto/obtener/${external_id_proyecto}`).then((info) => {
                         if (info.code === 200) {
                             setProyecto(info.info);
                         } else {
@@ -42,7 +38,7 @@ const AsignarCasosPrueba = () => {
                         console.error(error);
                     });
                 } 
-                const info = await peticionGet(getToken(), `caso/obtener/proyecto/${external_id}`);
+                const info = await peticionGet(getToken(), `caso/obtener/proyecto/${external_id_proyecto}`);
                 if (info.code !== 200) {
                     mensajes(info.msg, 'error');
                     if (info.msg === 'Acceso denegado. Token ha expirado') {
@@ -59,13 +55,12 @@ const AsignarCasosPrueba = () => {
         };
 
         fetchDataOut();
-    }, [external_id, navigate]);
-
-
+    }, [external_id_proyecto, navigate]);
+    
     useEffect(() => {
         const fetchTesters = async () => {
             try {
-                const info = await peticionGet(getToken(), `proyecto/listar/tester/${external_id}`);
+                const info = await peticionGet(getToken(), `proyecto/listar/tester/${external_id_proyecto}`);
                 if (info.code === 200) {
                     setTester(info.info);
                     setRolId(info.id_rol);
@@ -84,11 +79,6 @@ const AsignarCasosPrueba = () => {
         setShowNewProjectModal(true);
     };
 
-    const handleCloseNewProjectModal = () => {
-        setShowNewProjectModal(false);
-        setSelectedTester(null);
-    };
-
     const handleCheckboxChange = (id) => {
         setSelectedCases((prevSelected) => {
             if (prevSelected.includes(id)) {
@@ -99,67 +89,8 @@ const AsignarCasosPrueba = () => {
         });
     };
 
-    const handleTesterSelect = (e) => {
-        const testerId = e.target.value;
-        const selectedTester = tester.find(tester => tester.id === parseInt(testerId));
-        setSelectedTester(selectedTester);
-        setTester(prevTester => prevTester.filter(t => t.id !== parseInt(testerId)));
-    };
-
-    const handleRemoveTester = () => {
-        if (selectedTester) {
-            setTester(prevTester => [...prevTester, selectedTester]);
-            setSelectedTester(null);
-        }
-    };
-
-    console.log("usuario.user.id,", usuario.user.id);
-
-
-    const handleAsignarTesters = async () => {
-        const body = {
-            id_proyecto: external_id,
-            tester: { id_entidad: selectedTester.id },
-            entidad_asigno: usuario.user.id,
-            casosPrueba: selectedCases.map(c => ({ external_id: c })),
-            fecha_inicio: fechaInicioPrueba,
-            fecha_fin: fechaFinPrueba,
-            role_asignado: selectedRoleId,
-            tester_rol: rolId
-        };
-
-        try {
-            const response = await peticionPost(getToken(), 'contrato/caso/prueba', body);
-            if (response.code === 200) {
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1200);
-                mensajes(response.msg);
-                handleCloseNewProjectModal();
-            } else {
-                mensajes(response.msg, 'error');
-            }
-        } catch (error) {
-            console.error('Error al asignar tester:', error);
-        }
-    };
-
-    const handleCancelClick = () => {
-        swal({
-            title: "¿Está seguro de cancelar la asignación de tester?",
-            text: "Una vez cancelado, no podrá revertir esta acción",
-            icon: "warning",
-            buttons: ["No", "Sí"],
-            dangerMode: true,
-        }).then((willCancel) => {
-            if (willCancel) {
-                mensajes("Asignación cancelada", "info", "Información");
-                navigate('/asignar/tester/' + external_id);
-            }
-        });
-    };
-
-    const isAcceptButtonDisabled = !selectedTester || selectedCases.length === 0 || !fechaInicioPrueba || !fechaFinPrueba;
+    console.log("cccccccccccccccc", selectedCases);
+    
 
     return (
         <div>
@@ -179,7 +110,7 @@ const AsignarCasosPrueba = () => {
                         <p className="titulo-primario">Casos de Prueba</p>
                         {casosPrueba.length === 0 ? (
                             <div className="text-center">
-                                <p className="text-muted">No hay casos de prueba registrados</p>
+                                <p className="text-muted">No hay casos de prueba por asignar</p>
                             </div>
                         ) : (
                             <div className="row g-1">
@@ -213,87 +144,18 @@ const AsignarCasosPrueba = () => {
                     </div>
                 </div>
             </div>
+            
 
-            <Modal show={showNewProjectModal} onHide={handleCloseNewProjectModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title className='titulo-primario'>Asignar Tester</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form.Group controlId="formTesters">
-                        <Form.Label>Seleccionar Tester</Form.Label>
-                        <Form.Control
-                            as="select"
-                            onChange={handleTesterSelect}
-                            value={selectedTester ? "" : selectedTester?.id || ""}
-                            disabled={!!selectedTester}
-                        >
-                            <option value="" disabled>Seleccione un tester</option>
-                            {tester.map(t => (
-                                <option key={t.id} value={t.id}>
-                                    {t.nombres} {t.apellidos}
-                                </option>
-                            ))}
-                        </Form.Control>
-                    </Form.Group>
-
-                    {selectedTester && (
-                        <div className="mt-4">
-                            <h6 style={{ fontWeight: 'bold', color: '#3FA2F6' }}>Tester Seleccionado:</h6>
-                            <ul className="list-group">
-                                <li className="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>{selectedTester.nombres} {selectedTester.apellidos}</strong>
-                                        <br />
-                                        <span>{selectedTester.correo}</span>
-                                    </div>
-                                    <Button variant="danger" size="sm" onClick={handleRemoveTester}>
-                                        <FontAwesomeIcon icon={faTrash} />
-                                    </Button>
-                                </li>
-                            </ul>
-                        </div>
-                    )}
-
-                    <div className="row">
-                        <div className="col-md-6">
-                            <Form.Group controlId="formFechaInicioPrueba" className="mt-2">
-                                <Form.Label>Fecha Inicio</Form.Label>
-                                <DatePicker
-                                    selected={fechaInicioPrueba}
-                                    onChange={date => setFechaInicioPrueba(date)}
-                                    dateFormat="yyyy/MM/dd"
-                                    className="form-control"
-                                    placeholderText="Selecciona la fecha"
-                                    minDate={new Date()}
-                                    popperPlacement="bottom-start"
-                                />
-                            </Form.Group>
-                        </div>
-                        <div className="col-md-6">
-                            <Form.Group controlId="formFechaFinPrueba" className="mt-2">
-                                <Form.Label>Fecha Fin</Form.Label>
-                                <DatePicker
-                                    selected={fechaFinPrueba}
-                                    onChange={date => setFechaFinPrueba(date)}
-                                    dateFormat="yyyy/MM/dd"
-                                    className="form-control"
-                                    placeholderText="Selecciona la fecha"
-                                    minDate={new Date()}
-                                    popperPlacement="bottom-start"
-                                />
-                            </Form.Group>
-                        </div>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" className="btn-negativo" onClick={handleCancelClick}>
-                        <FontAwesomeIcon icon={faTimes} /> Cancelar
-                    </Button>
-                    <Button className="btn-positivo" onClick={handleAsignarTesters} disabled={isAcceptButtonDisabled}>
-                        <FontAwesomeIcon icon={faCheck} /> Aceptar
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            {/* Modal para asignar testers */}
+            <AsignarTesterModal
+                showModal={showNewProjectModal}
+                setShowModal={setShowNewProjectModal}
+                external_id_proyecto={external_id_proyecto}
+                external_caso_prueba={selectedCases}
+                usuario={usuario}
+                setCasosPrueba={setCasosPrueba}
+                navigate={navigate}
+            />
         </div>
     );
 };

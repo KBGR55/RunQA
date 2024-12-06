@@ -38,10 +38,13 @@ class PeticionController {
                 if (req.params.estado == '1') {
                     peticionNew.estado = 'AC';
                     cuentaAc.estado = 'ACEPTADO';
+                    peticionNew.id_aceptador_rechazador = req.params.id_rechazador;
                     person.estado=1;
                 } else {
                     peticionNew.estado = 'RE';
                     cuentaAc.estado = 'DENEGADO';
+                    peticionNew.motivo_rechazo = req.params.motivo_rechazo;
+                    peticionNew.id_rechazador_aceptador = req.params.id_rechazador;
                     person.estado=0;
                 }
                 var uuid = require('uuid');

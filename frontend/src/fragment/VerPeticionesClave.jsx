@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { getToken } from '../utilities/Sessionutil';
+import { getToken, getUser } from '../utilities/Sessionutil';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import mensajes from '../utilities/Mensajes';
 import swal from 'sweetalert';
@@ -38,7 +38,7 @@ const VerPeticionesClave = () => {
                 dangerMode: true,
             }).then((willGenerate) => {
                 if (willGenerate) {
-                    peticionGet(getToken(), `aceptarechazar/peticiones/${external_id}/1`).then((info) => {
+                    peticionGet(getToken(), `aceptarechazar/peticiones/${external_id}/1/1/${getUser().user.id}`).then((info) => {
                         if (info.code !== 200) {
                             mensajes(info.msg);
                         } else {

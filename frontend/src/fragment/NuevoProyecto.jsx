@@ -37,18 +37,18 @@ const NuevoProyecto = () => {
     const onSubmit = (event) => {
         event.preventDefault();
 
-        if (!name) {
+        if (!name || !description) {
             mensajes('Faltan campos obligatorios', "error", "Error");
             return;
         }
 
-        if (name.length > 20) {
-            mensajes('El nombre del proyecto no puede exceder los 20 caracteres', "error", "Error");
+        if (name.length > 40) {
+            mensajes('El nombre del proyecto no puede exceder los 40 caracteres', "error", "Error");
             return;
         }
 
-        if (description.length > 50) {
-            mensajes('La descripción no puede exceder los 50 caracteres', "error", "Error");
+        if (description.length > 350) {
+            mensajes('La descripción no puede exceder los 350 caracteres', "error", "Error");
             return;
         }
         if (external_id_proyecto) {
@@ -64,7 +64,7 @@ const NuevoProyecto = () => {
                     mensajes(info.msg, "success", "Éxito");
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1200);
+                    }, 2000);
                 }
             }).catch((error) => {
                 mensajes("Error al guardar el proyecto", "error", "Error");
@@ -83,7 +83,7 @@ const NuevoProyecto = () => {
                     mensajes(info.msg, "success", "Éxito");
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1200);
+                    }, 2000);
                 }
             }).catch((error) => {
                 mensajes("Error al guardar el proyecto", "error", "Error");
@@ -105,7 +105,7 @@ const NuevoProyecto = () => {
                 mensajes("Actualización cancelada", "info", "Información");
                 setTimeout(() => {
                     window.location.reload();
-                }, 1200);
+                }, 2000);
             }
         });
     };
@@ -115,7 +115,7 @@ const NuevoProyecto = () => {
             <div className="contenedor-carta">
                 <form onSubmit={onSubmit}>
                     <div className="mb-3">
-                        <label htmlFor="nombreProyecto" className="form-label">Nombre del Proyecto</label>
+                        <label htmlFor="nombreProyecto" className="form-label"><strong style={{ color: 'red' }}>* </strong>Nombre del Proyecto</label>
                         <input
                             type="text"
                             className="form-control"
@@ -123,12 +123,12 @@ const NuevoProyecto = () => {
                             placeholder="Escribe el nombre del proyecto..."
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            maxLength={20}
+                            maxLength={40}
                         />
-                        <small className="text-muted">{name.length}/20 caracteres</small>
+                        <small className="text-muted">{name.length}/40 caracteres</small>
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="descripcionProyecto" className="form-label">Descripción</label>
+                        <label htmlFor="descripcionProyecto" className="form-label"><strong style={{ color: 'red' }}>* </strong>Descripción</label>
                         <textarea
                             className="form-control"
                             id="descripcionProyecto"
@@ -136,9 +136,9 @@ const NuevoProyecto = () => {
                             placeholder="Escribe la descripción..."
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            maxLength={50}
+                            maxLength={350}
                         ></textarea>
-                        <small className="text-muted">{description.length}/50 caracteres</small>
+                        <small className="text-muted">{description.length}/350 caracteres</small>
                     </div>
                     <div className="contenedor-filo">
                         <button type="button" onClick={handleCancelClick} className="btn-negativo">

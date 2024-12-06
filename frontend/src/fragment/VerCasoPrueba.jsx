@@ -9,7 +9,7 @@ import { peticionGet } from '../utilities/hooks/Conexion';
 import { useNavigate, useParams } from 'react-router-dom';
 import '../css/style.css';
 import mensajes from '../utilities/Mensajes';
-import { getToken } from '../utilities/Sessionutil';
+import { getToken, getUser } from '../utilities/Sessionutil';
 import { useForm } from 'react-hook-form';
 import swal from 'sweetalert';
 import EjecutarCasoPrueba from './EjecutarCasoPrueba';
@@ -17,7 +17,8 @@ import TablePagination from '@mui/material/TablePagination';
 
 const VerCasoPrueba = () => {
     const [casosPrueba, setCasosPrueba] = useState({});
-    const { external_id_proyecto, external_id, rol } = useParams();
+    const { external_id_proyecto, external_id } = useParams();
+    const [rol, setRol] = useState('false');
     const [infoProyecto, setProyecto] = useState([]);
     const { setValue } = useForm();
     const navigate = useNavigate();
@@ -97,9 +98,13 @@ const VerCasoPrueba = () => {
                         console.error(error);
                     });
                 }
-                const response = await peticionGet(getToken(), `caso/prueba/obtener?external_id=${external_id}`);
+                const response = await peticionGet(getToken(), `caso/prueba/obtener/${getUser().user.id}?external_id=${external_id}`);
                 if (response.code === 200) {
-                    const casoPruebaData = response.info;
+                    const casoPruebaData = response.info.caso;
+if (response.info.rol_proyecto) {
+    setRol('true');
+}
+
                     setCasosPrueba(casoPruebaData);
                     peticionGet(getToken(), `error/obtener?external_caso_prueba=${external_id}`).then((info) => {
                         if (info.code === 200) {
@@ -136,7 +141,7 @@ const VerCasoPrueba = () => {
                     mensajes('Caso de prueba eliminado exitosamente.', 'success');
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1200);
+                    }, 2000);
                 } else {
                     mensajes(response.msg, 'error', 'Error');
                 }

@@ -15,6 +15,7 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
     const [file, setFile] = useState(null);
     const [estado, setEstado] = useState(false);
     const estadoInicial = personaObtenida.estado;
+    const estadoCuenta = personaObtenida.estadoCuenta;
     const [uploadedPhoto, setUploadedPhoto] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
@@ -41,6 +42,7 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
     const toggleModal = () => {
         setShowModal(!showModal);
     };
+    
 
     const onSubmit = async (data) => {
         const formData = new FormData();
@@ -59,6 +61,8 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
             formData.append('foto', file);
         }
 
+        console.log("555555", data);
+
         ActualizarImagenes(formData, getToken(), "/modificar/entidad")
             .then((info) => {
                 if (!info || info.code !== 200) {
@@ -69,7 +73,7 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
                 } else {
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1200);
+                    }, 2000);
                     mensajes(info.msg);
                 }
             })
@@ -102,7 +106,7 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
                 mensajes("Actualización cancelada", "info", "Información");
                 setTimeout(() => {
                     window.location.reload();
-                }, 1200);
+                }, 2000);
             }
         });
     };

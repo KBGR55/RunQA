@@ -196,7 +196,7 @@ router.post('/caso/prueba/actualizar', [
   body('resultado_esperado').trim().optional().notEmpty().withMessage('El resultado esperado no puede estar vacío'),
 ], casoPruebaController.actualizar);
 router.get('/caso/prueba/listar/:id_entidad',casoPruebaController.listar);
-router.get('/caso/prueba/obtener',casoPruebaController.obtener);
+router.get('/caso/prueba/obtener/:entidad_id',casoPruebaController.obtener);
 router.put('/caso/prueba/cambiar/estado',casoPruebaController.cambiar_estado);
 router.get('/caso/prueba/eliminar',casoPruebaController.cambiar_estado_obsoleto);
 router.get('/caso/obtener/proyecto/:external_id', casoPruebaController.obtenerCasosProyecto);
@@ -230,8 +230,7 @@ router.post('/proyecto/asignar', proyectoController.asignarProyecto);
 router.get('/proyecto/:id_proyect',proyectoController.getEntidadProyecto);
 router.get('/proyecto/obtener/:external_id',proyectoController.getProyecto);
 router.delete('/proyecto/:id_proyect/:id_entidad',proyectoController.removerEntidad);
-router.get('/proyecto/listar/tester/:external_id',proyectoController.obtenerTestersPorProyecto);
-router.get('/proyecto/tester/desarrollador/:id_proyect',proyectoController.getEntidadProyectoTesterDesarrollador);
+router.get('/proyecto/listar/rol/:rol_name/:external_id',proyectoController.obtenerRolesPorProyecto);
 
 /** CONTRATO */
 router.post('/contrato/caso/prueba', contratoController.asignarTesters);
@@ -249,7 +248,7 @@ router.get('/rol/entidad/obtener/administrador', rolEntidadController.obtenerAdm
 
 /** PETICION */
 router.get('/peticion/:tipo', peticionController.listarPeticiones);
-router.get('/aceptarechazar/peticiones/:external/:estado', /*auth,*/ peticionController.aceptarRechazar);
+router.get('/aceptarechazar/peticiones/:external/:estado/:motivo_rechazo/:id_rechazador', /*auth,*/ peticionController.aceptarRechazar);
 
 
 module.exports = router;  

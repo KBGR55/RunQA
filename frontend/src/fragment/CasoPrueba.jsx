@@ -5,26 +5,29 @@ import mensajes from '../utilities/Mensajes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { peticionPost, peticionGet } from '../utilities/hooks/Conexion';
-import { getToken } from '../utilities/Sessionutil';
+import { getToken, getUser } from '../utilities/Sessionutil';
 import { useNavigate, useParams } from 'react-router-dom';
 import swal from 'sweetalert';
+import AsignarTesterModal from '../fragment/ModalAsignar';
 
 const CasoPrueba = () => {
     const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm();
     const { external_id_proyecto, external_id } = useParams();
     const [infoProyecto, setProyecto] = useState([]);
     const navigate = useNavigate();
-
+    const [showModal, setShowModal] = useState(false);
+    const [idCasoPrueba, setIdCasoPrueba] = useState(null);
+    const usuario = getUser();
     const [clasificaciones] = useState(['ALTA', 'MEDIA', 'BAJA']);
     const [estados] = useState(['DUPLICADO', 'BLOQUEADO', 'RECHAZADO', 'APROBADO']);
 
     const [estadoSeleccionado, setEstadoSeleccionado] = useState('APROBADO');
-
-    const [clasificacionSeleccionada, setClasificacionSeleccionada] = useState([]);
     const [tiposPrueba] = useState([
         'FUNCIONAL', 'INTEGRACION', 'SISTEMA', 'REGRESION', 'EXPLORATORIA',
         'ACEPTACION_USUARIO', 'RENDIMIENTO', 'SEGURIDAD'
     ]);
+
+    console.log("4444444444", external_id_proyecto);
 
 
     useEffect(() => {
@@ -33,6 +36,8 @@ const CasoPrueba = () => {
                 peticionGet(getToken(), `proyecto/obtener/${external_id_proyecto}`).then((info) => {
                     if (info.code === 200) {
                         setProyecto(info.info);
+                        console.log("5555555555", info.info.nombre);
+
                     } else {
                         mensajes(info.msg, "error", "Error");
                     }
@@ -44,17 +49,18 @@ const CasoPrueba = () => {
             if (external_id) {
 
                 try {
-                    const response = await peticionGet(getToken(), `caso/prueba/obtener?external_id=${external_id}`);
+                    const response = await peticionGet(getToken(), `caso/prueba/obtener/${getUser().user.id}?external_id=${external_id}`);
+
                     if (response.code === 200) {
-                        const casoPruebaData = response.info;
+                        const casoPruebaData = response.info.caso;
                         setValue('nombre', casoPruebaData.nombre);
                         setValue('descripcion', casoPruebaData.descripcion);
                         setValue('pasos', casoPruebaData.pasos);
                         setValue('resultado_esperado', casoPruebaData.resultado_esperado);
                         setValue('precondiciones', casoPruebaData.precondiciones);
                         setValue('datos_entrada', casoPruebaData.datos_entrada);
-                        setValue('fecha_ejecucion_prueba', new Date(casoPruebaData.fecha_ejecucion_prueba).toISOString().slice(0, 10));
-                        setClasificacionSeleccionada(casoPruebaData.clasificacion);
+                        //setValue('fecha_ejecucion_prueba', new Date(casoPruebaData.fecha_ejecucion_prueba).toISOString().slice(0, 10));
+                        setValue('clasificacion', casoPruebaData.clasificacion);
                         setEstadoSeleccionado(casoPruebaData.estado);
                         setValue('tipo_prueba', casoPruebaData.tipo_prueba);
                     } else {
@@ -67,7 +73,7 @@ const CasoPrueba = () => {
         };
 
         fetchCasoPrueba();
-    }, [external_id, setValue]);
+    }, [external_id, setValue, external_id_proyecto]);
 
     const handleCancelClick = () => {
         const isEditMode = Boolean(external_id);
@@ -93,17 +99,16 @@ const CasoPrueba = () => {
         });
     };
 
+
     const onSubmit = async (data) => {
-
         const casoPruebaData = {
-
             "nombre": data.nombre.toUpperCase(),
             "descripcion": data.descripcion,
             "pasos": data.pasos,
             "resultado_esperado": data.resultado_esperado,
             "estado": estadoSeleccionado,
             "estadoActual": "PENDIENTE",
-            "clasificacion": clasificacionSeleccionada,
+            "clasificacion": data.clasificacion,
             "tipo_prueba": data.tipo_prueba,
             "precondiciones": data.precondiciones,
             "datos_entrada": data.datos_entrada,
@@ -116,27 +121,37 @@ const CasoPrueba = () => {
                 casoPruebaData['external_id'] = external_id;
                 const response = await peticionPost(getToken(), 'caso/prueba/actualizar', casoPruebaData);
                 if (response.code === 200) {
-                    mensajes('Caso de prueba actualizado con exito', 'success');
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1200);
+                    mensajes('Caso de prueba actualizado con éxito', 'success');
+                    navigate(-1);
                 } else {
                     mensajes(`Error al actualizar caso de prueba: ${response.msg}`, 'error');
                 }
             } else {
-
                 if (data.fecha_ejecucion_prueba && new Date(data.fecha_ejecucion_prueba) < new Date()) {
                     mensajes('La fecha de ejecución no puede ser una fecha pasada', 'error');
                     return;
                 }
-                //permite realizar cuado la fexcha sea mayor o igual a la actual
-                const response = await peticionPost('', 'caso/prueba/guardar', casoPruebaData);
+                const response = await peticionPost(getToken(), 'caso/prueba/guardar', casoPruebaData);
                 if (response.code === 200) {
-                    mensajes('Caso de prueba registrado con éxito', 'success');
-                    reset();
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1200);
+
+                    console.log("7777777777", response);
+
+
+                    setIdCasoPrueba(response.info);
+                    swal({
+                        title: "Caso de prueba registrado con éxito",
+                        text: "¿Desea asignar un tester para ejecutar el caso de prueba?",
+                        icon: "info",
+                        buttons: ["No", "Sí"],
+                        dangerMode: false,
+                    }).then((willAssign) => {
+                        if (willAssign) {
+                            setShowModal(true);
+                        } else {
+                            mensajes("Creación del caso de prueba completada", "success");
+                            navigate(-1);
+                        }
+                    });
                 } else {
                     mensajes(`Error al registrar caso de prueba: ${response.msg}`, 'error');
                 }
@@ -145,6 +160,7 @@ const CasoPrueba = () => {
             mensajes('Error al procesar la solicitud', 'error');
         }
     };
+
 
     return (
         <div className="contenedor-carta">
@@ -178,10 +194,10 @@ const CasoPrueba = () => {
                             <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Tipo de Prueba</label>
                             <select
                                 className="form-control"
-                                defaultValue=""  // Establece el valor predeterminado en vacío
+                                defaultValue=""
                                 {...register('tipo_prueba', { required: "Seleccione el tipo de prueba" })}
                             >
-                                <option value="" disabled>Seleccione</option>  {/* Opción predeterminada */}
+                                <option value="" disabled>Seleccione</option>
                                 {tiposPrueba.map((tipo, index) => (
                                     <option key={index} value={tipo}>
                                         {tipo}
@@ -199,9 +215,8 @@ const CasoPrueba = () => {
                             <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Clasificación</label>
                             <select
                                 className="form-control"
+                                defaultValue=""
                                 {...register('clasificacion', { required: 'Seleccione una clasificación' })}
-                                value={clasificacionSeleccionada}
-                                onChange={e => setClasificacionSeleccionada(e.target.value)}
                             >
                                 <option value="">Seleccione</option>
                                 {clasificaciones.map(clasificacion => (
@@ -314,6 +329,17 @@ const CasoPrueba = () => {
                     </button>
                 </div>
             </form>
+
+            {showModal && (
+                <AsignarTesterModal
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                    external_id_proyecto={external_id_proyecto}
+                    usuario={usuario}
+                    external_caso_prueba={idCasoPrueba}
+                />
+            )}
+
         </div>
     );
 };
