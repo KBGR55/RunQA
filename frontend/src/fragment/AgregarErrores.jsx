@@ -3,9 +3,10 @@ import { useForm } from 'react-hook-form';
 import React, { useEffect, useState } from 'react';
 import mensajes from '../utilities/Mensajes';
 import { peticionGet, peticionPost } from '../utilities/hooks/Conexion';
-import { getToken } from '../utilities/Sessionutil';
+import { getToken, getUser } from '../utilities/Sessionutil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons'; import swal from 'sweetalert';
+import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
+import swal from 'sweetalert';
 import { useNavigate } from 'react-router-dom';
 import { useParams, useLocation } from 'react-router-dom';
 
@@ -19,6 +20,8 @@ const AgregarErrores = () => {
     const location = useLocation();
     const [infoProyecto, setProyecto] = useState([]);
     const navigate = useNavigate();
+    const [testers, setTesters] = useState([]);
+    const [selectedTester, setSelectedTester] = useState(null);
 
     useEffect(() => {
         const fetchCasoPrueba = async () => {
@@ -34,7 +37,16 @@ const AgregarErrores = () => {
                         mensajes("Error al cargar el proyecto", "error", "Error");
                         console.error(error);
                     });
+
+                    // Fetch testers
+                    const responseTesters = await peticionGet(getToken(), `proyecto/listar/rol/DESARROLLADOR/${external_id_proyecto}`);
+                    if (responseTesters.code === 200) {
+                        setTesters(responseTesters.info);
+                    } else {
+                        mensajes(responseTesters.msg, 'error');
+                    }
                 }
+
                 if (external_id_error) {
                     const response = await peticionGet(getToken(), `error/obtener/external?external_id=${external_id_error}`);
                     if (response.code === 200) {
@@ -57,13 +69,13 @@ const AgregarErrores = () => {
         fetchCasoPrueba();
     }, [external_id_proyecto]);
 
-
     const onSubmit = async (data) => {
         const errorData = {
             funcionalidad: data.funcionalidad,
             titulo: data.titulo,
             pasos_reproducir: data.pasos_reproducir,
-            persona_asignada: data.persona_asignada,
+            persona_responsable: data.persona_asignada.id,
+            persona_asignadora: getUser().user.id,
             severidad: clasificacionSeleccionada,
             estado: estadoSeleccionado,
             razon: data.razon,
@@ -118,7 +130,6 @@ const AgregarErrores = () => {
 
     const handleCancelClick = () => {
         const isEditMode = Boolean(external_id_error);
-
         swal({
             title: isEditMode
                 ? "¿Está seguro de cancelar la edición del error?"
@@ -142,52 +153,52 @@ const AgregarErrores = () => {
 
     return (
         <div className="contenedor-carta">
-            <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
-            {!external_id_error ? (<h2 className='titulo-primario '>Agregar error</h2>) : <p className="titulo-primario">Editar error</p>}
+            <p className="titulo-proyecto">Proyecto "{infoProyecto.nombre}"</p>
+            {!external_id_error ? (<h2 className="titulo-primario">Agregar error</h2>) : <p className="titulo-primario">Editar error</p>}
             <form className="form-sample" onSubmit={handleSubmit(onSubmit)}>
                 <div className="row">
                     <div className="col-md-6">
                         <div className="form-group">
-                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Título</label>
+                            <label className="titulo-campos"><strong style={{ color: 'red' }}>* </strong>Título</label>
                             <input
                                 type="text"
                                 className="form-control"
                                 {...register('titulo', { required: 'El título es obligatorio' })}
                             />
                             {errors.titulo && (
-                                <div className='alert alert-danger'>{errors.titulo.message}</div>
+                                <div className="alert alert-danger">{errors.titulo.message}</div>
                             )}
                         </div>
                     </div>
                     <div className="col-md-6">
                         <div className="form-group">
-                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Funcionalidad</label>
+                            <label className="titulo-campos"><strong style={{ color: 'red' }}>* </strong>Funcionalidad</label>
                             <input
                                 type="text"
                                 className="form-control"
                                 {...register('funcionalidad', { required: 'La funcionalidad es obligatoria' })}
                             />
                             {errors.funcionalidad && (
-                                <div className='alert alert-danger'>{errors.funcionalidad.message}</div>
+                                <div className="alert alert-danger">{errors.funcionalidad.message}</div>
                             )}
                         </div>
                     </div>
                 </div>
 
                 <div className="form-group">
-                    <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Pasos para reproducir</label>
+                    <label className="titulo-campos"><strong style={{ color: 'red' }}>* </strong>Pasos para reproducir</label>
                     <textarea
                         className="form-control"
                         {...register('pasos_reproducir', { required: 'Los pasos para reproducir son obligatorios' })}
                     />
                     {errors.pasos_reproducir && (
-                        <div className='alert alert-danger'>{errors.pasos_reproducir.message}</div>
+                        <div className="alert alert-danger">{errors.pasos_reproducir.message}</div>
                     )}
                 </div>
                 <div className="row">
                     <div className="col-md-6">
                         <div className="form-group">
-                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Severidad</label>
+                            <label className="titulo-campos"><strong style={{ color: 'red' }}>* </strong>Severidad</label>
                             <select
                                 className="form-control"
                                 onChange={(e) => setClasificacionSeleccionada(e.target.value)}
@@ -201,39 +212,75 @@ const AgregarErrores = () => {
                                 ))}
                             </select>
                             {errors.severidad && (
-                                <div className='alert alert-danger'>{errors.severidad.message}</div>
+                                <div className="alert alert-danger">{errors.severidad.message}</div>
                             )}
                         </div>
                     </div>
                     <div className="col-md-6">
                         <div className="form-group">
-                            <label className='titulo-campos'>Persona asignada</label>
-                            <input
+                            <label className="titulo-campos">Persona asignada</label>
+                            <select
+                                className="form-control"
+                                onChange={(e) => {
+                                    const testerId = e.target.value;
+                                    const tester = testers.find(t => t.id === parseInt(testerId));
+                                    setSelectedTester(tester);
+                                    setValue('persona_asignada', tester ? `${tester.nombres} ${tester.apellidos}` : '');
+                                }}
+                                value={selectedTester ? selectedTester.id : ''}
+                            >
+                                <option value="" disabled>Seleccionar un tester</option>
+                                {testers.map(tester => (
+                                    <option key={tester.id} value={tester.id}>
+                                        {tester.nombres} {tester.apellidos}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-6">
+                        <div className="form-group">
+                            <label className="titulo-campos">Estado</label>
+                            <select
+                                className="form-control"
+                                onChange={(e) => setEstadoSeleccionado(e.target.value)}
+                                value={estadoSeleccionado}
+                            >
+                                <option value="PENDIENTE">PENDIENTE</option>
+                                {estados.map((estado, index) => (
+                                    <option key={index} value={estado}>
+                                        {estado}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        <div className="form-group">
+                            <label className="titulo-campos">Razón</label>
+                            <textarea
                                 type="text"
                                 className="form-control"
-                                {...register('persona_asignada')}
+                                {...register('razon')}
                             />
                         </div>
                     </div>
                 </div>
-
-                <div className="form-group">
-                    <label className='titulo-campos'>Razón</label>
-                    <textarea
-                        className="form-control"
-                        {...register('razon', { required: 'La razón es obligatoria' })}
-                    />
-                    {errors.razon && (
-                        <div className='alert alert-danger'>{errors.razon.message}</div>
-                    )}
-                </div>
-
-                <div className="contenedor-filo">
-                    <button type="button" onClick={handleCancelClick} className="btn-negativo">
-                        <FontAwesomeIcon icon={faTimes} /> Cancelar
+                <div className="form-group d-flex justify-content-end">
+                    <button type="submit" className="btn btn-success btn-icon-text">
+                        <FontAwesomeIcon icon={faCheck} />
+                        Guardar
                     </button>
-                    <button type="submit" className="btn-positivo">
-                        <FontAwesomeIcon icon={faCheck} /> Aceptar
+                    <button
+                        type="button"
+                        className="btn btn-danger btn-icon-text"
+                        style={{ marginLeft: '10px' }}
+                        onClick={handleCancelClick}
+                    >
+                        <FontAwesomeIcon icon={faTimes} />
+                        Cancelar
                     </button>
                 </div>
             </form>

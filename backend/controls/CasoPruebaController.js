@@ -299,7 +299,7 @@ class CasoPruebaController {
             if (!caso) {
                 return res.status(404).json({ msg: "Caso de prueba no encontrado", code: 404 });
             }
-            caso.estado = "EXITOSO";
+            caso.estado = req.body.estado;
             caso.fecha_ejecucion_prueba = new Date();
             caso.resultado_obtenido = req.body.resultado_obtenido;
             await caso.save();

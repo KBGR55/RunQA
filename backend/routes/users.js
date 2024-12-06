@@ -230,8 +230,7 @@ router.post('/proyecto/asignar', proyectoController.asignarProyecto);
 router.get('/proyecto/:id_proyect',proyectoController.getEntidadProyecto);
 router.get('/proyecto/obtener/:external_id',proyectoController.getProyecto);
 router.delete('/proyecto/:id_proyect/:id_entidad',proyectoController.removerEntidad);
-router.get('/proyecto/listar/tester/:external_id',proyectoController.obtenerTestersPorProyecto);
-router.get('/proyecto/tester/desarrollador/:id_proyect',proyectoController.getEntidadProyectoTesterDesarrollador);
+router.get('/proyecto/listar/rol/:rol_name/:external_id',proyectoController.obtenerRolesPorProyecto);
 
 /** CONTRATO */
 router.post('/contrato/caso/prueba', contratoController.asignarTesters);
@@ -249,7 +248,7 @@ router.get('/rol/entidad/obtener/administrador', rolEntidadController.obtenerAdm
 
 /** PETICION */
 router.get('/peticion/:tipo', peticionController.listarPeticiones);
-router.get('/aceptarechazar/peticiones/:external/:estado', /*auth,*/ peticionController.aceptarRechazar);
+router.get('/aceptarechazar/peticiones/:external/:estado/:motivo_rechazo/:id_rechazador', /*auth,*/ peticionController.aceptarRechazar);
 
 
 module.exports = router;  

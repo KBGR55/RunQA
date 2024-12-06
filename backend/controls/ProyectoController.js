@@ -378,7 +378,7 @@ class ProyectoController {
     }
     
     /** SEGUNDO SPRINT */
-    async obtenerTestersPorProyecto(req, res) {
+    async obtenerRolesPorProyecto(req, res) {
         try {
             
             console.log("1111111111jsjsjsjsjaqui", req.params);
@@ -388,9 +388,9 @@ class ProyectoController {
                 return res.status(400).json({ msg: "Proyecto no encontrado", code: 400 });
             }
     
-            const rolTester = await models.rol.findOne({ where: { nombre: 'TESTER' }, attributes: ['id'] });
+            const rolTester = await models.rol.findOne({ where: { nombre: req.params.rol_name }, attributes: ['id'] });
             if (!rolTester) {
-                return res.status(400).json({ msg: "Rol de tester no encontrado", code: 400 });
+                return res.status(400).json({ msg: "Rol no encontrado", code: 400 });
             }
     
             const testers = await models.rol_proyecto.findAll({
@@ -421,7 +421,7 @@ class ProyectoController {
             });
     
             if (testers.length === 0) {
-                return res.status(404).json({ msg: "No se encontraron testers asignados a este proyecto", code: 404 });
+                return res.status(404).json({ msg: `No se encontraron ${req.params.rol_name} asignados a este proyecto`, code: 404 });
             }
     
             res.json({

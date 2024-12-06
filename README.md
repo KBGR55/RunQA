@@ -144,7 +144,7 @@ Antes de ejecutar el proyecto, asegúrate de configurar la base de datos. Sigue 
 
          INSERT INTO entidad (id, external_id, estado, foto, nombres, apellidos, fecha_nacimiento, telefono, createdAt, updatedAt) 
          VALUES 
-         (1, '93a9e3f1-907c-11ef-8f4d-30e37a2aa82d', 1, '3efe8462-5255-4839-b694-c269ca4475b3.jpeg', 'KAREN BRIGITH', 'GONZAGA RIVAS', '2003-12-05 00:00:00', '0980735353', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
+         (1, '93a9e3f1-907c-11ef-8f4d-30e37a2aa82d', 1, '3efe8462-5255-4839-b694-c269ca4475b3.jpeg', 'KAREN BRIGITH', 'GONZAGA RIVAS', '2003-12-05 00:00:00', '0980715353', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
          (2, '93a9e97e-907c-11ef-8f4d-30e37a2aa82d', 1, '2307fd96-9917-4da1-a666-90d0711162c3.jpeg', 'HILARY MADELEY', 'CALVA CAMACHO', '1995-08-15 00:00:00', '0987654321', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
          (3, '93a9eb2d-907c-11ef-8f4d-30e37a2aa82d', 1, 'USUARIO_ICONO.png', 'MARÍA ELENA', 'PÉREZ MARTÍNEZ', '1998-03-22 00:00:00', '0980123456', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
          (4, '25b65566-907d-11ef-8f4d-30e37a2aa82d', 1, 'USUARIO_ICONO.png', 'PEDRO ANTONIO', 'RAMÍREZ VARGAS', '1987-07-30 00:00:00', '0998765432', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
