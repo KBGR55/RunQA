@@ -5,17 +5,21 @@ import mensajes from '../utilities/Mensajes';
 import { peticionGet, peticionPost } from '../utilities/hooks/Conexion';
 import { getToken, getUser } from '../utilities/Sessionutil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faCheck, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import swal from 'sweetalert';
 import { useNavigate } from 'react-router-dom';
 import { useParams, useLocation } from 'react-router-dom';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 
 const AgregarErrores = () => {
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
-    const [clasificaciones] = useState(['ALTA', 'MEDIA', 'BAJA']);
-    const [estados] = useState(['DUPLICADO', 'BLOQUEADO', 'RECHAZADO', 'APROBADO']);
+    const [severidad] = useState(['MEDIA', 'BAJA', 'CRITICO']);
+    const [prioridad] = useState(['ALTA', 'MEDIA', 'BAJA']);
+    const [estados] = useState(['NUEVO', 'CERRADO', 'PENDIENTE_VALIDACION', 'CORRECCION']);
     const [estadoSeleccionado, setEstadoSeleccionado] = useState('PENDIENTE');
     const [clasificacionSeleccionada, setClasificacionSeleccionada] = useState([]);
+    const [prioridadSeleccionada, setPrioridadSeleccionada] = useState([]);
     const { external_id_proyecto, external_id, external_id_error } = useParams();
     const location = useLocation();
     const [infoProyecto, setProyecto] = useState([]);
@@ -57,6 +61,7 @@ const AgregarErrores = () => {
                         setValue('persona_asignada', dataError.persona_asignada || '');
                         setValue('razon', dataError.razon || '');
                         setClasificacionSeleccionada(dataError.severidad || '');
+                        setPrioridadSeleccionada(dataError.prioridad || '');
                         setEstadoSeleccionado(dataError.estado || 'PENDIENTE');
                     } else {
                         mensajes(`Error al obtener error: ${response.msg}`, 'error');
@@ -77,6 +82,7 @@ const AgregarErrores = () => {
             persona_responsable: data.persona_asignada.id,
             persona_asignadora: getUser().user.id,
             severidad: clasificacionSeleccionada,
+            prioridad: prioridadSeleccionada,
             estado: estadoSeleccionado,
             razon: data.razon,
             fecha_reporte: new Date().toISOString(),
@@ -111,14 +117,15 @@ const AgregarErrores = () => {
                                 if (willContinue) {
                                     setTimeout(() => {
                                         window.location.reload();
-                                    }, 5000);  
+                                    }, 5000);
                                 } else {
                                     mensajes("Operación cancelada", "info", "Información");
+                                    navigate(-1);
                                 }
                             });
-                        }, 2200);  
+                        }, 2200);
                     }
-                                        
+
                 } else {
                     mensajes(`Error al agregar el error: ${response.msg}`, 'error');
                 }
@@ -198,14 +205,44 @@ const AgregarErrores = () => {
                 <div className="row">
                     <div className="col-md-6">
                         <div className="form-group">
-                            <label className="titulo-campos"><strong style={{ color: 'red' }}>* </strong>Severidad</label>
+                            <label className="titulo-campos"><strong style={{ color: 'red' }}>* </strong>Severidad  <OverlayTrigger
+                                placement="top"
+                                overlay={
+                                    <Tooltip> Indica la gravedad del problema detectado
+                                        <table className="table table-bordered text-start m-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Valor</th>
+                                                    <th>Significado</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>CRITICO</td>
+                                                    <td>Compromete el sistema completo, urgente.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>MEDIA</td>
+                                                    <td>Afecta funciones secundarias, no crítico.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>BAJA</td>
+                                                    <td>Problema menor, plazo extendido para resolución.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </Tooltip>
+                                }
+                            >
+                                <FontAwesomeIcon icon={faQuestionCircle} className="ms-2 text-info" />
+                            </OverlayTrigger></label>
                             <select
                                 className="form-control"
                                 onChange={(e) => setClasificacionSeleccionada(e.target.value)}
                                 value={clasificacionSeleccionada}
                             >
                                 <option value="" disabled>Seleccionar severidad</option>
-                                {clasificaciones.map((clasificacion, index) => (
+                                {severidad.map((clasificacion, index) => (
                                     <option key={index} value={clasificacion}>
                                         {clasificacion}
                                     </option>
@@ -213,6 +250,56 @@ const AgregarErrores = () => {
                             </select>
                             {errors.severidad && (
                                 <div className="alert alert-danger">{errors.severidad.message}</div>
+                            )}
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        <div className="form-group">
+                            <label className="titulo-campos"><strong style={{ color: 'red' }}>* </strong>Prioridad  <OverlayTrigger
+                                placement="top"
+                                overlay={
+                                    <Tooltip> Determina el orden en el que debe resolverse
+                                        <table className="table table-bordered text-start m-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Valor</th>
+                                                    <th>Significado</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>ALTA</td>
+                                                    <td>Debe resolverse primero, afecta operaciones clave.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>MEDIA</td>
+                                                    <td>Intermedio en prioridad, no afecta funciones críticas.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>BAJA</td>
+                                                    <td>Puede resolverse en un plazo extendido.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </Tooltip>
+                                }
+                            >
+                                <FontAwesomeIcon icon={faQuestionCircle} className="ms-2 text-info" />
+                            </OverlayTrigger></label>
+                            <select
+                                className="form-control"
+                                onChange={(e) => setPrioridadSeleccionada(e.target.value)}
+                                value={prioridadSeleccionada}
+                            >
+                                <option value="" disabled>Seleccionar prioridad</option>
+                                {prioridad.map((prioridad, index) => (
+                                    <option key={index} value={prioridad}>
+                                        {prioridad}
+                                    </option>
+                                ))}
+                            </select>
+                            {errors.prioridad && (
+                                <div className="alert alert-danger">{errors.prioridad.message}</div>
                             )}
                         </div>
                     </div>
@@ -240,24 +327,7 @@ const AgregarErrores = () => {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-md-6">
-                        <div className="form-group">
-                            <label className="titulo-campos">Estado</label>
-                            <select
-                                className="form-control"
-                                onChange={(e) => setEstadoSeleccionado(e.target.value)}
-                                value={estadoSeleccionado}
-                            >
-                                <option value="PENDIENTE">PENDIENTE</option>
-                                {estados.map((estado, index) => (
-                                    <option key={index} value={estado}>
-                                        {estado}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                    <div className="col-md-6">
+                    <div className="col-md-">
                         <div className="form-group">
                             <label className="titulo-campos">Razón</label>
                             <textarea

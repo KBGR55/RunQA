@@ -10,7 +10,7 @@ class ErrorController {
             const errores = await error.findAll({
                 attributes: [
                     'external_id', 'funcionalidad', 'titulo', 'pasos_reproducir',
-                    'persona_asignada', 'severidad', 'estado',
+                    'persona_asignada', 'severidad', 'estado', 'prioridad',
                     'razon', 'fecha_reporte', 'fecha_resolucion'
                 ]
             });
@@ -50,7 +50,7 @@ class ErrorController {
                 where: { id_caso_prueba: id_caso },
                 attributes: [
                     'id', 'external_id', 'funcionalidad', 'titulo', 'pasos_reproducir',
-                    'persona_asignada', 'severidad', 'estado',
+                    'persona_asignada', 'severidad', 'estado','prioridad',
                     'razon', 'fecha_reporte', 'fecha_resolucion'
                 ]
             });
@@ -87,7 +87,7 @@ class ErrorController {
         }
 
         const {
-            funcionalidad, titulo, pasos_reproducir, persona_asignada,
+            funcionalidad, titulo, pasos_reproducir, persona_asignada, prioridad,
             severidad, estado, razon, fecha_resolucion
         } = req.body;
 
@@ -97,7 +97,7 @@ class ErrorController {
                 where: { external_id: external_id },
                 attributes: [
                     'external_id', 'funcionalidad', 'titulo', 'pasos_reproducir',
-                    'persona_asignada', 'severidad', 'estado',
+                    'persona_asignada', 'severidad', 'estado', 'prioridad',
                     'razon', 'fecha_reporte', 'fecha_resolucion'
                 ]
             });
@@ -116,6 +116,7 @@ class ErrorController {
                 pasos_reproducir: pasos_reproducir || errorEncontrado.pasos_reproducir,
                 persona_asignada: persona_asignada || errorEncontrado.persona_asignada,
                 severidad: severidad || errorEncontrado.severidad,
+                prioridad: prioridad || errorEncontrado.prioridad,
                 estado: estado || errorEncontrado.estado,
                 razon: razon || errorEncontrado.razon,
                 fecha_resolucion: fecha_resolucion || errorEncontrado.fecha_resolucion
@@ -135,7 +136,7 @@ class ErrorController {
             return res.json({
                 msg: 'Error actualizado correctamente',
                 code: 200,
-                info: { external_id, funcionalidad, titulo, pasos_reproducir, persona_asignada, severidad, estado, razon, fecha_resolucion }
+                info: { external_id, funcionalidad, titulo, pasos_reproducir, persona_asignada, severidad, prioridad, estado, razon, fecha_resolucion }
             });
 
         } catch (err) {
@@ -164,7 +165,7 @@ class ErrorController {
                 where: { external_id: external_id },
                 attributes: [
                     'external_id', 'funcionalidad', 'titulo', 'pasos_reproducir',
-                    'persona_asignada', 'severidad', 'estado',
+                    'persona_asignada', 'severidad', 'estado', 'prioridad',
                     'razon', 'fecha_reporte', 'fecha_resolucion'
                 ]
             });
@@ -202,10 +203,12 @@ class ErrorController {
                 errors: errors.array()
             });
         }
+        console.log(req.body);
+        
 
         const {
             funcionalidad, titulo, pasos_reproducir, persona_asignada,
-            severidad, estado, razon,
+            severidad, razon, prioridad,
             fecha_reporte, fecha_resolucion, external_caso_prueba
         } = req.body;
         try {
@@ -230,11 +233,11 @@ class ErrorController {
                 pasos_reproducir: pasos_reproducir || null,
                 persona_asignada: persona_asignada || "SIN_DATOS",
                 severidad: severidad || "BAJA",
-                estado: estado || "NUEVO",
+                prioridad: prioridad || "BAJA",
                 razon: razon || "SIN_DATOS",
                 fecha_reporte: fecha_reporte || new Date(),
                 fecha_resolucion: fecha_resolucion || null,
-                id_caso_prueba: casoPrueba.id  // Usar el id del caso de prueba encontrado
+                id_caso_prueba: casoPrueba.id  
             });
 
             res.status(201).json({
