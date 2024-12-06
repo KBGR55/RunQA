@@ -64,7 +64,7 @@ const NuevoProyecto = () => {
                     mensajes(info.msg, "success", "Éxito");
                     setTimeout(() => {
                         window.location.reload();
-                    }, 5000);
+                    }, 2000);
                 }
             }).catch((error) => {
                 mensajes("Error al guardar el proyecto", "error", "Error");
@@ -83,7 +83,7 @@ const NuevoProyecto = () => {
                     mensajes(info.msg, "success", "Éxito");
                     setTimeout(() => {
                         window.location.reload();
-                    }, 5000);
+                    }, 2000);
                 }
             }).catch((error) => {
                 mensajes("Error al guardar el proyecto", "error", "Error");
@@ -105,7 +105,7 @@ const NuevoProyecto = () => {
                 mensajes("Actualización cancelada", "info", "Información");
                 setTimeout(() => {
                     window.location.reload();
-                }, 5000);
+                }, 2000);
             }
         });
     };

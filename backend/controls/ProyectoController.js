@@ -380,6 +380,9 @@ class ProyectoController {
     /** SEGUNDO SPRINT */
     async obtenerTestersPorProyecto(req, res) {
         try {
+            
+            console.log("1111111111jsjsjsjsjaqui", req.params);
+            
             const proyecto = await models.proyecto.findOne({ where: { external_id: req.params.external_id } });
             if (!proyecto) {
                 return res.status(400).json({ msg: "Proyecto no encontrado", code: 400 });

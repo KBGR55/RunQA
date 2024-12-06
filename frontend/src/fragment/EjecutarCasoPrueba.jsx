@@ -34,7 +34,7 @@ const EjecutarCasoPrueba = () => {
                             mensajes(info.msg, "success", "Éxito");
                             setTimeout(() => {
                                 window.location.reload();
-                            }, 5000);
+                            }, 2000);
                         }
                     })
                     .catch((error) => {

@@ -141,7 +141,7 @@ if (response.info.rol_proyecto) {
                     mensajes('Caso de prueba eliminado exitosamente.', 'success');
                     setTimeout(() => {
                         window.location.reload();
-                    }, 5000);
+                    }, 2000);
                 } else {
                     mensajes(response.msg, 'error', 'Error');
                 }
