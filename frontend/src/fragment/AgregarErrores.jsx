@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../css/style.css';
 import { useForm } from 'react-hook-form';
 import React, { useEffect, useState } from 'react';
 import mensajes from '../utilities/Mensajes';
@@ -208,7 +209,7 @@ const AgregarErrores = () => {
                             <label className="titulo-campos"><strong style={{ color: 'red' }}>* </strong>Severidad  <OverlayTrigger
                                 placement="top"
                                 overlay={
-                                    <Tooltip> Indica la gravedad del problema detectado
+                                    <Tooltip className="custom-tooltip"> Indica la gravedad del problema detectado
                                         <table className="table table-bordered text-start m-0">
                                             <thead>
                                                 <tr>
@@ -258,7 +259,7 @@ const AgregarErrores = () => {
                             <label className="titulo-campos"><strong style={{ color: 'red' }}>* </strong>Prioridad  <OverlayTrigger
                                 placement="top"
                                 overlay={
-                                    <Tooltip> Determina el orden en el que debe resolverse
+                                    <Tooltip className="custom-tooltip"> Determina el orden en el que debe resolverse
                                         <table className="table table-bordered text-start m-0">
                                             <thead>
                                                 <tr>

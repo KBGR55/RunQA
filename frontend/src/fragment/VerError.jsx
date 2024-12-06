@@ -93,7 +93,7 @@ const VerError = () => {
                                     <strong>Severidad   <OverlayTrigger
                                         placement="top"
                                         overlay={
-                                            <Tooltip> Indica la gravedad del problema detectado
+                                            <Tooltip className="custom-tooltip"> Indica la gravedad del problema detectado
                                                 <table className="table table-bordered text-start m-0">
                                                     <thead>
                                                         <tr>
@@ -132,7 +132,7 @@ const VerError = () => {
                                     <strong>Prioridad    <OverlayTrigger
                                         placement="top"
                                         overlay={
-                                            <Tooltip> Determina el orden en el que debe resolverse
+                                            <Tooltip className="custom-tooltip"> Determina el orden en el que debe resolverse
                                                 <table className="table table-bordered text-start m-0">
                                                     <thead>
                                                         <tr>
