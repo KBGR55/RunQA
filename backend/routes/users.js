@@ -221,7 +221,7 @@ router.get('/rol_proyecto/listar/entidad',rolProyectoController.listar_roles_ent
 router.get('/cuenta/:nombreCompleto',cuentaController.obtenerCuenta);
 
 /** PROYECTO */
-router.post('/proyecto', proyectoController.crearProtecto);
+router.post('/proyecto', proyectoController.crearProyecto);
 router.put('/proyecto', proyectoController.actualizarProyecto);
 router.post('/proyecto/asignar', proyectoController.asignarProyecto);
 router.get('/proyecto/:id_proyect',proyectoController.getEntidadProyecto);

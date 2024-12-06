@@ -192,8 +192,6 @@ class ErrorController {
         }
     }
 
-
-
     async guardar(req, res) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -254,7 +252,6 @@ class ErrorController {
             });
         }
     }
-
 
 }
 

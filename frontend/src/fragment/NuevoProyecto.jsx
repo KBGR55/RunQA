@@ -13,6 +13,7 @@ const NuevoProyecto = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const { external_id_proyecto} = useParams();
+    const [horasDiarias, setHorasDiarias] = useState(2);
 
     const navigate = useNavigate();
     const [proyecto, setProyecto] = useState([]);
@@ -55,6 +56,7 @@ const NuevoProyecto = () => {
             const datos = {
                 id_proyect: proyecto.id,
                 name: name,
+                horasDiarias: horasDiarias,
                 description: description
             };
             peticionPut(getToken(), "proyecto", datos).then((info) => {
@@ -74,6 +76,7 @@ const NuevoProyecto = () => {
             const datos = {
                 id_entidad: getUser().user.id,
                 name: name,
+                horasDiarias: horasDiarias,
                 description: description
             };
             peticionPost(getToken(), "proyecto", datos).then((info) => {
@@ -139,6 +142,23 @@ const NuevoProyecto = () => {
                             maxLength={350}
                         ></textarea>
                         <small className="text-muted">{description.length}/350 caracteres</small>
+                    </div>
+                    <div className="">
+                        <label htmlFor="horasDiarias" className="form-label d-flex align-items-center"> <strong style={{ color: 'red' }}>* </strong>
+                            Horas diarias a trabajar como lider
+                        </label>
+                        <input
+                            type="number"
+                            id="horasDiarias"
+                            value={horasDiarias}
+                            onChange={(e) => setHorasDiarias(Number(e.target.value))}
+                            min="2"
+                            max="12"
+                            className="form-control"
+                        />
+                        {horasDiarias < 2 || horasDiarias > 12 ? (
+                            <span className="mensajeerror">Debe ingresar un valor entre 2 y 12</span>
+                        ) : null}
                     </div>
                     <div className="contenedor-filo">
                         <button type="button" onClick={handleCancelClick} className="btn-negativo">
