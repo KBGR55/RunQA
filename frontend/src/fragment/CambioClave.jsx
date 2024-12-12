@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router';
 import mensajes from '../utilities/Mensajes';
 import { peticionPut } from '../utilities/hooks/Conexion';
-import { borrarSesion, getUser } from '../utilities/Sessionutil';
+import { borrarSesion, getToken, getUser } from '../utilities/Sessionutil';
 
 const CambioClave = () => {
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
@@ -34,7 +34,7 @@ const CambioClave = () => {
             ? `cuenta/restablecer/clave/${external_id}`
             : `cuenta/clave/${getUser().external_cuenta}`;
 
-        const response = await peticionPut(token, endpoint, datos);
+        const response = await peticionPut(( token && external_id)?token:getToken(), endpoint, datos);
         if (response.code === 200) {
             mensajes("La contraseña ha sido actualizada exitosamente", 'success', 'Éxito');
             setTimeout(() => {
