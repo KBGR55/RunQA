@@ -309,6 +309,50 @@ label {
   border-left: 7px solid var(--color-terciario);
   border: 1px solid #dadada;
 }
+.custom-tooltip {
+  background-color: #ffffff !important; /* Fondo blanco */
+  color: #000000 !important;          /* Texto negro */
+  border: 1px solid #ccc;             /* Borde gris claro */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  padding: 10px;                      /* Espaciado interno */
+  border-radius: 5px;                 /* Bordes redondeados */
+  text-align: left;                   /* Alineación del texto */
+  margin: 0 !important;               /* Elimina margen externo */
+  width: auto;                        /* Ajusta el ancho dinámicamente */
+  max-width: 400px;                   /* Ancho máximo */
+}
+
+.custom-tooltip .tooltip-arrow {
+  display: none !important;           /* Oculta la flecha si genera bordes no deseados */
+}
+
+.custom-tooltip .table {
+  margin: 0 !important;               /* Elimina margen interno */
+  padding: 0 !important;              /* Elimina relleno */
+  border: none !important;            /* Elimina bordes */
+  width: 100%;                        /* Ocupa todo el espacio disponible */
+  background-color: transparent !important; /* Fondo transparente */
+  color: inherit;                     /* Usa el color heredado */
+  box-shadow: none !important;        /* Elimina sombras */
+}
+
+.custom-tooltip .table thead tr:first-child {
+  background-color: var(--color-terciario) !important;  
+}
+
+.custom-tooltip .tooltip-inner {
+  padding: 0 !important;              /* Ajusta el padding */
+  margin: 0 !important;               /* Ajusta el margen */
+  background: none !important;        /* Elimina fondo predeterminado */
+  border: none !important;            /* Elimina bordes */
+  box-shadow: none !important;        /* Elimina sombras adicionales */
+}
+
+.custom-tooltip * {
+  background-color: transparent !important; /* Fuerza fondo transparente */
+  color: #000000 !important;                /* Texto negro */
+}
+
 
 
 @media (max-width: 500px) {

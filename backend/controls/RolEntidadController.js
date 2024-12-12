@@ -129,9 +129,7 @@ class RolEntidadController {
                     return res.status(409).json({ msg: `${entidad.nombres} Ya tiene asignado el rol de LÍDER DE CALIDAD`, code: 409 });
                 }
                 if (entidad.horasDisponibles >= horasDefault) {
-                    entidad.horasDisponibles -= horasDefault;
                     await entidad.save({ transaction });
-    
                     const nuevaAsignacion = await models.rol_entidad.create({
                         id_entidad: lider.id_entidad,
                         id_rol: nameRole.id,
@@ -139,7 +137,7 @@ class RolEntidadController {
                     }, { transaction });
                     asignaciones.push(nuevaAsignacion);
                 } else {
-                    return res.status(409).json({ msg: `${entidad.nombres} no tiene suficientes horas disponibles`, code: 409 });                   
+                    return res.status(409).json({ msg: `${entidad.nombres} no tiene un maximo de 2 horas disponibles`, code: 409 });                   
                 }
                
             }
@@ -206,7 +204,6 @@ class RolEntidadController {
 
             await models.rol_proyecto.create({
                 external_id: uuid.v4(),
-                horasDiarias: 2,
                 id_proyecto: proyecto.id,
                 id_rol_entidad: nuevoAdmin.id
             });

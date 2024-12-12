@@ -207,9 +207,6 @@ router.post('/error/guardar', [
   body('funcionalidad').optional().isString().withMessage('La funcionalidad debe ser un texto'),
   body('titulo').optional().isString().withMessage('El título debe ser un texto'),
   body('pasos_reproducir').optional().isString().withMessage('Los pasos deben ser un texto'),
-  body('persona_asignada').optional().isString().withMessage('La perona asignada debe ser un texto'),
-  body('severidad').optional().isIn(['ALTA', 'MEDIA', 'BAJA', 'CRITICO']).withMessage('La severidad debe ser ALTA, MEDIA, BAJA o CRITICO'),
-  body('estado').optional().isIn(['PENDIENTE', 'RESUELTO', 'NO_REPUDIO', 'EN_PROCESO']).withMessage('El estado debe ser PENDIENTE, RESUELTO, NO_REPUDIO o EN_PROCESO'),
   body('razon').optional().isString().withMessage('La razón debe ser un texto'),
   body('fecha_reporte').optional().isISO8601().withMessage('La fecha de reporte debe ser una fecha válida ISO 8601')
 ],errorController.guardar);
@@ -224,7 +221,7 @@ router.get('/rol_proyecto/listar/entidad',rolProyectoController.listar_roles_ent
 router.get('/cuenta/:nombreCompleto',cuentaController.obtenerCuenta);
 
 /** PROYECTO */
-router.post('/proyecto', proyectoController.crearProtecto);
+router.post('/proyecto', proyectoController.crearProyecto);
 router.put('/proyecto', proyectoController.actualizarProyecto);
 router.post('/proyecto/asignar', proyectoController.asignarProyecto);
 router.get('/proyecto/:id_proyect',proyectoController.getEntidadProyecto);

@@ -6,8 +6,10 @@ import '../css/style.css';
 import mensajes from '../utilities/Mensajes';
 import { getToken } from '../utilities/Sessionutil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'react-bootstrap';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 
 const VerError = () => {
     const [dataErrror, setDataErrror] = useState({});
@@ -79,23 +81,90 @@ const VerError = () => {
                             <div className="d-flex justify-content-around align-items-center flex-wrap gap-2">
                                 <div className="d-flex flex-column align-items-center">
                                     <strong>Estado</strong>
-                                    <span className={`badge ${dataErrror?.estado === 'PENDIENTE' ? 'bg-warning' : dataErrror?.estado === 'RESUELTO' ? 'bg-success' :
-                                        dataErrror?.estado === 'NO_REPUDIO' ? 'bg-danger' : dataErrror?.estado === 'EN_PROCESO' ? 'bg-info' : 'bg-secondary'}`}>
+                                    <span className={`badge ${dataErrror?.estado === 'NUEVO' ? 'bg-primary' :
+                                        dataErrror?.estado === 'CERRADO' ? 'bg-secondary' :
+                                            dataErrror?.estado === 'PENDIENTE_VALIDACION' ? 'bg-warning' :
+                                                dataErrror?.estado === 'CORRECCION' ? 'bg-danger' :
+                                                    'bg-secondary'}`}>
                                         {dataErrror?.estado || 'No disponible'}
                                     </span>
-
                                 </div>
                                 <div className="d-flex flex-column align-items-center">
-                                    <strong>Severidad</strong>
-                                    <span
-                                        className={`badge ${dataErrror?.severidad === 'ALTA' ? 'bg-danger' :
-                                            dataErrror?.severidad === 'CRITICO' ? 'bg-dark' :
-                                                dataErrror?.severidad === 'MEDIA' ? 'bg-warning' :
-                                                    dataErrror?.severidad === 'BAJA' ? 'bg-success' :
-                                                        'bg-secondary'
-                                            }`}
+                                    <strong>Severidad   <OverlayTrigger
+                                        placement="top"
+                                        overlay={
+                                            <Tooltip className="custom-tooltip"> Indica la gravedad del problema detectado
+                                                <table className="table table-bordered text-start m-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Valor</th>
+                                                            <th>Significado</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>CRITICO</td>
+                                                            <td>Compromete el sistema completo, urgente.</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>MEDIA</td>
+                                                            <td>Afecta funciones secundarias, no crítico.</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>BAJA</td>
+                                                            <td>Problema menor, plazo extendido para resolución.</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </Tooltip>
+                                        }
                                     >
+                                        <FontAwesomeIcon icon={faQuestionCircle} className="ms-2 text-info" />
+                                    </OverlayTrigger></strong>
+                                    <span className={`badge ${dataErrror?.severidad === 'MEDIA' ? 'bg-warning' :
+                                        dataErrror?.severidad === 'BAJA' ? 'bg-success' :
+                                            dataErrror?.severidad === 'CRITICO' ? 'bg-dark' :
+                                                'bg-secondary'}`}>
                                         {dataErrror?.severidad || 'No disponible'}
+                                    </span>
+                                </div>
+                                <div className="d-flex flex-column align-items-center">
+                                    <strong>Prioridad    <OverlayTrigger
+                                        placement="top"
+                                        overlay={
+                                            <Tooltip className="custom-tooltip"> Determina el orden en el que debe resolverse
+                                                <table className="table table-bordered text-start m-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Valor</th>
+                                                            <th>Significado</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>ALTA</td>
+                                                            <td>Debe resolverse primero, afecta operaciones clave.</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>MEDIA</td>
+                                                            <td>Intermedio en prioridad, no afecta funciones críticas.</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>BAJA</td>
+                                                            <td>Puede resolverse en un plazo extendido.</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </Tooltip>
+                                        }
+                                    >
+                                        <FontAwesomeIcon icon={faQuestionCircle} className="ms-2 text-info" />
+                                    </OverlayTrigger></strong>
+                                    <span className={`badge ${dataErrror?.prioridad === 'ALTA' ? 'bg-danger' :
+                                        dataErrror?.prioridad === 'MEDIA' ? 'bg-warning' :
+                                            dataErrror?.prioridad === 'BAJA' ? 'bg-success' :
+                                                'bg-secondary'}`}>
+                                        {dataErrror?.prioridad || 'No disponible'}
                                     </span>
                                 </div>
                                 <div className="d-flex flex-column align-items-center">
@@ -103,6 +172,7 @@ const VerError = () => {
                                     <p className="texto-normal" style={{ textAlign: 'justify' }} dangerouslySetInnerHTML={{ __html: dataErrror?.funcionalidad?.replace(/\n/g, '<br />') || 'No disponible' }} />
                                 </div>
                             </div>
+
                         </div>
                     </div>
 
@@ -122,11 +192,7 @@ const VerError = () => {
 
                     <div className="col-12 mb-4">
                         <div className="card p-3 shadow-sm card-custom-bord ">
-                            <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Personas Involucradas</h5>
-                            <div className="mb-2">
-                                <strong>Asignado por: </strong>
-                                {dataErrror?.persona_que_asigno || 'No disponible'}
-                            </div>
+                            <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Persona responsable</h5>
                             <div className="mb-2">
                                 <strong>Asignado a: </strong>
                                 {dataErrror?.persona_asignada || 'No disponible'}
@@ -135,13 +201,13 @@ const VerError = () => {
                     </div>
                 </div>
                 <div className='contenedor-filo'>
-                <Button variant="btn btn-outline-info btn-rounded" onClick={() => navigate(`/error/editar/${external_id_proyecto}/${external_id}/${external_id_error}`)} >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
-                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                        <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-                    </svg>
-                </Button>
-            </div>
+                    <Button variant="btn btn-outline-info btn-rounded" onClick={() => navigate(`/error/editar/${external_id_proyecto}/${external_id}/${external_id_error}`)} >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                            <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                        </svg>
+                    </Button>
+                </div>
             </div>
         </div>
     );
