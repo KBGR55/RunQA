@@ -35,13 +35,11 @@ class ProyectoController {
     }
 
     async crearProyecto(req, res) {
-        console.log(req.body);
+        console.log(req.body.horasDiarias);
         let transaction;
         try {
-            // Inicia una transacción
             transaction = await models.sequelize.transaction();
     
-            // Verifica la existencia de la entidad
             const entidad = await models.entidad.findOne({
                 where: { id: req.body.id_entidad },
                 attributes: ['id', 'horasDisponibles', 'nombres']
@@ -50,8 +48,7 @@ class ProyectoController {
             if (!entidad) {
                 return res.status(404).json({ msg: "Entidad no encontrada", code: 404 });
             }
-    
-            // Obtiene el rol del líder
+
             const dataRolLider = await models.rol.findOne({
                 where: { nombre: rolLider },
                 attributes: ['id']
@@ -61,7 +58,6 @@ class ProyectoController {
                 return res.status(404).json({ msg: "Rol no encontrado", code: 404 });
             }
     
-            // Verifica la existencia de rol_entidad
             const rolEntidad = await models.rol_entidad.findOne({
                 where: { id_entidad: entidad.id, id_rol: dataRolLider.id },
                 attributes: ['id']
@@ -71,9 +67,6 @@ class ProyectoController {
                 return res.status(404).json({ msg: "Rol en entidad no encontrado", code: 404 });
             }
     
-       
-            
-            // Busca un proyecto con el mismo nombre para este rol_entidad
             const proyectoExistente = await models.rol_proyecto.findOne({
                 where: { id_rol_entidad: rolEntidad.id },
                 include: {
@@ -97,11 +90,10 @@ class ProyectoController {
                 });
             }
     
-            // Actualiza las horas disponibles de la entidad
             entidad.horasDisponibles -= req.body.horasDiarias;
             await entidad.save({ transaction });
             var uuid = require('uuid');
-            // Crea el proyecto
+           
             const proyectoData = {
                 nombre: req.body.name,
                 descripcion: req.body.description,
@@ -111,14 +103,13 @@ class ProyectoController {
     
             const nuevoProyecto = await models.proyecto.create(proyectoData, { transaction });
     
-            // Crea la asociación rol_proyecto
             await models.rol_proyecto.create({
                 id_rol_entidad: rolEntidad.id,
                 id_proyecto: nuevoProyecto.id,
+                horasDiarias: req.body.horasDiarias,
                 external_id: uuid.v4()
             }, { transaction });
-    
-            // Confirma la transacción
+
             await transaction.commit();
     
             res.status(201).json({
@@ -128,10 +119,7 @@ class ProyectoController {
             });
     
         } catch (error) {
-            // Log completo del error
             console.error("Error al crear el proyecto:", error);
-        
-            // Respuesta al cliente
             const errorMsg = error.errors?.[0]?.message || error.message || "Error interno del servidor";
             res.status(500).json({ msg: errorMsg, code: 500 });
         }        
@@ -209,37 +197,60 @@ class ProyectoController {
     async asignarProyecto(req, res) {
         let transaction;
         const errorMessages = [];
-
+    
         try {
             transaction = await models.sequelize.transaction();
-
-            const proyecto = await models.proyecto.findOne({ where: { external_id: req.body.id_proyect }, attributes: ['id', 'nombre'] });
+    
+            // Fetch the project
+            const proyecto = await models.proyecto.findOne({
+                where: { external_id: req.body.id_proyect },
+                attributes: ['id', 'nombre']
+            });
             if (!proyecto) {
                 errorMessages.push("Proyecto no encontrado.");
                 return res.status(400).json({ msg: "Proyecto no encontrado", code: 400 });
             }
-
-            const rol = await models.rol.findOne({ where: { external_id: req.body.id_rol }, attributes: ['id'] });
+    
+            // Fetch the role
+            const rol = await models.rol.findOne({
+                where: { external_id: req.body.id_rol },
+                attributes: ['id']
+            });
             if (!rol) {
                 errorMessages.push("Rol no encontrado.");
                 return res.status(400).json({ msg: "Rol no encontrado", code: 400 });
             }
-
+    
             const users = req.body.users;
             let hasErrors = false;
-
+    
             for (const user of users) {
-                const entidad = await models.entidad.findOne({ where: { id: user.id_entidad }, attributes: ['id', 'nombres', 'horasDisponibles'] });
+                const entidad = await models.entidad.findOne({
+                    where: { id: user.id_entidad },
+                    attributes: ['id', 'nombres', 'horasDisponibles']
+                });
+    
                 if (!entidad) {
                     errorMessages.push(`Entidad con ID ${user.id_entidad} no encontrada.`);
                     hasErrors = true;
                     continue;
                 }
-
+    
+                // Debugging log for available hours
+                console.log(`Entidad: ${entidad.nombres} - Horas Disponibles: ${entidad.horasDisponibles}`);
+                console.log(`Horas Diarias Solicitadas: ${req.body.horasDiarias}`);
+    
+                // Check if the entity has enough available hours
+                if (entidad.horasDisponibles < req.body.horasDiarias) {
+                    errorMessages.push(`${entidad.nombres} no tiene suficientes horas disponibles, ya que solo tiene ${entidad.horasDisponibles} horas disponibles.`);
+                    hasErrors = true;
+                    continue;
+                }
+    
                 let rolEntidad = await models.rol_entidad.findOne({
                     where: { id_entidad: entidad.id, id_rol: rol.id }
                 });
-
+    
                 if (!rolEntidad) {
                     rolEntidad = await models.rol_entidad.create({
                         id_entidad: entidad.id,
@@ -247,52 +258,54 @@ class ProyectoController {
                         external_id: uuid.v4(),
                     }, { transaction });
                 }
-
+    
                 const existingRolProyecto = await models.rol_proyecto.findOne({
                     where: { id_rol_entidad: rolEntidad.id, id_proyecto: proyecto.id }
                 });
-
+    
                 if (!existingRolProyecto) {
-                    if (entidad.horasDisponibles >= req.body.horasDiarias) {
-                        entidad.horasDisponibles -= req.body.horasDiarias;
-                        await entidad.save({ transaction });
-
-                        await models.rol_proyecto.create({
-                            id_rol_entidad: rolEntidad.id,
-                            id_proyecto: proyecto.id,
-                            horasDiarias: req.body.horasDiarias,
-                            external_id: uuid.v4(),
-                        }, { transaction });
-                    } else {
-                        errorMessages.push(`${entidad.nombres} no tiene suficientes horas disponibles, ya que solo tiene ${entidad.horasDisponibles} de horas disponibles`);
-                        hasErrors = true;
-                        continue;
-                    }
+                    // Deduct the assigned hours from available hours
+                    entidad.horasDisponibles -= req.body.horasDiarias;
+                    await entidad.save({ transaction });
+    
+                    // Create the role project
+                    await models.rol_proyecto.create({
+                        id_rol_entidad: rolEntidad.id,
+                        id_proyecto: proyecto.id,
+                        horasDiarias: req.body.horasDiarias,
+                        external_id: uuid.v4(),
+                    }, { transaction });
                 }
             }
-
+    
+            // If any errors occurred, rollback the transaction
             if (hasErrors) {
                 if (transaction.finished !== 'rollback') {
                     await transaction.rollback();
                 }
                 const errorMsg = errorMessages.join(", ");
-                res.status(500).json({ msg: `Error asignando roles: ${errorMsg}.`, code: 500 });
-            } else {
-                await transaction.commit();
-                res.json({ msg: users.length > 1 ? "Roles asignados correctamente" : "Rol asignado correctamente", code: 200 });
+                return res.status(500).json({ msg: `Error asignando roles: ${errorMsg}.`, code: 500 });
             }
-
+    
+            // Commit the transaction if everything is successful
+            await transaction.commit();
+            return res.json({
+                msg: users.length > 1 ? "Roles asignados correctamente" : "Rol asignado correctamente",
+                code: 200
+            });
+    
         } catch (error) {
             if (transaction && transaction.finished !== 'rollback') {
                 await transaction.rollback();
             }
             console.error("Error:", error);
-            res.status(500).json({
+            return res.status(500).json({
                 msg: error.message || "Error interno del servidor",
                 code: 500
             });
         }
     }
+    
 
     async getEntidadProyecto(req, res) {
         try {
