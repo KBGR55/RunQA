@@ -124,6 +124,82 @@ class ProyectoController {
             res.status(500).json({ msg: errorMsg, code: 500 });
         }        
     }
+
+    async eliminarProyecto(req, res) {
+        let transaction;
+        try {
+            transaction = await models.sequelize.transaction();
+    
+            const proyecto = await models.proyecto.findOne({
+                where: { external_id: req.params.external_id },
+                attributes: ['id', 'estado', 'nombre']
+            });
+    
+            if (!proyecto) {
+                return res.status(404).json({ msg: "Proyecto no encontrado", code: 404 });
+            }
+    
+            const casosDePrueba = await models.caso_prueba.findOne({
+                where: { id_proyecto: proyecto.id },
+                attributes: ['id']
+            });
+    
+            if (casosDePrueba) {
+                return res.status(400).json({
+                    msg: `El proyecto '${proyecto.nombre}' no puede ser eliminado porque tiene casos de prueba registrados.`,
+                    code: 400
+                });
+            }
+    
+            const rolesProyecto = await models.rol_proyecto.findAll({
+                where: { id_proyecto: proyecto.id, estado: 1 },
+                include: [
+                    {
+                        model: models.rol_entidad,
+                        as: 'rol_entidad',
+                        include: [
+                            {
+                                model: models.entidad,
+                                as: 'entidad',
+                                attributes: ['id', 'horasDisponibles', 'nombres', 'apellidos']
+                            }
+                        ]
+                    }
+                ],
+                attributes: ['id', 'horasDiarias']
+            });
+    
+            for (const rolProyecto of rolesProyecto) {
+                if (rolProyecto.rol_entidad && rolProyecto.rol_entidad.entidad) {
+                    const entidad = rolProyecto.rol_entidad.entidad;
+                    entidad.horasDisponibles += rolProyecto.horasDiarias;
+                    await entidad.save({ transaction });
+                }
+            }
+    
+            proyecto.estado = 0;
+            await proyecto.save({ transaction });
+    
+            await models.rol_proyecto.update(
+                { estado: 0 },
+                { where: { id_proyecto: proyecto.id }, transaction }
+            );
+    
+            await transaction.commit();
+    
+            res.status(200).json({
+                msg: `El proyecto '${proyecto.nombre}' ha sido eliminado`,
+                code: 200
+            });
+    
+        } catch (error) {
+            console.error("Error al eliminar el proyecto:", error);
+            if (transaction) await transaction.rollback();
+            const errorMsg = error.errors?.[0]?.message || error.message || "Error interno del servidor";
+            res.status(500).json({ msg: errorMsg, code: 500 });
+        }
+    }
+    
     
 
     async modificarProyecto(req, res) {
