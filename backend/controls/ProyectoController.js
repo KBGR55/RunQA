@@ -573,7 +573,7 @@ class ProyectoController {
             }
 
             res.json({
-                msg: "Testers encontrados correctamente",
+                msg: "OK",
                 code: 200,
                 info: testers.map(t => ({
                     id: t.rol_entidad.entidad.id,

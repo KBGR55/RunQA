@@ -157,9 +157,6 @@ class ContratoController {
 
             const { id_proyecto, tester, entidad_asigno, casosPrueba, fecha_inicio, fecha_fin, tester_rol } = req.body;
 
-            console.log("wwwwwww", req.body);
-            
-
             if (!id_proyecto || !tester || tester.length === 0 || !casosPrueba || casosPrueba.length === 0|| !fecha_inicio || !fecha_fin) {
                 return res.status(400).json({ msg: "Faltan datos requeridos", code: 400 });
             }
@@ -180,7 +177,7 @@ class ContratoController {
                 where: { id_entidad: tester.id_entidad, id_rol: tester_rol }
             });
             if (!rolEntidad) {
-                return res.status(404).json({ msg: 'Rol entidad del tester no encontrado', code: 404 });
+                return res.status(404).json({ msg: 'Tester no encontrado', code: 404 });
             }
 
             for (const caso of casosPrueba) {
@@ -197,7 +194,7 @@ class ContratoController {
                 });
 
                 if (!rolProyectoAsignado) {
-                    return res.status(400).json({ msg: "Rol proyecto asignado no encontrado", code: 400 });
+                    return res.status(400).json({ msg: "Proyecto asignado no encontrado", code: 400 });
                 }
 
                 const contratoExistente = await models.contrato.findOne({

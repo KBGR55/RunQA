@@ -16,9 +16,7 @@ const AsignarCasosPrueba = ({ setShowModal}) => {
     const { external_id, external_id_proyecto } = useParams();
     const [showNewProjectModal, setShowNewProjectModal] = useState(false);
     const [casosPrueba, setCasosPrueba] = useState([]);
-    const [tester, setTester] = useState([]);
     const [selectedCases, setSelectedCases] = useState([]);
-    const [rolId, setRolId] = useState(null);
     const navigate = useNavigate();
     const usuario = getUser();
     const [infoProyecto,setProyecto] = useState([]);
@@ -57,24 +55,6 @@ const AsignarCasosPrueba = ({ setShowModal}) => {
         fetchDataOut();
     }, [external_id_proyecto, navigate]);
     
-    useEffect(() => {
-        const fetchTesters = async () => {
-            try {
-                const info = await peticionGet(getToken(), `proyecto/listar/tester/${external_id_proyecto}`);
-                if (info.code === 200) {
-                    setTester(info.info);
-                    setRolId(info.id_rol);
-                } else {
-                    mensajes(info.msg, 'error');
-                }
-            } catch (error) {
-                console.error('Error al cargar los testers:', error);
-            }
-        };
-
-        fetchTesters();
-    }, [external_id]);
-
     const handleShowNewProjectModal = () => {
         setShowNewProjectModal(true);
     };
@@ -88,9 +68,6 @@ const AsignarCasosPrueba = ({ setShowModal}) => {
             }
         });
     };
-
-    console.log("cccccccccccccccc", selectedCases);
-    
 
     return (
         <div>

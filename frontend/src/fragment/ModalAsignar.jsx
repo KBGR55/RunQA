@@ -27,18 +27,42 @@ const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, ext
                 if (info.code === 200) {
                     setTester(info.info);
                     setRolId(info.id_rol);
-                    console.log("wwwwwwwww", info.info);
-                    
+                } else if (info.code === 404) {
+                    showNoTestersAlert();
                 } else {
-                    mensajes(info.msg, 'error');
+                    mensajes(info.msg, "error");
                 }
             } catch (error) {
-                console.error('Error al cargar los testers:', error);
+                console.error("Error al cargar los testers:", error);
             }
         };
 
         fetchTesters();
     }, [external_id_proyecto]);
+
+    const showNoTestersAlert = () => {
+        swal({
+            title: "No hay testers asignados",
+            text: "¿Desea asignar testers al proyecto?",
+            icon: "info",
+            showCancelButton: true,
+            buttons: ["No", "Sí"],
+            dangerMode: true,
+        }).then(async (confirmacion) => {
+            if (confirmacion) {
+                try {
+                    navigate(`/proyecto/usuarios/${external_id_proyecto}`);
+                } catch (error) {
+                    console.error('Error al eliminar el proyecto:', error);
+                    swal({
+                        title: "Error",
+                        text: "Ocurrió un problema al intentar eliminar el proyecto.",
+                        icon: "error",
+                    });
+                }
+            }
+        });
+    };
 
     const handleTesterSelect = (e) => {
         const testerId = e.target.value;
@@ -83,8 +107,6 @@ const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, ext
         }
     };
 
-    console.log("qqqqqqqqqqqqqqq", tester);
-    
 
     const handleCancelClick = () => {
         swal({
