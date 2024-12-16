@@ -65,7 +65,10 @@ const VerPeticion = () => {
         };
 
         const acepReac = (datac, motivo = "") => {
-            const motivoParam = encodeURIComponent(motivo); 
+            var motivoParam = encodeURIComponent(motivo); 
+            if (!motivoParam) {
+                motivoParam='true';
+            }
             peticionGet(getToken(), `aceptarechazar/peticiones/${external_id}/${datac}/${motivoParam}/${getUser().user.id}`).then((info) => {
                 if (info.code !== 200) {
                     mensajes(info.msg);
