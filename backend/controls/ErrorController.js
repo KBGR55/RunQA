@@ -202,7 +202,6 @@ class ErrorController {
                 errors: errors.array()
             });
         }
-        console.log('llo0',req.body); 
     
         if (!req.body.external_caso_prueba) {
             return res.status(400).json({
@@ -210,7 +209,6 @@ class ErrorController {
                 code: 400
             });
         }
-    
         try {
             const casoPrueba = await models.caso_prueba.findOne({
                 where: { external_id: req.body.external_caso_prueba }
@@ -220,6 +218,20 @@ class ErrorController {
                 return res.status(404).json({
                     msg: 'Caso de prueba no encontrado',
                     code: 404
+                });
+            }
+            
+            const tituloExistente = await models.error.findOne({
+                where: {
+                    titulo: req.body.titulo,
+                    id_caso_prueba: casoPrueba.id
+                }
+            });
+    
+            if (tituloExistente) {
+                return res.status(400).json({
+                    msg: 'Ya existe un error con el mismo título para este caso de prueba',
+                    code: 400,
                 });
             }
 
