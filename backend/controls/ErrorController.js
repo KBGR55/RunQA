@@ -8,10 +8,9 @@ class ErrorController {
     async listar(req, res) {
         try {
             const errores = await error.findAll({
-                attributes: [
-                    'external_id', 'funcionalidad', 'titulo', 'pasos_reproducir',
-                    'persona_asignada', 'severidad', 'estado', 'prioridad',
-                    'razon', 'fecha_reporte', 'fecha_resolucion'
+                attributes: ['id', 'external_id', 'funcionalidad', 'titulo', 
+                   'severidad', 'estado','prioridad','anexo_foto',
+                    'resultado_obtenido', 'fecha_reporte', 'fecha_resolucion'
                 ]
             });
             res.json({
@@ -34,24 +33,20 @@ class ErrorController {
         const casoPrueba = await models.caso_prueba.findOne({
             where: { external_id: external_caso_prueba }
         });
-        // Si no se encuentra el caso de prueba, retornar un error
+
         if (!casoPrueba) {
             return res.status(404).json({
                 msg: 'Caso de prueba no encontrado',
                 code: 404
             });
         }
-
         const id_caso = casoPrueba.id;
-
-
         try {
             const errores = await error.findAll({
                 where: { id_caso_prueba: id_caso },
-                attributes: [
-                    'id', 'external_id', 'funcionalidad', 'titulo', 'pasos_reproducir',
-                    'persona_asignada', 'severidad', 'estado','prioridad',
-                    'razon', 'fecha_reporte', 'fecha_resolucion'
+                attributes: ['id', 'external_id', 'funcionalidad', 'titulo', 'pasos_repetir',
+                   'severidad', 'estado','prioridad','anexo_foto',
+                    'resultado_obtenido', 'fecha_reporte', 'fecha_resolucion'
                 ]
             });
 
@@ -86,19 +81,12 @@ class ErrorController {
             });
         }
 
-        const {
-            funcionalidad, titulo, pasos_reproducir, persona_asignada, prioridad,
-            severidad, estado, razon, fecha_resolucion
-        } = req.body;
-
         try {
-            // Buscar el error por external_id
             const errorEncontrado = await error.findOne({
                 where: { external_id: external_id },
-                attributes: [
-                    'external_id', 'funcionalidad', 'titulo', 'pasos_reproducir',
-                    'persona_asignada', 'severidad', 'estado', 'prioridad',
-                    'razon', 'fecha_reporte', 'fecha_resolucion'
+                attributes: ['id', 'external_id', 'funcionalidad', 'titulo', 'pasos_repetir',
+                   'severidad', 'estado','prioridad','anexo_foto',
+                    'resultado_obtenido', 'fecha_reporte'
                 ]
             });
 
@@ -108,23 +96,37 @@ class ErrorController {
                     code: 404
                 });
             }
+            let imagenAnterior = errorEncontrado.foto;
+    
+            if (req.file) {
+                if (imagenAnterior) {
+                    const imagenAnteriorPath = path.join(__dirname, '../public/images/errors/', imagenAnterior);
+                    fs.unlink(imagenAnteriorPath, (err) => {
+                        if (err) {
+                            console.log('Error al eliminar la imagen anterior:', err);
+                        } else {
+                            console.log("eliminada: " + imagenAnterior);
+                        }
+                    });
+                }
+                imagenAnterior = req.file.filename; 
+            }else{
+                imagenAnterior = errorEncontrado.foto; 
+            }
 
-            // Actualizar el error encontrado
             const [updated] = await error.update({
-                funcionalidad: funcionalidad || errorEncontrado.funcionalidad,
-                titulo: titulo || errorEncontrado.titulo,
-                pasos_reproducir: pasos_reproducir || errorEncontrado.pasos_reproducir,
-                persona_asignada: persona_asignada || errorEncontrado.persona_asignada,
-                severidad: severidad || errorEncontrado.severidad,
-                prioridad: prioridad || errorEncontrado.prioridad,
-                estado: estado || errorEncontrado.estado,
-                razon: razon || errorEncontrado.razon,
-                fecha_resolucion: fecha_resolucion || errorEncontrado.fecha_resolucion
+                funcionalidad: req.body.funcionalidad || errorEncontrado.funcionalidad,
+                titulo: req.body.titulo || errorEncontrado.titulo,
+                severidad: req.body.severidad || errorEncontrado.severidad,
+                prioridad: req.body.prioridad || errorEncontrado.prioridad,
+                pasos_repetir: req.body.pasos_repetir || errorEncontrado.pasos_repetir,
+                estado: req.body.estado || errorEncontrado.estado,
+                anexo_foto: imagenAnterior,
+                resultado_obtenido: req.body.resultado_obtenido || errorEncontrado.resultado_obtenido,
             }, {
                 where: { external_id: external_id }
             });
 
-            // Verificar si se actualizó el error
             if (!updated) {
                 return res.status(404).json({
                     msg: 'No se pudo actualizar el error',
@@ -132,11 +134,10 @@ class ErrorController {
                 });
             }
 
-            // Enviar respuesta exitosa
             return res.json({
                 msg: 'Error actualizado correctamente',
                 code: 200,
-                info: { external_id, funcionalidad, titulo, pasos_reproducir, persona_asignada, severidad, prioridad, estado, razon, fecha_resolucion }
+                info: updated
             });
 
         } catch (err) {
@@ -164,9 +165,9 @@ class ErrorController {
             const errorEncontrado = await error.findOne({
                 where: { external_id: external_id },
                 attributes: [
-                    'external_id', 'funcionalidad', 'titulo', 'pasos_reproducir',
-                    'persona_asignada', 'severidad', 'estado', 'prioridad',
-                    'razon', 'fecha_reporte', 'fecha_resolucion'
+                    'id', 'external_id', 'funcionalidad', 'titulo', 
+                    'severidad', 'estado','prioridad','anexo_foto',
+                    'resultado_obtenido', 'fecha_reporte', 'fecha_resolucion', 'pasos_repetir'
                 ]
             });
 
@@ -201,43 +202,40 @@ class ErrorController {
                 errors: errors.array()
             });
         }
-        console.log(req.body);
-        
-
-        const {
-            funcionalidad, titulo, pasos_reproducir, persona_asignada,
-            severidad, razon, prioridad,
-            fecha_reporte, fecha_resolucion, external_caso_prueba
-        } = req.body;
+        console.log('llo0',req.body); 
+    
+        if (!req.body.external_caso_prueba) {
+            return res.status(400).json({
+                msg: 'El campo external_caso_prueba es obligatorio',
+                code: 400
+            });
+        }
+    
         try {
-            // Buscar solo cuando su  estadoAsignacion no sea  'NO ASIGNADO' y el estado este en 
             const casoPrueba = await models.caso_prueba.findOne({
-                where: { external_id: external_caso_prueba }
+                where: { external_id: req.body.external_caso_prueba }
             });
 
-            // Si no se encuentra el caso de prueba, retornar un error
             if (!casoPrueba) {
                 return res.status(404).json({
                     msg: 'Caso de prueba no encontrado',
                     code: 404
                 });
             }
+
             casoPrueba.estado = 'FALLIDO';
             await casoPrueba.save();
-            // Crear el nuevo error con el id del caso de prueba encontrado
+    
             const nuevoError = await error.create({
-                funcionalidad: funcionalidad || "SIN_DATOS",
-                titulo: titulo || "SIN_DATOS",
-                pasos_reproducir: pasos_reproducir || null,
-                persona_asignada: persona_asignada || "SIN_DATOS",
-                severidad: severidad || "BAJA",
-                prioridad: prioridad || "BAJA",
-                razon: razon || "SIN_DATOS",
-                fecha_reporte: fecha_reporte || new Date(),
-                fecha_resolucion: fecha_resolucion || null,
-                id_caso_prueba: casoPrueba.id  
+                funcionalidad: req.body.funcionalidad || "SIN_DATOS",
+                titulo: req.body.titulo || "SIN_DATOS",
+                severidad: req.body.severidad ,
+                prioridad: req.body.prioridad ,
+                pasos_repetir: req.body.pasos_repetir,
+                anexo_foto: req.file ? req.file.filename : 'SIN_ANEXO.png',
+                id_caso_prueba: casoPrueba.id 
             });
-
+    
             res.status(201).json({
                 msg: 'Error registrado exitosamente',
                 code: 200,
@@ -252,7 +250,7 @@ class ErrorController {
             });
         }
     }
-
+    
 }
 
 module.exports = ErrorController;

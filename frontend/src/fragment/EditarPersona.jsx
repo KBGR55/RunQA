@@ -61,8 +61,6 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
             formData.append('foto', file);
         }
 
-        console.log("555555", data);
-
         ActualizarImagenes(formData, getToken(), "/modificar/entidad")
             .then((info) => {
                 if (!info || info.code !== 200) {

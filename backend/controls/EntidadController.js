@@ -148,6 +148,7 @@ class EntidadController {
                 },
                 external_id: uuid.v4()
             };
+            
             const entidad = await models.entidad.create(data, {
                 include: [{ model: models.cuenta, as: "cuenta", include: { model: models.peticion, as: 'peticion'}  }],
                 transaction
@@ -189,8 +190,7 @@ class EntidadController {
         }
     }    
 
-    async modificar(req, res) {
-        
+    async modificar(req, res) {   
         try {
 
                const claveHash = (clave) => {

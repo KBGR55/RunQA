@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { peticionGet } from '../utilities/hooks/Conexion';
+import { peticionGet, URLBASE } from '../utilities/hooks/Conexion';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/style.css';
 import mensajes from '../utilities/Mensajes';
@@ -64,14 +64,14 @@ const VerError = () => {
                 <div className="row mt-4">
                     <div className="col-6 mb-4">
                         <div className="card p-3 shadow-sm card-custom-bord">
-                            <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Razón</h5>
-                            <p className="texto-normal" style={{ textAlign: 'justify' }} dangerouslySetInnerHTML={{ __html: dataErrror?.razon?.replace(/\n/g, '<br />') || 'No disponible' }} />
+                            <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Resultado obtenido</h5>
+                            <p className="texto-normal" style={{ textAlign: 'justify' }} dangerouslySetInnerHTML={{ __html: dataErrror?.resultado_obtenido?.replace(/\n/g, '<br />') || 'No disponible' }} />
                         </div>
                     </div>
                     <div className="col-6 mb-4">
                         <div className="card p-3 shadow-sm card-custom-bord">
                             <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Pasos a reproducir</h5>
-                            <p className="texto-normal" style={{ textAlign: 'justify' }} dangerouslySetInnerHTML={{ __html: dataErrror?.pasos_reproducir?.replace(/\n/g, '<br />') || 'No disponible' }} />
+                            <p className="texto-normal" style={{ textAlign: 'justify' }} dangerouslySetInnerHTML={{ __html: dataErrror?.pasos_repetir?.replace(/\n/g, '<br />') || 'No disponible' }} />
                         </div>
                     </div>
 
@@ -196,6 +196,19 @@ const VerError = () => {
                             <div className="mb-2">
                                 <strong>Asignado a: </strong>
                                 {dataErrror?.persona_asignada || 'No disponible'}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-12 mb-4">
+                        <div className="card p-3 shadow-sm card-custom-bord ">
+                            <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Anexo</h5>
+                            <div className="mb-2">
+                                <img
+                                  src={dataErrror.anexo_foto? `${URLBASE}images/errors/${dataErrror.anexo_foto}` : `${URLBASE}images/errors/SIN_ANEXO.png`}
+                                    alt="Vista previa"
+                                    className="img-fluid"
+                                    style={{ maxWidth: '100%' }}
+                                />
                             </div>
                         </div>
                     </div>

@@ -117,6 +117,7 @@ const uploadFoto = (folderPath) => {
 
 // Ejemplos de uso
 const uploadFotoPersona = uploadFoto('../public/images/users');
+const uploadAnexoFotoError = uploadFoto('../public/images/errors');
 
 //INICIO DE SESION
 router.post('/sesion', [
@@ -160,7 +161,6 @@ router.post('/entidad/guardar', (req, res, next) => {
     entidadController.guardar(req, res, next);
   });
 });
-
 router.put('/modificar/entidad', (req, res, next) => {
   uploadFotoPersona.single('foto')(req, res, (error) => {
     if (error) {
@@ -200,19 +200,47 @@ router.get('/caso/prueba/obtener/:entidad_id',casoPruebaController.obtener);
 router.put('/caso/prueba/cambiar/estado',casoPruebaController.cambiar_estado);
 router.get('/caso/prueba/eliminar',casoPruebaController.cambiar_estado_obsoleto);
 router.get('/caso/obtener/proyecto/:external_id', casoPruebaController.obtenerCasosProyecto);
+router.put('/caso/prueba/ejecutar/:external_id',casoPruebaController.ejecutarCasoPrueba);
+
+/** ERROR */
 router.get('/error/listar', errorController.listar);
 router.get('/error/obtener', errorController.listarPorCasoPrueba);
 router.get('/error/caso/prueba', errorController.listarPorCasoPrueba);
-router.post('/error/guardar', [
-  body('funcionalidad').optional().isString().withMessage('La funcionalidad debe ser un texto'),
-  body('titulo').optional().isString().withMessage('El título debe ser un texto'),
-  body('pasos_reproducir').optional().isString().withMessage('Los pasos deben ser un texto'),
-  body('razon').optional().isString().withMessage('La razón debe ser un texto'),
-  body('fecha_reporte').optional().isISO8601().withMessage('La fecha de reporte debe ser una fecha válida ISO 8601')
-],errorController.guardar);
-router.put('/caso/prueba/ejecutar/:external_id',casoPruebaController.ejecutarCasoPrueba);
+router.post('/error/guardar', (req, res, next) => {
+  uploadAnexoFotoError.single('foto')(req, res, (error) => {
+    if (error) {
+      if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({
+          msg: "El archivo es demasiado grande. Por favor, sube un archivo de menos de 2 MB.",
+          code: 413
+        });
+      }
+      return res.status(400).json({
+        msg: "Error al cargar el archivo: " + error.message,
+        code: 400
+      });
+    }
+    errorController.guardar(req, res, next);
+  });
+});
+router.put('/error/actualizar', (req, res, next) => {
+  uploadAnexoFotoError.single('foto')(req, res, (error) => {
+    if (error) {
+      if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({
+          msg: "El archivo es demasiado grande. Por favor, sube un archivo de menos de 2 MB.",
+          code: 413
+        });
+      }
+      return res.status(400).json({
+        msg: "Error al cargar el archivo: " + error.message,
+        code: 400
+      });
+    }
+    errorController.editar(req, res, next);
+  });
+});
 router.get('/error/obtener/external', errorController.obtener);
-router.post('/error/actualizar', errorController.editar);
 
 
 

@@ -173,7 +173,7 @@ const RoleDialog = ({ handleClose, external_id }) => {
 
                 <div className="">
                     <label htmlFor="horasDiarias" className="form-label d-flex align-items-center">
-                        <strong style={{ color: 'red' }}>* </strong>Horas diarias a trabajar como líder
+                        <strong style={{ color: 'red' }}>* </strong>Horas diarias a trabajar
                     </label>
                     <input
                         type="number"
