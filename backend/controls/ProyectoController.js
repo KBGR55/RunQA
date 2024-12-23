@@ -35,7 +35,6 @@ class ProyectoController {
     }
 
     async crearProyecto(req, res) {
-        console.log(req.body.horasDiarias);
         let transaction;
         try {
             transaction = await models.sequelize.transaction();
@@ -311,12 +310,7 @@ class ProyectoController {
                     hasErrors = true;
                     continue;
                 }
-    
-                // Debugging log for available hours
-                console.log(`Entidad: ${entidad.nombres} - Horas Disponibles: ${entidad.horasDisponibles}`);
-                console.log(`Horas Diarias Solicitadas: ${req.body.horasDiarias}`);
-    
-                // Check if the entity has enough available hours
+                
                 if (entidad.horasDisponibles < req.body.horasDiarias) {
                     errorMessages.push(`${entidad.nombres} no tiene suficientes horas disponibles, ya que solo tiene ${entidad.horasDisponibles} horas disponibles.`);
                     hasErrors = true;

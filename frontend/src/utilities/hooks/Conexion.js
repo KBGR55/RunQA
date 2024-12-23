@@ -101,10 +101,7 @@ export const GuardarImages = async (data, key, urls) => {
         } else {
             throw new Error("La respuesta del servidor no es JSON: " + textResponse);
         }
-        
-
     } catch (error) {
-        console.log("Error:", error);
         throw error;
     }
 };
@@ -122,12 +119,9 @@ export const ActualizarImagenes = async (data, key, urls) => {
     };
     try {
         const response = await fetch(URL_BACKEND + urls, requestOptions);
-
         const datos = await response.json();
-
         return datos;
     } catch (error) {
-        console.log("Error:", error);
         throw error;
     }
 }

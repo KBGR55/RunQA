@@ -40,9 +40,7 @@ const VerCasoPrueba = () => {
         setPage(0);
     };
 
-
     const handleshoModal = () => {
-        console.log('handleshoModal ejecutado');
         setshoModal(true);
     };
 

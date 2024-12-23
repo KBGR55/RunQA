@@ -89,8 +89,6 @@ const UsuarioProyecto = () => {
         setShowModalAddMembers(false);
     };
 
-    console.log(rolLider[0]);
-
     const handleDeleteUser = async () => {
         try {
             const response = await peticionDelete(getToken(), `proyecto/${external_id_proyecto}/${userIdToDelete}`);
@@ -109,7 +107,6 @@ const UsuarioProyecto = () => {
             handleCloseModal();
         }
     };
-    console.log("estadata", data);
 
     return (
         <div>

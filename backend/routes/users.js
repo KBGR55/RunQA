@@ -37,7 +37,6 @@ var auth = function middleware(req, res, next) {
   if (token) {
     require('dotenv').config();
     const llave = process.env.KEY;
-    console.log(llave)
     jwt.verify(token, llave, async (err, decoded) => {
       if (err) {
         res.status(401);
@@ -82,7 +81,6 @@ const createStorage = (folderPath) => {
   return multer.diskStorage({
     destination: path.join(__dirname, folderPath),
     filename: (req, file, cb) => {
-      console.log(file);
       const parts = file.originalname.split('.');
       const extension = parts[parts.length - 1];
       cb(null, uuid.v4() + "." + extension);
@@ -93,7 +91,6 @@ const createStorage = (folderPath) => {
 // Método para validar las extensiones de las fotografías
 const extensionesAceptadasFoto = (req, file, cb) => {
   const allowedExtensions = ['.jpeg', '.jpg', '.png'];
-  console.log(file);
   const ext = path.extname(file.originalname).toLowerCase();
   if (allowedExtensions.includes(ext)) {
     cb(null, true);
@@ -241,8 +238,6 @@ router.put('/error/actualizar', (req, res, next) => {
   });
 });
 router.get('/error/obtener/external', errorController.obtener);
-
-
 
 router.get('/rol_proyecto/listar/proyectos', rolProyectoController.listar.bind(rolProyectoController));
 router.get('/rol_proyecto/listar/entidad',rolProyectoController.listar_roles_entidad);

@@ -101,7 +101,6 @@ class CuentaController {
             }
 
         } catch (error) {
-            console.log(error);
             if (error.errors && error.errors[0].message) {
                 return res.status(400).json({
                     msg: error.errors[0].message,
@@ -164,7 +163,6 @@ class CuentaController {
                 code: 200
             });
         } catch (error) {
-            console.log(error);
             return res.status(500).json({
                 msg: "Error en el servidor",
                 code: 500
@@ -208,7 +206,7 @@ class CuentaController {
                 });
             }
         } catch (error) {
-            console.log(error);
+           
             return res.status(500).json({
                 msg: "Error en el servidor",
                 code: 500
@@ -254,7 +252,7 @@ class CuentaController {
                 });
             }
         } catch (error) {
-            console.log(error);
+           
             return res.status(500).json({
                 msg: "Error en el servidor",
                 code: 500
@@ -336,7 +334,7 @@ class CuentaController {
             }
 
         } catch (error) {
-            console.log(error);
+           
             return res.status(500).json({
                 msg: "Error en el servidor",
                 code: 500

@@ -27,17 +27,12 @@ const CasoPrueba = () => {
         'ACEPTACION_USUARIO', 'RENDIMIENTO', 'SEGURIDAD'
     ]);
 
-    console.log("4444444444", external_id_proyecto);
-
-
     useEffect(() => {
         const fetchCasoPrueba = async () => {
             if (external_id_proyecto) {
                 peticionGet(getToken(), `proyecto/obtener/${external_id_proyecto}`).then((info) => {
                     if (info.code === 200) {
                         setProyecto(info.info);
-                        console.log("5555555555", info.info.nombre);
-
                     } else {
                         mensajes(info.msg, "error", "Error");
                     }
@@ -133,10 +128,6 @@ const CasoPrueba = () => {
                 }
                 const response = await peticionPost(getToken(), 'caso/prueba/guardar', casoPruebaData);
                 if (response.code === 200) {
-
-                    console.log("7777777777", response);
-
-
                     setIdCasoPrueba(response.info);
                     swal({
                         title: "Caso de prueba registrado con éxito",

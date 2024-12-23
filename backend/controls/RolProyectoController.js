@@ -59,14 +59,11 @@ class RolProyectoController {
                 console.warn("No se encontraron roles-proyectos relacionados");
                 return res.json({ msg: "No se encontraron roles-proyectos relacionados", code: 204 });
             }
-            console.log("Lista de roles-proyectos encontrados:", listar);
     
             // Filtrar proyectos únicos
             const proyectosUnicos = listar
                 .map(item => item.proyecto_rol) 
                 .filter((proyecto, index, self) => proyecto && self.findIndex(p => p.id === proyecto.id) === index);
-            
-            console.log("Proyectos únicos filtrados:", proyectosUnicos);
             
             res.json({ msg: 'OK!', code: 200, info: proyectosUnicos });    } catch (error) {
             console.error("Error en listar roles:", error);

@@ -123,11 +123,11 @@ class CasoPruebaController {
             // Buscar contratos relacionados al caso de prueba y validar asignación
             const contratos = await models.contrato.findAll({
                 where: { id_caso_prueba: caso.id, estado: 1 },
-                attributes: [ 'id_rol_proyecto_responsable'],
+                attributes: ['id_rol_proyecto_responsable'],
             });
 
             if (contratos.length === 0) {
-                return   res.json({ msg: 'OK!', code: 200, info: { caso } });
+                return res.json({ msg: 'OK!', code: 200, info: { caso } });
             }
             const rol_proyecto = await models.rol_proyecto.findOne({
                 where: { id: contratos[0].id_rol_proyecto_responsable },
@@ -141,11 +141,10 @@ class CasoPruebaController {
 
             });
             if (rol_proyecto) {
-                return  res.json({ msg: 'OK!', code: 200, info: { caso, rol_proyecto } });
+                return res.json({ msg: 'OK!', code: 200, info: { caso, rol_proyecto } });
             } else {
-                return  res.json({ msg: 'OK!', code: 200, info: { caso } });
+                return res.json({ msg: 'OK!', code: 200, info: { caso } });
             }
-
 
         } catch (error) {
             console.error('Database error:', error);
@@ -158,8 +157,6 @@ class CasoPruebaController {
         let errors = validationResult(req);
         if (errors.isEmpty()) {
             try {
-                console.log('8888', req.body);
-
                 const external_proyecto = req.body.external_proyecto;
                 if (!external_proyecto) {
                     return res.status(400).json({ msg: "Falta proyecto", code: 400 });
@@ -187,7 +184,6 @@ class CasoPruebaController {
                 res.status(500).json({ msg: 'Error al guardar el caso de prueba', code: 500, error: error.message });
             }
         } else {
-            console.log("Errores de validación:", errors.array());
             res.status(400).json({ msg: "Datos faltantes o inválidos", code: 400, errors: errors.array() });
         }
     }
@@ -221,7 +217,6 @@ class CasoPruebaController {
                 res.status(500).json({ msg: 'Error al actualizar el caso de prueba', code: 500, error: error.message });
             }
         } else {
-            console.log("Errores de validación:", errors.array());
             res.status(400).json({ msg: "Datos faltantes o inválidos", code: 400, errors: errors.array() });
         }
     }
@@ -242,7 +237,6 @@ class CasoPruebaController {
     }
     async cambiar_estado_obsoleto(req, res) {
         try {
-            console.log(req.query.external_id);
             const external_id = req.query.external_id;
             if (!external_id) {
                 return res.status(400).json({ msg: "Falta el 'external_id'", code: 400 });
