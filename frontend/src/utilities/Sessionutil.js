@@ -15,14 +15,7 @@ export const estaSesion = () => {
     var token = localStorage.getItem('token');
     return (token && (token !== 'undefined' && token !== null && token !== 'null'));
 };
-//------------------ROL------------------
-export const saveRol = (rol) => {
-    localStorage.setItem('rol', rol);
-}
 
-export const getRol = () => {
-    return localStorage.getItem('rol');
-}
 //------------------USUARIO------------------
 export const saveUser = (user) => {
     const userJSON = JSON.stringify(user);
@@ -33,6 +26,17 @@ export const getUser = () => {
     const userJSON = localStorage.getItem('user');
     return JSON.parse(userJSON);
 }
+
+export const saveExternalProyecto= (external_id) => {
+    const externalProyecto = JSON.stringify(external_id);
+    localStorage.setItem('external_id', externalProyecto);
+}
+
+export const getExternalProyecto = () => {
+    const externalProyecto = localStorage.getItem('external_id');
+    return JSON.parse(externalProyecto);
+}
+
 export const savetokenApi = (tokenapi) => {
     localStorage.setItem("tokenapi", tokenapi);
 }

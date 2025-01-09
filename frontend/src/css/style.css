@@ -1,22 +1,457 @@
 :root {
-/* Colores de la paleta */
---color-primario: #F4EEFF; /* Color primario */
---color-secundario: #DCD6F7; /* Color secundario */
---color-terciario: #A6B1E1; /* Color terciario */
---color-cuarto: #424874; /* Color cuarto */
-
-  /* Colores básicos */
+  /* Paleta de colores */
+  --color-primario: #F4EEFF;
+  --color-secundario: #DCD6F7;
+  --color-terciario: #A6B1E1;
+  --color-cuarto: #424874;
   --azul-oscuro: #0c2342;
   --azul-intermedio: #0d4f81;
   --negro: #323232;
   --naranja-claro: #ffe6b1;
-  --naranja-oscuro: #f0ad4e;
-  --rojo-vivo: #de361c;
-  --verde-claro: #36ab2b;
+  --rojo-claro: #FFACAC;
+  --rojo: #FD5E53;
+  --verde-claro: #21BF73;
+  --verde-pastel: #94e085;
   --blanco: #EEEEEE;
+  --color-positivo: var(--verde-claro);
+  --color-negativo: var(--rojo);
 }
 
 .fondo-principal {
   background-color: var(--color-cuarto);
   color: var(--color-primario);
 }
+
+.titulo-primario , .titulo-proyecto{
+  color: var(--color-cuarto);
+  font-size: 30px;
+  font-weight: bold;
+  padding-left: 10px;
+  position: relative;
+  text-align: left;
+}
+
+.titulo-proyecto{
+  text-align: center;
+}
+
+.titulo-primario::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 5px;
+  background: linear-gradient(to bottom, var(--color-cuarto), var(--color-terciario), var(--color-secundario));
+  z-index: -1;
+}
+
+.titulo-secundario {
+  color: var(--color-terciario);
+  font-size: 20px;
+  font-weight: bold;
+}
+.card-titulo{
+  background-color:  var(--color-cuarto);
+  border-radius: 5px;
+}
+
+
+.titulo-terciario {
+  color: var(#F4EEFF) !important;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.texto-normal {
+  color: var(--negro);
+  font-size: 16px;
+}
+
+label {
+  color: var(--negro);
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.form-group {
+  margin: 2px 0 5px;
+}
+
+.boton-custom {
+  color: var(--color-cuarto);
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0.3rem 1rem;
+  border-width: 2px;
+  text-decoration: underline;
+}
+
+
+/*Contenedor*/
+.contenedor-centro {
+  display: flex;
+  justify-content: center;
+  margin: 50px 50px 0;
+}
+
+.contenedor-carta {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+  background-color: transparent;
+  border-radius: 10px;
+  padding: 25px;
+  width: 100%;
+}
+
+.role-title {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.role-options-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.role-option-item {
+  margin: 0.5rem 0;
+}
+
+.option-button {
+  background-color: var(--color-cuarto);
+  color: #fff;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.option-button:hover {
+  background-color: var(--color-terciario);
+}
+
+.contenedor-filo {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/*Tabla*/
+
+.table th {
+  background-color: var(--color-cuarto);
+  color: var(--color-primario);
+}
+
+/* Botones */
+.btn-normal,
+.btn-positivo,
+.btn-negativo,
+.btn-desactivado {
+  background-color: var(--color-cuarto);
+  color: var(--color-primario);
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+  border-radius: 5px;
+  margin: 8px;
+  padding: 8px;
+}
+
+.btn-desactivado {
+  background-color: var(--color-secundario) !important;
+  border: none;
+}
+
+.btn-normal:hover {
+  background-color: var(--color-terciario);
+}
+
+.btn-positivo {
+  background-color: var(--color-positivo);
+}
+
+.btn-positivo:hover {
+  background-color: var(--verde-pastel);
+  color: var(--negro);
+}
+
+.btn-negativo {
+  background-color: var(--color-negativo);
+}
+
+.btn-secondary:disabled {
+
+  border-color: #383838;
+  /* Asegúrate de que el borde sea también gris */
+  cursor: not-allowed;
+  /* Cambiar el cursor al pasar por encima */
+}
+
+
+.btn-negativo:hover {
+  background-color: var(--rojo-claro);
+  color: var(--negro);
+}
+
+.box-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.box-of-users {
+  border: 1px solid #ddd;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-basis: calc(50% - 10px);
+  margin-bottom: 5px;
+}
+
+.custom-checkbox {
+  width: 20px;
+  height: 20px;
+  transform: scale(1.5);
+  cursor: pointer;
+}
+
+/* Efecto al seleccionar */
+.custom-checkbox:checked {
+  background-color: #ff4d4d;
+  border-color: #ff4d4d;
+}
+
+/* Animación para una transición suave */
+.custom-checkbox {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-selected {
+  transform: scale(1.05);
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  border-color: #ff4d4d;
+}
+
+.custom-checkbox {
+  width: 20px;
+  height: 20px;
+  transform: scale(1.5);
+  cursor: pointer;
+}
+
+/** NAVBAR STYLES */
+#dropdown-user {
+  outline: none;
+  box-shadow: none !important;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+#dropdown-user:focus {
+  outline: none;
+  box-shadow: none !important;
+  text-decoration: none;
+}
+
+#dropdown-user:hover {
+  color: #a3a3b3;
+}
+
+.sidebar {
+  height: 100vh;
+  position: fixed;
+  background-color: var(--color-cuarto) !important;
+  width: 250px;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.espacio-sidebar{
+  width: 250px;
+  flex-shrink: 0;
+}
+
+/* Navbar superior */
+.navbar {
+  background-color: var(--color-cuarto) !important;
+  position: relative;
+  width: calc(100% - 70px);
+  left: 70px;
+  top: 0;
+  z-index: 10;
+}
+
+.card-custom-bord {
+  border-radius: 10px;
+  background-color: white;
+  border-left: 7px solid var(--color-terciario);
+  border: 1px solid #dadada;
+}
+
+
+@media (max-width: 500px) {
+  .box-of-users {
+    flex-basis: 100%;
+  }
+  .espacio-sidebar{
+    width: 80px;
+  }
+}
+
+.imagen-pequena {
+  width: 25px;
+  height: 25px;
+}
+
+.margen-usuarios-pequenos {
+  margin: 0 10px;
+}
+
+.boton-eliminar-pequeno {
+  padding: 2px 5px;
+  font-size: 0.8rem;
+}
+
+.user-container {
+  display: flex;
+  align-items: center;
+  /* Para alinear verticalmente la imagen y el texto */
+}
+
+.main-container {
+  background-color: #f4f4f9;
+  padding: 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.titulo-principal {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.peticiones-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.peticion-card-container {
+  display: flex;
+  justify-content: center;
+}
+
+.peticion-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.peticion-card.abierto {
+  transform: translateY(-5px);
+}
+
+.peticion-card-header {
+  margin-bottom: 15px;
+}
+
+.peticion-titulo {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.peticion-correo,
+.peticion-fecha {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.peticion-details {
+  margin-top: 15px;
+}
+
+.peticion-mensaje {
+  font-size: 1rem;
+  color: #444;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-rechazar {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.btn-rechazar:hover {
+  background-color: #c0392b;
+}
+
+.btn-aceptar {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.btn-aceptar:hover {
+  background-color: #27ae60;
+}
+
+.peticion-card:hover {
+  transform: translateY(-2px);
+}
+
+.peticion-card-header p {
+  margin: 0;
+}
+.sin-peticiones {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #888;
+  font-weight: bold;
+  margin-top: 50px;
+}
+
+.btn-mini {
+  padding: 4px 8px;
+  font-size: 0.85rem; 
+  line-height: 1.3;
+}
+
+.titulo-campos {
+  font-weight: bold;
+  text-align: left; /* Alinea el texto a la izquierda */
+  display: block; /* Asegura que se comporte como un bloque para una alineación uniforme */
+  margin-bottom: 5px; /* Espacio debajo del título, opcional */
+}
+

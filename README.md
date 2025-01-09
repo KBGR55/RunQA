@@ -1,5 +1,8 @@
 
 # RunQA
+<div align="center">
+  <img src="frontend/public/logo192.png" width="350px" alt="Logo de Quizizz" style="display: inline-block;">
+</div>
 
 **Descripción**:  
 Este proyecto tiene como objetivo construir un sistema de gestión de pruebas de software que soporte varios proyectos y diferentes roles, tales como: analista de pruebas, tester, gerente de pruebas y desarrolladores. Es importante identificar los principales casos de uso para gestionar eficientemente el proceso de pruebas.
@@ -87,3 +90,104 @@ La carpeta principal del proyecto `RunQA` contiene dos subcarpetas principales:
 - **Frontend**: React, JavaScript
 - **Backend**: Node.js, Express
 - **Control de versiones**: Git
+## Configurar la Base de Datos
+
+Antes de ejecutar el proyecto, asegúrate de configurar la base de datos. Sigue estos pasos:
+
+1. Inicia sesión en MySQL con un usuario que tenga privilegios de administrador utilizando el siguiente comando y luego ingresa la contraseña del usuario:
+
+    ```bash
+    mysql -u root -p
+    ```
+
+2. Una vez que hayas ingresado a MySQL, ejecuta el siguiente comando para crear un nuevo usuario y asignarle todos los privilegios:
+
+    ```sql
+    CREATE USER 'desarrollo'@'localhost' IDENTIFIED BY 'desarrollo';
+    GRANT ALL PRIVILEGES ON *.* TO 'desarrollo'@'localhost' WITH GRANT OPTION;
+    FLUSH PRIVILEGES;
+    exit;
+    ```
+
+3. Luego, ingresa a MySQL con el nuevo usuario creado:
+
+    ```bash
+    mysql -h 127.0.0.1 -u desarrollo -p
+    ```
+
+4. Crea la base de datos `bd_runqa` ejecutando el siguiente comando: 
+    ```sql
+    CREATE DATABASE bd_runqa;
+    ```
+5. Ahora, asegúrate de estar en la carpeta `backend` y luego levanta el proyecto con el siguiente comando:
+
+    ```bash
+    npm start
+    ```
+
+6. Para crear las tablas necesarias en la base de datos, accede a [http://localhost:3006/privado/NOCHE_RunQA](http://localhost:3006/privado/NOCHE_RunQA). Cuando veas un mensaje que diga "OK!", significa que la configuración de la base de datos ha sido exitosa.
+
+7. Para completar la configuración de la base de datos, ejecuta los siguientes comandos SQL para insertar roles, personas, asociar personas y roles, insertar cuentas, insertar periodo, e insertar ciclo:
+
+    ```sql
+         USE bd_runqa;
+
+         START TRANSACTION;
+
+         INSERT INTO rol (id, external_id, estado, nombre, createdAt, updatedAt) VALUES
+         (1, '1376cf7e-907c-11ef-8f4d-30e37a2aa82d', 1, 'ADMINISTRADOR SYS', '2024-10-19 05:30:36', '2024-10-19 05:30:36'),
+         (2, '2df3ca7a-8e05-11ef-80ac-b48c9d91f915', 1, 'LIDER DE CALIDAD', '2024-10-19 05:30:36', '2024-10-19 05:30:36'),
+         (3, '1fe548cb-907c-11ef-8f4d-30e37a2aa82d', 1, 'ANALISTA DE PRUEBAS', '2024-10-19 05:30:36', '2024-10-19 05:30:36'),
+         (4, '26214891-907c-11ef-8f4d-30e37a2aa82d', 1, 'TESTER', '2024-10-19 05:30:36', '2024-10-19 05:30:36'),
+         (5, '29b40789-907c-11ef-8f4d-30e37a2aa82d', 1, 'DESARROLLADOR', '2024-10-19 05:30:36', '2024-10-19 05:30:36');
+
+
+         INSERT INTO entidad (id, external_id, estado, foto, nombres, apellidos, fecha_nacimiento, telefono, createdAt, updatedAt) 
+         VALUES 
+         (1, '93a9e3f1-907c-11ef-8f4d-30e37a2aa82d', 1, '3efe8462-5255-4839-b694-c269ca4475b3.jpeg', 'KAREN BRIGITH', 'GONZAGA RIVAS', '2003-12-05 00:00:00', '0980735353', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
+         (2, '93a9e97e-907c-11ef-8f4d-30e37a2aa82d', 1, '2307fd96-9917-4da1-a666-90d0711162c3.jpeg', 'HILARY MADELEY', 'CALVA CAMACHO', '1995-08-15 00:00:00', '0987654321', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
+         (3, '93a9eb2d-907c-11ef-8f4d-30e37a2aa82d', 1, 'USUARIO_ICONO.png', 'MARÍA ELENA', 'PÉREZ MARTÍNEZ', '1998-03-22 00:00:00', '0980123456', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
+         (4, '25b65566-907d-11ef-8f4d-30e37a2aa82d', 1, 'USUARIO_ICONO.png', 'PEDRO ANTONIO', 'RAMÍREZ VARGAS', '1987-07-30 00:00:00', '0998765432', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
+         (5, '93a9ed2c-907c-11ef-8f4d-30e37a2aa82d', 1, 'USUARIO_ICONO.png', 'ANA MARÍA', 'TORRES QUINTERO', '2000-11-10 00:00:00', '0976543210', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
+         (6, '93a9ee14-907c-11ef-8f4d-30e37a2aa82d', 1, 'USUARIO_ICONO.png', 'SOFÍA ALEJANDRA', 'MENDOZA PÉREZ', '2003-12-05 00:00:00', '0980735353', '2024-10-22 08:50:19', '2024-10-22 08:50:19');
+
+
+
+         INSERT INTO cuenta (id, external_id, estado, correo, clave, createdAt, updatedAt, id_entidad) 
+         VALUES 
+         (1, '594760f1-907e-11ef-8f4d-30e37a2aa82d', 1, 'karen.b.gonzaga@unl.edu.ec', '$2a$08$vcbwdzAoBjH027Yt6B9PwO3G65afLhrMfejne1EJ7uoPGuLslHLC6', '2024-10-22 09:03:00', '2024-10-22 09:03:00', 1),
+         (2, '59476a5b-907e-11ef-8f4d-30e37a2aa82d', 1, 'hilary.calva@unl.edu.ec', '$2a$08$vcbwdzAoBjH027Yt6B9PwO3G65afLhrMfejne1EJ7uoPGuLslHLC6', '2024-10-22 09:03:00', '2024-10-22 09:03:00', 2),
+         (3, '59476cb2-907e-11ef-8f4d-30e37a2aa82d', 1, 'maria.perez@unl.edu.ec', '$2a$08$vcbwdzAoBjH027Yt6B9PwO3G65afLhrMfejne1EJ7uoPGuLslHLC6', '2024-10-22 09:03:00', '2024-10-22 09:03:00', 3),
+         (4, '59476e19-907e-11ef-8f4d-30e37a2aa82d', 1, 'pedro.ramirez@unl.edu.ec', '$2a$08$vcbwdzAoBjH027Yt6B9PwO3G65afLhrMfejne1EJ7uoPGuLslHLC6', '2024-10-22 09:03:00', '2024-10-22 09:03:00', 4),
+         (5, '59476f57-907e-11ef-8f4d-30e37a2aa82d', 1, 'ana.torres@unl.edu.ec', '$2a$08$vcbwdzAoBjH027Yt6B9PwO3G65afLhrMfejne1EJ7uoPGuLslHLC6', '2024-10-22 09:03:00', '2024-10-22 09:03:00', 5),
+         (6, '594770e6-907e-11ef-8f4d-30e37a2aa82d', 1, 'sofia.mendoza@unl.edu.ec', '$2a$08$vcbwdzAoBjH027Yt6B9PwO3G65afLhrMfejne1EJ7uoPGuLslHLC6', '2024-10-22 09:03:00', '2024-10-22 09:03:00', 6);
+         INSERT INTO rol_entidad (external_id, estado, createdAt, updatedAt, id_entidad, id_rol)
+         VALUES 
+         ('a1b2c3d4-e5f6-7890-1234-56789abcdef0', 1, NOW(), NOW(), 1, 1);
+         INSERT INTO proyecto (external_id, estado, nombre, fecha_inicio, descripcion, createdAt, updatedAt)
+         VALUES
+         (UUID(), 1, 'ADMINISTRADOR SYS', '2024-10-22 09:08:40', 'Encargado de gestionar el sistema', NOW(), NOW());
+
+
+         INSERT INTO rol_proyecto (external_id, estado, horasDiarias, createdAt, updatedAt, id_proyecto, id_rol_entidad)
+         VALUES 
+         ('123e4567-e89b-12d3-a456-426614174000', 1, 2,NOW(), NOW(), 1, 1);
+      
+
+         COMMIT;
+
+   ```
+
+Una vez completados estos pasos, la base de datos estará configurada correctamente para su correcto funcionamiento.
+## Cuentas de Acceso
+
+| Correo                     | Contraseña |
+|----------------------------|------------|
+| karen.b.gonzaga@unl.edu.ec | clave123   |
+| hilary.calva@unl.edu.ec    | clave123   |
+| maria.perez@unl.edu.ec     | clave123   |
+| pedro.ramirez@unl.edu.ec   | clave123   |
+| ana.torres@unl.edu.ec      | clave123   |
+| sofia.mendoza@unl.edu.ec   | clave123   |
+
+Podrás acceder al sistema utilizando las cuentas proporcionadas.

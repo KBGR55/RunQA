@@ -1,0 +1,135 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.home-container {
+    height: 100vh;
+    background-image: url('../img/fondo1.jpeg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--blanco);
+    text-align: center;
+}
+
+.logo {
+    height: 300px;
+}
+
+.logo-space {
+    position: absolute;
+    top: 70px;
+}
+
+.text-overlay {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 40px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 1500px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.text-overlay h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: white;
+    font-weight: bold;
+    padding-bottom: 10px;
+}
+
+.text-overlay h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: white;
+    font-weight: bold;
+}
+
+.text-overlay p {
+    font-size: 1.2rem;
+    color: var(--blanco);
+}
+
+.start-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: var(--color-secundario);
+    color: var(--negro);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.start-button:hover {
+    background-color: var(--color-terciario);
+}
+
+.slide-out {
+    animation: slideOut 0.5s forwards;
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .logo {
+        height: 150px;
+    }
+
+    .text-overlay {
+        width: 90%;
+        margin-top: 10px;
+    }
+
+    .text-overlay h1 {
+        font-size: 1.4rem;
+    }
+
+    .text-overlay p {
+        font-size: 0.9rem;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .logo {
+        height: 200px;
+    }
+
+    .text-overlay {
+        padding: 30px;
+        width: 80%;
+    }
+
+    .text-overlay h1 {
+        font-size: 2.5rem;
+    }
+
+    .text-overlay p {
+        font-size: 1.2rem;
+    }
+}
