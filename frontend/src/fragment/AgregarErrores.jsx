@@ -6,12 +6,13 @@ import mensajes from '../utilities/Mensajes';
 import { ActualizarImagenes, GuardarImages, peticionGet, peticionPost } from '../utilities/hooks/Conexion';
 import { borrarSesion, getToken, getUser } from '../utilities/Sessionutil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faCheck,  faTrash, faEye, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faCheck, faTrash, faEye, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import swal from 'sweetalert';
 import { useNavigate } from 'react-router-dom';
 import { useParams, useLocation } from 'react-router-dom';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
+import ModalAsignarDesarrollador from './ModalAsignarDesarrollador';
 
 const AgregarErrores = () => {
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
@@ -21,13 +22,14 @@ const AgregarErrores = () => {
     const [clasificacionSeleccionada, setClasificacionSeleccionada] = useState([]);
     const [prioridadSeleccionada, setPrioridadSeleccionada] = useState([]);
     const { external_id_proyecto, external_id, external_id_error } = useParams();
-    const location = useLocation();
     const [infoProyecto, setProyecto] = useState([]);
     const navigate = useNavigate();
-    const [testers, setTesters] = useState([]);
-    const [selectedTester, setSelectedTester] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [uploadedPhoto, setUploadedPhoto] = useState(null);
+    const [idError, setIdError] = useState(null);
+    const [showModalDesarrollador, setShowModalDesarrollador] = useState(false);
+    const usuario = getUser();
+
 
     useEffect(() => {
         const fetchCasoPrueba = async () => {
@@ -78,20 +80,20 @@ const AgregarErrores = () => {
         fetchCasoPrueba();
     }, [external_id_proyecto]);
 
-    const onSubmit = async (data) => {
-  
+    /*const onSubmit = async (data) => {
+
         const formData = new FormData();
         formData.append('funcionalidad', data.funcionalidad);
         formData.append('titulo', data.titulo.toUpperCase());
         formData.append('pasos_repetir', data.pasos_repetir);
-        formData.append('persona_responsable',' data.persona_asignada.id)');
-        formData.append('persona_asignadora', 'getUser().user.id');  
-        formData.append('severidad', clasificacionSeleccionada); 
-        formData.append('prioridad',prioridadSeleccionada);  
-        formData.append('estado', estadoSeleccionado);  
+        formData.append('persona_responsable', ' data.persona_asignada.id)');
+        formData.append('persona_asignadora', 'getUser().user.id');
+        formData.append('severidad', clasificacionSeleccionada);
+        formData.append('prioridad', prioridadSeleccionada);
+        formData.append('estado', estadoSeleccionado);
         formData.append('resultado_obtenido', data.resultado_obtenido);
-        formData.append('fecha_resolucion', null);  
-        formData.append('external_caso_prueba',external_id);  
+        formData.append('fecha_resolucion', null);
+        formData.append('external_caso_prueba', external_id);
         if (data.foto && data.foto.length > 0) {
             formData.append('foto', data.foto[0]);
         } else {
@@ -101,8 +103,8 @@ const AgregarErrores = () => {
 
         try {
             if (external_id_error) {
-                formData.append('external_id',external_id_error);  
-                const response = await  ActualizarImagenes(formData, getToken(), `/error/actualizar?external_id=${external_id_error}`);
+                formData.append('external_id', external_id_error);
+                const response = await ActualizarImagenes(formData, getToken(), `/error/actualizar?external_id=${external_id_error}`);
                 if (response.code === 200) {
                     mensajes('Error actualizado con exito', 'success');
                     navigate(`/error/visualizar/${external_id_proyecto}/${external_id}/${external_id_error}`);
@@ -110,7 +112,7 @@ const AgregarErrores = () => {
                     mensajes(`Error al actualizar el error: ${response.msg}`, 'error');
                 }
             } else {
-                const response = await  GuardarImages(formData, getToken(), "/error/guardar");
+                const response = await GuardarImages(formData, getToken(), "/error/guardar");
                 if (response.code === 200) {
                     mensajes('Errores agregados correctamente', 'success');
                     if (response.code === 200) {
@@ -142,7 +144,69 @@ const AgregarErrores = () => {
         } catch (error) {
             mensajes('Error al procesar la solicitud', 'error');
         }
+    };*/
+
+    const onSubmit = async (data) => {
+        const formData = new FormData();
+        formData.append('funcionalidad', data.funcionalidad);
+        formData.append('titulo', data.titulo.toUpperCase());
+        formData.append('pasos_repetir', data.pasos_repetir);
+        formData.append('persona_responsable', 'data.persona_asignada.id');
+        formData.append('persona_asignadora', 'getUser().user.id');
+        formData.append('severidad', clasificacionSeleccionada);
+        formData.append('prioridad', prioridadSeleccionada);
+        formData.append('estado', estadoSeleccionado);
+        formData.append('resultado_obtenido', data.resultado_obtenido);
+        formData.append('fecha_resolucion', null);
+        formData.append('external_caso_prueba', external_id);
+    
+        if (data.foto && data.foto.length > 0) {
+            formData.append('foto', data.foto[0]);
+        } else {
+            const defaultPhotoUrl = `${process.env.PUBLIC_URL}/errors/SIN_ANEXO.png`;
+            formData.append('foto', defaultPhotoUrl);
+        }
+    
+        try {
+            if (external_id_error) {
+                formData.append('external_id', external_id_error);
+                const response = await ActualizarImagenes(formData, getToken(), `/error/actualizar?external_id=${external_id_error}`);
+                if (response.code === 200) {
+                    mensajes('Error actualizado con éxito', 'success');
+                    navigate(`/error/visualizar/${external_id_proyecto}/${external_id}/${external_id_error}`);
+                } else {
+                    mensajes(`Error al actualizar el error: ${response.msg}`, 'error');
+                }
+            } else {
+                const response = await GuardarImages(formData, getToken(), "/error/guardar");
+    
+                if (response.code === 200) {
+                    mensajes('Errores agregados correctamente', 'success');
+                    setIdError(response.info.id);
+                    
+                    swal({
+                        title: "Errores agregados correctamente",
+                        text: "¿Desea asignar un desarrollador para corregir el error?",
+                        icon: "warning",
+                        buttons: ["No", "Sí"],
+                        dangerMode: false,
+                    }).then((willAssign) => {
+                        if (willAssign) {
+                            setShowModalDesarrollador(true);
+                        } else {
+                            mensajes("Creación del error completada", "success");
+                            navigate(-1);
+                        }
+                    });
+                } else {
+                    mensajes(`Error al agregar el error: ${response.msg}`, 'error');
+                }
+            }
+        } catch (error) {
+            mensajes('Error al procesar la solicitud: ' + error.message, 'error');
+        }
     };
+    
 
     const handlePhotoChange = (event) => {
         const file = event.target.files[0];
@@ -185,7 +249,7 @@ const AgregarErrores = () => {
 
     return (
         <div className="contenedor-carta">
-            <p className="titulo-proyecto">Proyecto "{infoProyecto.nombre}"</p>
+            <p className="titulo-proyecto">{infoProyecto.nombre}</p>
             {!external_id_error ? (<h2 className="titulo-primario">Agregar error</h2>) : <p className="titulo-primario">Editar error</p>}
             <form className="form-sample" onSubmit={handleSubmit(onSubmit)}>
                 <div className="row">
@@ -328,32 +392,23 @@ const AgregarErrores = () => {
                             )}
                         </div>
                     </div>
-{/** 
-                    <div className="col-md-6">
-                        <div className="form-group">
-                            <label className="titulo-campos">Persona asignada</label>
-                            <select
-                                className="form-control"
-                                onChange={(e) => {
-                                    const testerId = e.target.value;
-                                    const tester = testers.find(t => t.id === parseInt(testerId));
-                                    setSelectedTester(tester);
-                                    setValue('persona_asignada', tester ? `${tester.nombres} ${tester.apellidos}` : '');
-                                }}
-                                value={selectedTester ? selectedTester.id : ''}
+
+                    {/*<div className="col-md-6">
+                        <label className="titulo-campos">Asignar persona</label>
+                        <div className="d-flex align-items-center">
+                            <button
+                                type="button"
+                                className="btn-opcional w-100"
+                                onClick={() => setShowModalDesarrollador(true)}
                             >
-                                <option value="" disabled>Seleccionar un tester</option>
-                                {testers.map(tester => (
-                                    <option key={tester.id} value={tester.id}>
-                                        {tester.nombres} {tester.apellidos}
-                                    </option>
-                                ))}
-                            </select>
+                                Establecer parámetros
+                            </button>
                         </div>
-                    </div>
-*/}
+                    </div>/*/}
+
+
                     <div className="col-md-6">
-                        <label htmlFor="foto" className="form-label d-flex align-items-center">Foto</label>
+                        <label htmlFor="foto" className="titulo-campos">Foto</label>
                         <input
                             type="file"
                             {...register("foto")}
@@ -407,17 +462,17 @@ const AgregarErrores = () => {
                     )}
                 </div>
                 <div className="row m-2">
-                {external_id_error && 
-                    <div className="col-md-">
-                        <div className="form-group">
-                            <label className="titulo-campos">Resultado obtenido</label>
-                            <textarea
-                                type="text"
-                                className="form-control"
-                                {...register('resultado_obtenido')}
-                            />
-                        </div>
-                </div>}
+                    {external_id_error &&
+                        <div className="col-md-">
+                            <div className="form-group">
+                                <label className="titulo-campos">Resultado obtenido</label>
+                                <textarea
+                                    type="text"
+                                    className="form-control"
+                                    {...register('resultado_obtenido')}
+                                />
+                            </div>
+                        </div>}
                 </div>
                 <div className="form-group d-flex justify-content-end">
                     <button type="submit" className="btn btn-success btn-icon-text">
@@ -435,8 +490,19 @@ const AgregarErrores = () => {
                     </button>
                 </div>
             </form>
+            {showModalDesarrollador && (
+                <ModalAsignarDesarrollador
+                    showModalDesarrollador={showModalDesarrollador}
+                    setShowModalDesarrollador={setShowModalDesarrollador}
+                    external_id_proyecto={external_id_proyecto}
+                    usuario={usuario}
+                    external_error={idError}
+                />
+            )}
         </div>
+
     );
+
 };
 
 export default AgregarErrores;

@@ -2,6 +2,7 @@
 const { validationResult } = require("express-validator");
 var models = require("../models/");
 const error = models.error;
+const proyecto = models.proyecto;
 
 class ErrorController {
   /**
@@ -33,7 +34,7 @@ class ErrorController {
         code: 200,
         info: errores,
       });
-      
+
     } catch (err) {
       console.error("Error al listar todos los errores:", err);
       res.status(500).json({
@@ -344,6 +345,47 @@ class ErrorController {
       });
     }
   }
+
+  /*SEXTO SPRINT*/
+  async obtenerErrores(req, res) {
+    const proyecto_idExternal = req.params.external_id;
+    if (!proyecto_idExternal) {
+      return res.status(400).json({ msg: "Falta datos de búsqueda", code: 400 });
+    }
+
+    try {
+      let proyectoAux = await proyecto.findOne({ where: { external_id: proyecto_idExternal } });
+
+      if (!proyectoAux) {
+        return res.status(404).json({ msg: "Proyecto no encontrado", code: 404 });
+      }
+
+      let casosPrueba = await models.caso_prueba.findAll({ where: { id_proyecto: proyectoAux.id } });
+
+      if (casosPrueba.length === 0) {
+        return res.status(404).json({ msg: "No hay casos de prueba asociados al proyecto", code: 404 });
+      }
+
+      // Mapeo para extraer los IDs de los casos de prueba
+      const casosPruebaIds = casosPrueba.map(caso => caso.id);
+
+      // Modelo de errores
+      const errores = await models.error.findAll({
+        where: { id_caso_prueba: casosPruebaIds, estado: "NUEVO" },
+        attributes: ['funcionalidad', 'estado', 'external_id', 'titulo', 'pasos_repetir', 'severidad', 'prioridad', 'fecha_reporte', 'fecha_resolucion', 'id']
+      });
+
+      if (errores.length === 0) {
+        return res.status(404).json({ msg: 'No se encontraron errores nuevos para los casos de prueba', code: 404 });
+      }
+
+      res.json({ msg: 'OK!', code: 200, info: errores });
+    } catch (err) {
+      console.error('Database error:', err);
+      res.status(500).json({ msg: 'Error al obtener registro de error', code: 500, error: err.message });
+    }
+  }
+
 }
 
 module.exports = ErrorController;

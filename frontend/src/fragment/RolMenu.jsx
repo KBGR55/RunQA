@@ -122,7 +122,7 @@ const RoleMenu = () => {
     const roleOptions = {
         'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Casos de prueba asignados', 'Editar proyecto', 'Generar reportes', 'Miembros'],
         'ANALISTA DE PRUEBAS': ['Asignar testers', 'Casos de prueba', 'Lista de casos de prueba asignados'],
-        'TESTER': ['Casos de prueba', 'Registrar errores'],
+        'TESTER': ['Casos de prueba', 'Registrar errores', 'Asignar desarrolladores'],
         'DESARROLLADOR': ['Actualizar el estado de los errores', 'Consultar errores asignados']
     };
 
@@ -166,6 +166,8 @@ const RoleMenu = () => {
             setTimeout(() => {
                 window.location.reload();
             }, 100);
+        } else if (option === 'Asignar desarrolladores') {
+            navigate(`/asignar/desarrollador/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
         }
     };
 

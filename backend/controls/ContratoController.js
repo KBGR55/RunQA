@@ -206,7 +206,7 @@ class ContratoController {
                 });
 
                 if (!contratoExistente) {
-                    const newContrato = await models.contrato.create({
+                    await models.contrato.create({
                         external_id: uuid.v4(),
                         fecha_inicio: fechaInicio,
                         fecha_fin: fechaFin,
@@ -233,6 +233,97 @@ class ContratoController {
             res.status(500).json({ msg: error.message || "Error interno del servicio", code: 500 });
         }
     }
+
+    async asignarDesarrolladores(req, res) {
+        let transaction;
+        try {
+            transaction = await models.sequelize.transaction();
+    
+            const { id_proyecto, desarrollador, entidad_asigno, errores, fecha_inicio, fecha_fin, desarrollador_rol } = req.body;
+    
+            if (!id_proyecto || !desarrollador || desarrollador.length === 0 || !errores || errores.length === 0 || !fecha_inicio || !fecha_fin) {
+                return res.status(400).json({ msg: "Faltan datos requeridos", code: 400 });
+            }
+    
+            const fechaInicio = new Date(fecha_inicio);
+            const fechaFin = new Date(fecha_fin);
+    
+            if (isNaN(fechaInicio) || isNaN(fechaFin) || fechaInicio > fechaFin) {
+                return res.status(400).json({ msg: "Fechas inválidas", code: 400 });
+            }
+    
+            const proyecto = await models.proyecto.findOne({ where: { external_id: id_proyecto } });
+            if (!proyecto) {
+                return res.status(404).json({ msg: "Proyecto no encontrado", code: 404 });
+            }
+    
+            const rolEntidad = await models.rol_entidad.findOne({
+                where: { id_entidad: desarrollador.id_entidad, id_rol: desarrollador_rol }
+            });
+            if (!rolEntidad) {
+                return res.status(404).json({ msg: 'Desarrollador no encontrado', code: 404 });
+            }
+    
+            for (const errorData of errores) { 
+                const errorInstance = await models.error.findOne({ where: { id: errorData.external_id } });
+                if (!errorInstance) {
+                    return res.status(404).json({ msg: 'Registro de error no encontrado', code: 404 });
+                }
+    
+                const rolProyectoAsignado = await models.rol_proyecto.findOne({
+                    where: {
+                        id_rol_entidad: rolEntidad.id,
+                        id_proyecto: proyecto.id
+                    }
+                });
+    
+                if (!rolProyectoAsignado) {
+                    return res.status(400).json({ msg: "Proyecto asignado no encontrado", code: 400 });
+                }
+    
+                const contratoExistente = await models.contrato.findOne({
+                    where: {
+                        id_error: errorInstance.id,
+                        id_rol_proyecto_asignado: entidad_asigno,
+                        id_rol_proyecto_responsable: rolProyectoAsignado.id
+                    }
+                });
+    
+                if (!contratoExistente) {
+                    await models.contrato.create({
+                        external_id: uuid.v4(),
+                        fecha_inicio: fechaInicio,
+                        fecha_fin: fechaFin,
+                        tipo_contrato: 'ERROR',
+                        id_error: errorInstance.id,
+                        id_rol_proyecto_asignado: entidad_asigno,
+                        id_rol_proyecto_responsable: rolProyectoAsignado.id
+                    }, { transaction });
+    
+                    await errorInstance.update({ estado: 'PENDIENTE_VALIDACION' }, { transaction });
+                } else {
+                    console.log(`Contrato ya existente para el desarrollador ${desarrollador.nombres} en el error ${errorInstance.nombre}.`);
+                }
+            }
+    
+            await transaction.commit();
+            res.status(200).json({ msg: "Desarrollador asignado con éxito", code: 200 });
+    
+        } catch (err) {
+            if (transaction) {
+                await transaction.rollback();
+            }
+    
+            console.error("Error al asignar desarrollador:", err);
+    
+            res.status(500).json({
+                msg: "Ocurrió un error interno al procesar la solicitud. Por favor, intente nuevamente más tarde.",
+                code: 500
+            });
+        }
+    }
+    
+    
 
 }
 

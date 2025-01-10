@@ -238,10 +238,13 @@ router.put('/error/actualizar', (req, res, next) => {
   });
 });
 router.get('/error/obtener/external', errorController.obtener);
+router.get('/error/obtener/proyecto/:external_id', errorController.obtenerErrores);
 
+/** ROL_PROYECTO */
 router.get('/rol_proyecto/listar/proyectos', rolProyectoController.listar.bind(rolProyectoController));
 router.get('/rol_proyecto/listar/entidad',rolProyectoController.listar_roles_entidad);
 router.get('/cuenta/:nombreCompleto',cuentaController.obtenerCuenta);
+
 
 /** PROYECTO */
 router.post('/proyecto', proyectoController.crearProyecto);
@@ -257,6 +260,10 @@ router.get('/proyecto/eliminar/:external_id', proyectoController.eliminarProyect
 router.post('/contrato/caso/prueba', contratoController.asignarTesters);
 router.get('/contrato/asignados', contratoController.obtenerDatosTabla);
 router.get('/contrato/asignado/:external_id', contratoController.obtenerDatosCasoAsignado);
+
+router.post('/contrato/error', contratoController.asignarDesarrolladores);
+router.get('/contrato/errores/asignados', contratoController.obtenerDatosTabla);
+router.get('/contrato/error/asignado/:external_id', contratoController.obtenerDatosCasoAsignado);
 
 
 /** ROL_ENTIDAD */
