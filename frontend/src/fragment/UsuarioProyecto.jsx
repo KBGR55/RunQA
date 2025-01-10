@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { peticionGet, peticionDelete, URLBASE } from '../utilities/hooks/Conexion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getToken, borrarSesion, getUser } from '../utilities/Sessionutil';
@@ -18,6 +18,9 @@ const UsuarioProyecto = () => {
     const { external_id_proyecto } = useParams();
     const [infoProyecto, setProyecto] = useState([]);
     const navigate = useNavigate();
+    const [showModalEditHours, setShowModalEditHours] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [newHours, setNewHours] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -94,9 +97,7 @@ const UsuarioProyecto = () => {
             const response = await peticionDelete(getToken(), `proyecto/${external_id_proyecto}/${userIdToDelete}`);
             if (response.code === 200) {
                 mensajes('Usuario eliminado exitosamente', 'success', 'Éxito');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 5000);
+                setData((prevData) => prevData.filter((user) => user.rol_entidad.entidad.id !== userIdToDelete));
             } else {
                 mensajes(response.msg || 'Error al eliminar usuario', 'error', 'Error');
             }
@@ -107,6 +108,43 @@ const UsuarioProyecto = () => {
             handleCloseModal();
         }
     };
+
+    const handleShowModalEditHours = (user) => {
+        setSelectedUser(user);
+        setNewHours(user.horasDiarias);
+        setShowModalEditHours(true);
+    };
+
+    const handleCloseModalEditHours = () => {
+        setShowModalEditHours(false);
+        setSelectedUser(null);
+    };
+
+    const handleUpdateHours = async () => {
+        try {
+            const response = await peticionGet(getToken(), `proyecto/horas/cambiar/${selectedUser.rol_entidad.entidad.id}/${selectedUser.id}/${newHours}`);
+            if (response.code === 200) {
+                mensajes('Horas actualizadas exitosamente', 'success', 'Éxito');
+                
+                // Actualiza el estado directamente
+                setData(prevData => {
+                    return prevData.map(user =>
+                        user.id === selectedUser.id
+                            ? { ...user, horasDiarias: newHours }
+                            : user
+                    );
+                });
+            } else {
+                mensajes(response.msg || 'Error al actualizar las horas', 'error', 'Error');
+            }
+        } catch (error) {
+            console.error("Error al actualizar las horas:", error);
+            mensajes('Error al actualizar las horas', 'error', 'Error');
+        } finally {
+            handleCloseModalEditHours();
+        }
+    };
+    
 
     return (
         <div>
@@ -144,7 +182,8 @@ const UsuarioProyecto = () => {
                                             <th className="text-center">Apellidos</th>
                                             <th className="text-center">Rol</th>
                                             <th className="text-center">Horas diarias</th>
-                                            <th className="text-center"> </th>
+                                            <th className="text-center">Modificar horas</th>
+                                            <th className="text-center">Eliminar</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -159,14 +198,20 @@ const UsuarioProyecto = () => {
                                                 <td className="text-center">{user.horasDiarias}</td>
                                                 <td className="text-center">
                                                     <Button
+                                                        className="btn-icon" style={{ backgroundColor: '#608BC1' }}
+                                                        onClick={() => handleShowModalEditHours(user)}
+                                                    >
+                                                        <FontAwesomeIcon icon={faEdit} />
+                                                    </Button>
+                                                </td>
+                                                <td className="text-center">
+                                                    <Button
                                                         className="btn btn-danger"
                                                         disabled={rolLider && rolLider[0] && rolLider[0].nombre === user.rol_entidad.rol.nombre}
                                                         onClick={() => handleShowModal(user.rol_entidad.entidad.id)}
                                                     >
                                                         <FontAwesomeIcon icon={faTrash} />
                                                     </Button>
-
-
                                                 </td>
                                             </tr>
                                         ))}
@@ -190,6 +235,32 @@ const UsuarioProyecto = () => {
                     </Button>
                     <Button variant="danger" onClick={handleDeleteUser}>
                         Eliminar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={showModalEditHours} onHide={handleCloseModalEditHours}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Modificar Horas Diarias</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <label htmlFor="newHours" className="form-label">Horas diarias:</label>
+                    <input
+                        type="number"
+                        id="newHours"
+                        className="form-control"
+                        value={newHours}
+                        onChange={(e) => setNewHours(Number(e.target.value))}
+                        min="1"
+                        max="24"
+                    />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseModalEditHours}>
+                        Cancelar
+                    </Button>
+                    <Button variant="primary" onClick={handleUpdateHours}>
+                        Guardar
                     </Button>
                 </Modal.Footer>
             </Modal>
