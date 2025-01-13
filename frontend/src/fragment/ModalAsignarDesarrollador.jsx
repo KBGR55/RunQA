@@ -11,14 +11,14 @@ import mensajes from '../utilities/Mensajes';
 import swal from 'sweetalert';
 import { useNavigate } from 'react-router-dom';
 
-const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarrollador, external_id_proyecto, external_error, usuario, navigate }) => {
+const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarrollador, external_id_proyecto, external_error, usuario, navigateProp }) => {
     const [desarrollador, setDesarrollador] = useState([]);
     const [selectedDesarrollador, setSelectedDesarrollador] = useState(null);
     const [fechaFinPrueba, setFechaFinPrueba] = useState(null);
     const [fechaInicioPrueba, setFechaInicioPrueba] = useState(null);
     const [rolId, setRolId] = useState(null);
     const handleClose = () => setShowModalDesarrollador(false);
-    const navigate = useNavigate();
+    const navigate = useNavigate();  
 
 
     useEffect(() => {
