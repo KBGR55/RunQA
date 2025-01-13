@@ -21,6 +21,7 @@ const Registrar = () => {
     const [passwordMatch, setPasswordMatch] = useState(null);
     const [uploadedPhoto, setUploadedPhoto] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [horasDiarias, setHorasDiarias] = useState(2);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -43,6 +44,7 @@ const Registrar = () => {
         formData.append('telefono', data.telefono);
         formData.append('clave', data.clave);
         formData.append('peticion', data.peticion);
+        formData.append('horasDisponibles', horasDiarias);
         if (data.foto && data.foto.length > 0) {
             formData.append('foto', data.foto[0]);
         } else {
@@ -333,6 +335,30 @@ const Registrar = () => {
                         {confirmPassword && !passwordMatch && (
                             <span className='mensajeerror'>Las claves no coinciden</span>
                         )}
+                    </div>
+
+                    <div className="col-md-6">
+                        <label htmlFor="horasDiarias" className="form-label d-flex align-items-center">
+                            Horas diarias a trabajar*
+                            <OverlayTrigger
+                                placement="top"
+                                overlay={<Tooltip>Este campo debe contener un número entre 2 y 12</Tooltip>}
+                            >
+                                <FontAwesomeIcon icon={faQuestionCircle} className="ms-2 text-info" />
+                            </OverlayTrigger>
+                        </label>
+                        <input
+                            type="number"
+                            id="horasDiarias"
+                            value={horasDiarias}
+                            onChange={(e) => setHorasDiarias(Number(e.target.value))}
+                            min="2"
+                            max="12"
+                            className="form-control"
+                        />
+                        {horasDiarias < 2 || horasDiarias > 12 ? (
+                            <span className="mensajeerror">Debe ingresar un valor entre 2 y 12</span>
+                        ) : null}
                     </div>
                     <div className="registro-row">
                         <div className="registro-col">

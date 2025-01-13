@@ -8,7 +8,7 @@ import { peticionGet } from '../utilities/hooks/Conexion';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import '../css/style.css';
 import mensajes from '../utilities/Mensajes';
-import { getToken } from '../utilities/Sessionutil';
+import { getToken, getUser } from '../utilities/Sessionutil';
 import TablePagination from '@mui/material/TablePagination';
 
 const ListaCasoPrueba = () => {
@@ -22,6 +22,7 @@ const ListaCasoPrueba = () => {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const { external_id_proyecto } = useParams();
     const [infoProyecto,setProyecto] = useState([]);
+    const [rol, SetRol] = useState('false');
     
 
     useEffect(() => {        
@@ -39,9 +40,10 @@ const ListaCasoPrueba = () => {
                         console.error(error);
                     });
                 } 
-                const response = await peticionGet(getToken(), `caso/prueba/listar?id_proyecto=${proyecto.id}`);
+                const response = await peticionGet(getToken(), `caso/prueba/listar/${getUser().user.id}?id_proyecto=${proyecto.id}`);
                 if (response.code === 200) {
                     setCasosPrueba(response.info);
+                    SetRol(response.rol);
                 } else {
                     console.error('Error al obtener casos de prueba:', response.msg);
                 }
@@ -126,7 +128,7 @@ const ListaCasoPrueba = () => {
                                             <td className="text-center">
                                                 <Button
                                                     variant="btn btn-outline-info btn-rounded"
-                                                    onClick={() => handleNavigateToDetail(caso.external_id)}
+                                                    onClick={() => handleNavigateToDetail(caso.external_id,rol)}
                                                     className="btn-icon"
                                                 >
                                                     <svg

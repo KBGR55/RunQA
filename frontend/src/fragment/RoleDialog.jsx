@@ -8,6 +8,7 @@ import { faCheck, faTimes, faTrash } from '@fortawesome/free-solid-svg-icons';
 import mensajes from '../utilities/Mensajes';
 import { borrarSesion, getToken } from '../utilities/Sessionutil';
 import { Navigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 
 const RoleDialog = ({ handleClose, external_id }) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -16,9 +17,10 @@ const RoleDialog = ({ handleClose, external_id }) => {
     const [selectedRole, setSelectedRole] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
-    const [horasDiarias, setHorasDiarias] = useState(2);
+    const { register, handleSubmit, formState: { errors }, watch } = useForm();
+    const horasDiarias = watch('horasDiarias');
 
-    const handleAssignRole = async () => {
+    const handleAssignRole = async (data) => {
         if (!selectedRole || users.length === 0) {
             mensajes('Faltan campos obligatorios', 'error', 'Error');
             return;
@@ -39,7 +41,7 @@ const RoleDialog = ({ handleClose, external_id }) => {
                 mensajes(response.msg, 'success', 'Éxito');
                 setTimeout(() => {
                     window.location.reload();
-                }, 1200);
+                }, 2000);
             }
         } catch (error) {
             console.error("Error al asignar roles:", error);
@@ -109,9 +111,9 @@ const RoleDialog = ({ handleClose, external_id }) => {
 
     return (
         <div className='contenedor-carta'>
-            <Form>
+            <Form onSubmit={handleSubmit(handleAssignRole)}>
                 <Form.Group className="mb-3" controlId="userSearch">
-                    <Form.Label>Buscar Persona</Form.Label>
+                    <Form.Label><strong style={{ color: 'red' }}>* </strong>Buscar Persona</Form.Label>
                     <Form.Control
                         type="text"
                         placeholder="Ingrese el nombre de la persona"
@@ -158,7 +160,7 @@ const RoleDialog = ({ handleClose, external_id }) => {
                 </div>
 
                 <Form.Group className="mb-3" controlId="roleSelect">
-                    <Form.Label>Seleccionar Rol</Form.Label>
+                    <Form.Label><strong style={{ color: 'red' }}>* </strong>Seleccionar Rol</Form.Label>
                     <Form.Control as="select" onChange={(e) => setSelectedRole(e.target.value)}>
                         <option value="">Selecciona un rol</option>
                         {roles.map((role) => (
@@ -169,25 +171,35 @@ const RoleDialog = ({ handleClose, external_id }) => {
                     </Form.Control>
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="horasDiariasInput">
-                    <Form.Label>Horas Diarias</Form.Label>
-                    <Form.Control
+                <div className="">
+                    <label htmlFor="horasDiarias" className="form-label d-flex align-items-center">
+                        <strong style={{ color: 'red' }}>* </strong>Horas diarias a trabajar
+                    </label>
+                    <input
                         type="number"
-                        value={horasDiarias}
-                        onChange={(e) => setHorasDiarias(Number(e.target.value))}
-                        min="2"
-                        max="8"
+                        id="horasDiarias"
+                        className={`form-control ${errors.horasDiarias ? 'is-invalid' : ''}`}
+                        {...register('horasDiarias', {
+                            required: 'Las horas diarias son obligatorias',
+                            min: { value: 1, message: 'Debe ser al menos 1 hora' },
+                            max: { value: 24, message: 'Por favor, ingrese un valor válido. Recuerde que un día solo tiene 24 horas.' },
+                        })}
                     />
-                </Form.Group>
+                    {errors.horasDiarias && <div className="alert alert-danger">{errors.horasDiarias.message}</div>}
+                    {horasDiarias > 8 && (
+                        <span className="mensajeerror">
+                            Al trabajar más de 8 horas, reconoce que está aceptando un mayor nivel de compromiso.
+                        </span>
+                    )}
+                </div>
 
                 <Form.Group className="contenedor-filo">
                     <button type="button" onClick={handleClose} className="btn-negativo">
                         <FontAwesomeIcon icon={faTimes} /> Cancelar
                     </button>
                     <button
-                        type="button"
+                        type="submit"
                         className="btn-positivo"
-                        onClick={handleAssignRole}
                     >
                         <FontAwesomeIcon icon={faCheck} /> Asignar
                     </button>

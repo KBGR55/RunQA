@@ -8,13 +8,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { borrarSesion, getToken, getUser } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 import 'react-datepicker/dist/react-datepicker.css';
-import AsignarTesterModal from '../fragment/ModalAsignar';
+import ModalAsignarDesarrollador from './ModalAsignarDesarrollador';
 
-const AsignarCasosPrueba = () => {
+const AsignarErrores = () => {
     const { external_id_proyecto } = useParams();
-    const [showNewProjectModal, setShowNewProjectModal] = useState(false);
-    const [casosPrueba, setCasosPrueba] = useState([]);
-    const [selectedCases, setSelectedCases] = useState([]);
+    const [showModalDesarrollador, setShowModalDesarrollador] = useState(false);
+    const [error, setErrores] = useState([]);
+    const [selectedError, setSelectedErrors] = useState([]);
     const navigate = useNavigate();
     const usuario = getUser();
     const [infoProyecto,setProyecto] = useState([]);
@@ -34,7 +34,7 @@ const AsignarCasosPrueba = () => {
                         console.error(error);
                     });
                 } 
-                const info = await peticionGet(getToken(), `caso/obtener/proyecto/${external_id_proyecto}`);
+                const info = await peticionGet(getToken(), `/error/obtener/proyecto/${external_id_proyecto}`);
                 if (info.code !== 200) {
                     mensajes(info.msg, 'error');
                     if (info.msg === 'Acceso denegado. Token ha expirado') {
@@ -42,7 +42,7 @@ const AsignarCasosPrueba = () => {
                         navigate("/login");
                     }
                 } else {
-                    setCasosPrueba(info.info);
+                    setErrores(info.info);
                 }
             } catch (error) {
                 console.error('Error en la solicitud:', error);
@@ -54,11 +54,11 @@ const AsignarCasosPrueba = () => {
     }, [external_id_proyecto, navigate]);
     
     const handleShowNewProjectModal = () => {
-        setShowNewProjectModal(true);
+        setShowModalDesarrollador(true);
     };
 
     const handleCheckboxChange = (id) => {
-        setSelectedCases((prevSelected) => {
+        setSelectedErrors((prevSelected) => {
             if (prevSelected.includes(id)) {
                 return prevSelected.filter(selectedId => selectedId !== id);
             } else {
@@ -72,27 +72,27 @@ const AsignarCasosPrueba = () => {
             <div className='contenedor-fluid'>
                 <div className='contenedor-centro'>
                     <div className="contenedor-carta">
-                    <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
+                    <p className="titulo-proyecto">{infoProyecto.nombre}</p>
                         <div className='contenedor-filo'>
                             <Button
                                 className="btn-login"
                                 onClick={handleShowNewProjectModal}
-                                disabled={selectedCases.length === 0}
+                                disabled={selectedError.length === 0}
                             >
-                                <FontAwesomeIcon icon={faPlus} /> Asignar tester
+                                <FontAwesomeIcon icon={faPlus} /> Asignar desarrollador
                             </Button>
                         </div>
-                        <p className="titulo-primario">Casos de Prueba</p>
-                        {casosPrueba.length === 0 ? (
+                        <p className="titulo-primario">Errores registrados</p>
+                        {error.length === 0 ? (
                             <div className="text-center">
-                                <p className="text-muted">No hay casos de prueba por asignar</p>
+                                <p className="text-muted">No hay errores registrados por asignar</p>
                             </div>
                         ) : (
                             <div className="row g-1">
-                                {casosPrueba.map((casoPrueba) => {
-                                    const isSelected = selectedCases.includes(casoPrueba.external_id);
+                                {error.map((error) => {
+                                    const isSelected = selectedError.includes(error.id);
                                     return (
-                                        <div className="col-md-4" key={casoPrueba.id}>
+                                        <div className="col-md-4" key={error.id}>
                                             <div className={`card border-light ${isSelected ? 'card-selected' : ''}`} style={{ margin: '15px' }}>
                                                 <div className="card-header d-flex justify-content-between align-items-center">
                                                     <span style={{ fontWeight: 'bold' }}>Seleccionar</span>
@@ -100,14 +100,14 @@ const AsignarCasosPrueba = () => {
                                                         type="checkbox"
                                                         className="custom-checkbox"
                                                         checked={isSelected}
-                                                        onChange={() => handleCheckboxChange(casoPrueba.external_id)}
+                                                        onChange={() => handleCheckboxChange(error.id)}
                                                     />
                                                 </div>
                                                 <div className="card-body">
-                                                    <h5 className="card-title"><strong>{casoPrueba.nombre}</strong></h5>
+                                                    <h5 className="card-title"><strong>{error.titulo}</strong></h5>
                                                     <div style={{ textAlign: 'left', marginLeft: '15px' }}>
-                                                        <li className="card-text"><strong>Descripción:</strong> {casoPrueba.descripcion}</li>
-                                                        <li className="card-text"><strong>Clasificación:</strong> {casoPrueba.clasificacion}</li>
+                                                        <li className="card-text"><strong>Funcionalidad:</strong> {error.funcionalidad}</li>
+                                                        <li className="card-text"><strong>Severidad:</strong> {error.severidad}</li>
                                                     </div>
                                                 </div>
                                             </div>
@@ -122,17 +122,17 @@ const AsignarCasosPrueba = () => {
             
 
             {/* Modal para asignar testers */}
-            <AsignarTesterModal
-                showModal={showNewProjectModal}
-                setShowModal={setShowNewProjectModal}
+            <ModalAsignarDesarrollador
+                showModalDesarrollador={showModalDesarrollador}
+                setShowModalDesarrollador={setShowModalDesarrollador}
                 external_id_proyecto={external_id_proyecto}
-                external_caso_prueba={selectedCases}
+                external_error={selectedError}
                 usuario={usuario}
-                setCasosPrueba={setCasosPrueba}
+                setErrores={setErrores}
                 navigate={navigate}
             />
         </div>
     );
 };
 
-export default AsignarCasosPrueba;
+export default AsignarErrores;

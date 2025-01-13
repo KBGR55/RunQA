@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
         estado: { type: DataTypes.BOOLEAN, defaultValue: true },
         fecha_inicio: { type: DataTypes.DATE },
         fecha_fin: { type: DataTypes.DATE },
-        tipo_contrato: { type: DataTypes.ENUM('CASO_PRUEBA', 'ERROR'), allowNull: false }
+        tipo_contrato: { type: DataTypes.ENUM('CASO_PRUEBA', 'ERROR'), allowNull: false },
+        id_error: { type: DataTypes.INTEGER, allowNull: true },
     }, {
         freezeTableName: true
     });

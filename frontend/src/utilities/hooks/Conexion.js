@@ -50,9 +50,7 @@ export const peticionGet = async (key, URL) => {
     const datos = await (await fetch(`${URL_BACKEND}/${URL}`, {
         method: "GET",
         headers: headers,
-    })).json();
-    console.log("datos", datos);
-    
+    })).json();    
     return datos;
 }
 
@@ -103,10 +101,7 @@ export const GuardarImages = async (data, key, urls) => {
         } else {
             throw new Error("La respuesta del servidor no es JSON: " + textResponse);
         }
-        
-
     } catch (error) {
-        console.log("Error:", error);
         throw error;
     }
 };
@@ -114,7 +109,6 @@ export const GuardarImages = async (data, key, urls) => {
 
 
 export const ActualizarImagenes = async (data, key, urls) => {
-    console.log(data);
     const headers = {
         "x-api-token": key,
     };
@@ -125,12 +119,9 @@ export const ActualizarImagenes = async (data, key, urls) => {
     };
     try {
         const response = await fetch(URL_BACKEND + urls, requestOptions);
-
         const datos = await response.json();
-
         return datos;
     } catch (error) {
-        console.log("Error:", error);
         throw error;
     }
 }

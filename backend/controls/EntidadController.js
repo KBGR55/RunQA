@@ -18,7 +18,7 @@ class EntidadController {
                     {
                         model: models.cuenta, 
                         as: 'cuenta', 
-                        attributes: ['correo'],
+                        attributes: ['correo','estado'],
                     },
                     {
                         model: models.rol_entidad,
@@ -92,7 +92,8 @@ class EntidadController {
                 telefono: listar.telefono,
                 estado: listar.estado,
                 horasDisponibles: listar.horasDisponibles,
-               correo:listar.cuenta.correo
+               correo:listar.cuenta.correo,
+               estadoCuenta:listar.cuenta.estado
             }
         });
     }
@@ -134,6 +135,7 @@ class EntidadController {
                 apellidos: req.body.apellidos,
                 fecha_nacimiento: req.body.fecha_nacimiento,
                 telefono: req.body.telefono,
+                horasDisponibles: req.body.horasDisponibles,
                 estado: false,
                 foto: fotoFilename,
                 cuenta: {
@@ -146,6 +148,7 @@ class EntidadController {
                 },
                 external_id: uuid.v4()
             };
+            
             const entidad = await models.entidad.create(data, {
                 include: [{ model: models.cuenta, as: "cuenta", include: { model: models.peticion, as: 'peticion'}  }],
                 transaction
@@ -153,7 +156,7 @@ class EntidadController {
             await transaction.commit();
     
             return res.status(200).json({
-                msg: "SE HAN REGISTRADO LOS DATOS CON ÉXITO",
+                msg: "Se ha registrado su petición con éxito",
                 code: 200
             });
     
@@ -164,6 +167,13 @@ class EntidadController {
     
             if (transaction && !transaction.finished) {
                 await transaction.rollback();
+            }
+
+            if (error.name === 'SequelizeUniqueConstraintError' && error.errors[0].path === 'telefono') {
+                return res.status(400).json({
+                    msg: "ESTE NÚMERO DE TELÉFONO SE ENCUENTRA REGISTRADO EN EL SISTEMA",
+                    code: 400
+                });
             }
     
             if (error.name === 'SequelizeUniqueConstraintError' && error.errors[0].path === 'correo') {
@@ -180,8 +190,7 @@ class EntidadController {
         }
     }    
 
-    async modificar(req, res) {
-        
+    async modificar(req, res) {   
         try {
 
                const claveHash = (clave) => {

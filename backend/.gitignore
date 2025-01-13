@@ -6,6 +6,7 @@
 .pnp.js
 /public/images/users
 
+/public/images/errors
 # testing
 /coverage
 

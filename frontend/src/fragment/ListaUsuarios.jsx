@@ -9,8 +9,7 @@ import { getToken, borrarSesion } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 import EditarPersona from './EditarPersona';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTimes, faCheck, faSearch } from '@fortawesome/free-solid-svg-icons';
-import Registrar from '../fragment/Registrar';
+import { faPlus, faTimes, faCheck, faSearch, faPerson } from '@fortawesome/free-solid-svg-icons';
 import AsignarLideres from './AsignarLideres';
 import AsignarAdmin from './AsignarAdmin';
 import TablePagination from '@mui/material/TablePagination';
@@ -28,6 +27,8 @@ const ListaUsuarios = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
+    const [filteredDataEstado, setFilteredDataEstado] = useState([]);
+    const [estadoUsuario, setEstadoUsuario] = useState('ACEPTADO');
 
     useEffect(() => {
         peticionGet(getToken(), 'listar/entidad').then((info) => {
@@ -37,9 +38,11 @@ const ListaUsuarios = () => {
                 navigate("main");
             } else {
                 setData(info.info);
+                // Filtrar los datos cuando se obtiene la lista
+                setFilteredDataEstado(info.info.filter(user => user.cuenta.estado === estadoUsuario));
             }
         });
-    }, [navigate]);
+    }, [navigate, estadoUsuario]);
 
     //CAMBIAR FORMATO FECHA
     const obtenerFechaFormateada = (fechaString) => {
@@ -78,6 +81,15 @@ const ListaUsuarios = () => {
         setShowNewProjectModal(false);
     };
 
+    const handleShowUsuariosNoAutorizados = () => {
+        setEstadoUsuario('DENEGADO');
+    };
+
+    // Manejar la lógica de cambio de estado de los usuarios a "ACEPTADO"
+    const handleShowUsuariosAceptados = () => {
+        setEstadoUsuario('ACEPTADO');
+    };
+
     // Abrir modal de asignación de líderes
     const handleShowAsignarModal = () => {
         setShowAsignarModal(true);
@@ -111,7 +123,7 @@ const ListaUsuarios = () => {
         setSearchTerm(e.target.value);
     };
 
-    const filteredData = data.filter((user) => {
+    const filteredData = filteredDataEstado.filter((user) => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase();
         return (
             (user.nombres && user.nombres.toLowerCase().includes(lowerCaseSearchTerm)) ||
@@ -125,15 +137,23 @@ const ListaUsuarios = () => {
             <div className="contenedor-centro">
                 <div className='contenedor-carta '>
                     <div className='contenedor-filo'>
+                        
                         <Button
                             className="btn-normal mb-3"
                             onClick={handleShowAsignarModal}
                         >  <FontAwesomeIcon icon={faPlus} /> Crear Lideres de Calidad
                         </Button>
+                        <Button
+                            className="btn-opcional mb-3"
+                            onClick={estadoUsuario === 'DENEGADO' ? handleShowUsuariosAceptados : handleShowUsuariosNoAutorizados}
+                        >
+                            <FontAwesomeIcon icon={faPerson} /> 
+                            {estadoUsuario === 'DENEGADO' ? 'Usuarios Autorizados' : 'Usuarios No Autorizados'}
+                        </Button>
                     </div>
                     <main className="table">
                         <section className='table_header'>
-                            <h1 className="titulo-primario">Lista de Usuarios</h1>
+                            <h1 className="titulo-primario">{estadoUsuario === 'DENEGADO' ? 'Lista de usuarios no autorizados' : 'Lista de usuarios aceptados'}</h1>
 
                             <InputGroup className="mb-3">
                                 <InputGroup.Text>
@@ -176,14 +196,14 @@ const ListaUsuarios = () => {
                                                     </td>
                                                     <td className="text-center">{data.nombres}</td>
                                                     <td className="text-center">{data.apellidos}</td>
-                                                    <td className="text-center">{data.estado ? 'Activo' : 'Desactivo'}</td>
+                                                    <td className="text-center">{data.cuenta.estado}</td>
                                                     <td className="text-center">{obtenerFechaFormateada(data.fecha_nacimiento)}</td>
                                                     <td className="text-center">{data.telefono}</td>
                                                     <td className="text-center">{data.horasDisponibles}</td>
                                                     <td className="text-center">
                                                         <Button style={{ margin: '5px' }}
                                                             variant="btn btn-outline-info btn-rounded"
-                                                            disabled={data.rol_entidad.some(rol => rol.id_rol === 1)}
+                                                            disabled={data.rol_entidad.some(rol => rol.id_rol === 1) || data.cuenta.estado =="DENEGADO"}
                                                             onClick={() => {
                                                                 handleShowEdit();
                                                                 obtenerId(data.external_id);
@@ -198,7 +218,7 @@ const ListaUsuarios = () => {
 
                                                         <Button
                                                             variant="btn btn-outline-primary btn-rounded"
-                                                            disabled={data.rol_entidad.some(rol => rol.id_rol === 1)}
+                                                            disabled={data.rol_entidad.some(rol => rol.id_rol === 1) || data.cuenta.estado =="DENEGADO"}
                                                             onClick={() => {
                                                                 handleShowAsignarAdminModal();
                                                                 obtenerId(data.external_id);

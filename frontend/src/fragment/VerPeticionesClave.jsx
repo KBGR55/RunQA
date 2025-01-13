@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { getToken } from '../utilities/Sessionutil';
+import { getToken, getUser } from '../utilities/Sessionutil';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import mensajes from '../utilities/Mensajes';
+import swal from 'sweetalert';
 
 const VerPeticionesClave = () => {
     const [peticiones, setPeticiones] = useState([]);
@@ -29,23 +30,34 @@ const VerPeticionesClave = () => {
         const fechaHora = format(new Date(createdAt), 'yyyy-MM-dd HH:mm:ss');
 
         const handleGenerarLink = () => {
-            peticionGet(getToken(), `aceptarechazar/peticiones/${external_id}/1`).then((info) => {
-                if (info.code !== 200) {
-                    mensajes(info.msg);
-                } else {
-                  var  external_id_cuenta= info.info;
-                    peticionGet(getToken(), `cuenta/token/${external_id_cuenta}`).then((info) => {
-                        if (info.code !== 200 && (info.msg === "No existe token" || info.msg === "Token no valido")) {
+            swal({
+                title: "¿Está seguro de generar el enlace?",
+                text: "El enlace permitirá al usuario cambiar su clave.",
+                icon: "warning",
+                buttons: ["No", "Sí"],
+                dangerMode: true,
+            }).then((willGenerate) => {
+                if (willGenerate) {
+                    peticionGet(getToken(), `aceptarechazar/peticiones/${external_id}/1/1/${getUser().user.id}`).then((info) => {
+                        if (info.code !== 200) {
                             mensajes(info.msg);
                         } else {
-                            const token = info.info.token;
-                            setLink(`${window.location.origin}/cambio/clave/restablecer/${external_id_cuenta}/${token}`);
-                            mensajes("Enlace generado con éxito", "success", "Éxito");
+                            const external_id_cuenta = info.info;
+                            peticionGet(getToken(), `cuenta/token/${external_id_cuenta}`).then((info) => {
+                                if (info.code !== 200 && (info.msg === "No existe token" || info.msg === "Token no valido")) {
+                                    mensajes(info.msg);
+                                } else {
+                                    const token = info.info.token;
+                                    setLink(`${window.location.origin}/cambio/clave/restablecer/${external_id_cuenta}/${token}`);
+                                    mensajes("Enlace generado con éxito", "success", "Éxito");
+                                }
+                            });
                         }
                     });
                 }
             });
         };
+        
 
         const handleCopiarLink = () => {
             if (link) {

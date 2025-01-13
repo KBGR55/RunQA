@@ -24,6 +24,8 @@ const ContratoController = require('../controls/ContratoController');
 const contratoController = new ContratoController();
 const PeticionController = require('../controls/PeticionController');
 const peticionController = new PeticionController();
+const ErrorController = require('../controls/ErrorController');
+const errorController = new ErrorController();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -35,7 +37,6 @@ var auth = function middleware(req, res, next) {
   if (token) {
     require('dotenv').config();
     const llave = process.env.KEY;
-    console.log(llave)
     jwt.verify(token, llave, async (err, decoded) => {
       if (err) {
         res.status(401);
@@ -80,7 +81,6 @@ const createStorage = (folderPath) => {
   return multer.diskStorage({
     destination: path.join(__dirname, folderPath),
     filename: (req, file, cb) => {
-      console.log(file);
       const parts = file.originalname.split('.');
       const extension = parts[parts.length - 1];
       cb(null, uuid.v4() + "." + extension);
@@ -91,7 +91,6 @@ const createStorage = (folderPath) => {
 // Método para validar las extensiones de las fotografías
 const extensionesAceptadasFoto = (req, file, cb) => {
   const allowedExtensions = ['.jpeg', '.jpg', '.png'];
-  console.log(file);
   const ext = path.extname(file.originalname).toLowerCase();
   if (allowedExtensions.includes(ext)) {
     cb(null, true);
@@ -115,12 +114,14 @@ const uploadFoto = (folderPath) => {
 
 // Ejemplos de uso
 const uploadFotoPersona = uploadFoto('../public/images/users');
+const uploadAnexoFotoError = uploadFoto('../public/images/errors');
 
 //INICIO DE SESION
 router.post('/sesion', [
   body('correo', 'Ingrese un correo valido').exists().not().isEmpty().isEmail(),
   body('clave', 'Ingrese una clave valido').exists().not().isEmpty(),
 ], cuentaController.sesion)
+
 //CAMBIAR CLAVE
 router.put('/cuenta/clave/:external_id', [
   body('clave_vieja', 'Ingrese una clave valido').exists().not().isEmpty(),
@@ -157,7 +158,6 @@ router.post('/entidad/guardar', (req, res, next) => {
     entidadController.guardar(req, res, next);
   });
 });
-
 router.put('/modificar/entidad', (req, res, next) => {
   uploadFotoPersona.single('foto')(req, res, (error) => {
     if (error) {
@@ -192,30 +192,79 @@ router.post('/caso/prueba/actualizar', [
   body('descripcion').trim().optional().notEmpty().withMessage('La descripción no puede estar vacía'),
   body('resultado_esperado').trim().optional().notEmpty().withMessage('El resultado esperado no puede estar vacío'),
 ], casoPruebaController.actualizar);
-router.get('/caso/prueba/listar',casoPruebaController.listar);
-router.get('/caso/prueba/obtener',casoPruebaController.obtener);
+router.get('/caso/prueba/listar/:id_entidad',casoPruebaController.listar);
+router.get('/caso/prueba/obtener/:entidad_id',casoPruebaController.obtener);
 router.put('/caso/prueba/cambiar/estado',casoPruebaController.cambiar_estado);
 router.get('/caso/prueba/eliminar',casoPruebaController.cambiar_estado_obsoleto);
 router.get('/caso/obtener/proyecto/:external_id', casoPruebaController.obtenerCasosProyecto);
+router.put('/caso/prueba/ejecutar/:external_id',casoPruebaController.ejecutarCasoPrueba);
 
+/** ERROR */
+router.get('/error/listar', errorController.listar);
+router.get('/error/obtener', errorController.listarPorCasoPrueba);
+router.get('/error/caso/prueba', errorController.listarPorCasoPrueba);
+router.post('/error/guardar', (req, res, next) => {
+  uploadAnexoFotoError.single('foto')(req, res, (error) => {
+    if (error) {
+      if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({
+          msg: "El archivo es demasiado grande. Por favor, sube un archivo de menos de 2 MB.",
+          code: 413
+        });
+      }
+      return res.status(400).json({
+        msg: "Error al cargar el archivo: " + error.message,
+        code: 400
+      });
+    }
+    errorController.guardar(req, res, next);
+  });
+});
+router.put('/error/actualizar', (req, res, next) => {
+  uploadAnexoFotoError.single('foto')(req, res, (error) => {
+    if (error) {
+      if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({
+          msg: "El archivo es demasiado grande. Por favor, sube un archivo de menos de 2 MB.",
+          code: 413
+        });
+      }
+      return res.status(400).json({
+        msg: "Error al cargar el archivo: " + error.message,
+        code: 400
+      });
+    }
+    errorController.editar(req, res, next);
+  });
+});
+router.get('/error/obtener/external', errorController.obtener);
+router.get('/error/obtener/proyecto/:external_id', errorController.obtenerErrores);
 
+/** ROL_PROYECTO */
 router.get('/rol_proyecto/listar/proyectos', rolProyectoController.listar.bind(rolProyectoController));
 router.get('/rol_proyecto/listar/entidad',rolProyectoController.listar_roles_entidad);
 router.get('/cuenta/:nombreCompleto',cuentaController.obtenerCuenta);
 
+
 /** PROYECTO */
-router.post('/proyecto', proyectoController.crearProtecto);
+router.post('/proyecto', proyectoController.crearProyecto);
 router.put('/proyecto', proyectoController.actualizarProyecto);
 router.post('/proyecto/asignar', proyectoController.asignarProyecto);
 router.get('/proyecto/:id_proyect',proyectoController.getEntidadProyecto);
 router.get('/proyecto/obtener/:external_id',proyectoController.getProyecto);
 router.delete('/proyecto/:id_proyect/:id_entidad',proyectoController.removerEntidad);
-router.get('/proyecto/listar/tester/:external_id',proyectoController.obtenerTestersPorProyecto);
+router.get('/proyecto/listar/rol/:rol_name/:external_id',proyectoController.obtenerRolesPorProyecto);
+router.get('/proyecto/eliminar/:external_id', proyectoController.eliminarProyecto);
+router.get('/proyecto/horas/cambiar/:id_entidad/:id_rol_proyecto/:horasDiarias', proyectoController.cambiarHorasDiarias);
 
 /** CONTRATO */
 router.post('/contrato/caso/prueba', contratoController.asignarTesters);
 router.get('/contrato/asignados', contratoController.obtenerDatosTabla);
 router.get('/contrato/asignado/:external_id', contratoController.obtenerDatosCasoAsignado);
+
+router.post('/contrato/error', contratoController.asignarDesarrolladores);
+router.get('/contrato/errores/asignados', contratoController.obtenerDatosTabla);
+router.get('/contrato/error/asignado/:external_id', contratoController.obtenerDatosCasoAsignado);
 
 
 /** ROL_ENTIDAD */
@@ -228,7 +277,7 @@ router.get('/rol/entidad/obtener/administrador', rolEntidadController.obtenerAdm
 
 /** PETICION */
 router.get('/peticion/:tipo', peticionController.listarPeticiones);
-router.get('/aceptarechazar/peticiones/:external/:estado', /*auth,*/ peticionController.aceptarRechazar);
+router.get('/aceptarechazar/peticiones/:external/:estado/:motivo_rechazo/:id_rechazador', /*auth,*/ peticionController.aceptarRechazar);
 
 
 module.exports = router;  

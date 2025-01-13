@@ -43,6 +43,38 @@ const CasoPruebaAsignado = () => {
         fetchCasoPrueba();
     }, []);
 
+    const getEstadoClass = (estado) => {
+        switch (estado) {
+            case 'DISEÑADO':
+                return 'bg-secondary';
+            case 'REVISADO':
+                return 'bg-primary';
+            case 'PENDIENTE':
+                return 'bg-warning';
+            case 'EN PROGRESO':
+                return 'bg-info';
+            case 'BLOQUEADO':
+                return 'bg-danger';
+            case 'DUPLICADO':
+                return 'bg-secondary';
+            case 'OBSOLETO':
+                return 'bg-dark';
+            case 'NO APLICABLE':
+                return 'bg-light';
+            case 'FALLIDO':
+                return 'bg-danger';
+            case 'EXITOSO':
+                return 'bg-success';
+            case 'CERRADO':
+                return 'bg-success';
+            case 'REABIERTO':
+                return 'bg-warning';
+            default:
+                return 'bg-secondary';
+        }
+    };
+
+
     const formatDate = (dateString) => new Date(dateString).toISOString().slice(0, 10);
 
     return (
@@ -78,9 +110,9 @@ const CasoPruebaAsignado = () => {
                                 </div>
                                 <div className="d-flex flex-column align-items-center">
                                     <strong>Estado Actual</strong>
-                                    <span className={`badge ${casosPrueba?.estadoActual === 'APROBADO' ? 'bg-success' : casosPrueba?.estadoActual === 'RECHAZADO' ? 'bg-danger' : 'bg-warning'}`}>
-                                        {casosPrueba?.estadoActual || 'No disponible'}
-                                    </span>
+                                    <span className={`badge ${getEstadoClass(casosPrueba?.estado)}`}>
+                                            {casosPrueba?.estado}
+                                        </span>
                                 </div>
                                 <div className="d-flex flex-column align-items-center">
                                     <strong>Estado Asignación</strong>

@@ -12,10 +12,8 @@ router.get('/privado/:external', function(req, res, next) {
   if(llave === env){
     var models=require('./../models');
     models.sequelize.sync().then(()=>{
-      console.log('Se ha conectado la bd');
       res.send('OK!');
     }).catch(err=>{
-      console.log(err,"Hubo un error");
       res.send("Error");
     })
   }else{

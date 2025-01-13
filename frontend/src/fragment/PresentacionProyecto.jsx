@@ -102,9 +102,9 @@ const PresentacionProyecto = () => {
     }, [external_id]);
 
     const roleOptions = {
-        'LIDER DE CALIDAD': ['Asignar testers', 'Generar reportes', 'Casos de prueba', 'Editar proyecto', 'Miembros', 'Casos de prueba asignados'],
-        'ANALISTA DE PRUEBAS': ['Casos de prueba', 'Asignar testers', 'Lista de casos de prueba asignados'],
-        'TESTER': ['Ejecutar casos de prueba', 'Registrar errores'],
+        'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Casos de prueba asignados', 'Generar reportes', 'Miembros'],
+        'ANALISTA DE PRUEBAS': ['Asignar testers', 'Casos de prueba', 'Lista de casos de prueba asignados'],
+        'TESTER': ['Casos de prueba', 'Registrar errores', 'Asignar desarrolladores'],
         'DESARROLLADOR': ['Actualizar el estado de los errores', 'Consultar errores asignados']
     };
 
@@ -130,6 +130,8 @@ const PresentacionProyecto = () => {
             navigate(`/asignar/tester/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Casos de prueba asignados') {
             navigate(`/casos/prueba/asignados/${proyecto.external_id}`, { state: { proyecto } });
+        } else if (option === 'Asignar desarrolladores') {
+            navigate(`/asignar/desarrollador/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
         }
     };
     const handleCloseNewProjectModal = () => {
@@ -137,15 +139,14 @@ const PresentacionProyecto = () => {
     };
 
     if (!proyecto) return <p>Cargando...</p>;
-
-
+    
     return (
         <div className="project-page">
             <div className="header-section">
                 <img src="/img/fondo1.jpeg" alt="Project Background" className="background-image" />
                 <div className="header-overlay">
-                    <h1 className="project-title">{proyectoEntidad[0].proyecto.nombre}</h1>
-                    <p>{proyectoEntidad[0].proyecto.descripcion || 'Descripción del proyecto.'}</p>
+                    <h1 className="project-title">{proyectoEntidad[0].proyecto_rol.nombre}</h1>
+                    <p>{proyectoEntidad[0].proyecto_rol.descripcion || 'Descripción del proyecto.'}</p>
                 </div>
             </div>
 

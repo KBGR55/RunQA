@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { getToken } from '../utilities/Sessionutil';
+import { getToken, getUser } from '../utilities/Sessionutil';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import mensajes from '../utilities/Mensajes';
+import swal from 'sweetalert';
 
 const VerPeticion = () => {
     const [peticiones, setPeticiones] = useState([]);
@@ -17,7 +18,7 @@ const VerPeticion = () => {
                     setBucle(true);
                     setPeticiones(info.info);
                 }
-            })
+            });
         }
     }, [bucle]);
 
@@ -28,25 +29,54 @@ const VerPeticion = () => {
         var fechaHora = format(new Date(createdAt), 'yyyy-MM-dd HH:mm:ss');
 
         const handleAceptar = () => {
-            acepReac(1);
+            swal({
+                title: "¿Está seguro de aceptar la petición?",
+                text: "Esta acción no se podrá deshacer.",
+                icon: "warning",
+                buttons: ["No", "Sí"],
+                dangerMode: true,
+            }).then((willAccept) => {
+                if (willAccept) {
+                    acepReac(1);
+                }
+            });
         };
 
         const handleRechazar = () => {
-            acepReac(0);
-            setPeticiones((prevPeticiones) =>
-                prevPeticiones.filter((p) => p.external_id !== external_id)
-            );
+            swal({
+                title: "Motivo del rechazo",
+                text: "Por favor, escriba el motivo del rechazo (máximo 300 caracteres):",
+                content: {
+                    element: "input",
+                    attributes: {
+                        placeholder: "Ingrese el motivo",
+                        maxLength: 300,
+                    },
+                },
+                buttons: ["Cancelar", "Rechazar"],
+            }).then((motivo) => {
+                if (motivo) {
+                    acepReac(0, motivo);
+                    setPeticiones((prevPeticiones) =>
+                        prevPeticiones.filter((p) => p.external_id !== external_id)
+                    );
+                }
+            });
         };
 
-        const acepReac = (datac) => {
-            peticionGet(getToken(), `aceptarechazar/peticiones/${external_id}/${datac}`).then((info) => {
+        const acepReac = (datac, motivo = "") => {
+            var motivoParam = encodeURIComponent(motivo); 
+            if (!motivoParam) {
+                motivoParam='true';
+            }
+            peticionGet(getToken(), `aceptarechazar/peticiones/${external_id}/${datac}/${motivoParam}/${getUser().user.id}`).then((info) => {
                 if (info.code !== 200) {
                     mensajes(info.msg);
                 } else {
                     mensajes(info.msg, "success", "Éxito");
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1200);
+                    }, 2000);
                 }
             });
         };
@@ -83,9 +113,9 @@ const VerPeticion = () => {
             </div>
             <div className="peticiones-container">
                 {peticiones.length === 0 ? (
-                   <div className="text-center">
-                   <p className="text-muted">No hay peticiones pendientes</p>
-               </div>
+                    <div className="text-center">
+                        <p className="text-muted">No hay peticiones pendientes</p>
+                    </div>
                 ) : (
                     peticiones.map((peticion) => (
                         <PeticionCard key={peticion.id} {...peticion} />

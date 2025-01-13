@@ -42,9 +42,13 @@ class CuentaController {
                     code: 400
                 })
 
+            const estadoPersona = await models.entidad.findOne({
+                where: {
+                    id: login.id_entidad
+                },   attributes: ['estado']
+            });
 
-
-            if (!login.estado) {
+            if (!estadoPersona.estado) {
                 return res.status(400).json({
                     msg: "CUENTA DESACTIVADA",
                     code: 400
@@ -52,6 +56,11 @@ class CuentaController {
             } else if (login.estado === "ESPERA") {
                 res.json({
                     msg: "SU PETICIÓN SE ENCUENTRA EN ESPERA",
+                    code: 201
+                });
+            } else if (login.estado === "DENEGADO") {
+                res.json({
+                    msg: "SU PETICIÓN SE HA DENEGADO",
                     code: 201
                 });
             }
@@ -92,7 +101,6 @@ class CuentaController {
             }
 
         } catch (error) {
-            console.log(error);
             if (error.errors && error.errors[0].message) {
                 return res.status(400).json({
                     msg: error.errors[0].message,
@@ -155,7 +163,6 @@ class CuentaController {
                 code: 200
             });
         } catch (error) {
-            console.log(error);
             return res.status(500).json({
                 msg: "Error en el servidor",
                 code: 500
@@ -199,7 +206,7 @@ class CuentaController {
                 });
             }
         } catch (error) {
-            console.log(error);
+           
             return res.status(500).json({
                 msg: "Error en el servidor",
                 code: 500
@@ -245,7 +252,7 @@ class CuentaController {
                 });
             }
         } catch (error) {
-            console.log(error);
+           
             return res.status(500).json({
                 msg: "Error en el servidor",
                 code: 500
@@ -327,7 +334,7 @@ class CuentaController {
             }
 
         } catch (error) {
-            console.log(error);
+           
             return res.status(500).json({
                 msg: "Error en el servidor",
                 code: 500

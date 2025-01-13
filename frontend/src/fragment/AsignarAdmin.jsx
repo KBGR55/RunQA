@@ -13,6 +13,11 @@ import '../css/style.css';
 const AsignarAdmin = ({ personaObtenida }) => {
     const navigate = useNavigate();
     const external_id = personaObtenida.external_id;
+    const [isChecked, setIsChecked] = useState(false);
+
+    const handleCheckboxChange = (event) => {
+        setIsChecked(event.target.checked);
+    };
 
     const handleAsignarAdmin = async () => {
         if (!external_id) {
@@ -29,7 +34,7 @@ const AsignarAdmin = ({ personaObtenida }) => {
             if (response.code === 200) {
                 setTimeout(() => {
                     window.location.reload();
-                }, 1200);
+                }, 2000);
                 mensajes(response.msg);
             } else {
                 mensajes(response.msg, 'error');
@@ -62,13 +67,15 @@ const AsignarAdmin = ({ personaObtenida }) => {
                         <Form.Check
                             type="checkbox"
                             label="Asignar como administrador del sistema"
+                            checked={isChecked}
+                            onChange={handleCheckboxChange}
                         />
                     </Form.Group>
                     <div className='contenedor-filo'>
                         <Button variant="secondary" className="btn-negativo" onClick={handleCancelClick}>
                             <FontAwesomeIcon icon={faTimes} /> Cancelar
                         </Button>
-                        <Button className="btn-positivo " onClick={handleAsignarAdmin}>
+                        <Button className="btn-positivo " onClick={handleAsignarAdmin} disabled={!isChecked}>
                             <FontAwesomeIcon icon={faCheck} /> Aceptar
                         </Button>
                     </div>
