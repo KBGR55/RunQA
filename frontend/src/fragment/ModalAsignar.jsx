@@ -9,14 +9,16 @@ import { peticionGet, peticionPost } from '../utilities/hooks/Conexion';
 import { getToken } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 import swal from 'sweetalert';
+import { useNavigate } from 'react-router-dom';
 
-const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, external_caso_prueba, usuario, navigate }) => {
+const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, external_caso_prueba, usuario }) => {
     const [tester, setTester] = useState([]);
     const [selectedTester, setSelectedTester] = useState(null);
     const [fechaFinPrueba, setFechaFinPrueba] = useState(null);
     const [fechaInicioPrueba, setFechaInicioPrueba] = useState(null);
     const [rolId, setRolId] = useState(null);
     const handleClose = () => setShowModal(false);
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -55,7 +57,7 @@ const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, ext
                     console.error('Error al eliminar el proyecto:', error);
                     swal({
                         title: "Error",
-                        text: "Ocurrió un problema al intentar eliminar el proyecto.",
+                        text: "Ocurrió un problema al asignar miembros al proyecto.",
                         icon: "error",
                     });
                 }

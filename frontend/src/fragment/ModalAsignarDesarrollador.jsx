@@ -9,6 +9,7 @@ import { peticionGet, peticionPost } from '../utilities/hooks/Conexion';
 import { getToken } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 import swal from 'sweetalert';
+import { useNavigate } from 'react-router-dom';
 
 const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarrollador, external_id_proyecto, external_error, usuario, navigate }) => {
     const [desarrollador, setDesarrollador] = useState([]);
@@ -17,6 +18,7 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
     const [fechaInicioPrueba, setFechaInicioPrueba] = useState(null);
     const [rolId, setRolId] = useState(null);
     const handleClose = () => setShowModalDesarrollador(false);
+    const navigate = useNavigate();
 
 
     useEffect(() => {
