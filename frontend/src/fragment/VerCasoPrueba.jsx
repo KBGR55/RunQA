@@ -103,8 +103,8 @@ const VerCasoPrueba = () => {
                 const response = await peticionGet(getToken(), `caso/prueba/obtener/${getUser().user.id}?external_id=${external_id}`);
                 if (response.code === 200) {
                     const casoPruebaData = response.info.caso;
-                    if (response.info.rol_proyecto) {
-                        setRol('true');
+                    if (response.info.rol) {
+                        setRol(response.info.rol);
                     }
 
                     setCasosPrueba(casoPruebaData);
@@ -325,36 +325,49 @@ const VerCasoPrueba = () => {
                         </div>
                         <div className='contenedor-filo'>
 
-                            {rol === 'true' && !['FALLIDO', 'EXITOSO'].includes(casosPrueba.estado) ? (
+                            {/* Mostrar botón "Ejecutar" solo si rol es true y el estado no es FALLIDO o EXITOSO */}
+                            {(rol === 'tester'||rol === 'lider-tester') && !['FALLIDO', 'EXITOSO'].includes(casosPrueba.estado) ? (
                                 <Button
-                                className="btn-normal mb-3"
-                                onClick={handleshoModal}
-                            >
-                                <FontAwesomeIcon icon={faPlus} /> Ejecutar
-                            </Button>
-                        ) : (
-                            casosPrueba.estado === 'FALLIDO' && (
-                                <Button
-                                    className="btn-danger mb-3"
-                                    onClick={handleAddError}
+                                    className="btn-normal mb-3"
+                                    onClick={handleshoModal}
                                 >
-                                    <FontAwesomeIcon icon={faExclamationCircle} /> Agregar errores
+                                    <FontAwesomeIcon icon={faPlus} /> Ejecutar
                                 </Button>
-                            )
-                        )}
-                            <Button variant="btn btn-outline-info btn-rounded" onClick={() => navigate(`/editar/caso/prueba/${external_id_proyecto}/${casosPrueba.external_id}`)} >
+                            ) : (
+                                // Mostrar botón "Agregar errores" solo si el estado es "FALLIDO"
+                                (rol === 'tester'||rol === 'lider-tester') &&  casosPrueba.estado === 'FALLIDO' && (
+                                    <Button
+                                        className="btn-danger mb-3"
+                                        onClick={handleAddError}
+                                    >
+                                        <FontAwesomeIcon icon={faExclamationCircle} /> Agregar errores
+                                    </Button>
+                                )
+                            )}
+
+                            {/* Botón "Editar" siempre visible */}
+                            <Button
+                                variant="btn btn-outline-info btn-rounded"
+                                onClick={() => navigate(`/editar/caso/prueba/${external_id_proyecto}/${casosPrueba.external_id}`)}
+                            >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
                                     <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
                                     <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
                                 </svg>
                             </Button>
-                            <Button
-                                className="btn-negativo"
-                                onClick={() => handleDeleteCasoPrueba(casosPrueba.external_id)}
-                            >
-                                <FontAwesomeIcon icon={faTrash} />
-                            </Button>
+
+                            {/* Mostrar el botón de "Eliminar" solo si el rol no es true */}
+                            {rol !== 'tester' && (
+                                <Button
+                                    className="btn-negativo"
+                                    onClick={() => handleDeleteCasoPrueba(casosPrueba.external_id)}
+                                >
+                                    <FontAwesomeIcon icon={faTrash} />
+                                </Button>
+                            )}
+
                         </div>
+
                     </div>
                 </div>
 

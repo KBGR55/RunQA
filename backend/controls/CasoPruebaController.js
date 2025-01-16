@@ -141,8 +141,20 @@ class CasoPruebaController {
                 attributes: ['id_rol_entidad']
 
             });
-            if (rol_proyecto) {
-                return res.json({ msg: 'OK!', code: 200, info: { caso, rol_proyecto } });
+
+            const rol_entidad = await models.rol_entidad.findOne({
+                where: { id_entidad: entidad_id, id_rol: 2 },
+            });
+            var rol_proyecto_afiormacio = null;
+            if (rol_entidad) {
+                rol_proyecto_afiormacio = await models.rol_proyecto.findOne({
+                    where: { id_rol_entidad: rol_entidad.id, id_proyecto: caso.id_proyecto },
+                });
+            }
+            if (rol_proyecto && rol_proyecto_afiormacio) {
+                return res.json({ msg: 'OK!', code: 200, info: { caso, rol: 'lider-tester' } });
+            } else if (rol_proyecto) {
+                return res.json({ msg: 'OK!', code: 200, info: { caso, rol: 'tester' } });
             } else {
                 return res.json({ msg: 'OK!', code: 200, info: { caso } });
             }
@@ -242,32 +254,32 @@ class CasoPruebaController {
             if (!external_id) {
                 return res.status(400).json({ msg: "Falta el 'external_id'", code: 400 });
             }
-    
+
             const caso = await caso_prueba.findOne({ where: { external_id: external_id } });
             if (!caso) {
                 return res.status(404).json({ msg: "Caso de prueba no encontrado", code: 404 });
             }
-    
+
             const errores = await error.findAll({ where: { id_caso_prueba: caso.id } });
 
             const erroresActivos = errores.filter(e => ['NUEVO', 'PENDIENTE_VALIDACION', 'CORRECCION'].includes(e.estado));
-    
+
             if (erroresActivos.length > 0) {
                 return res.status(400).json({
                     msg: "No se puede marcar el caso de prueba como obsoleto, ya que hay errores activos con estado 'NUEVO', 'PENDIENTE_VALIDACION' o 'CORRECCION'.",
                     code: 400
                 });
             }
-            
+
             caso.estado = 'OBSOLETO';
             await caso.save();
-    
+
             res.json({ msg: "Caso de prueba marcado como obsoleto correctamente", code: 200 });
         } catch (error) {
             res.status(500).json({ msg: 'Error al marcar el caso de prueba como obsoleto', code: 500, error: error.message });
         }
     }
-    
+
 
     /*SEGUNDO SPRINT*/
     async obtenerCasosProyecto(req, res) {
