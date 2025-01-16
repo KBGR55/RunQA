@@ -251,26 +251,26 @@ class ErrorController {
           msg: "Error no encontrado",
           code: 404,
         });
-        }
-        const contrato = await models.contrato.findOne({ where: { id_error: errorEncontrado.id } });
-        const rol_proyecto_responsable = contrato
-          ? await models.rol_proyecto.findOne({ where: { id: contrato.id_rol_proyecto_responsable } })
-          : null;
-        const rol_entidad = rol_proyecto_responsable
-          ? await models.rol_entidad.findOne({ where: { id: rol_proyecto_responsable.id_rol_entidad } })
-          : null;
-        const entidad = rol_entidad
-          ? await models.entidad.findOne({ where: { id: rol_entidad.id_entidad } })
-          : null;
-        
-        const data = {
-          contrato_id: contrato?.id || null,
-          contrato_external_id: contrato?.external_id || null,
-          entidad_id: entidad?.id || null,
-          entidad_external_id: entidad?.external_id || null,
-          responsable: entidad ? `${entidad.nombres || ''} ${entidad.apellidos || ''}`.trim() : null,
-        };
-            res.json({
+      }
+      const contrato = await models.contrato.findOne({ where: { id_error: errorEncontrado.id } });
+      const rol_proyecto_responsable = contrato
+        ? await models.rol_proyecto.findOne({ where: { id: contrato.id_rol_proyecto_responsable } })
+        : null;
+      const rol_entidad = rol_proyecto_responsable
+        ? await models.rol_entidad.findOne({ where: { id: rol_proyecto_responsable.id_rol_entidad } })
+        : null;
+      const entidad = rol_entidad
+        ? await models.entidad.findOne({ where: { id: rol_entidad.id_entidad } })
+        : null;
+
+      const data = {
+        contrato_id: contrato?.id || null,
+        contrato_external_id: contrato?.external_id || null,
+        entidad_id: entidad?.id || null,
+        entidad_external_id: entidad?.external_id || null,
+        responsable: entidad ? `${entidad.nombres || ''} ${entidad.apellidos || ''}`.trim() : null,
+      };
+      res.json({
         msg: "Error encontrado correctamente",
         code: 200,
         info: { errorEncontrado, data },
@@ -405,84 +405,104 @@ class ErrorController {
     }
   }
 
-async obtenerErrorAsignado(req, res) {
-  const id_entidad = req.params.id_entidad;
-  const id_proyecto = req.params.proyecto_external_id;
-  
-  if (!id_entidad || !id_proyecto ) {
-    return res.status(400).json({ msg: "Faltan datos de búsqueda", code: 400 });
-  }
-  
-  try {
-    const proyecto = await models.proyecto.findOne({ where: { external_id: id_proyecto } });
+  async obtenerErrorAsignado(req, res) {
+    const id_entidad = req.params.id_entidad;
+    const id_proyecto = req.params.proyecto_external_id;
 
-    if (!proyecto) {
-      return res.status(404).json({ msg: "Proyecto no encontrado", code: 404 });
+    if (!id_entidad || !id_proyecto) {
+      return res.status(400).json({ msg: "Faltan datos de búsqueda", code: 400 });
     }
-  
-    // Buscar en rol_entidad con el filtro requerido
-    const rolesEntidad = await models.rol_entidad.findOne({
-      where: {
-        id_entidad: id_entidad,
-        id_rol: id_rol_desarrollador, 
+
+    try {
+      const proyecto = await models.proyecto.findOne({ where: { external_id: id_proyecto } });
+
+      if (!proyecto) {
+        return res.status(404).json({ msg: "Proyecto no encontrado", code: 404 });
       }
-    });
-    if (!rolesEntidad) {
-      return res
-        .status(404)
-        .json({ msg: "No se encontraron roles para la entidad y proyecto dados", code: 404 });
-    }
-    const rol_proyecto = await models.rol_proyecto.findOne({
-      where: {
-        id_proyecto: proyecto.id,
-        id_rol_entidad: rolesEntidad.id
-      }
-    });
-    if (!rol_proyecto) {
-      return res
-        .status(404)
-        .json({ msg: "No se encontraron roles para la entidad y proyecto dados", code: 404 });
-    }
-    const contratos = await models.contrato.findAll({
-      where: {
-        id_rol_proyecto_responsable: rol_proyecto.id, tipo_contrato: 'ERROR'
-      }, attributes : ['id_error']
-    });
-    const idsErrores = contratos.map((contrato) => contrato.id_error);
 
-    // Buscar los errores correspondientes en la base de datos
-    const errores = await models.error.findAll({
-      where: {
-        id: idsErrores,
-      },
-      include: [{model: models.caso_prueba, attributes:['external_id']}],
-    });
-
-    if (!errores || errores.length === 0) {
-      return res.status(404).json({
-        msg: "No se encontraron detalles de errores asignados",
-        code: 404,
+      // Buscar en rol_entidad con el filtro requerido
+      const rolesEntidad = await models.rol_entidad.findOne({
+        where: {
+          id_entidad: id_entidad,
+          id_rol: id_rol_desarrollador,
+        }
       });
+      if (!rolesEntidad) {
+        return res
+          .status(404)
+          .json({ msg: "No se encontraron roles para la entidad y proyecto dados", code: 404 });
+      }
+      const rol_proyecto = await models.rol_proyecto.findOne({
+        where: {
+          id_proyecto: proyecto.id,
+          id_rol_entidad: rolesEntidad.id
+        }
+      });
+      if (!rol_proyecto) {
+        return res
+          .status(404)
+          .json({ msg: "No se encontraron roles para la entidad y proyecto dados", code: 404 });
+      }
+      const contratos = await models.contrato.findAll({
+        where: {
+          id_rol_proyecto_responsable: rol_proyecto.id, tipo_contrato: 'ERROR'
+        }, attributes: ['id_error']
+      });
+      const idsErrores = contratos.map((contrato) => contrato.id_error);
+
+      // Buscar los errores correspondientes en la base de datos
+      const errores = await models.error.findAll({
+        where: {
+          id: idsErrores,
+        },
+        include: [{ model: models.caso_prueba, attributes: ['external_id'] }],
+      });
+
+      if (!errores || errores.length === 0) {
+        return res.status(404).json({
+          msg: "No se encontraron detalles de errores asignados",
+          code: 404,
+        });
+      }
+
+      // Respuesta exitosa con los errores encontrados
+      return res.status(200).json({
+        msg: "Errores encontrados",
+        code: 200,
+        info: errores,
+      });
+
+      // Respuesta exitosa con los datos encontrados
+      return res.status(200).json({ msg: "Errores encontrados", code: 200, info: contratos });
+    } catch (error) {
+      console.error("Error al buscar en la base de datos:", error);
+      return res.status(500).json({ msg: "Error interno del servidor", code: 500 });
     }
 
-    // Respuesta exitosa con los errores encontrados
-    return res.status(200).json({
-      msg: "Errores encontrados",
-      code: 200,
-      info: errores,
-    });
-  
-    // Respuesta exitosa con los datos encontrados
-    return res.status(200).json({ msg: "Errores encontrados", code: 200, info: contratos });
-  } catch (error) {
-    console.error("Error al buscar en la base de datos:", error);
-    return res.status(500).json({ msg: "Error interno del servidor", code: 500 });
   }
-  
-}
 
-
-
+  async cambiarEstado(req, res) {
+    const estado = req.params.estado;
+    const id = req.params.id_error;
+    if (!estado) {
+      return res.status(400).json({ msg: "Falta el estado", code: 400 });
+    }
+    try {
+      var error = await models.error.findOne({ where: { id: id } });
+      if (!error) {
+        return res.status(404).json({ msg: "Error no encontrado", code: 404 });
+      }
+      error.estado = estado;
+      const result = await error.save();
+      if (!result) {
+        return res.status(400).json({ msg: "NO SE HAN MODIFICADO EL ESTADO, VUELVA A INTENTAR", code: 400 });
+      }
+      return res.status(200).json({ msg: "SE HAN MODIFICADO EL ESTADO CON ÉXITO", code: 200 });
+    } catch (error) {
+      console.error("Error al buscar en la base de datos:", error);
+      return res.status(500).json({ msg: "Error interno del servidor", code: 500 });
+    }
+  }
 
 }
 

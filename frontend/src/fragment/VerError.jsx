@@ -7,10 +7,11 @@ import mensajes from '../utilities/Mensajes';
 import { getToken, getUser } from '../utilities/Sessionutil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import { Button } from 'react-bootstrap';
+import { Button, Dropdown } from 'react-bootstrap';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import Reasignar from './Reasginar';
+import EstadoDropdown from './EstadoDropdown';
 
 const VerError = () => {
     const [dataErrror, setDataErrror] = useState({});
@@ -41,7 +42,7 @@ const VerError = () => {
                 const response = await peticionGet(getToken(), `error/obtener/external?external_id=${external_id_error}`);
                 if (response.code === 200) {
                     setDataErrror(response.info.errorEncontrado);
-setContrato(response.info.data);
+                    setContrato(response.info.data);
                 } else {
                     mensajes(`Error al obtener error: ${response.msg}`, 'error');
                 }
@@ -94,8 +95,13 @@ setContrato(response.info.data);
         return fechaFin >= today; // Comparar fechas normalizadas
     }, [infoAsignado]);
 
-
-
+    const handleEstadoChange = (estado) => {
+        setDataErrror((prev) => ({
+            ...prev,
+            estado,  // Actualiza el estado del error en el componente
+        }));
+    };
+    
     const formatDate = (dateString) => new Date(dateString).toISOString().slice(0, 10);
 
     return (
@@ -105,7 +111,7 @@ setContrato(response.info.data);
                 <div className="d-flex align-items-center mb-3">
                     <FontAwesomeIcon
                         icon={faArrowLeft}
-                        onClick={() => navigate(`/caso-prueba/${external_id_proyecto}/${external_id}`, { replace: true })}
+                        onClick={() => navigate(-1)}
                         style={{ cursor: 'pointer', fontSize: '20px', marginRight: '10px', color: 'var(--color-cuarto)' }}
                     />
                     <h4 className="titulo-primario">Error: {dataErrror?.titulo || 'No disponible'}</h4>
@@ -130,14 +136,13 @@ setContrato(response.info.data);
                             <h5 className="titulo-secundario mb-3" style={{ textAlign: 'initial' }}>Detalles del Caso</h5>
                             <div className="d-flex justify-content-around align-items-center flex-wrap gap-2">
                                 <div className="d-flex flex-column align-items-center">
-                                    <strong>Estado</strong>
-                                    <span className={`badge ${dataErrror?.estado === 'NUEVO' ? 'bg-primary' :
-                                        dataErrror?.estado === 'CERRADO' ? 'bg-secondary' :
-                                            dataErrror?.estado === 'PENDIENTE_VALIDACION' ? 'bg-warning' :
-                                                dataErrror?.estado === 'CORRECCION' ? 'bg-danger' :
-                                                    'bg-secondary'}`}>
-                                        {dataErrror?.estado || 'No disponible'}
-                                    </span>
+
+                                    <EstadoDropdown
+                                        currentEstado={dataErrror?.estado}
+                                        onChangeEstado={handleEstadoChange}
+                                        id_error={dataErrror?.id}
+                                    />
+
                                 </div>
                                 <div className="d-flex flex-column align-items-center">
                                     <strong>Severidad   <OverlayTrigger
@@ -290,7 +295,7 @@ setContrato(response.info.data);
                                 setIdError(dataErrror.id);
                                 setShowModalDesarrollador(true);
                             }}
-                            
+
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-exclamation" viewBox="0 0 16 16" style={{ marginRight: '5px' }}>
                                 <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m.256 7a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z" />

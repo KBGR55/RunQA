@@ -240,6 +240,7 @@ router.put('/error/actualizar', (req, res, next) => {
 router.get('/error/obtener/external', errorController.obtener);
 router.get('/error/obtener/proyecto/:external_id', errorController.obtenerErrores);
 router.get('/error/obtener/asignado/proyecto/:id_entidad/:proyecto_external_id', errorController.obtenerErrorAsignado);
+router.get('/error/cambiar/estado/:estado/:id_error', errorController.cambiarEstado);
 
 
 /** ROL_PROYECTO */

@@ -109,7 +109,7 @@ const ListaErroresAsigados = () => {
                                             <td className="text-center">
                                                 <Button
                                                     variant="btn btn-outline-info btn-rounded"
-                                                    onClick={() => handleNavigateToDetail(error.external_id)}
+                                                    onClick={() => handleNavigateToDetail(error.external_id, error.caso_prueba.external_id)}
                                                     className="btn-icon"
                                                 >
                                                     <svg
