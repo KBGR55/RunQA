@@ -13,6 +13,7 @@ import Tooltip from 'react-bootstrap/Tooltip';
 
 const VerError = () => {
     const [dataErrror, setDataErrror] = useState({});
+    const [contrato, setContrato] = useState({});
     const { external_id_proyecto, external_id, external_id_error } = useParams();
     const [infoProyecto, setProyecto] = useState([]);
     const navigate = useNavigate();
@@ -34,7 +35,8 @@ const VerError = () => {
                 }
                 const response = await peticionGet(getToken(), `error/obtener/external?external_id=${external_id_error}`);
                 if (response.code === 200) {
-                    setDataErrror(response.info);
+                    setDataErrror(response.info.errorEncontrado);
+setContrato(response.info.data);
                 } else {
                     mensajes(`Error al obtener error: ${response.msg}`, 'error');
                 }
@@ -195,7 +197,7 @@ const VerError = () => {
                             <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Persona responsable</h5>
                             <div className="mb-2">
                                 <strong>Asignado a: </strong>
-                                {dataErrror?.persona_asignada || 'No disponible'}
+                                {contrato?.responsable || 'No disponible'}
                             </div>
                         </div>
                     </div>

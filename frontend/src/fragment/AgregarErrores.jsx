@@ -60,7 +60,7 @@ const AgregarErrores = () => {
                 if (external_id_error) {
                     const response = await peticionGet(getToken(), `error/obtener/external?external_id=${external_id_error}`);
                     if (response.code === 200) {
-                        const dataError = response.info;
+                        const dataError = response.info.errorEncontrado;
                         setValue('titulo', dataError.titulo || '');
                         setValue('funcionalidad', dataError.funcionalidad || '');
                         setValue('pasos_repetir', dataError.pasos_repetir || '');
