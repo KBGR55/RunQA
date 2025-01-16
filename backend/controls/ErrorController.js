@@ -4,6 +4,7 @@ var models = require("../models/");
 const { where } = require("sequelize");
 const error = models.error;
 const proyecto = models.proyecto;
+const id_rol_desarrollador = 5;
 
 class ErrorController {
   /**
@@ -403,6 +404,85 @@ class ErrorController {
       res.status(500).json({ msg: 'Error al obtener registro de error', code: 500, error: err.message });
     }
   }
+
+async obtenerErrorAsignado(req, res) {
+  const id_entidad = req.params.id_entidad;
+  const id_proyecto = req.params.proyecto_external_id;
+  
+  if (!id_entidad || !id_proyecto ) {
+    return res.status(400).json({ msg: "Faltan datos de búsqueda", code: 400 });
+  }
+  
+  try {
+    const proyecto = await models.proyecto.findOne({ where: { external_id: id_proyecto } });
+
+    if (!proyecto) {
+      return res.status(404).json({ msg: "Proyecto no encontrado", code: 404 });
+    }
+  
+    // Buscar en rol_entidad con el filtro requerido
+    const rolesEntidad = await models.rol_entidad.findOne({
+      where: {
+        id_entidad: id_entidad,
+        id_rol: id_rol_desarrollador, 
+      }
+    });
+    if (!rolesEntidad) {
+      return res
+        .status(404)
+        .json({ msg: "No se encontraron roles para la entidad y proyecto dados", code: 404 });
+    }
+    const rol_proyecto = await models.rol_proyecto.findOne({
+      where: {
+        id_proyecto: proyecto.id,
+        id_rol_entidad: rolesEntidad.id
+      }
+    });
+    if (!rol_proyecto) {
+      return res
+        .status(404)
+        .json({ msg: "No se encontraron roles para la entidad y proyecto dados", code: 404 });
+    }
+    const contratos = await models.contrato.findAll({
+      where: {
+        id_rol_proyecto_responsable: rol_proyecto.id, tipo_contrato: 'ERROR'
+      }, attributes : ['id_error']
+    });
+    const idsErrores = contratos.map((contrato) => contrato.id_error);
+
+    // Buscar los errores correspondientes en la base de datos
+    const errores = await models.error.findAll({
+      where: {
+        id: idsErrores,
+      },
+      include: [{model: models.caso_prueba, attributes:['external_id']}],
+    });
+
+    if (!errores || errores.length === 0) {
+      return res.status(404).json({
+        msg: "No se encontraron detalles de errores asignados",
+        code: 404,
+      });
+    }
+
+    // Respuesta exitosa con los errores encontrados
+    return res.status(200).json({
+      msg: "Errores encontrados",
+      code: 200,
+      info: errores,
+    });
+  
+    // Respuesta exitosa con los datos encontrados
+    return res.status(200).json({ msg: "Errores encontrados", code: 200, info: contratos });
+  } catch (error) {
+    console.error("Error al buscar en la base de datos:", error);
+    return res.status(500).json({ msg: "Error interno del servidor", code: 500 });
+  }
+  
+}
+
+
+
 
 }
 

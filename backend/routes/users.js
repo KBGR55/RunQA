@@ -239,6 +239,8 @@ router.put('/error/actualizar', (req, res, next) => {
 });
 router.get('/error/obtener/external', errorController.obtener);
 router.get('/error/obtener/proyecto/:external_id', errorController.obtenerErrores);
+router.get('/error/obtener/asignado/proyecto/:id_entidad/:proyecto_external_id', errorController.obtenerErrorAsignado);
+
 
 /** ROL_PROYECTO */
 router.get('/rol_proyecto/listar/proyectos', rolProyectoController.listar.bind(rolProyectoController));
