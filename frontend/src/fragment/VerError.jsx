@@ -253,15 +253,11 @@ setContrato(response.info.data);
                             <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Persona responsable</h5>
                             <div className="mb-2">
                                 <strong>Asignado a: </strong>
-<<<<<<< HEAD
                                 {infoAsignado?.persona_asignada || 'Sin responsable asignado'}
                             </div>
                             <div className="mb-2">
                                 <strong>Asignado por: </strong>
                                 {infoAsignado?.persona_que_asigno || 'No existe registro de persona que asigno'}
-=======
-                                {contrato?.responsable || 'No disponible'}
->>>>>>> fdd6d8772a939299043d7de792a5ce0fb2d8b912
                             </div>
                         </div>
                     </div>
