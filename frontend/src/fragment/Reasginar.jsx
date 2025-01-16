@@ -11,7 +11,7 @@ import mensajes from '../utilities/Mensajes';
 import swal from 'sweetalert';
 import { useNavigate } from 'react-router-dom';
 
-const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarrollador, external_id_proyecto, external_error, usuario }) => {
+const Reasignar = ({ showModalDesarrollador, setShowModalDesarrollador, external_id_proyecto, id_error, usuario }) => {
     const [desarrollador, setDesarrollador] = useState([]);
     const [selectedDesarrollador, setSelectedDesarrollador] = useState(null);
     const [fechaFinPrueba, setFechaFinPrueba] = useState(null);
@@ -28,8 +28,6 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
                 if (info.code === 200) {
                     setDesarrollador(info.info);
                     setRolId(info.id_rol);
-                } else if (info.code === 404) {
-                    showNoTestersAlert();
                 } else {
                     mensajes(info.msg, "error");
                 }
@@ -40,30 +38,6 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
 
         fetchDesarrolladores();
     }, [external_id_proyecto]);
-
-    const showNoTestersAlert = () => {
-        swal({
-            title: "No hay desarrolladores asignados",
-            text: "¿Desea asignar desarrolladores al proyecto?",
-            icon: "info",
-            showCancelButton: true,
-            buttons: ["No", "Sí"],
-            dangerMode: true,
-        }).then(async (confirmacion) => {
-            if (confirmacion) {
-                try {
-                    navigate(`/proyecto/usuarios/${external_id_proyecto}`);
-                } catch (error) {
-                    console.error('Error al eliminar el proyecto:', error);
-                    swal({
-                        title: "Error",
-                        text: "Ocurrió un problema al intentar eliminar el proyecto.",
-                        icon: "error",
-                    });
-                }
-            }
-        });
-    };
 
     const handleDesarrolladorSelect = (e) => {
         const desarrolladorId = e.target.value;
@@ -81,19 +55,16 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
 
     const handleAsignarDesarrolladores = async () => {
         const body = {
-            id_proyecto: external_id_proyecto,
+            id_error: id_error,
             desarrollador: { id_entidad: selectedDesarrollador.id },
             entidad_asigno: usuario.user.id,
-            errores: Array.isArray(external_error) 
-                ? external_error.map(c => ({ external_id: c })) 
-                : external_error ? [{ external_id: external_error }] : external_error,
             fecha_inicio: fechaInicioPrueba,
             fecha_fin: fechaFinPrueba,
             desarrollador_rol: rolId
         };
     
         try {
-            const response = await peticionPost(getToken(), '/contrato/error', body);
+            const response = await peticionPost(getToken(), '/contrato/error/reasginar', body);
             if (response.code === 200) {
                 setTimeout(() => {
                     window.location.reload();
@@ -191,4 +162,4 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
     );
 };
 
-export default ModalAsignarDesarrollador;
+export default Reasignar;

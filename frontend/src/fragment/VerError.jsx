@@ -1,21 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { peticionGet, URLBASE } from '../utilities/hooks/Conexion';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/style.css';
 import mensajes from '../utilities/Mensajes';
-import { getToken } from '../utilities/Sessionutil';
+import { getToken, getUser } from '../utilities/Sessionutil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'react-bootstrap';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
+import Reasignar from './Reasginar';
 
 const VerError = () => {
     const [dataErrror, setDataErrror] = useState({});
     const { external_id_proyecto, external_id, external_id_error } = useParams();
     const [infoProyecto, setProyecto] = useState([]);
+    const [infoAsignado, setAsignado] = useState([]);
     const navigate = useNavigate();
+    const [showModalDesarrollador, setShowModalDesarrollador] = useState(false);
+    const usuario = getUser();
+    const [idError, setIdError] = useState(null);
 
     useEffect(() => {
         const fetchCasoPrueba = async () => {
@@ -43,15 +48,58 @@ const VerError = () => {
             }
         };
 
+        const fetchErrorAsignado = async () => {
+            try {
+                if (dataErrror.id) {
+                    peticionGet(getToken(), `/contrato/error/obtener/${dataErrror.id}`).then((info) => {
+                        if (info.code === 200) {
+                            setAsignado(info.info);
+                        } else {
+                            mensajes(info.msg, "error", "Error");
+                        }
+                    }).catch((error) => {
+                        mensajes("Error al cargar el asignado", "error", "Error");
+                        console.error(error);
+                    });
+                }
+            } catch (error) {
+                mensajes('Error al procesar la solicitud', 'error');
+            }
+        };
+
         fetchCasoPrueba();
-    }, []);
+        fetchErrorAsignado();
+    }, [external_id_proyecto, external_id_error, dataErrror.id]);
+
+    // Función para obtener la fecha actual en formato YYYY-MM-DD
+    const getTodayDate = () => new Date().toISOString().slice(0, 10);
+
+    // Evaluar si `infoAsignado.fecha_fin` es igual o posterior a la fecha actual usando useMemo
+    const isTodayOrAfter = useMemo(() => {
+        if (!infoAsignado?.fecha_fin) return false; // Si no hay fecha, retorna false
+
+        // Obtener fecha actual y normalizar a las 00:00 horas
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Normalizar `infoAsignado.fecha_fin` a las 00:00 horas
+        const fechaFin = new Date(infoAsignado.fecha_fin);
+        fechaFin.setHours(0, 0, 0, 0);
+
+        console.log("Fecha actual:", today.toISOString());
+        console.log("Fecha fin asignado:", fechaFin.toISOString());
+
+        return fechaFin >= today; // Comparar fechas normalizadas
+    }, [infoAsignado]);
+
+
 
     const formatDate = (dateString) => new Date(dateString).toISOString().slice(0, 10);
 
     return (
         <div className="container-fluid contenedor-centro" style={{ margin: '20px' }}>
             <div className="contenedor-carta">
-                <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
+                <p className="titulo-proyecto">{infoProyecto.nombre}</p>
                 <div className="d-flex align-items-center mb-3">
                     <FontAwesomeIcon
                         icon={faArrowLeft}
@@ -180,8 +228,16 @@ const VerError = () => {
                         <div className="card p-3 shadow-sm card-custom-bord ">
                             <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Fechas de Asignación</h5>
                             <div className="mb-2">
-                                <strong>Fecha de reporte: </strong>
+                                <strong>Fecha de reporte del error: </strong>
                                 {dataErrror?.fecha_reporte ? formatDate(dataErrror.fecha_reporte) : 'No disponible'}
+                            </div>
+                            <div className="mb-2">
+                                <strong>Fecha de asignación al desarrollador: </strong>
+                                {infoAsignado?.fecha_inicio ? formatDate(infoAsignado.fecha_inicio) : 'Sin fecha de asignación'}
+                            </div>
+                            <div className="mb-2">
+                                <strong>Fecha de finalización de corrección del error: </strong>
+                                {infoAsignado?.fecha_fin ? formatDate(infoAsignado.fecha_fin) : 'Sin fecha de asignación'}
                             </div>
                             <div className="mb-2">
                                 <strong>Fecha de resolucion: </strong>
@@ -195,7 +251,11 @@ const VerError = () => {
                             <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Persona responsable</h5>
                             <div className="mb-2">
                                 <strong>Asignado a: </strong>
-                                {dataErrror?.persona_asignada || 'No disponible'}
+                                {infoAsignado?.persona_asignada || 'Sin responsable asignado'}
+                            </div>
+                            <div className="mb-2">
+                                <strong>Asignado por: </strong>
+                                {infoAsignado?.persona_que_asigno || 'No existe registro de persona que asigno'}
                             </div>
                         </div>
                     </div>
@@ -204,7 +264,7 @@ const VerError = () => {
                             <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Anexo</h5>
                             <div className="mb-2">
                                 <img
-                                  src={dataErrror.anexo_foto? `${URLBASE}images/errors/${dataErrror.anexo_foto}` : `${URLBASE}images/errors/SIN_ANEXO.png`}
+                                    src={dataErrror.anexo_foto ? `${URLBASE}images/errors/${dataErrror.anexo_foto}` : `${URLBASE}images/errors/SIN_ANEXO.png`}
                                     alt="Vista previa"
                                     className="img-fluid"
                                     style={{ maxWidth: '100%' }}
@@ -220,8 +280,35 @@ const VerError = () => {
                             <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
                         </svg>
                     </Button>
+
+                    {isTodayOrAfter && (
+                        <Button
+                            variant="btn btn-outline-success btn-rounded"
+                            onClick={() => {
+                                setIdError(dataErrror.id);
+                                setShowModalDesarrollador(true);
+                            }}
+                            
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-exclamation" viewBox="0 0 16 16" style={{ marginRight: '5px' }}>
+                                <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m.256 7a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z" />
+                                <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-3.5-2a.5.5 0 0 0-.5.5v1.5a.5.5 0 0 0 1 0V11a.5.5 0 0 0-.5-.5m0 4a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
+                            </svg>
+                            Reasignar
+                        </Button>
+                    )}
+
                 </div>
             </div>
+            {showModalDesarrollador && (
+                <Reasignar
+                    showModalDesarrollador={showModalDesarrollador}
+                    setShowModalDesarrollador={setShowModalDesarrollador}
+                    external_id_proyecto={external_id_proyecto}
+                    usuario={usuario}
+                    id_error={idError}
+                />
+            )}
         </div>
     );
 };

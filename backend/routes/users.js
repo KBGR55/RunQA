@@ -264,7 +264,8 @@ router.get('/contrato/asignado/:external_id', contratoController.obtenerDatosCas
 
 router.post('/contrato/error', contratoController.asignarDesarrolladores);
 router.get('/contrato/errores/asignados', contratoController.obtenerDatosTabla);
-router.get('/contrato/error/asignado/:external_id', contratoController.obtenerDatosCasoAsignado);
+router.get('/contrato/error/obtener/:external_id', contratoController.obtenerDatosErrorAsignado);
+router.post('/contrato/error/reasginar', contratoController.reasignarError);
 
 
 /** ROL_ENTIDAD */
