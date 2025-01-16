@@ -1,6 +1,7 @@
 "use strict";
 const { validationResult } = require("express-validator");
 var models = require("../models/");
+const { where } = require("sequelize");
 const error = models.error;
 const proyecto = models.proyecto;
 
@@ -249,12 +250,29 @@ class ErrorController {
           msg: "Error no encontrado",
           code: 404,
         });
-      }
-
-      res.json({
+        }
+        const contrato = await models.contrato.findOne({ where: { id_error: errorEncontrado.id } });
+        const rol_proyecto_responsable = contrato
+          ? await models.rol_proyecto.findOne({ where: { id: contrato.id_rol_proyecto_responsable } })
+          : null;
+        const rol_entidad = rol_proyecto_responsable
+          ? await models.rol_entidad.findOne({ where: { id: rol_proyecto_responsable.id_rol_entidad } })
+          : null;
+        const entidad = rol_entidad
+          ? await models.entidad.findOne({ where: { id: rol_entidad.id_entidad } })
+          : null;
+        
+        const data = {
+          contrato_id: contrato?.id || null,
+          contrato_external_id: contrato?.external_id || null,
+          entidad_id: entidad?.id || null,
+          entidad_external_id: entidad?.external_id || null,
+          responsable: entidad ? `${entidad.nombres || ''} ${entidad.apellidos || ''}`.trim() : null,
+        };
+            res.json({
         msg: "Error encontrado correctamente",
         code: 200,
-        info: errorEncontrado,
+        info: { errorEncontrado, data },
       });
     } catch (err) {
       console.error("Error al buscar el error por external_id:", err);

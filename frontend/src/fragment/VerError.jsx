@@ -14,6 +14,7 @@ import Reasignar from './Reasginar';
 
 const VerError = () => {
     const [dataErrror, setDataErrror] = useState({});
+    const [contrato, setContrato] = useState({});
     const { external_id_proyecto, external_id, external_id_error } = useParams();
     const [infoProyecto, setProyecto] = useState([]);
     const [infoAsignado, setAsignado] = useState([]);
@@ -39,7 +40,8 @@ const VerError = () => {
                 }
                 const response = await peticionGet(getToken(), `error/obtener/external?external_id=${external_id_error}`);
                 if (response.code === 200) {
-                    setDataErrror(response.info);
+                    setDataErrror(response.info.errorEncontrado);
+setContrato(response.info.data);
                 } else {
                     mensajes(`Error al obtener error: ${response.msg}`, 'error');
                 }
@@ -251,11 +253,15 @@ const VerError = () => {
                             <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Persona responsable</h5>
                             <div className="mb-2">
                                 <strong>Asignado a: </strong>
+<<<<<<< HEAD
                                 {infoAsignado?.persona_asignada || 'Sin responsable asignado'}
                             </div>
                             <div className="mb-2">
                                 <strong>Asignado por: </strong>
                                 {infoAsignado?.persona_que_asigno || 'No existe registro de persona que asigno'}
+=======
+                                {contrato?.responsable || 'No disponible'}
+>>>>>>> fdd6d8772a939299043d7de792a5ce0fb2d8b912
                             </div>
                         </div>
                     </div>
