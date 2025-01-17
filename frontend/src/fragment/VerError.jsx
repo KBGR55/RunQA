@@ -7,10 +7,11 @@ import mensajes from '../utilities/Mensajes';
 import { getToken, getUser } from '../utilities/Sessionutil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import { Button } from 'react-bootstrap';
+import { Button, Dropdown } from 'react-bootstrap';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import Reasignar from './Reasginar';
+import EstadoDropdown from './EstadoDropdown';
 
 const VerError = () => {
     const [dataErrror, setDataErrror] = useState({});
@@ -90,8 +91,13 @@ const VerError = () => {
         return fechaFin >= today;
     }, [infoAsignado]);
 
-
-
+    const handleEstadoChange = (estado) => {
+        setDataErrror((prev) => ({
+            ...prev,
+            estado,  // Actualiza el estado del error en el componente
+        }));
+    };
+    
     const formatDate = (dateString) => new Date(dateString).toISOString().slice(0, 10);
 
     return (
@@ -101,7 +107,7 @@ const VerError = () => {
                 <div className="d-flex align-items-center mb-3">
                     <FontAwesomeIcon
                         icon={faArrowLeft}
-                        onClick={() => navigate(`/caso-prueba/${external_id_proyecto}/${external_id}`, { replace: true })}
+                        onClick={() => navigate(-1)}
                         style={{ cursor: 'pointer', fontSize: '20px', marginRight: '10px', color: 'var(--color-cuarto)' }}
                     />
                     <h4 className="titulo-primario">Error: {dataErrror?.titulo || 'No disponible'}</h4>
@@ -126,14 +132,13 @@ const VerError = () => {
                             <h5 className="titulo-secundario mb-3" style={{ textAlign: 'initial' }}>Detalles del Caso</h5>
                             <div className="d-flex justify-content-around align-items-center flex-wrap gap-2">
                                 <div className="d-flex flex-column align-items-center">
-                                    <strong>Estado</strong>
-                                    <span className={`badge ${dataErrror?.estado === 'NUEVO' ? 'bg-primary' :
-                                        dataErrror?.estado === 'CERRADO' ? 'bg-secondary' :
-                                            dataErrror?.estado === 'PENDIENTE_VALIDACION' ? 'bg-warning' :
-                                                dataErrror?.estado === 'CORRECCION' ? 'bg-danger' :
-                                                    'bg-secondary'}`}>
-                                        {dataErrror?.estado || 'No disponible'}
-                                    </span>
+
+                                    <EstadoDropdown
+                                        currentEstado={dataErrror?.estado}
+                                        onChangeEstado={handleEstadoChange}
+                                        id_error={dataErrror?.id}
+                                    />
+
                                 </div>
                                 <div className="d-flex flex-column align-items-center">
                                     <strong>Severidad   <OverlayTrigger

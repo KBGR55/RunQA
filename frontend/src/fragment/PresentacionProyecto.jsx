@@ -105,7 +105,7 @@ const PresentacionProyecto = () => {
         'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Casos de prueba asignados', 'Generar reportes', 'Miembros'],
         'ANALISTA DE PRUEBAS': ['Asignar testers', 'Casos de prueba', 'Lista de casos de prueba asignados'],
         'TESTER': ['Casos de prueba', 'Registrar errores', 'Asignar desarrolladores'],
-        'DESARROLLADOR': ['Actualizar el estado de los errores', 'Consultar errores asignados']
+        'DESARROLLADOR': ['Errores asigandos', 'Consultar errores asignados']
     };
 
     const roleIcons = {
@@ -132,8 +132,9 @@ const PresentacionProyecto = () => {
             navigate(`/casos/prueba/asignados/${proyecto.external_id}`, { state: { proyecto } });
         } else if (option === 'Asignar desarrolladores') {
             navigate(`/asignar/desarrollador/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
-        }
-    };
+        } else if (option === 'Errores asigandos') {
+            navigate(`/errores/asignados/${proyecto.external_id}`);
+    };}
     const handleCloseNewProjectModal = () => {
         setShowNewProjectModal(false);
     };
