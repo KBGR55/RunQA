@@ -44,12 +44,12 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
     const showNoTestersAlert = () => {
         swal({
             title: "No hay desarrolladores asignados",
-            text: "¿Desea asignar desarrolladores al proyecto?",
+            //text: "¿Desea asignar desarrolladores al proyecto?",
             icon: "info",
-            showCancelButton: true,
-            buttons: ["No", "Sí"],
+            //showCancelButton: true,
+            //buttons: ["No", "Sí"],
             dangerMode: true,
-        }).then(async (confirmacion) => {
+        });/*.then(async (confirmacion) => {
             if (confirmacion) {
                 try {
                     navigate(`/proyecto/usuarios/${external_id_proyecto}`);
@@ -62,7 +62,7 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
                     });
                 }
             }
-        });
+        });*/
     };
 
     const handleDesarrolladorSelect = (e) => {

@@ -41,7 +41,7 @@ const VerError = () => {
                 const response = await peticionGet(getToken(), `error/obtener/external?external_id=${external_id_error}`);
                 if (response.code === 200) {
                     setDataErrror(response.info.errorEncontrado);
-setContrato(response.info.data);
+                    setContrato(response.info.data);
                 } else {
                     mensajes(`Error al obtener error: ${response.msg}`, 'error');
                 }
@@ -73,25 +73,21 @@ setContrato(response.info.data);
         fetchErrorAsignado();
     }, [external_id_proyecto, external_id_error, dataErrror.id]);
 
-    // Función para obtener la fecha actual en formato YYYY-MM-DD
     const getTodayDate = () => new Date().toISOString().slice(0, 10);
 
-    // Evaluar si `infoAsignado.fecha_fin` es igual o posterior a la fecha actual usando useMemo
     const isTodayOrAfter = useMemo(() => {
-        if (!infoAsignado?.fecha_fin) return false; // Si no hay fecha, retorna false
+        if (!infoAsignado?.fecha_fin) return false; 
 
-        // Obtener fecha actual y normalizar a las 00:00 horas
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        // Normalizar `infoAsignado.fecha_fin` a las 00:00 horas
         const fechaFin = new Date(infoAsignado.fecha_fin);
         fechaFin.setHours(0, 0, 0, 0);
 
         console.log("Fecha actual:", today.toISOString());
         console.log("Fecha fin asignado:", fechaFin.toISOString());
 
-        return fechaFin >= today; // Comparar fechas normalizadas
+        return fechaFin >= today;
     }, [infoAsignado]);
 
 
@@ -290,7 +286,7 @@ setContrato(response.info.data);
                                 setIdError(dataErrror.id);
                                 setShowModalDesarrollador(true);
                             }}
-                            
+
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-exclamation" viewBox="0 0 16 16" style={{ marginRight: '5px' }}>
                                 <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m.256 7a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z" />
