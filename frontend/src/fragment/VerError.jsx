@@ -112,7 +112,7 @@ const VerError = () => {
 
                     <div className="col-md-6 mb-4">
                         <div className="card p-3 shadow-sm card-custom-bord ">
-                            <h5 className="titulo-secundario mb-3" style={{ textAlign: 'initial' }}>Detalles del Caso</h5>
+                            <h5 className="titulo-secundario mb-3" style={{ textAlign: 'initial' }}>Detalles del error</h5>
                             <div className="d-flex justify-content-around align-items-center flex-wrap gap-2">
                                 <div className="d-flex flex-column align-items-center">
 

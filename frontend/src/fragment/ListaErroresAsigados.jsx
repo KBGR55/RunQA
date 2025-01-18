@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, FormControl, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import '../css/style.css';
 import mensajes from '../utilities/Mensajes';
 import { borrarSesion, getToken, getUser } from '../utilities/Sessionutil';
 import TablePagination from '@mui/material/TablePagination';
+import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 const ListaErroresAsigados = () => {
     const [errores, setErrores] = useState([]);
@@ -95,8 +96,45 @@ const ListaErroresAsigados = () => {
                                         <th className="text-center">Título</th>
                                         <th className="text-center">Severidad</th>
                                         <th className="text-center">Prioridad</th>
-                                        <th className="text-center">Estado</th>
-                                        <th className="text-center"></th>
+                                        <th className="text-center">
+                                            Estado
+                                            <OverlayTrigger
+                                                placement="top"
+                                                overlay={
+                                                    <Tooltip className="custom-tooltip">
+                                                        Indica el estado del error reportado
+                                                        <table className="table table-bordered text-start m-0">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Valor</th>
+                                                                    <th>Significado</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>NUEVO</td>
+                                                                    <td>El error ha sido reportado y aún no se ha procesado.</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>CERRADO</td>
+                                                                    <td>El error ha sido resuelto y no se requiere más acción.</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>PENDIENTE_VALIDACION</td>
+                                                                    <td>El error ha sido asignado y está esperando validación.</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>CORRECCION</td>
+                                                                    <td>El error está siendo corregido o requiere correcciones adicionales.</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </Tooltip>
+                                                }
+                                            >
+                                                <FontAwesomeIcon icon={faQuestionCircle} className="ms-2 text-info" />
+                                            </OverlayTrigger>
+                                        </th> <th className="text-center"></th>
                                     </tr>
                                 </thead>
                                 <tbody>

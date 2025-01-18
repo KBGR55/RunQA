@@ -276,18 +276,7 @@ class ProyectoController {
       });
 
       if (oldProyect) {
-        /*const nameRole = await models.rol.findOne({ where: { nombre: rolLider }, attributes: ['id'] });
-                
-                const resultado = await models.rol_proyecto.findOne({
-                    where: { id_rol: nameRole.id, id_rol_entidad: rolProyect.id_entidad },
-                    include: {
-                        model: models.proyecto,
-                        where: { nombre: req.body.name },
-                        attributes: ['id', 'nombre']
-                    },
-                    attributes: ['id_entidad']
-                });*/
-                if (/*resultado && */(oldProyect.descripcion == req.body.description) && (oldProyect.nombre == req.body.name)) {
+                if ((oldProyect.descripcion == req.body.description) && (oldProyect.nombre == req.body.name)) {
                     res.status(409).json({ msg: "No se han realizado actualizaciones", code: 409 });
                 } else {
                     oldProyect.nombre = req.body.name;
