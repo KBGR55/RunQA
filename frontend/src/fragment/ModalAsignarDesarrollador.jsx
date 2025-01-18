@@ -92,11 +92,6 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
             desarrollador_rol: rolId
         };
 
-        console.log("qqqqqqqqqqqqqqqqqq", selectedDesarrollador);
-        
-        console.log("222222222222", body);
-        
-    
         try {
             const response = await peticionPost(getToken(), '/contrato/error', body);
             if (response.code === 200) {
