@@ -88,7 +88,7 @@ const Reasignar = ({ showModalDesarrollador, setShowModalDesarrollador, external
                 <Modal.Title className='titulo-primario'>Asignar Desarrollador</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form.Group controlId="formTesters">
+              {!selectedDesarrollador && (   <Form.Group controlId="formTesters">
                     <Form.Label>Seleccionar Desarrollador</Form.Label>
                     <Form.Control
                         as="select"
@@ -103,7 +103,7 @@ const Reasignar = ({ showModalDesarrollador, setShowModalDesarrollador, external
                             </option>
                         ))}
                     </Form.Control>
-                </Form.Group>
+                </Form.Group>)}
 
                 {selectedDesarrollador && (
                     <div className="mt-4">

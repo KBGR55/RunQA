@@ -287,37 +287,27 @@ class ProyectoController {
                     },
                     attributes: ['id_entidad']
                 });*/
-        if (/*resultado && */ oldProyect.descripcion == req.body.description) {
-          res.status(200).json({ msg: "El proyecto ya existe", code: 409 });
-        } else {
-          oldProyect.nombre = req.body.name;
-          oldProyect.descripcion = req.body.description;
-          await oldProyect.save({ transaction });
-          await transaction.commit();
-          res.json({
-            msg: "El proyecto se ha actualizado correctamente",
-            code: 200,
-            info: oldProyect.external_id,
-          });
+                if (/*resultado && */(oldProyect.descripcion == req.body.description) && (oldProyect.nombre == req.body.name)) {
+                    res.status(409).json({ msg: "No se han realizado actualizaciones", code: 409 });
+                } else {
+                    oldProyect.nombre = req.body.name;
+                    oldProyect.descripcion = req.body.description;
+                    await oldProyect.save({ transaction });
+                    await transaction.commit();
+                    res.json({ msg: "El proyecto se ha actualizado correctamente", code: 200, info: oldProyect.external_id });
+                }
+            } else {
+                res.status(400).json({ msg: "No se encontró el proyecto", code: 400 });
+            }
+        } catch (error) {
+            if (transaction) await transaction.rollback();
+            if (error.errors && error.errors[0].message) {
+                res.json({ msg: "Hubo un problema al actualizar el proyecto", code: 500 });
+            } else {
+                res.json({ msg: "Hubo un problema al actualizar el proyecto", code: 400 });
+            }
         }
-      } else {
-        res.status(400).json({ msg: "No se encontró el proyecto", code: 400 });
-      }
-    } catch (error) {
-      if (transaction) await transaction.rollback();
-      if (error.errors && error.errors[0].message) {
-        res.json({
-          msg: "Hubo un problema al actualizar el proyecto",
-          code: 500,
-        });
-      } else {
-        res.json({
-          msg: "Hubo un problema al actualizar el proyecto",
-          code: 400,
-        });
-      }
     }
-  }
 
   async asignarProyecto(req, res) {
     let transaction;

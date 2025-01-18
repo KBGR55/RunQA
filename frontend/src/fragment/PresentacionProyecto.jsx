@@ -6,7 +6,7 @@ import { getToken, getUser, borrarSesion } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 
 const PresentacionProyecto = () => {
-    const { external_id } = useParams();
+    const { external_id_proyecto } = useParams();
     const [proyecto, setProyecto] = useState(null);
     const [proyectoEntidad, setProyectoEntidad] = useState(null);
     const [roles, setRoles] = useState([]);
@@ -22,7 +22,7 @@ const PresentacionProyecto = () => {
             try {
                 const info = await peticionGet(
                     getToken(),
-                    `rol_proyecto/listar/entidad?id_entidad=${getUser().user.id}&external_id_proyecto=${external_id}`
+                    `rol_proyecto/listar/entidad?id_entidad=${getUser().user.id}&external_id_proyecto=${external_id_proyecto}`
                 );
                 if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
                     borrarSesion();
@@ -82,12 +82,12 @@ const PresentacionProyecto = () => {
         fetchRoles();
         fetchRolAdministrador();
         fetchRolesEntidad();
-    }, [external_id, navigate]);
+    }, [external_id_proyecto, navigate]);
 
     useEffect(() => {
         const fetchProject = async () => {
             try {
-                const info = await peticionGet(getToken(), `proyecto/${external_id}`);
+                const info = await peticionGet(getToken(), `proyecto/${external_id_proyecto}`);
                 if (info.code === 200) {
                     setProyectoEntidad(info.info);
                 } else {
@@ -99,7 +99,7 @@ const PresentacionProyecto = () => {
         };
 
         fetchProject();
-    }, [external_id]);
+    }, [external_id_proyecto]);
 
     const roleOptions = {
         'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Generar reportes', 'Miembros'],

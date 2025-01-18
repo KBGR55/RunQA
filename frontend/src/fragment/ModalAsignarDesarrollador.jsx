@@ -92,11 +92,6 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
             desarrollador_rol: rolId
         };
 
-        console.log("qqqqqqqqqqqqqqqqqq", selectedDesarrollador);
-        
-        console.log("222222222222", body);
-        
-    
         try {
             const response = await peticionPost(getToken(), '/contrato/error', body);
             if (response.code === 200) {
@@ -121,7 +116,7 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
                 <Modal.Title className='titulo-primario'>Asignar Desarrollador</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form.Group controlId="formTesters">
+              {!selectedDesarrollador && (  <Form.Group controlId="formTesters">
                     <Form.Label>Seleccionar Desarrollador</Form.Label>
                     <Form.Control
                         as="select"
@@ -136,7 +131,7 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
                             </option>
                         ))}
                     </Form.Control>
-                </Form.Group>
+                </Form.Group>)}
 
                 {selectedDesarrollador && (
                     <div className="mt-4">
