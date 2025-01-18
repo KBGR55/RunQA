@@ -137,7 +137,7 @@ const VerError = () => {
                                                     </thead>
                                                     <tbody>
                                                         <tr>
-                                                            <td>CRITICO</td>
+                                                            <td>CRÍTICA</td>
                                                             <td>Compromete el sistema completo, urgente.</td>
                                                         </tr>
                                                         <tr>
@@ -157,7 +157,7 @@ const VerError = () => {
                                     </OverlayTrigger></strong>
                                     <span className={`badge ${dataErrror?.severidad === 'MEDIA' ? 'bg-warning' :
                                         dataErrror?.severidad === 'BAJA' ? 'bg-success' :
-                                            dataErrror?.severidad === 'CRITICO' ? 'bg-dark' :
+                                            dataErrror?.severidad === 'CRÍTICA' ? 'bg-danger' :
                                                 'bg-secondary'}`}>
                                         {dataErrror?.severidad || 'No disponible'}
                                     </span>

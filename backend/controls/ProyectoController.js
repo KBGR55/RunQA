@@ -157,7 +157,7 @@ class ProyectoController {
       transaction = await models.sequelize.transaction();
 
       const proyecto = await models.proyecto.findOne({
-        where: { external_id: req.params.external_id },
+        where: { external_id: req.params.external_id ,estado: 1},
         attributes: ["id", "estado", "nombre"],
       });
 
@@ -560,13 +560,12 @@ class ProyectoController {
     try {
       const { id_rol_proyecto } = req.params;
 
-      // Buscar el rol_proyecto directamente, usando el alias en el include
       const rolProyecto = await models.rol_proyecto.findOne({
         where: { id: id_rol_proyecto },
         include: [
           {
             model: models.rol_entidad,
-            as: "rol_entidad", // Usa el alias definido en el modelo
+            as: "rol_entidad",
             include: {
               model: models.rol,
               attributes: ["nombre"],
@@ -588,8 +587,6 @@ class ProyectoController {
 
       const { rol_entidad, id_proyecto } = rolProyecto;
 
-      console.log("rol_entidad:", rol_entidad);
-      console.log("id_proyecto:", id_proyecto);
       const entidad = await models.entidad.findOne({
         where: { id: rol_entidad.id_entidad },
         attributes: ["id", "horasDisponibles"],
@@ -609,9 +606,7 @@ class ProyectoController {
       }
 
       const rolNombre = rol_entidad.rol.nombre;
-      console.log("rolNombre:", rolNombre);
 
-      // Validar si el rol es TESTER o DESARROLLADOR
       if (["TESTER", "DESARROLLADOR"].includes(rolNombre)) {
         const contratosActivos = await models.contrato.count({
           where: {
@@ -635,7 +630,6 @@ class ProyectoController {
 
       if (rolesCriticos.includes(rolNombre)) {
         try {
-          // Obtener los IDs de los roles 'LIDER DE CALIDAD' y 'ANALISTA DE PRUEBAS'
           const roles = await rol.findOne({
             where: {
               nombre: [rolNombre],
@@ -647,7 +641,6 @@ class ProyectoController {
             return;
           }
 
-          // Obtener las entidades de rol activas para esos roles
           const rolEntidades = await models.rol_entidad.findAll({
             where: {
               id_rol: roles.id,
@@ -662,20 +655,16 @@ class ProyectoController {
 
           const rolEntidadIds = rolEntidades.map((entidad) => entidad.id);
 
-          // Verificar si existen más de un rol de tipo "LIDER DE CALIDAD" o "ANALISTA DE PRUEBAS"
           const cantidadRoles = await models.rol_proyecto.count({
             where: {
               id_proyecto: id_proyecto,
               id_rol_entidad: {
-                [Op.in]: rolEntidadIds, // Usar los roles críticos encontrados
+                [Op.in]: rolEntidadIds, 
               },
-              estado: 1, // Solo contar roles activos
+              estado: 1, 
             },
           });
 
-          console.log("cantidadRoles:", cantidadRoles);
-
-          // Si hay solo un rol activo de este tipo, bloquear la eliminación
           if (cantidadRoles <= 1) {
             return res.status(400).json({
               msg: `No se puede eliminar el único ${rolNombre} del proyecto.`,
@@ -695,10 +684,8 @@ class ProyectoController {
       await rol_entidad.save();
       entidad.horasDisponibles += rolProyecto.horasDiarias;
       await entidad.save();
-      rolProyecto.estado = 0; // Eliminación lógica
+      rolProyecto.estado = 0; 
       await rolProyecto.save();
-
-      console.log("Rol eliminado exitosamente.");
 
       return res.status(200).json({
         msg: `Rol ${rolNombre} eliminado del proyecto exitosamente.`,

@@ -93,6 +93,13 @@ const UsuarioProyecto = () => {
         setShowModalAddMembers(false);
     };
 
+    /**
+     * Función que se encarga de eliminar un usuario de un proyecto.
+     * @function
+     * @param {number} userIdToDelete - El id del usuario que se va a eliminar.
+     * @returns {Promise<void>}
+     * @throws Si ocurre un error al eliminar el usuario.
+     */
     const handleDeleteUser = async () => {
         console.log('handleDeleteUser', userIdToDelete);
         try {

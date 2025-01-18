@@ -16,7 +16,7 @@ import ModalAsignarDesarrollador from './ModalAsignarDesarrollador';
 
 const AgregarErrores = () => {
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
-    const [severidad] = useState(['MEDIA', 'BAJA', 'CRITICO']);
+    const [severidad] = useState(['CRÍTICA','MEDIA', 'BAJA']);
     const [prioridad] = useState(['ALTA', 'MEDIA', 'BAJA']);
     const [estadoSeleccionado, setEstadoSeleccionado] = useState('PENDIENTE');
     const [clasificacionSeleccionada, setClasificacionSeleccionada] = useState([]);
@@ -45,16 +45,6 @@ const AgregarErrores = () => {
                         mensajes("Error al cargar el proyecto", "error", "Error");
                         console.error(error);
                     });
-
-                    // Fetch testers
-                    /** 
-                    const responseTesters = await peticionGet(getToken(), `proyecto/listar/rol/DESARROLLADOR/${external_id_proyecto}`);
-                    if (responseTesters.code === 200) {
-                        setTesters(responseTesters.info);
-                    } else {
-                        mensajes(responseTesters.msg, 'error');
-                    }
-                    */
                 }
 
                 if (external_id_error) {
@@ -79,72 +69,6 @@ const AgregarErrores = () => {
         };
         fetchCasoPrueba();
     }, [external_id_proyecto]);
-
-    /*const onSubmit = async (data) => {
-
-        const formData = new FormData();
-        formData.append('funcionalidad', data.funcionalidad);
-        formData.append('titulo', data.titulo.toUpperCase());
-        formData.append('pasos_repetir', data.pasos_repetir);
-        formData.append('persona_responsable', ' data.persona_asignada.id)');
-        formData.append('persona_asignadora', 'getUser().user.id');
-        formData.append('severidad', clasificacionSeleccionada);
-        formData.append('prioridad', prioridadSeleccionada);
-        formData.append('estado', estadoSeleccionado);
-        formData.append('resultado_obtenido', data.resultado_obtenido);
-        formData.append('fecha_resolucion', null);
-        formData.append('external_caso_prueba', external_id);
-        if (data.foto && data.foto.length > 0) {
-            formData.append('foto', data.foto[0]);
-        } else {
-            const defaultPhotoUrl = `${process.env.PUBLIC_URL}/errors/SIN_ANEXO.png`;
-            formData.append('foto', defaultPhotoUrl);
-        }
-
-        try {
-            if (external_id_error) {
-                formData.append('external_id', external_id_error);
-                const response = await ActualizarImagenes(formData, getToken(), `/error/actualizar?external_id=${external_id_error}`);
-                if (response.code === 200) {
-                    mensajes('Error actualizado con exito', 'success');
-                    navigate(`/error/visualizar/${external_id_proyecto}/${external_id}/${external_id_error}`);
-                } else {
-                    mensajes(`Error al actualizar el error: ${response.msg}`, 'error');
-                }
-            } else {
-                const response = await GuardarImages(formData, getToken(), "/error/guardar");
-                if (response.code === 200) {
-                    mensajes('Errores agregados correctamente', 'success');
-                    if (response.code === 200) {
-                        mensajes('Errores agregados correctamente', 'success');
-                        setTimeout(() => {
-                            swal({
-                                title: "¿Desea seguir agregando errores?",
-                                text: "Puede continuar agregando errores o cancelar esta acción.",
-                                icon: "warning",
-                                buttons: ["Cancelar", "Seguir agregando"],
-                                dangerMode: true,
-                            }).then((willContinue) => {
-                                if (willContinue) {
-                                    setTimeout(() => {
-                                        window.location.reload();
-                                    }, 5000);
-                                } else {
-                                    mensajes("Operación cancelada", "info", "Información");
-                                    navigate(-1);
-                                }
-                            });
-                        }, 2200);
-                    }
-
-                } else {
-                    mensajes(`Error al agregar el error: ${response.msg}`, 'error');
-                }
-            }
-        } catch (error) {
-            mensajes('Error al procesar la solicitud', 'error');
-        }
-    };*/
 
     const onSubmit = async (data) => {
         const formData = new FormData();
@@ -307,7 +231,7 @@ const AgregarErrores = () => {
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td>CRITICO</td>
+                                                    <td>CRÍTICA</td>
                                                     <td>Compromete el sistema completo, urgente.</td>
                                                 </tr>
                                                 <tr>
@@ -393,20 +317,6 @@ const AgregarErrores = () => {
                         </div>
                     </div>
 
-                    {/*<div className="col-md-6">
-                        <label className="titulo-campos">Asignar persona</label>
-                        <div className="d-flex align-items-center">
-                            <button
-                                type="button"
-                                className="btn-opcional w-100"
-                                onClick={() => setShowModalDesarrollador(true)}
-                            >
-                                Establecer parámetros
-                            </button>
-                        </div>
-                    </div>/*/}
-
-
                     <div className="col-md-6">
                         <label htmlFor="foto" className="titulo-campos">Foto</label>
                         <input
@@ -475,10 +385,6 @@ const AgregarErrores = () => {
                         </div>}
                 </div>
                 <div className="form-group d-flex justify-content-end">
-                    <button type="submit" className="btn btn-success btn-icon-text">
-                        <FontAwesomeIcon icon={faCheck} />
-                        Guardar
-                    </button>
                     <button
                         type="button"
                         className="btn-negativo"
