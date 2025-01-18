@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Button, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExclamationCircle, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faExclamationCircle, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import CasoPrueba from './CasoPrueba';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -128,11 +128,17 @@ const VerCasoPrueba = () => {
 
         const fetchCasoPruebaAsignado = async () => {
             try {
-                const response = await peticionGet(getToken(), `contrato/asignado/${external_id}`);
-                if (response.code === 200) {
-                    setInfoAsignado(response.info);
-                } else {
-                    mensajes(`Error al obtener caso de prueba: ${response.msg}`, 'error');
+                if (external_id) {
+                    peticionGet(getToken(), `contrato/asignado/${external_id}`).then((info) => {
+                        if (info.code === 200) {
+                            setInfoAsignado(info.info);
+                        } else {
+                            setInfoAsignado({});
+                        }
+                    }).catch((error) => {
+                        mensajes("Error al cargar el asignado", "error", "Error");
+                        console.error(error);
+                    });
                 }
             } catch (error) {
                 mensajes('Error al procesar la solicitud', 'error');
@@ -172,9 +178,6 @@ const VerCasoPrueba = () => {
         return new Date(dateString).toISOString().slice(0, 10);
     }
 
-    console.log("zzzzzzzzzzzzzzz", infoAsignado);
-    
-
     return (
         <div>
             <div className='container-fluid'>
@@ -182,7 +185,15 @@ const VerCasoPrueba = () => {
 
                     <div className="contenedor-carta">
                         <p className="titulo-proyecto">{infoProyecto.nombre}</p>
-                        <p className="titulo-primario">Caso de Prueba</p>
+                        <div className="d-flex align-items-center mb-3">
+                            <FontAwesomeIcon
+                                icon={faArrowLeft}
+                                onClick={() => navigate(-1)}
+                                style={{ cursor: 'pointer', fontSize: '20px', marginRight: '10px', color: 'var(--color-cuarto)' }}
+                            />
+                            <h4 className="titulo-primario"> Caso Prueba</h4>
+                        </div>
+
                         {errores.length > 0 ? (
                             <div className="accordion" id="accordionExample">
                                 <div className="accordion-item ">
@@ -304,7 +315,7 @@ const VerCasoPrueba = () => {
                                         </div>
                                         <div className="d-flex flex-column align-items-center">
                                             <p className="w-100 text-start texto-normal">
-                                            <p><span className="fw-bold">Estado de asignación</span></p>
+                                                <p><span className="fw-bold">Estado de asignación</span></p>
                                                 <span className={`badge ${casosPrueba?.estadoAsignacion === 'ASIGNADO' ? 'bg-primary' : casosPrueba?.estadoAsignacion === 'REASIGNADO' ? 'bg-warning' : 'bg-secondary'}`}>
                                                     {casosPrueba?.estadoAsignacion}
                                                 </span>
@@ -312,8 +323,8 @@ const VerCasoPrueba = () => {
                                         </div>
                                         <div className="d-flex flex-column align-items-center">
                                             <p className="w-100 text-start texto-normal">
-                                            <p><span className="fw-bold">Tipo de prueba</span></p>
-                                            <p className="w-100 text-start texto-normal">{casosPrueba?.tipo_prueba}</p>
+                                                <p><span className="fw-bold">Tipo de prueba</span></p>
+                                                <p className="w-100 text-start texto-normal">{casosPrueba?.tipo_prueba}</p>
                                             </p>
                                         </div>
                                     </div>
@@ -364,7 +375,7 @@ const VerCasoPrueba = () => {
                             </div>
 
                             <div className="col-md-6 mb-4">
-                                <div className="card p-3 shadow-sm card-custom-bord ">
+                                <div className="card p-3 shadow-sm card-custom-bord">
                                     <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Fechas de Asignación</h5>
                                     <div className="mb-2">
                                         <strong>Fecha de creación: </strong>
@@ -376,13 +387,13 @@ const VerCasoPrueba = () => {
                                     </div>
                                     <div className="mb-2">
                                         <strong>Fecha de ejecución: </strong>
-                                        {infoAsignado?.fecha_fin ? formatDate(infoAsignado.fecha_fin) : 'No disponible'}
+                                        {infoAsignado?.fecha_fin ? formatDate(infoAsignado.fecha_fin) : 'Sin fecha de ejecución'}
                                     </div>
                                 </div>
                             </div>
 
                             <div className="col-md-6 mb-4">
-                                <div className="card p-3 shadow-sm card-custom-bord ">
+                                <div className="card p-3 shadow-sm card-custom-bord">
                                     <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Personal responsable</h5>
                                     <div className="mb-2">
                                         <strong>Asignado a: </strong>
@@ -390,10 +401,13 @@ const VerCasoPrueba = () => {
                                     </div>
                                     <div className="mb-2">
                                         <strong>Asignado por: </strong>
-                                        {infoAsignado?.persona_que_asigno || 'No existe registro de persona que asigno'}
+                                        {infoAsignado?.persona_que_asigno || 'No existe registro de persona que asignó'}
                                     </div>
                                 </div>
                             </div>
+
+
+
                         </div>
 
                         <div className='contenedor-filo'>

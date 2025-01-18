@@ -58,7 +58,7 @@ const VerError = () => {
                         if (info.code === 200) {
                             setAsignado(info.info);
                         } else {
-                            mensajes(info.msg, "error", "Error");
+                            setAsignado({});
                         }
                     }).catch((error) => {
                         mensajes("Error al cargar el asignado", "error", "Error");
