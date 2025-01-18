@@ -506,7 +506,7 @@ const VerCasoPrueba = () => {
                                     </svg>
                                     Reabrir Caso
                                 </Button>
-                            ) : (
+                            ) : casosPrueba.estado!=="EXITOSO" && (
                                 // Mostrar botón "Editar" si el estado no es OBSOLETO
                                 <Button
                                     variant="btn btn-outline-info btn-rounded"
@@ -530,7 +530,7 @@ const VerCasoPrueba = () => {
                             )}
 
                             {/* Mostrar el botón de "Eliminar" solo si el rol no es true */}
-                            {rol !== 'tester' && (
+                            {rol !== 'tester' && casosPrueba.estado!=="EXITOSO"&& (
                                 <Button
                                     className="btn-negativo"
                                     onClick={() => handleDeleteCasoPrueba(casosPrueba.external_id)}
