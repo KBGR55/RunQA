@@ -74,30 +74,13 @@ const VerError = () => {
         fetchErrorAsignado();
     }, [external_id_proyecto, external_id_error, dataErrror.id]);
 
-    const getTodayDate = () => new Date().toISOString().slice(0, 10);
-
-    const isTodayOrAfter = useMemo(() => {
-        if (!infoAsignado?.fecha_fin) return false; 
-
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        const fechaFin = new Date(infoAsignado.fecha_fin);
-        fechaFin.setHours(0, 0, 0, 0);
-
-        console.log("Fecha actual:", today.toISOString());
-        console.log("Fecha fin asignado:", fechaFin.toISOString());
-
-        return fechaFin >= today;
-    }, [infoAsignado]);
-
     const handleEstadoChange = (estado) => {
         setDataErrror((prev) => ({
             ...prev,
             estado,  // Actualiza el estado del error en el componente
         }));
     };
-    
+
     const formatDate = (dateString) => new Date(dateString).toISOString().slice(0, 10);
 
     return (
@@ -251,7 +234,7 @@ const VerError = () => {
 
                     <div className="col-12 mb-4">
                         <div className="card p-3 shadow-sm card-custom-bord ">
-                            <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Persona responsable</h5>
+                            <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Personal responsable</h5>
                             <div className="mb-2">
                                 <strong>Asignado a: </strong>
                                 {infoAsignado?.persona_asignada || 'Sin responsable asignado'}
@@ -283,23 +266,21 @@ const VerError = () => {
                             <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
                         </svg>
                     </Button>
+                    <Button
+                        variant="btn btn-outline-success btn-rounded"
+                        onClick={() => {
+                            setIdError(dataErrror.id);
+                            setShowModalDesarrollador(true);
+                        }}
 
-                    {isTodayOrAfter && (
-                        <Button
-                            variant="btn btn-outline-success btn-rounded"
-                            onClick={() => {
-                                setIdError(dataErrror.id);
-                                setShowModalDesarrollador(true);
-                            }}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-exclamation" viewBox="0 0 16 16" style={{ marginRight: '5px' }}>
+                            <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m.256 7a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z" />
+                            <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-3.5-2a.5.5 0 0 0-.5.5v1.5a.5.5 0 0 0 1 0V11a.5.5 0 0 0-.5-.5m0 4a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
+                        </svg>
+                        Reasignar
+                    </Button>
 
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-exclamation" viewBox="0 0 16 16" style={{ marginRight: '5px' }}>
-                                <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m.256 7a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z" />
-                                <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-3.5-2a.5.5 0 0 0-.5.5v1.5a.5.5 0 0 0 1 0V11a.5.5 0 0 0-.5-.5m0 4a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
-                            </svg>
-                            Reasignar
-                        </Button>
-                    )}
 
                 </div>
             </div>

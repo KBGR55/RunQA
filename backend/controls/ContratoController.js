@@ -80,8 +80,18 @@ class ContratoController {
 
     async obtenerDatosCasoAsignado(req, res) {
         try {
+
+            let caso_prueba = await models.caso_prueba.findOne({
+                where: {
+                    external_id: req.params.external_id
+                },
+            });
+            if (!caso_prueba) {
+                return res.status(404).json({ msg: "Caso de prueba no encontrado" });
+            }
+
             const contrato = await models.contrato.findOne({
-                where: { external_id: req.params.external_id },
+                where: { id_caso_prueba: caso_prueba.id },
                 attributes: ['fecha_inicio', 'fecha_fin', 'external_id'],
                 include: [
                     {
@@ -158,7 +168,7 @@ class ContratoController {
             const { id_proyecto, tester, entidad_asigno, casosPrueba, fecha_inicio, fecha_fin, tester_rol } = req.body;
 
             console.log("sssssssssssssss", req.body);
-            
+
 
             if (!id_proyecto || !tester || tester.length === 0 || !casosPrueba || casosPrueba.length === 0 || !fecha_inicio || !fecha_fin) {
                 return res.status(400).json({ msg: "Faltan datos requeridos", code: 400 });
@@ -212,7 +222,7 @@ class ContratoController {
                 });
 
                 console.log("wwwwwwwwwww", rolProyectoAsignador.id);
-                
+
 
                 if (!rolProyectoAsignado || !rolProyectoAsignador) {
                     return res.status(400).json({ msg: "Proyecto asignado no encontrado", code: 400 });
@@ -429,9 +439,9 @@ class ContratoController {
             transaction = await models.sequelize.transaction();
 
             console.log("1111", req.body);
-            
 
-            const { id_error, desarrollador, entidad_asigno, fecha_inicio, fecha_fin, desarrollador_rol, id_proyecto} = req.body;
+
+            const { id_error, desarrollador, entidad_asigno, fecha_inicio, fecha_fin, desarrollador_rol, id_proyecto } = req.body;
 
             if (!id_error || !desarrollador || !entidad_asigno || !fecha_inicio || !fecha_fin || !id_proyecto || !desarrollador_rol) {
                 return res.status(400).json({ msg: "Faltan datos requeridos", code: 400 });

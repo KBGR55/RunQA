@@ -17,6 +17,7 @@ import TablePagination from '@mui/material/TablePagination';
 
 const VerCasoPrueba = () => {
     const [casosPrueba, setCasosPrueba] = useState({});
+    const [infoAsignado, setInfoAsignado] = useState({});
     const { external_id_proyecto, external_id } = useParams();
     const [rol, setRol] = useState('false');
     const [infoProyecto, setProyecto] = useState([]);
@@ -125,6 +126,20 @@ const VerCasoPrueba = () => {
 
         };
 
+        const fetchCasoPruebaAsignado = async () => {
+            try {
+                const response = await peticionGet(getToken(), `contrato/asignado/${external_id}`);
+                if (response.code === 200) {
+                    setInfoAsignado(response.info);
+                } else {
+                    mensajes(`Error al obtener caso de prueba: ${response.msg}`, 'error');
+                }
+            } catch (error) {
+                mensajes('Error al procesar la solicitud', 'error');
+            }
+        };
+
+        fetchCasoPruebaAsignado();
         fetchCasoPrueba();
     }, [setValue]);
 
@@ -157,13 +172,16 @@ const VerCasoPrueba = () => {
         return new Date(dateString).toISOString().slice(0, 10);
     }
 
+    console.log("zzzzzzzzzzzzzzz", infoAsignado);
+    
+
     return (
         <div>
             <div className='container-fluid'>
                 <div className='contenedor-centro'>
 
                     <div className="contenedor-carta">
-                        <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
+                        <p className="titulo-proyecto">{infoProyecto.nombre}</p>
                         <p className="titulo-primario">Caso de Prueba</p>
                         {errores.length > 0 ? (
                             <div className="accordion" id="accordionExample">
@@ -255,78 +273,133 @@ const VerCasoPrueba = () => {
                                 No hay errores generados
                             </div>
                         )}
-                        <div className="form-group">
-                            <div className="row">
-                                <div className="col-md-6">
-                                    <label className="w-100 text-start titulo-secundario">Estado</label>
-                                    <p className="w-100 text-start texto-normal">
-                                        <span className={`badge ${getEstadoClass(casosPrueba?.estado)}`}>
-                                            {casosPrueba?.estado}
-                                        </span>
-                                    </p>
-                                    <label className="w-100 text-start titulo-secundario">Título</label>
+
+                        <div className="row mt-4">
+                            <div className="col-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Título</h5>
                                     <p className="w-100 text-start texto-normal">{casosPrueba?.nombre}</p>
-
-                                    <label className="w-100 text-start titulo-secundario">Clasificación</label>
-                                    <p className="w-100 text-start texto-normal">
-                                        <span className={`badge ${casosPrueba?.clasificacion === 'ALTA' ? 'bg-danger' : casosPrueba?.clasificacion === 'MEDIA' ? 'bg-warning' : 'bg-success'}`}>
-                                            {casosPrueba?.clasificacion}
-                                        </span>
-                                    </p>
-
-
-                                    <label className="w-100 text-start titulo-secundario">Tipo de prueba</label>
-                                    <p className="w-100 text-start texto-normal">{casosPrueba?.tipo_prueba}</p>
                                 </div>
-                                <div className="col-md-6">
+                            </div>
 
-                                    <label className="w-100 text-start titulo-secundario">Estado de Asignación</label>
-                                    <p className="w-100 text-start texto-normal">
-                                        <span className={`badge ${casosPrueba?.estadoAsignacion === 'ASIGNADO' ? 'bg-primary' : casosPrueba?.estadoAsignacion === 'REASIGNADO' ? 'bg-warning' : 'bg-secondary'}`}>
-                                            {casosPrueba?.estadoAsignacion}
-                                        </span>
-                                    </p>
-
-
-                                    <label className="w-100 text-start titulo-secundario">Fecha de diseño</label>
-                                    <p className="w-100 text-start texto-normal">
-                                        {casosPrueba?.fecha_disenio ? formatDate(casosPrueba.fecha_disenio) : 'No disponible'}
-                                    </p>
-
-                                    <label className="w-100 text-start titulo-secundario">Fecha de ejecución de prueba</label>
-                                    <p className="w-100 text-start texto-normal">
-                                        {casosPrueba?.fecha_ejecucion_prueba ? formatDate(casosPrueba.fecha_ejecucion_prueba) : 'No disponible'}
-                                    </p>
-                                    <label className="w-100 text-start titulo-secundario">Resultado esperado</label>
-                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.resultado_esperado ? casosPrueba?.resultado_esperado.replace(/\n/g, '<br />') : '' }} />
-
-                                    <label className="w-100 text-start titulo-secundario">Resultado obtenido</label>
-                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.resultado_obtenido ? casosPrueba?.resultado_obtenido.replace(/\n/g, '<br />') : '' }} />
-
-                                </div>
-
-                                <div className="col-md-12">
-                                    <div className="col-md-12">
-                                        <label className="w-100 text-start titulo-secundario">Descripción</label>
-                                        <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.descripcion ? casosPrueba.descripcion.replace(/\n/g, '<br />') : '' }} />
+                            <div className="col-md-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord ">
+                                    <h5 className="titulo-secundario mb-3" style={{ textAlign: 'initial' }}>Detalles del Caso</h5>
+                                    <div className="d-flex justify-content-around align-items-center flex-wrap gap-2">
+                                        <div className="d-flex flex-column align-items-center">
+                                            <p className="w-100 text-start texto-normal">
+                                                <p><span className="fw-bold">Estado</span></p>
+                                                <span className={`badge ${getEstadoClass(casosPrueba?.estado)}`}>
+                                                    {casosPrueba?.estado}
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div className="d-flex flex-column align-items-center">
+                                            <p><span className="fw-bold">Clasificación</span></p>
+                                            <p className="w-100 text-start texto-normal">
+                                                <span className={`badge ${casosPrueba?.clasificacion === 'ALTA' ? 'bg-danger' : casosPrueba?.clasificacion === 'MEDIA' ? 'bg-warning' : 'bg-success'}`}>
+                                                    {casosPrueba?.clasificacion}
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div className="d-flex flex-column align-items-center">
+                                            <p className="w-100 text-start texto-normal">
+                                            <p><span className="fw-bold">Estado de asignación</span></p>
+                                                <span className={`badge ${casosPrueba?.estadoAsignacion === 'ASIGNADO' ? 'bg-primary' : casosPrueba?.estadoAsignacion === 'REASIGNADO' ? 'bg-warning' : 'bg-secondary'}`}>
+                                                    {casosPrueba?.estadoAsignacion}
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div className="d-flex flex-column align-items-center">
+                                            <p className="w-100 text-start texto-normal">
+                                            <p><span className="fw-bold">Tipo de prueba</span></p>
+                                            <p className="w-100 text-start texto-normal">{casosPrueba?.tipo_prueba}</p>
+                                            </p>
+                                        </div>
                                     </div>
-
-                                    <label className="w-100 text-start titulo-secundario">Precondiciones</label>
-                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.precondiciones ? casosPrueba?.precondiciones.replace(/\n/g, '<br />') : '' }} />
-
-                                    <label className="w-100 text-start titulo-secundario">Datos entrada</label>
-                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.datos_entrada ? casosPrueba?.datos_entrada.replace(/\n/g, '<br />') : '' }} />
-
-                                    <label className="w-100 text-start titulo-secundario">Pasos</label>
-                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.pasos ? casosPrueba?.pasos.replace(/\n/g, '<br />') : '' }} />
 
                                 </div>
                             </div>
+
+                            <div className="col-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Descripción</h5>
+                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.descripcion ? casosPrueba.descripcion.replace(/\n/g, '<br />') : '' }} />
+                                </div>
+                            </div>
+
+                            <div className="col-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Precondiciones</h5>
+                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.precondiciones ? casosPrueba?.precondiciones.replace(/\n/g, '<br />') : '' }} />
+                                </div>
+                            </div>
+
+                            <div className="col-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Datos entrada</h5>
+                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.datos_entrada ? casosPrueba?.datos_entrada.replace(/\n/g, '<br />') : '' }} />
+                                </div>
+                            </div>
+
+                            <div className="col-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Pasos</h5>
+                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.pasos ? casosPrueba?.pasos.replace(/\n/g, '<br />') : '' }} />
+                                </div>
+                            </div>
+
+                            <div className="col-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Resultado esperado</h5>
+                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.resultado_esperado ? casosPrueba?.resultado_esperado.replace(/\n/g, '<br />') : '' }} />
+                                </div>
+                            </div>
+
+                            <div className="col-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Resultado obtenido</h5>
+                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.resultado_obtenido ? casosPrueba?.resultado_obtenido.replace(/\n/g, '<br />') : '' }} />
+                                </div>
+                            </div>
+
+                            <div className="col-md-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord ">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Fechas de Asignación</h5>
+                                    <div className="mb-2">
+                                        <strong>Fecha de creación: </strong>
+                                        {casosPrueba?.fecha_disenio ? formatDate(casosPrueba.fecha_disenio) : 'No disponible'}
+                                    </div>
+                                    <div className="mb-2">
+                                        <strong>Fecha de asignación al tester: </strong>
+                                        {infoAsignado?.fecha_inicio ? formatDate(infoAsignado.fecha_inicio) : 'Sin fecha de asignación'}
+                                    </div>
+                                    <div className="mb-2">
+                                        <strong>Fecha de ejecución: </strong>
+                                        {infoAsignado?.fecha_fin ? formatDate(infoAsignado.fecha_fin) : 'No disponible'}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-md-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord ">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Personal responsable</h5>
+                                    <div className="mb-2">
+                                        <strong>Asignado a: </strong>
+                                        {infoAsignado?.persona_asignada || 'Sin responsable asignado'}
+                                    </div>
+                                    <div className="mb-2">
+                                        <strong>Asignado por: </strong>
+                                        {infoAsignado?.persona_que_asigno || 'No existe registro de persona que asigno'}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
                         <div className='contenedor-filo'>
 
                             {/* Mostrar botón "Ejecutar" solo si rol es true y el estado no es FALLIDO o EXITOSO */}
-                            {(rol === 'tester'||rol === 'lider-tester') && !['FALLIDO', 'EXITOSO'].includes(casosPrueba.estado) ? (
+                            {(rol === 'tester' || rol === 'lider-tester') && !['FALLIDO', 'EXITOSO'].includes(casosPrueba.estado) ? (
                                 <Button
                                     className="btn-normal mb-3"
                                     onClick={handleshoModal}
@@ -335,7 +408,7 @@ const VerCasoPrueba = () => {
                                 </Button>
                             ) : (
                                 // Mostrar botón "Agregar errores" solo si el estado es "FALLIDO"
-                                (rol === 'tester'||rol === 'lider-tester') &&  casosPrueba.estado === 'FALLIDO' && (
+                                (rol === 'tester' || rol === 'lider-tester') && casosPrueba.estado === 'FALLIDO' && (
                                     <Button
                                         className="btn-danger mb-3"
                                         onClick={handleAddError}

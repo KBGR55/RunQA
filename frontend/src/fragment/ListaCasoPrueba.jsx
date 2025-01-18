@@ -21,11 +21,12 @@ const ListaCasoPrueba = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const { external_id_proyecto } = useParams();
-    const [infoProyecto,setProyecto] = useState([]);
+    const [infoProyecto, setProyecto] = useState([]);
     const [rol, SetRol] = useState('false');
-    
+    const [filterByAssignment, setFilterByAssignment] = useState('all');
 
-    useEffect(() => {        
+
+    useEffect(() => {
         const fetchCasosPrueba = async () => {
             if (proyecto.id) {
                 if (external_id_proyecto) {
@@ -39,7 +40,7 @@ const ListaCasoPrueba = () => {
                         mensajes("Error al cargar el proyecto", "error", "Error");
                         console.error(error);
                     });
-                } 
+                }
                 const response = await peticionGet(getToken(), `caso/prueba/listar/${getUser().user.id}?id_proyecto=${proyecto.id}`);
                 if (response.code === 200) {
                     setCasosPrueba(response.info);
@@ -59,14 +60,27 @@ const ListaCasoPrueba = () => {
         setSearchTerm(e.target.value);
     };
 
+    const handleFilterChange = (filter) => {
+        setFilterByAssignment(filter);
+    };
+
     const filteredCasosPrueba = casosPrueba.filter((caso) => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase();
-
-        return (
+        const matchesSearch =
             (caso.nombre && caso.nombre.toLowerCase().includes(lowerCaseSearchTerm)) ||
-            (caso.estado && caso.estado.toLowerCase().includes(lowerCaseSearchTerm))
-        );
+            (caso.estadoAsignacion && caso.estadoAsignacion.toLowerCase().includes(lowerCaseSearchTerm));
+
+        const estadoAsignacion = caso.estadoAsignacion?.trim().toLowerCase();
+
+        if (filterByAssignment === 'assigned') {
+            return matchesSearch && estadoAsignacion === 'asignado';
+        } else if (filterByAssignment === 'unassigned') {
+            return matchesSearch && estadoAsignacion !== 'asignado';
+        }
+
+        return matchesSearch;
     });
+
 
     const handleNavigateToDetail = (external_id) => {
         navigate(`/caso-prueba/${external_id_proyecto}/${external_id}`);
@@ -85,7 +99,7 @@ const ListaCasoPrueba = () => {
         <div className='container-fluid'>
             <div className='contenedor-centro'>
                 <div className="contenedor-carta">
-                <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
+                    <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
                     <div className='contenedor-filo'>
                         <Button
                             className="btn-normal mb-3"
@@ -95,6 +109,28 @@ const ListaCasoPrueba = () => {
                         </Button>
                     </div>
                     <p className="titulo-primario">Lista de Casos de Prueba</p>
+
+                    <div className="d-flex mb-3 justify-content-end">
+                        <Button
+                            className={filterByAssignment === 'all' ? "btn-custom me-2" : "btn-custom-outline me-2"}
+                            onClick={() => handleFilterChange('all')}
+                        >
+                            Todos
+                        </Button>
+                        <Button
+                            className={filterByAssignment === 'assigned' ? "btn-custom me-2" : "btn-custom-outline me-2"}
+                            onClick={() => handleFilterChange('assigned')}
+                        >
+                            Asignados
+                        </Button>
+                        <Button
+                            className={filterByAssignment === 'unassigned' ? "btn-custom" : "btn-custom-outline"}
+                            onClick={() => handleFilterChange('unassigned')}
+                        >
+                            No asignados
+                        </Button>
+                    </div>
+
 
                     <InputGroup className="mb-3">
                         <InputGroup.Text>
@@ -112,6 +148,7 @@ const ListaCasoPrueba = () => {
                                 <tr>
                                     <th className="text-center">Nombre</th>
                                     <th className="text-center">Estado</th>
+                                    <th className="text-center">Estado Asignación</th>
                                     <th className="text-center"></th>
                                 </tr>
                             </thead>
@@ -125,10 +162,11 @@ const ListaCasoPrueba = () => {
                                         <tr key={caso.external_id}>
                                             <td>{caso.nombre}</td>
                                             <td className="text-center">{caso.estado}</td>
+                                            <td className="text-center">{caso.estadoAsignacion}</td>
                                             <td className="text-center">
                                                 <Button
                                                     variant="btn btn-outline-info btn-rounded"
-                                                    onClick={() => handleNavigateToDetail(caso.external_id,rol)}
+                                                    onClick={() => handleNavigateToDetail(caso.external_id, rol)}
                                                     className="btn-icon"
                                                 >
                                                     <svg

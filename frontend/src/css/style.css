@@ -511,3 +511,28 @@ label {
   margin-bottom: 5px; /* Espacio debajo del título, opcional */
 }
 
+.btn-custom {
+  background-color: var(--azul-opcional);
+  color: white;
+  border: 1px solid var(--azul-opcional);
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-custom:hover {
+  background-color: var(--azul-opcional);
+  color: white;
+}
+
+.btn-custom-outline {
+  background-color: transparent;
+  color: var(--azul-opcional);
+  border: 1px solid var(--azul-opcional);
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-custom-outline:hover {
+  background-color: var(--azul-opcional);
+  color: white;
+}
+
+
