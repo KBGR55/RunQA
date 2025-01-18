@@ -506,12 +506,14 @@ class ProyectoController {
 
             // Incrementar las horas disponibles de la entidad
             entidad.horasDisponibles += rolProyecto.horasDiarias;
+            console.log(entidad.horasDisponibles);
+            console.log(rolProyecto);
 
             // Guardar la entidad
-            await entidad.save();
+           // await entidad.save();
 
             // Eliminar la relación rol_proyecto
-            await rolProyecto.destroy();  // Asegúrate de que rolProyecto tiene un id
+           // await rolProyecto.destroy();  // Asegúrate de que rolProyecto tiene un id
 
             res.status(200).json({ msg: "Entidad eliminada del proyecto exitosamente", code: 200 });
 

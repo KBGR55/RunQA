@@ -481,12 +481,15 @@ const AgregarErrores = () => {
                     </button>
                     <button
                         type="button"
-                        className="btn btn-danger btn-icon-text"
+                        className="btn-negativo"
                         style={{ marginLeft: '10px' }}
                         onClick={handleCancelClick}
                     >
-                        <FontAwesomeIcon icon={faTimes} />
-                        Cancelar
+                        <FontAwesomeIcon icon={faTimes} /> Cancelar
+                    </button>
+                    <button type="submit" className="btn-positivo">
+                        <FontAwesomeIcon icon={faCheck} />
+                        Guardar
                     </button>
                 </div>
             </form>

@@ -4,7 +4,6 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Login from './fragment/Login';
 import Registrar from './fragment/Registrar';
-import Main from './fragment/Main';
 import Perfil from './fragment/Perfil';
 import CasoPrueba from './fragment/CasoPrueba';
 import ListaProyectos from './fragment/ListaProyectos';
