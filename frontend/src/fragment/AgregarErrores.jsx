@@ -475,10 +475,6 @@ const AgregarErrores = () => {
                         </div>}
                 </div>
                 <div className="form-group d-flex justify-content-end">
-                    <button type="submit" className="btn btn-success btn-icon-text">
-                        <FontAwesomeIcon icon={faCheck} />
-                        Guardar
-                    </button>
                     <button
                         type="button"
                         className="btn-negativo"
