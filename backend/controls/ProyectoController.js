@@ -595,7 +595,7 @@ class ProyectoController {
             entidad.horasDisponibles += rolProyecto.horasDiarias;
             if (entidad.horasDisponibles  < horasDiarias) {
                 return res.status(400).json({
-                    msg: `${entidad.nombres} no tiene suficientes horas disponibles, solo tiene ${entidad.horasDisponibles-rolProyecto.horasDiarias} horas disponibles`,
+                    msg: `${entidad.nombres} ${entidad.apellidos} tiene ${entidad.horasDisponibles-rolProyecto.horasDiarias} horas disponibles`,
                     code: 400
                 });
             }

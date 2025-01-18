@@ -406,7 +406,7 @@ const VerCasoPrueba = () => {
 
                             <div className="col-md-6 mb-4">
                                 <div className="card p-3 shadow-sm card-custom-bord">
-                                    <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Fechas de Asignación</h5>
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Fechas</h5>
                                     <div className="mb-2">
                                         <strong>Fecha de creación: </strong>
                                         {casosPrueba?.fecha_disenio ? formatDate(casosPrueba.fecha_disenio) : 'No disponible'}
@@ -414,6 +414,11 @@ const VerCasoPrueba = () => {
                                     <div className="mb-2">
                                         <strong>Fecha de asignación al tester: </strong>
                                         {infoAsignado?.fecha_inicio ? formatDate(infoAsignado.fecha_inicio) : 'Sin fecha de asignación'}
+                                    </div>
+
+                                    <div className="mb-2">
+                                        <strong>Fecha de límite de ejecución: </strong>
+                                        {casosPrueba?.fecha_limite_ejecucion ? formatDate(casosPrueba.fecha_limite_ejecucion) : 'Sin fecha límite de ejecución'}
                                     </div>
                                     <div className="mb-2">
                                         <strong>Fecha de ejecución: </strong>
