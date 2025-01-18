@@ -247,8 +247,8 @@ class ProyectoController {
                     },
                     attributes: ['id_entidad']
                 });*/
-                if (/*resultado && */(oldProyect.descripcion == req.body.description)) {
-                    res.status(200).json({ msg: "El proyecto ya existe", code: 409 });
+                if (/*resultado && */(oldProyect.descripcion == req.body.description) && (oldProyect.nombre == req.body.name)) {
+                    res.status(409).json({ msg: "No se han realizado actualizaciones", code: 409 });
                 } else {
                     oldProyect.nombre = req.body.name;
                     oldProyect.descripcion = req.body.description;
