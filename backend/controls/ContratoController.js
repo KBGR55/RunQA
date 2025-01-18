@@ -80,8 +80,18 @@ class ContratoController {
 
     async obtenerDatosCasoAsignado(req, res) {
         try {
+
+            let caso_prueba = await models.caso_prueba.findOne({
+                where: {
+                    external_id: req.params.external_id
+                },
+            });
+            if (!caso_prueba) {
+                return res.status(404).json({ msg: "Caso de prueba no encontrado" });
+            }
+
             const contrato = await models.contrato.findOne({
-                where: { external_id: req.params.external_id },
+                where: { id_caso_prueba: caso_prueba.id },
                 attributes: ['fecha_inicio', 'fecha_fin', 'external_id'],
                 include: [
                     {
@@ -157,6 +167,9 @@ class ContratoController {
 
             const { id_proyecto, tester, entidad_asigno, casosPrueba, fecha_inicio, fecha_fin, tester_rol } = req.body;
 
+            console.log("sssssssssssssss", req.body);
+
+
             if (!id_proyecto || !tester || tester.length === 0 || !casosPrueba || casosPrueba.length === 0 || !fecha_inicio || !fecha_fin) {
                 return res.status(400).json({ msg: "Faltan datos requeridos", code: 400 });
             }
@@ -180,6 +193,14 @@ class ContratoController {
                 return res.status(404).json({ msg: 'Tester no encontrado', code: 404 });
             }
 
+            const rolEntidadAsignador = await models.rol_entidad.findOne({
+                where: { id_entidad: entidad_asigno, id_rol: 2 || 3 } // Rol de LIDER DE CALIDAD O ANALISTA DE PRUEBAS
+            });
+
+            if (!rolEntidadAsignador) {
+                return res.status(404).json({ msg: 'Persona que asigna no encontrada', code: 404 });
+            }
+
             for (const caso of casosPrueba) {
                 const casoPrueba = await models.caso_prueba.findOne({ where: { external_id: caso.external_id } });
                 if (!casoPrueba) {
@@ -193,14 +214,24 @@ class ContratoController {
                     }
                 });
 
-                if (!rolProyectoAsignado) {
+                const rolProyectoAsignador = await models.rol_proyecto.findOne({
+                    where: {
+                        id_rol_entidad: rolEntidadAsignador.id,
+                        id_proyecto: proyecto.id
+                    }
+                });
+
+                console.log("wwwwwwwwwww", rolProyectoAsignador.id);
+
+
+                if (!rolProyectoAsignado || !rolProyectoAsignador) {
                     return res.status(400).json({ msg: "Proyecto asignado no encontrado", code: 400 });
                 }
 
                 const contratoExistente = await models.contrato.findOne({
                     where: {
                         id_caso_prueba: casoPrueba.id,
-                        id_rol_proyecto_asignado: entidad_asigno,
+                        id_rol_proyecto_asignado: rolProyectoAsignador.id,
                         id_rol_proyecto_responsable: rolProyectoAsignado.id
                     }
                 });
@@ -212,7 +243,7 @@ class ContratoController {
                         fecha_fin: fechaFin,
                         tipo_contrato: 'CASO_PRUEBA',
                         id_caso_prueba: casoPrueba.id,
-                        id_rol_proyecto_asignado: entidad_asigno,
+                        id_rol_proyecto_asignado: rolProyectoAsignador.id,
                         id_rol_proyecto_responsable: rolProyectoAsignado.id
                     }, { transaction });
 
@@ -260,8 +291,17 @@ class ContratoController {
             const rolEntidad = await models.rol_entidad.findOne({
                 where: { id_entidad: desarrollador.id_entidad, id_rol: desarrollador_rol }
             });
+
+            const rolEntidadAsignador = await models.rol_entidad.findOne({
+                where: { id_entidad: entidad_asigno, id_rol: 4 } // Rol de TESTER
+            });
+
             if (!rolEntidad) {
                 return res.status(404).json({ msg: 'Desarrollador no encontrado', code: 404 });
+            }
+
+            if (!rolEntidadAsignador) {
+                return res.status(404).json({ msg: 'Persona que asigna no encontrada', code: 404 });
             }
 
             for (const errorData of errores) {
@@ -277,14 +317,21 @@ class ContratoController {
                     }
                 });
 
-                if (!rolProyectoAsignado) {
+                const rolProyectoAsignador = await models.rol_proyecto.findOne({
+                    where: {
+                        id_rol_entidad: rolEntidadAsignador.id,
+                        id_proyecto: proyecto.id
+                    }
+                });
+
+                if (!rolProyectoAsignado || !rolProyectoAsignador) {
                     return res.status(400).json({ msg: "Proyecto asignado no encontrado", code: 400 });
                 }
 
                 const contratoExistente = await models.contrato.findOne({
                     where: {
                         id_error: errorInstance.id,
-                        id_rol_proyecto_asignado: entidad_asigno,
+                        id_rol_proyecto_asignado: rolProyectoAsignador.id,
                         id_rol_proyecto_responsable: rolProyectoAsignado.id
                     }
                 });
@@ -296,7 +343,7 @@ class ContratoController {
                         fecha_fin: fechaFin,
                         tipo_contrato: 'ERROR',
                         id_error: errorInstance.id,
-                        id_rol_proyecto_asignado: entidad_asigno,
+                        id_rol_proyecto_asignado: rolProyectoAsignador.id,
                         id_rol_proyecto_responsable: rolProyectoAsignado.id
                     }, { transaction });
 
@@ -392,11 +439,11 @@ class ContratoController {
             transaction = await models.sequelize.transaction();
 
             console.log("1111", req.body);
-            
 
-            const { id_error, desarrollador, entidad_asigno, fecha_inicio, fecha_fin } = req.body;
 
-            if (!id_error || !desarrollador || !entidad_asigno || !fecha_inicio || !fecha_fin) {
+            const { id_error, desarrollador, entidad_asigno, fecha_inicio, fecha_fin, desarrollador_rol, id_proyecto } = req.body;
+
+            if (!id_error || !desarrollador || !entidad_asigno || !fecha_inicio || !fecha_fin || !id_proyecto || !desarrollador_rol) {
                 return res.status(400).json({ msg: "Faltan datos requeridos", code: 400 });
             }
 
@@ -405,6 +452,45 @@ class ContratoController {
 
             if (isNaN(fechaInicio) || isNaN(fechaFin) || fechaInicio > fechaFin) {
                 return res.status(400).json({ msg: "Fechas inválidas", code: 400 });
+            }
+
+            const proyecto = await models.proyecto.findOne({ where: { external_id: id_proyecto } });
+            if (!proyecto) {
+                return res.status(404).json({ msg: "Proyecto no encontrado", code: 404 });
+            }
+
+            const rolEntidad = await models.rol_entidad.findOne({
+                where: { id_entidad: desarrollador.id_entidad, id_rol: desarrollador_rol }
+            });
+
+            const rolEntidadAsignador = await models.rol_entidad.findOne({
+                where: { id_entidad: entidad_asigno, id_rol: 4 } // Rol de TESTER
+            });
+
+            if (!rolEntidad) {
+                return res.status(404).json({ msg: 'Desarrollador no encontrado', code: 404 });
+            }
+
+            if (!rolEntidadAsignador) {
+                return res.status(404).json({ msg: 'Persona que asigna no encontrada', code: 404 });
+            }
+
+            const rolProyectoAsignado = await models.rol_proyecto.findOne({
+                where: {
+                    id_rol_entidad: rolEntidad.id,
+                    id_proyecto: proyecto.id
+                }
+            });
+
+            const rolProyectoAsignador = await models.rol_proyecto.findOne({
+                where: {
+                    id_rol_entidad: rolEntidadAsignador.id,
+                    id_proyecto: proyecto.id
+                }
+            });
+
+            if (!rolProyectoAsignado || !rolProyectoAsignador) {
+                return res.status(400).json({ msg: "Proyecto asignado no encontrado", code: 400 });
             }
 
             const errorInstance = await models.error.findOne({ where: { id: id_error } });
@@ -429,8 +515,8 @@ class ContratoController {
                 fecha_fin: fechaFin,
                 tipo_contrato: "ERROR",
                 id_error: id_error,
-                id_rol_proyecto_asignado: entidad_asigno,
-                id_rol_proyecto_responsable: desarrollador.id_entidad,
+                id_rol_proyecto_asignado: rolProyectoAsignador.id,
+                id_rol_proyecto_responsable: rolProyectoAsignado.id,
                 estado: 1 // Estado activo
             }, { transaction });
 

@@ -113,7 +113,7 @@ class CasoPruebaController {
                     'id', 'nombre', 'estado', 'external_id', 'descripcion', 'estadoAsignacion',
                     'pasos', 'resultado_esperado', 'resultado_obtenido', 'clasificacion',
                     'tipo_prueba', 'precondiciones', 'fecha_disenio', 'fecha_ejecucion_prueba',
-                    'id_proyecto', 'datos_entrada'
+                    'id_proyecto', 'datos_entrada', 'fecha_limite_ejecucion'
                 ]
             });
 
@@ -188,7 +188,8 @@ class CasoPruebaController {
                     tipo_prueba: req.body.tipo_prueba,
                     precondiciones: req.body.precondiciones,
                     datos_entrada: req.body.datos_entrada,
-                    id_proyecto: proyecto.id
+                    id_proyecto: proyecto.id,
+                    fecha_limite_ejecucion: req.body.fecha_limite_ejecucion? req.body.fecha_limite_ejecucion : null
                 });
 
                 res.json({ msg: "Caso de prueba registrado con éxito", code: 200, info: nuevoCaso.external_id });
@@ -248,6 +249,7 @@ class CasoPruebaController {
             res.status(500).json({ msg: 'Error al cambiar el estado', code: 500, error: error.message });
         }
     }
+    
     async cambiar_estado_obsoleto(req, res) {
         try {
             const external_id = req.query.external_id;
@@ -266,7 +268,7 @@ class CasoPruebaController {
 
             if (erroresActivos.length > 0) {
                 return res.status(400).json({
-                    msg: "No se puede marcar el caso de prueba como obsoleto, ya que hay errores activos con estado 'NUEVO', 'PENDIENTE_VALIDACION' o 'CORRECCION'.",
+                    msg: "No se puede marcar el caso de prueba como obsoleto, ya que hay errores activos",
                     code: 400
                 });
             }

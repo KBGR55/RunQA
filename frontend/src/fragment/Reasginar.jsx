@@ -55,6 +55,7 @@ const Reasignar = ({ showModalDesarrollador, setShowModalDesarrollador, external
 
     const handleAsignarDesarrolladores = async () => {
         const body = {
+            id_proyecto: external_id_proyecto,
             id_error: id_error,
             desarrollador: { id_entidad: selectedDesarrollador.id },
             entidad_asigno: usuario.user.id,

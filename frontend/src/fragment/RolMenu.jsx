@@ -120,7 +120,7 @@ const RoleMenu = () => {
     }, []);
 
     const roleOptions = {
-        'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Casos de prueba asignados', 'Editar proyecto', 'Generar reportes', 'Miembros'],
+        'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Editar proyecto', 'Generar reportes', 'Miembros'],
         'ANALISTA DE PRUEBAS': ['Asignar testers', 'Casos de prueba', 'Lista de casos de prueba asignados'],
         'TESTER': ['Casos de prueba', 'Registrar errores', 'Asignar desarrolladores'],
         'DESARROLLADOR': ['Errores asigandos', 'Consultar errores asignados']
@@ -154,9 +154,7 @@ const RoleMenu = () => {
             navigate(`/proyecto/usuarios/${proyecto.external_id}`, { state: { proyecto } });
         } else if (option === 'Asignar testers') {
             navigate(`/asignar/tester/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
-        } else if (option === 'Casos de prueba asignados') {
-            navigate(`/casos/prueba/asignados/${proyecto.external_id}`, { state: { proyecto } });
-        }else if (option === 'Ver peticiones') {
+        } else if (option === 'Ver peticiones') {
             window.location.assign('/peticiones/RI');
             setTimeout(() => {
                 window.location.reload();

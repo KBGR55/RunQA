@@ -78,6 +78,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         fecha_ejecucion_prueba: {
             type: DataTypes.DATE
+        },
+        fecha_limite_ejecucion: {
+            type: DataTypes.DATE
         }
     }, {
         freezeTableName: true
