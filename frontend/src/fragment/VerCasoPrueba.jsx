@@ -5,7 +5,7 @@ import { Button, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faExclamationCircle, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import CasoPrueba from './CasoPrueba';
-import { peticionGet } from '../utilities/hooks/Conexion';
+import { peticionGet, peticionPut } from '../utilities/hooks/Conexion';
 import { useNavigate, useParams } from 'react-router-dom';
 import '../css/style.css';
 import mensajes from '../utilities/Mensajes';
@@ -177,6 +177,36 @@ const VerCasoPrueba = () => {
     const formatDate = (dateString) => {
         return new Date(dateString).toISOString().slice(0, 10);
     }
+
+    const handleReabrirCaso = (externalId) => {
+        swal({
+            title: "¿Está seguro de reabrir el caso?",
+            text: "Esta acción cambiará el estado del caso a 'REABIERTO'.",
+            icon: "warning",
+            buttons: ["No", "Sí"],
+            dangerMode: true,
+        }).then((willConfirm) => {
+            if (willConfirm) {
+                const datos = { estado: "REABIERTO" };
+
+                peticionPut(getToken(), `caso/prueba/cambiar/estado`, { external_id: external_id, ...datos })
+                    .then((info) => {
+                        if (info.code !== 200) {
+                            mensajes(info.msg, "error", "Error");
+                        } else {
+                            mensajes(info.msg, "success", "Éxito");
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 2000);
+                        }
+                    })
+                    .catch((error) => {
+                        mensajes("Error al reabrir el caso de prueba", "error", "Error");
+                        console.error(error);
+                    });
+            }
+        });
+    };
 
     return (
         <div>
@@ -432,16 +462,67 @@ const VerCasoPrueba = () => {
                                 )
                             )}
 
-                            {/* Botón "Editar" siempre visible */}
-                            <Button
-                                variant="btn btn-outline-info btn-rounded"
-                                onClick={() => navigate(`/editar/caso/prueba/${external_id_proyecto}/${casosPrueba.external_id}`)}
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
-                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                    <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-                                </svg>
-                            </Button>
+                            {/* Mostrar botón "Reabrir Caso" si el estado es OBSOLETO */}
+                            {casosPrueba.estado === 'OBSOLETO' ? (
+                                <Button
+                                    className="btn-opcional"
+                                    onClick={() => {
+                                        swal({
+                                            title: "¿Está seguro de reabrir el caso?",
+                                            text: "Esta acción cambiará el estado del caso a 'REABIERTO'.",
+                                            icon: "warning",
+                                            buttons: ["No", "Sí"],
+                                            dangerMode: true,
+                                        }).then((willConfirm) => {
+                                            if (willConfirm) {
+                                                const datos = { estado: "REABIERTO", external_id: casosPrueba.external_id };
+
+                                                peticionPut(getToken(), `caso/prueba/cambiar/estado`, datos)
+                                                    .then((info) => {
+                                                        if (info.code !== 200) {
+                                                            mensajes(info.msg, "error", "Error");
+                                                        } else {
+                                                            mensajes(info.msg, "success", "Éxito");
+                                                            setTimeout(() => {
+                                                                window.location.reload();
+                                                            }, 2000);
+                                                        }
+                                                    })
+                                                    .catch((error) => {
+                                                        mensajes("Error al reabrir el caso de prueba", "error", "Error");
+                                                        console.error(error);
+                                                    });
+                                            }
+                                        });
+                                    }}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16" style={{ marginRight: '5px' }}>
+                                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
+                                    </svg>
+                                    Reabrir Caso
+                                </Button>
+                            ) : (
+                                // Mostrar botón "Editar" si el estado no es OBSOLETO
+                                <Button
+                                    variant="btn btn-outline-info btn-rounded"
+                                    onClick={() => navigate(`/editar/caso/prueba/${external_id_proyecto}/${casosPrueba.external_id}`)}
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        fill="currentColor"
+                                        className="bi bi-pencil-square"
+                                        viewBox="0 0 16 16"
+                                    >
+                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                                        />
+                                    </svg>
+                                </Button>
+                            )}
 
                             {/* Mostrar el botón de "Eliminar" solo si el rol no es true */}
                             {rol !== 'tester' && (

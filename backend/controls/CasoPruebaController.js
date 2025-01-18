@@ -248,6 +248,7 @@ class CasoPruebaController {
             res.status(500).json({ msg: 'Error al cambiar el estado', code: 500, error: error.message });
         }
     }
+    
     async cambiar_estado_obsoleto(req, res) {
         try {
             const external_id = req.query.external_id;
@@ -266,7 +267,7 @@ class CasoPruebaController {
 
             if (erroresActivos.length > 0) {
                 return res.status(400).json({
-                    msg: "No se puede marcar el caso de prueba como obsoleto, ya que hay errores activos con estado 'NUEVO', 'PENDIENTE_VALIDACION' o 'CORRECCION'.",
+                    msg: "No se puede marcar el caso de prueba como obsoleto, ya que hay errores activos",
                     code: 400
                 });
             }
