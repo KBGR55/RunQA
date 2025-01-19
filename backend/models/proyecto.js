@@ -5,7 +5,9 @@ module.exports = (sequelize, DataTypes) => {
         estado:{type: DataTypes.BOOLEAN, defaultValue: true},
         nombre: { type: DataTypes.STRING(40), allowNull: false},
         fecha_inicio: { type: DataTypes.DATE},
-        descripcion: { type: DataTypes.STRING(350), allowNull: true }
+        descripcion: { type: DataTypes.STRING(350), allowNull: true },
+        terminado: { type: DataTypes.BOOLEAN, defaultValue: false },
+        razon_terminado: { type: DataTypes.STRING(255), allowNull: true }
     }, {
         freezeTableName: true
     });

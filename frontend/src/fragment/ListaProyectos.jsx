@@ -113,6 +113,7 @@ const ListaProyectos = () => {
         setSelectedProjectId(externalId);
         setShowEditProjectModal(true);
     };
+    console.log(proyectos);
 
     return (
         <div>
@@ -135,10 +136,18 @@ const ListaProyectos = () => {
                             {proyectos.map((proyecto) => (
                                 <div className="col-md-4 mb-4" key={proyecto.id}>
                                     <div
-                                        className="card shadow-sm h-100"
+                                        className={`card shadow-sm h-100 position-relative ${proyecto.terminado ? 'card-opaca' : ''}`}
                                         style={{ cursor: 'pointer', borderColor: '#e0e0e0' }}
-                                        onClick={() => handleProjectClick(proyecto)}
+                                        onClick={() => !proyecto.terminado && handleProjectClick(proyecto)}
                                     >
+                                      {proyecto.terminado && (
+                                            <div className="overlay-terminar">
+                                                <p className="razon-terminar text-center">
+                                                    {proyecto.razon_terminado || 'Sin razón especificada'}
+                                                </p>
+                                            </div>
+                                        )}
+                                        {/* Imagen */}
                                         <div className="text-center" style={{ paddingTop: '10px' }}>
                                             <img
                                                 src="/img/fondo1.jpeg"
@@ -146,6 +155,7 @@ const ListaProyectos = () => {
                                                 className="img-fluid rounded"
                                             />
                                         </div>
+                                        {/* Cuerpo de la tarjeta */}
                                         <div className="card-body">
                                             <div className="d-flex justify-content-between align-items-start">
                                                 <h5 className="card-title fw-bold">{proyecto.nombre}</h5>
@@ -166,7 +176,6 @@ const ListaProyectos = () => {
                                                         >
                                                             Editar Proyecto
                                                         </Dropdown.Item>
-
                                                         <Dropdown.Item
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
@@ -175,7 +184,6 @@ const ListaProyectos = () => {
                                                         >
                                                             Eliminar Proyecto
                                                         </Dropdown.Item>
-
                                                     </Dropdown.Menu>
                                                 </Dropdown>
                                             </div>
@@ -184,6 +192,7 @@ const ListaProyectos = () => {
                                     </div>
                                 </div>
                             ))}
+
                         </div>
                     )}
                 </div>

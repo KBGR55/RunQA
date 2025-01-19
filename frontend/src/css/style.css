@@ -20,6 +20,33 @@
   --color-negativo: var(--rojo);
 }
 
+.card-opaca {
+  opacity: 0.6;
+  pointer-events: none; /* Deshabilita interacciones si el proyecto está terminado */
+}
+
+.overlay-terminar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 1rem;
+  padding: 20px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.razon-terminar {
+  font-weight: bold;
+}
+
+
 .fondo-principal {
   background-color: var(--color-cuarto);
   color: var(--color-primario);

@@ -103,7 +103,7 @@ const PresentacionProyecto = () => {
     }, [external_id_proyecto]);
 
     const roleOptions = {
-        'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Funcionalidades', 'Generar reportes', 'Miembros'],
+        'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Funcionalidades', 'Generar reportes', 'Miembros','Terminar proyecto'],
         'ANALISTA DE PRUEBAS': ['Asignar testers', 'Casos de prueba', 'Funcionalidades'],
         'TESTER': ['Asignar desarrolladores', 'Casos de prueba', 'Registrar errores'],
         'DESARROLLADOR': ['Consultar errores asignados', 'Errores asigandos']
@@ -135,9 +135,11 @@ const PresentacionProyecto = () => {
             navigate(`/lista/funcionalidades/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Errores asigandos') {
             navigate(`/errores/asignados/${proyecto.external_id}`);
+        } else if (option === 'Terminar proyecto') {
+            navigate(`/proyecto/terminar/${proyecto.external_id}`);
         } else {
-            mensajes('Esta funcionalidad será próxima a hacer.', 'info', 'Próximamente');
-        };
+            mensajes('Esta funcionalidad está en desarrollo de desarrollo.', 'info', 'Próximamente');
+        }
     }
 
     const handleCloseNewProjectModal = () => {

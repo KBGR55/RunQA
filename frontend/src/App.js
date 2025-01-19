@@ -31,6 +31,7 @@ import { getRoles, getToken } from './utilities/Sessionutil';
 import mensajes from './utilities/Mensajes';
 import ListaFuncionalidades from './fragment/ListaFuncionalidades';
 import AgregarFuncionalidad from './fragment/AgregarFuncionalidad';
+import TerminarProyecto from './fragment/TerminarProyecto';
 
 function App() {
   const MiddewareSesion = ({ children, requiredRoles }) => {
@@ -71,6 +72,7 @@ function App() {
           <Route path='/registrar/caso/prueba/:external_id_proyecto' element={<MiddewareSesion><CasoPrueba /></MiddewareSesion>} />
           <Route path='/editar/caso/prueba/:external_id_proyecto/:external_id' element={<CasoPrueba />} />
           <Route path='/proyecto/nuevo' element={<MiddewareSesion><NuevoProyecto /></MiddewareSesion>} />
+          <Route path='/proyecto/terminar/:external_id_proyecto' element={<MiddewareSesion requiredRoles={['LIDER DE CALIDAD']}><TerminarProyecto/></MiddewareSesion>} />
           <Route path='/proyectos' element={<MiddewareSesion><ListaProyectos /></MiddewareSesion>} />
           <Route path='/casos/prueba/:external_id_proyecto' element={<MiddewareSesion requiredRoles={['LIDER DE CALIDAD','ANALISTA DE PRUEBAS', 'TESTER']}><ListaCasoPrueba /></MiddewareSesion>} />
           <Route path='/caso-prueba/:external_id_proyecto/:external_id' element={<MiddewareSesion><VerCasoPrueba /></MiddewareSesion>} />

@@ -4,7 +4,7 @@ var models = require("../models/");
 const uuid = require("uuid");
 const { where } = require("sequelize");
 const proyecto = models.proyecto;
-const rol=models.rol;
+const rol = models.rol;
 const rolLider = "LIDER DE CALIDAD";
 const { Op } = require("sequelize");
 
@@ -19,6 +19,8 @@ class ProyectoController {
           "nombre",
           "fecha_inicio",
           "descripcion",
+          "terminado",
+          "razon_terminado",
           "createdAt",
           "updatedAt",
         ],
@@ -157,7 +159,7 @@ class ProyectoController {
       transaction = await models.sequelize.transaction();
 
       const proyecto = await models.proyecto.findOne({
-        where: { external_id: req.params.external_id ,estado: 1},
+        where: { external_id: req.params.external_id, estado: 1 },
         attributes: ["id", "estado", "nombre"],
       });
 
@@ -276,27 +278,113 @@ class ProyectoController {
       });
 
       if (oldProyect) {
-                if ((oldProyect.descripcion == req.body.description) && (oldProyect.nombre == req.body.name)) {
-                    res.status(409).json({ msg: "No se han realizado actualizaciones", code: 409 });
-                } else {
-                    oldProyect.nombre = req.body.name;
-                    oldProyect.descripcion = req.body.description;
-                    await oldProyect.save({ transaction });
-                    await transaction.commit();
-                    res.json({ msg: "El proyecto se ha actualizado correctamente", code: 200, info: oldProyect.external_id });
+        if (
+          oldProyect.descripcion == req.body.description &&
+          oldProyect.nombre == req.body.name
+        ) {
+          res
+            .status(409)
+            .json({ msg: "No se han realizado actualizaciones", code: 409 });
+        } else {
+          oldProyect.nombre = req.body.name;
+          oldProyect.descripcion = req.body.description;
+          await oldProyect.save({ transaction });
+          await transaction.commit();
+          res.json({
+            msg: "El proyecto se ha actualizado correctamente",
+            code: 200,
+            info: oldProyect.external_id,
+          });
+        }
+      } else {
+        res.status(400).json({ msg: "No se encontró el proyecto", code: 400 });
+      }
+    } catch (error) {
+      if (transaction) await transaction.rollback();
+      if (error.errors && error.errors[0].message) {
+        res.json({
+          msg: "Hubo un problema al actualizar el proyecto",
+          code: 500,
+        });
+      } else {
+        res.json({
+          msg: "Hubo un problema al actualizar el proyecto",
+          code: 400,
+        });
+      }
+    }
+  }
+
+  async terminarProyecto(req, res) {
+    let transaction;
+    const { id_proyect, razonTerminacion } = req.params;
+
+    try {
+        transaction = await models.sequelize.transaction();
+
+        const oldProyect = await models.proyecto.findOne({
+            where: { external_id: id_proyect },
+        });
+
+        if (!oldProyect) {
+            return res.status(400).json({ msg: "No se encontró el proyecto", code: 400 });
+        }
+
+        // Buscar roles asociados al proyecto
+        const rolesProyectos = await models.rol_proyecto.findAll({
+            where: { id_proyecto: oldProyect.id },
+        });
+
+        for (const rol of rolesProyectos) {
+
+            // Buscar rol_entidad relacionado
+            const rol_entidad = await models.rol_entidad.findOne({
+                where: { id: rol.id_rol_entidad },
+            });
+
+            if (rol_entidad) {
+
+                // Buscar entidad asociada
+                const entidad = await models.entidad.findOne({
+                    where: { id: rol_entidad.id_entidad },
+                });
+
+                if (entidad) {
+                  
+                    // Actualizar horas disponibles
+                    entidad.horasDisponibles += rol.horasDiarias;
+                    await entidad.save({ transaction });
+
+                    // Actualizar estado de rol_entidad
+                    rol_entidad.estado = 0; // Cambiar estado a inactivo
+                    await rol_entidad.save({ transaction });
+
                 }
-            } else {
-                res.status(400).json({ msg: "No se encontró el proyecto", code: 400 });
-            }
-        } catch (error) {
-            if (transaction) await transaction.rollback();
-            if (error.errors && error.errors[0].message) {
-                res.json({ msg: "Hubo un problema al actualizar el proyecto", code: 500 });
-            } else {
-                res.json({ msg: "Hubo un problema al actualizar el proyecto", code: 400 });
             }
         }
+
+        // Marcar proyecto como terminado
+        oldProyect.terminado = 1;
+
+        if (razonTerminacion && oldProyect.razon_terminado !== razonTerminacion) {
+            oldProyect.razon_terminado = razonTerminacion;
+        }
+
+        await oldProyect.save({ transaction });
+        await transaction.commit();
+
+        res.json({
+            msg: "El proyecto se ha terminado por " + oldProyect.razon_terminado,
+            code: 200,
+            info: oldProyect.external_id,
+        });
+    } catch (error) {
+        if (transaction) await transaction.rollback();
+        console.error("Error al procesar la transacción:", error);
+        res.status(500).json({ msg: "Hubo un problema al actualizar el proyecto", code: 500 });
     }
+}
+
 
   async asignarProyecto(req, res) {
     let transaction;
@@ -612,7 +700,7 @@ class ProyectoController {
           const roles = await rol.findOne({
             where: {
               nombre: [rolNombre],
-              estado: 1,    
+              estado: 1,
             },
           });
           if (roles.length === 0) {
@@ -638,9 +726,9 @@ class ProyectoController {
             where: {
               id_proyecto: id_proyecto,
               id_rol_entidad: {
-                [Op.in]: rolEntidadIds, 
+                [Op.in]: rolEntidadIds,
               },
-              estado: 1, 
+              estado: 1,
             },
           });
 
@@ -663,7 +751,7 @@ class ProyectoController {
       await rol_entidad.save();
       entidad.horasDisponibles += rolProyecto.horasDiarias;
       await entidad.save();
-      rolProyecto.estado = 0; 
+      rolProyecto.estado = 0;
       await rolProyecto.save();
 
       return res.status(200).json({
@@ -701,7 +789,8 @@ class ProyectoController {
 
       const testers = await models.rol_proyecto.findAll({
         where: {
-          id_proyecto: proyecto.id, estado: 1,
+          id_proyecto: proyecto.id,
+          estado: 1,
         },
         include: [
           {
