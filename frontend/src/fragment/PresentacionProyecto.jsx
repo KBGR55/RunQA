@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import '../css/Presentacion_Style.css';
-import { getToken, getUser, borrarSesion } from '../utilities/Sessionutil';
+import { getToken, getUser, borrarSesion, saveRoles } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 
 const PresentacionProyecto = () => {
@@ -30,6 +30,7 @@ const PresentacionProyecto = () => {
                     navigate("/main");
                 } else if (info.code === 200) {
                     setRoles(info.info.roles);
+                    saveRoles(info.info.roles);
                     setProyecto(info.info.proyecto);
                 } else {
                     console.error('Error al obtener roles:', info.msg);
@@ -134,14 +135,17 @@ const PresentacionProyecto = () => {
             navigate(`/lista/funcionalidades/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Errores asigandos') {
             navigate(`/errores/asignados/${proyecto.external_id}`);
-        
-    };}
+        } else {
+            mensajes('Esta funcionalidad será próxima a hacer.', 'info', 'Próximamente');
+        };
+    }
+
     const handleCloseNewProjectModal = () => {
         setShowNewProjectModal(false);
     };
 
     if (!proyecto) return <p>Cargando...</p>;
-    
+
     return (
         <div className="project-page">
             <div className="header-section">
@@ -155,7 +159,7 @@ const PresentacionProyecto = () => {
             {/* Sección de contenido */}
             <div className='contenedor-carta'>
                 <div className="row g-1">
-                <p className="titulo-primario">Opciones permitidas</p>
+                    <p className="titulo-primario">Opciones permitidas</p>
 
                     {roles.map((role, index) => (
                         <div key={index} className="col-md-4">

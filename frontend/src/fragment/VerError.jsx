@@ -7,7 +7,7 @@ import mensajes from '../utilities/Mensajes';
 import { getToken, getUser } from '../utilities/Sessionutil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import { Button, Dropdown } from 'react-bootstrap';
+import { Button} from 'react-bootstrap';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import Reasignar from './Reasginar';
@@ -42,9 +42,7 @@ const VerError = () => {
                 const response = await peticionGet(getToken(), `error/obtener/external?external_id=${external_id_error}`);
                 if (response.code === 200) {
                     setDataErrror(response.info.errorEncontrado);
-                    setContrato(response.info.data);
-                    console.log("mmmmm", response.info.errorEncontrado);
-                    
+                    setContrato(response.info.data);  
                 } else {
                     mensajes(`Error al obtener error: ${response.msg}`, 'error');
                 }

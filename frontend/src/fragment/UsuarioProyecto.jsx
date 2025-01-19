@@ -44,7 +44,6 @@ const UsuarioProyecto = () => {
                 } else {
                     setData(info.info);
                 }
-                console.log(data);
             } catch (error) {
                 mensajes(error.message || 'Error al hacer la petición');
             }
@@ -101,7 +100,6 @@ const UsuarioProyecto = () => {
      * @throws Si ocurre un error al eliminar el usuario.
      */
     const handleDeleteUser = async () => {
-        console.log('handleDeleteUser', userIdToDelete);
         try {
             const response = await peticionDelete(getToken(), `proyecto/${external_id_proyecto}/${userIdToDelete}`);
             if (response.code === 200) {

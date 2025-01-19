@@ -52,12 +52,17 @@ export const getCorreo = () => {
     return localStorage.getItem('correo');
     
 }
-//------------------DARK MODE------------------
-export const saveDarkMode = (isDark) => {
-    localStorage.setItem('darkMode', JSON.stringify(isDark));
-}
+//------------------ROLES------------------
+export const saveRoles = (roles) => {
+    const rolesJSON = JSON.stringify(roles);
+    localStorage.setItem('roles', rolesJSON);
+};
 
-export const getDarkMode = () => {
-    const darkMode = localStorage.getItem('darkMode');
-    return darkMode ? JSON.parse(darkMode) : false; // default to false if not set
-}
+export const getRoles = () => {
+    const rolesJSON = localStorage.getItem('roles');
+    return rolesJSON ? JSON.parse(rolesJSON) : null;
+};
+
+export const borrarRoles = () => {
+    localStorage.removeItem('roles');
+};
