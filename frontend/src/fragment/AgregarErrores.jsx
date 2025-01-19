@@ -52,7 +52,7 @@ const AgregarErrores = () => {
                     if (response.code === 200) {
                         const dataError = response.info.errorEncontrado;
                         setValue('titulo', dataError.titulo || '');
-                        setValue('funcionalidad', dataError.funcionalidad || '');
+                        setValue('descripcion', dataError.descripcion || '');
                         setValue('pasos_repetir', dataError.pasos_repetir || '');
                         setValue('persona_asignada', dataError.persona_asignada || '');
                         setValue('resultado_obtenido', dataError.resultado_obtenido || '');

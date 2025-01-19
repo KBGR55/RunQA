@@ -99,6 +99,13 @@ const VerError = () => {
                 </div>
 
                 <div className="row mt-4">
+                <div className="col-12 mb-4">
+                        <div className="card p-3 shadow-sm card-custom-bord">
+                            <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Descripción</h5>
+                            <p className="w-100 text-start texto-normal">{dataErrror?.descripcion || 'No disponible'}</p>
+                        </div>
+                    </div>
+
                     <div className="col-6 mb-4">
                         <div className="card p-3 shadow-sm card-custom-bord">
                             <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Caso de prueba</h5>
