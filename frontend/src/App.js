@@ -24,20 +24,33 @@ import Principal from './fragment/Principal';
 import OlvidoClave from './fragment/OlvidoClave';
 import CambioClave from './fragment/CambioClave';
 import AgregarErrores from './fragment/AgregarErrores';
-import { getToken } from './utilities/Sessionutil';
 import VerError from './fragment/VerError';
 import AsignarErrores from './fragment/AsignarErrores';
 import ListaErroresAsigados from './fragment/ListaErroresAsigados';
+import { getRoles, getToken } from './utilities/Sessionutil';
+import mensajes from './utilities/Mensajes';
 
 function App() {
-  const MiddewareSesion = ({ children }) => {
+  const MiddewareSesion = ({ children, requiredRoles }) => {
     const autenticado = getToken();
-    if (autenticado) {
-      return children;
-    } else {
+    const roles = getRoles() || [];
+  
+    if (!autenticado) {
       return <Navigate to='/login' />;
     }
+  
+    if (requiredRoles && requiredRoles.length > 0) {
+      const hasRequiredRole = roles.some(role => requiredRoles.includes(role.nombre));
+      if (!hasRequiredRole) {
+        mensajes("No tienes el rol necesario para acceder a esta página.", "error", "Acceso Denegado");
+        return <Navigate to='/login' />;
+      }
+    }
+  
+    return children;
   };
+  
+  
 
   return (
     <div className="App">
@@ -57,19 +70,19 @@ function App() {
           <Route path='/editar/caso/prueba/:external_id_proyecto/:external_id' element={<CasoPrueba />} />
           <Route path='/proyecto/nuevo' element={<MiddewareSesion><NuevoProyecto /></MiddewareSesion>} />
           <Route path='/proyectos' element={<MiddewareSesion><ListaProyectos /></MiddewareSesion>} />
-          <Route path='/casos/prueba/:external_id_proyecto' element={<MiddewareSesion><ListaCasoPrueba /></MiddewareSesion>} />
+          <Route path='/casos/prueba/:external_id_proyecto' element={<MiddewareSesion requiredRoles={['LIDER DE CALIDAD','ANALISTA DE PRUEBAS', 'TESTER']}><ListaCasoPrueba /></MiddewareSesion>} />
           <Route path='/caso-prueba/:external_id_proyecto/:external_id' element={<MiddewareSesion><VerCasoPrueba /></MiddewareSesion>} />
           <Route path='/perfil' element={<MiddewareSesion><Perfil /></MiddewareSesion>} />
-          <Route path='/proyecto/usuarios/:external_id_proyecto' element={<MiddewareSesion><UsuarioProyecto /></MiddewareSesion>} />
+          <Route path='/proyecto/usuarios/:external_id_proyecto' element={<MiddewareSesion requiredRoles={['LIDER DE CALIDAD']}><UsuarioProyecto /></MiddewareSesion>} />
           <Route path="/proyecto/:external_id_proyecto" element={<MiddewareSesion><RolMenu /></MiddewareSesion>} />
-          <Route path='/asignar/tester/:external_id_proyecto' element={<MiddewareSesion><AsignarCasosPrueba /></MiddewareSesion>} />
-          <Route path='/asignar/desarrollador/:external_id_proyecto' element={<MiddewareSesion><AsignarErrores /></MiddewareSesion>} />
+          <Route path='/asignar/tester/:external_id_proyecto' element={<MiddewareSesion requiredRoles={['LIDER DE CALIDAD','ANALISTA DE PRUEBAS']}><AsignarCasosPrueba /></MiddewareSesion>} />
+          <Route path='/asignar/desarrollador/:external_id_proyecto' element={<MiddewareSesion requiredRoles={['TESTER']}><AsignarErrores /></MiddewareSesion>} />
           <Route path='/casos/prueba/asignados/:external_id_proyecto' element={<MiddewareSesion><ListaCasosAsignados /></MiddewareSesion>} />
           <Route path='/casos/prueba-asignado/:external_id_proyecto/:external_id' element={<MiddewareSesion><CasoPruebaAsignado /></MiddewareSesion>} />
           <Route path='/cambio/clave' element={<MiddewareSesion><CambioClave /></MiddewareSesion>} />
           <Route path='/error/:external_id_proyecto/:external_id' element={<MiddewareSesion><AgregarErrores/></MiddewareSesion>} />
           <Route path='/error/editar/:external_id_proyecto/:external_id/:external_id_error' element={<MiddewareSesion><AgregarErrores/></MiddewareSesion>} />
-          <Route path='/errores/asignados/:external_id_proyecto' element={<MiddewareSesion><ListaErroresAsigados/></MiddewareSesion>} />
+          <Route path='/errores/asignados/:external_id_proyecto' element={<MiddewareSesion requiredRoles={['DESARROLLADOR']}><ListaErroresAsigados/></MiddewareSesion>} />
           <Route path='/error/visualizar/:external_id_proyecto/:external_id/:external_id_error' element={<MiddewareSesion><VerError/></MiddewareSesion>} />
         </Route>
       </Routes>

@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Modal, Dropdown } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
-import swal from 'sweetalert'; 
+import swal from 'sweetalert';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import '../css/style.css';
 import { useNavigate } from 'react-router-dom';
@@ -101,7 +101,7 @@ const ListaProyectos = () => {
             }
         });
     };
-    
+
 
     return (
         <div>

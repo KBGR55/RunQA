@@ -24,25 +24,24 @@ const ListaErroresAsigados = () => {
     const user = getUser();
     const [condition, setCondition] = useState(true);
     if (condition) {
-
         peticionGet(getToken(), `proyecto/obtener/${external_id_proyecto}`).then((info) => {
+            console.log('Proyecto Info:', info);  
             if (info.code === 200) {
                 setProyecto(info.info);
             } else {
                 borrarSesion();
                 mensajes(info.mensajes);
-                navigate("main");
+                navigate('/login');
             }
         });
+
         peticionGet(getToken(), `error/obtener/asignado/proyecto/${user.user.id}/${external_id_proyecto}`).then((info) => {
+            console.log('Errores Asignados Info:', info);  
             if (info.code === 200) {
                 setErrores(info.info);
-            } else {
-                borrarSesion();
-                mensajes(info.mensajes);
-                navigate("main");
-            }
+            } 
         });
+
         setCondition(false);
     }
 
