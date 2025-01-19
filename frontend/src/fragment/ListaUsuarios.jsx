@@ -65,7 +65,7 @@ const ListaUsuarios = () => {
 
     const obtenerId = (externalId) => {
         peticionGet(getToken(), `obtener/entidad/${externalId}`).then((info) => {
-            if (info.code !== 200 ) {
+            if (info.code !== 200) {
                 mensajes(info.msg, "error", "error");
             } else {
                 setpersonaObtenida(info.info);
@@ -137,7 +137,7 @@ const ListaUsuarios = () => {
             <div className="contenedor-centro">
                 <div className='contenedor-carta '>
                     <div className='contenedor-filo'>
-                        
+
                         <Button
                             className="btn-normal mb-3"
                             onClick={handleShowAsignarModal}
@@ -147,7 +147,7 @@ const ListaUsuarios = () => {
                             className="btn-opcional mb-3"
                             onClick={estadoUsuario === 'DENEGADO' ? handleShowUsuariosAceptados : handleShowUsuariosNoAutorizados}
                         >
-                            <FontAwesomeIcon icon={faPerson} /> 
+                            <FontAwesomeIcon icon={faPerson} />
                             {estadoUsuario === 'DENEGADO' ? 'Usuarios Autorizados' : 'Usuarios No Autorizados'}
                         </Button>
                     </div>
@@ -192,8 +192,17 @@ const ListaUsuarios = () => {
                                             filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((data) => (
                                                 <tr key={data.id}>
                                                     <td className="text-center" style={{ backgroundColor: "#FFFFFF", border: "none" }}>
-                                                        <img src={URLBASE + "images/users/" + data.foto} alt="Avatar" style={{ width: '50px', height: '50px' }} />
+                                                        <img
+                                                            src={
+                                                                data.foto && data.foto !== "USUARIO_ICONO.png"
+                                                                    ? `${URLBASE}images/users/${data.foto}`
+                                                                    : `${URLBASE}images/users/USUARIO_ICONO.png` 
+                                                            }
+                                                            alt="Avatar"
+                                                            style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '50%' }}
+                                                        />
                                                     </td>
+
                                                     <td className="text-center">{data.nombres}</td>
                                                     <td className="text-center">{data.apellidos}</td>
                                                     <td className="text-center">{data.cuenta.estado}</td>
@@ -203,7 +212,7 @@ const ListaUsuarios = () => {
                                                     <td className="text-center">
                                                         <Button style={{ margin: '5px' }}
                                                             variant="btn btn-outline-info btn-rounded"
-                                                            disabled={data.rol_entidad.some(rol => rol.id_rol === 1) || data.cuenta.estado =="DENEGADO"}
+                                                            disabled={data.rol_entidad.some(rol => rol.id_rol === 1) || data.cuenta.estado == "DENEGADO"}
                                                             onClick={() => {
                                                                 handleShowEdit();
                                                                 obtenerId(data.external_id);
@@ -218,7 +227,7 @@ const ListaUsuarios = () => {
 
                                                         <Button
                                                             variant="btn btn-outline-primary btn-rounded"
-                                                            disabled={data.rol_entidad.some(rol => rol.id_rol === 1) || data.cuenta.estado =="DENEGADO"}
+                                                            disabled={data.rol_entidad.some(rol => rol.id_rol === 1) || data.cuenta.estado == "DENEGADO"}
                                                             onClick={() => {
                                                                 handleShowAsignarAdminModal();
                                                                 obtenerId(data.external_id);
@@ -261,7 +270,7 @@ const ListaUsuarios = () => {
                         <EditarPersona personaObtenida={personaObtenida} handleChange={handleChange} />
 
                     </Modal.Body>
-                </Modal>               
+                </Modal>
 
                 {/* Modal para asignar líderes */}
                 <Modal show={showAsignarModal} onHide={handleCloseAsignarModal} backdrop="static" keyboard={false}>

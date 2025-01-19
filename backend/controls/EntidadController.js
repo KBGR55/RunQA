@@ -192,14 +192,14 @@ class EntidadController {
 
     async modificar(req, res) {   
         try {
-
-               const claveHash = (clave) => {
+            const claveHash = (clave) => {
                 if (!clave) {
                     throw new Error("La clave es obligatoria");
                 }
                 const salt = bcrypt.genSaltSync(saltRounds);
                 return bcrypt.hashSync(clave, salt);
             };
+    
             const entidadAux = await entidad.findOne({
                 where: { external_id: req.body.external_id }
             });
@@ -219,18 +219,18 @@ class EntidadController {
             let imagenAnterior = entidadAux.foto;
     
             if (req.file) {
-                if (imagenAnterior) {
+                if (imagenAnterior && imagenAnterior !== "USUARIO_ICONO.png") {
                     const imagenAnteriorPath = path.join(__dirname, '../public/images/users/', imagenAnterior);
                     fs.unlink(imagenAnteriorPath, (err) => {
                         if (err) {
                             console.log('Error al eliminar la imagen anterior:', err);
                         } else {
-                            console.log("eliminada: " + imagenAnterior);
+                            console.log("Eliminada: " + imagenAnterior);
                         }
                     });
                 }
                 imagenAnterior = req.file.filename; 
-            }else{
+            } else {
                 imagenAnterior = entidadAux.foto; 
             }
     
@@ -242,12 +242,15 @@ class EntidadController {
             entidadAux.foto = imagenAnterior; 
             entidadAux.external_id = uuid.v4();
             cuentaAux.external_id = uuid.v4();
-            cuentaAux.correo=req.body.correo;
+            cuentaAux.correo = req.body.correo;
+    
             if (req.body.clave) {
-                cuentaAux.clave= claveHash(req.body.clave);
+                cuentaAux.clave = claveHash(req.body.clave);
             }
+    
             const result = await entidadAux.save();
-            const cuantaActualizada =  await cuentaAux.save();
+            const cuantaActualizada = await cuentaAux.save();
+    
             if (!result && !cuantaActualizada) {
                 return res.status(400).json({ msg: "NO SE HAN MODIFICADO SUS DATOS, VUELVA A INTENTAR", code: 400 });
             }
@@ -258,6 +261,7 @@ class EntidadController {
             return res.status(400).json({ msg: "Error en el servidor", error, code: 400 });
         }
     }
+    
     
     
 }
