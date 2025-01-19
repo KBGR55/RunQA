@@ -91,7 +91,7 @@ const ListaFuncionalidades = () => {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
-    
+
     return (
         <div className="container-fluid">
             <div className="contenedor-centro">
@@ -108,7 +108,7 @@ const ListaFuncionalidades = () => {
                             {Object.entries(funcionalidadesPorTipo).map(([tipo, funcionalidades], index) => {
                                 const tipoColorClass = {
                                     REQUISITO: { background: 'var(--color-secundario)', color: 'var(--color-cuarto)', fontWeight: 'bold' },
-                                    "CASO DE USO": { background: 'var(--color-cuarto)', color: '#fff', fontWeight: 'bold' },
+                                    "CASO DE USO": { background: 'var(--morado-bebe)', color: 'var(--color-cuarto)', fontWeight: 'bold' },
                                     "HISTORIA DE USUARIO": { background: 'var(--color-terciario)', color: 'var(--color-cuarto)', fontWeight: 'bold' },
                                     "REGLA DE NEGOCIO": { background: 'var(--color-primario)', color: 'var(--color-cuarto)', fontWeight: 'bold' },
                                 }[tipo] || { background: '#6c757d', color: '#fff' };
