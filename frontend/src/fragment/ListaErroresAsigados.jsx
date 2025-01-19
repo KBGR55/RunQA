@@ -25,8 +25,7 @@ const ListaErroresAsigados = () => {
     const [condition, setCondition] = useState(true);
     if (condition) {
         peticionGet(getToken(), `proyecto/obtener/${external_id_proyecto}`).then((info) => {
-            console.log('Proyecto Info:', info);  
-            if (info.code === 200) {
+              if (info.code === 200) {
                 setProyecto(info.info);
             } else {
                 borrarSesion();
@@ -36,7 +35,6 @@ const ListaErroresAsigados = () => {
         });
 
         peticionGet(getToken(), `error/obtener/asignado/proyecto/${user.user.id}/${external_id_proyecto}`).then((info) => {
-            console.log('Errores Asignados Info:', info);  
             if (info.code === 200) {
                 setErrores(info.info);
             } 

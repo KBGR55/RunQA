@@ -149,9 +149,6 @@ const VerCasoPrueba = () => {
         fetchCasoPrueba();
     }, [setValue]);
 
-    console.log("eeeeeeeeeee", casosPrueba);
-
-
     const handleDeleteCasoPrueba = async (external_id) => {
         swal({
             title: "¿Estás seguro de que deseas eliminar este caso de prueba?",

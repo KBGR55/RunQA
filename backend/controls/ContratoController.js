@@ -218,10 +218,7 @@ class ContratoController {
                         id_proyecto: proyecto.id
                     }
                 });
-
-                console.log("wwwwwwwwwww", rolProyectoAsignador.id);
-
-
+                
                 if (!rolProyectoAsignado || !rolProyectoAsignador) {
                     return res.status(400).json({ msg: "Proyecto asignado no encontrado", code: 400 });
                 }
@@ -435,8 +432,6 @@ class ContratoController {
         let transaction;
         try {
             transaction = await models.sequelize.transaction();
-
-            console.log("1111", req.body);
 
 
             const { id_error, desarrollador, entidad_asigno, fecha_inicio, fecha_fin, desarrollador_rol, id_proyecto } = req.body;
