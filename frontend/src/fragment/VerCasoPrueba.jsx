@@ -107,7 +107,6 @@ const VerCasoPrueba = () => {
                     if (response.info.rol) {
                         setRol(response.info.rol);
                     }
-
                     setCasosPrueba(casoPruebaData);
                     peticionGet(getToken(), `error/obtener?external_caso_prueba=${external_id}`).then((info) => {
                         if (info.code === 200) {
@@ -148,6 +147,8 @@ const VerCasoPrueba = () => {
         fetchCasoPruebaAsignado();
         fetchCasoPrueba();
     }, [setValue]);
+
+    console.log("eeeeeeeeeee", casosPrueba);
 
 
     const handleDeleteCasoPrueba = async (external_id) => {
@@ -351,14 +352,25 @@ const VerCasoPrueba = () => {
                                                 </span>
                                             </p>
                                         </div>
-                                        <div className="d-flex flex-column align-items-center">
-                                            <p className="w-100 text-start texto-normal">
-                                                <p><span className="fw-bold">Tipo de prueba</span></p>
-                                                <p className="w-100 text-start texto-normal">{casosPrueba?.tipo_prueba}</p>
-                                            </p>
-                                        </div>
                                     </div>
 
+                                </div>
+                            </div>
+
+                            <div className="col-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Tipo de prueba</h5>
+                                    <p className="w-100 text-start texto-normal">{casosPrueba?.tipo_prueba}</p>
+                                </div>
+                            </div>
+
+                            <div className="col-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Funcionalidad</h5>
+                                    <ul className="w-100 text-start texto-normal" style={{ listStyleType: 'disc', paddingLeft: '20px' }}>
+                                        <li>{casosPrueba?.funcionalidad?.nombre || "No disponible"}</li>
+                                        <p><strong>Tipo:</strong> {casosPrueba?.funcionalidad?.tipo || "No disponible"}</p>
+                                    </ul>
                                 </div>
                             </div>
 

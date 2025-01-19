@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     entidad.associate = function (models){
         entidad.hasMany(models.rol_entidad, {foreignKey: 'id_entidad',as:'rol_entidad'});
         entidad.hasOne(models.cuenta, { foreignKey: 'id_entidad', as: 'cuenta'});
+        entidad.hasMany(models.funcionalidad, {foreignKey: 'id_entidad', as:'funcionalidad'});
     };
  
     return entidad;

@@ -15,7 +15,13 @@ class CasoPruebaController {
                     'nombre', 'estado', 'external_id', 'descripcion', 'estadoAsignacion',
                     'pasos', 'resultado_esperado', 'resultado_obtenido',
                     'clasificacion', 'tipo_prueba', 'precondiciones',
-                    'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada'
+                    'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada', 'id_funcionalidad'
+                ],
+                include: [
+                    {
+                        model: models.funcionalidad,
+                        attributes: ['id', 'nombre', 'tipo', 'descripcion']
+                    }    
                 ]
             });
             res.json({ msg: 'OK!', code: 200, info: listar });
@@ -61,7 +67,13 @@ class CasoPruebaController {
                         'nombre', 'estado', 'external_id', 'descripcion', 'estadoAsignacion',
                         'pasos', 'resultado_esperado', 'resultado_obtenido',
                         'clasificacion', 'tipo_prueba', 'precondiciones',
-                        'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada'
+                        'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada', 'id_funcionalidad'
+                    ],
+                    include: [
+                        {
+                            model: models.funcionalidad,
+                            attributes: ['id', 'nombre', 'tipo', 'descripcion']
+                        }    
                     ]
                 });
 
@@ -86,6 +98,12 @@ class CasoPruebaController {
                         'pasos', 'resultado_esperado', 'resultado_obtenido',
                         'clasificacion', 'tipo_prueba', 'precondiciones',
                         'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada'
+                    ],
+                    include: [
+                        {
+                            model: models.funcionalidad,
+                            attributes: ['id', 'nombre', 'tipo', 'descripcion']
+                        }    
                     ]
                 });
 
@@ -113,7 +131,13 @@ class CasoPruebaController {
                     'id', 'nombre', 'estado', 'external_id', 'descripcion', 'estadoAsignacion',
                     'pasos', 'resultado_esperado', 'resultado_obtenido', 'clasificacion',
                     'tipo_prueba', 'precondiciones', 'fecha_disenio', 'fecha_ejecucion_prueba',
-                    'id_proyecto', 'datos_entrada'
+                    'id_proyecto', 'datos_entrada', 'id_funcionalidad'
+                ],
+                include: [
+                    {
+                        model: models.funcionalidad,
+                        attributes: ['id', 'nombre', 'tipo', 'descripcion']
+                    }    
                 ]
             });
 
@@ -188,7 +212,8 @@ class CasoPruebaController {
                     tipo_prueba: req.body.tipo_prueba,
                     precondiciones: req.body.precondiciones,
                     datos_entrada: req.body.datos_entrada,
-                    id_proyecto: proyecto.id
+                    id_proyecto: proyecto.id,
+                    id_funcionalidad: req.body.funcionalidad,
                 });
 
                 res.json({ msg: "Caso de prueba registrado con éxito", code: 200, info: nuevoCaso.external_id });
@@ -222,6 +247,7 @@ class CasoPruebaController {
                 caso.precondiciones = req.body.precondiciones || caso.precondiciones;
                 caso.fecha_ejecucion_prueba = req.body.fecha_ejecucion_prueba || caso.fecha_ejecucion_prueba;
                 caso.datos_entrada = req.body.datos_entrada || caso.datos_entrada;
+                caso.id_funcionalidad = req.body.funcionalidad || caso.funcionalidad;
 
                 await caso.save();
 
@@ -294,7 +320,12 @@ class CasoPruebaController {
 
         try {
             const caso = await caso_prueba.findAll({
-                where: { id_proyecto: proyectoAux.id, estado: "DISEÑADO", estadoAsignacion: "NO ASIGNADO" },
+                where: {
+                    id_proyecto: proyectoAux.id,
+                    estado: { [Op.in]: ["DISEÑADO", "REABIERTO"] },
+                    estadoAsignacion: "NO ASIGNADO",
+                },
+                
                 attributes: [
                     'nombre', 'estado', 'external_id', 'descripcion',
                     'pasos', 'resultado_esperado',

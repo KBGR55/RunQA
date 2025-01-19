@@ -29,6 +29,8 @@ import { getToken } from './utilities/Sessionutil';
 import VerError from './fragment/VerError';
 import AsignarErrores from './fragment/AsignarErrores';
 import ListaErroresAsigados from './fragment/ListaErroresAsigados';
+import ListaFuncionalidades from './fragment/ListaFuncionalidades';
+import AgregarFuncionalidad from './fragment/AgregarFuncionalidad';
 
 function App() {
   const MiddewareSesion = ({ children }) => {
@@ -72,6 +74,7 @@ function App() {
           <Route path='/error/editar/:external_id_proyecto/:external_id/:external_id_error' element={<MiddewareSesion><AgregarErrores/></MiddewareSesion>} />
           <Route path='/errores/asignados/:external_id_proyecto' element={<MiddewareSesion><ListaErroresAsigados/></MiddewareSesion>} />
           <Route path='/error/visualizar/:external_id_proyecto/:external_id/:external_id_error' element={<MiddewareSesion><VerError/></MiddewareSesion>} />
+          <Route path='/lista/funcionalidades/:external_id_proyecto' element={<MiddewareSesion><ListaFuncionalidades /></MiddewareSesion>} />
         </Route>
       </Routes>
     </div>

@@ -19,7 +19,7 @@ class ErrorController {
         attributes: [
           "id",
           "external_id",
-          "funcionalidad",
+          "descripcion",
           "titulo",
           "severidad",
           "estado",
@@ -73,7 +73,7 @@ class ErrorController {
         attributes: [
           "id",
           "external_id",
-          "funcionalidad",
+          "descripcion",
           "titulo",
           "pasos_repetir",
           "severidad",
@@ -84,6 +84,20 @@ class ErrorController {
           "fecha_reporte",
           "fecha_resolucion",
         ],
+        include: [
+          {
+            model: models.caso_prueba,
+            as: "caso_prueba",
+            attributes: ["id", "external_id", "nombre"],
+            include: [
+              {
+                model: models.funcionalidad,
+                as: "funcionalidad",
+                attributes: ["id", "external_id", "nombre"],
+              }
+            ],
+          },
+        ]
       });
 
       if (errores.length === 0) {
@@ -129,7 +143,7 @@ class ErrorController {
         attributes: [
           "id",
           "external_id",
-          "funcionalidad",
+          "descripcion",
           "titulo",
           "pasos_repetir",
           "severidad",
@@ -171,8 +185,8 @@ class ErrorController {
 
       const [updated] = await error.update(
         {
-          funcionalidad:
-            req.body.funcionalidad || errorEncontrado.funcionalidad,
+          descrripcion:
+            req.body.descripcion || errorEncontrado.descripcion,
           titulo: req.body.titulo || errorEncontrado.titulo,
           severidad: req.body.severidad || errorEncontrado.severidad,
           prioridad: req.body.prioridad || errorEncontrado.prioridad,
@@ -233,7 +247,7 @@ class ErrorController {
         attributes: [
           "id",
           "external_id",
-          "funcionalidad",
+          "descripcion",
           "titulo",
           "severidad",
           "estado",
@@ -244,6 +258,20 @@ class ErrorController {
           "fecha_resolucion",
           "pasos_repetir",
         ],
+        include: [
+          {
+            model: models.caso_prueba,
+            as: "caso_prueba",
+            attributes: ["id", "external_id", "nombre"],
+            include: [
+              {
+                model: models.funcionalidad,
+                as: "funcionalidad",
+                attributes: ["id", "external_id", "nombre"],
+              }
+            ],
+          },
+        ]
       });
 
       if (!errorEncontrado) {
@@ -341,7 +369,7 @@ class ErrorController {
       await casoPrueba.save();
 
       const nuevoError = await error.create({
-        funcionalidad: req.body.funcionalidad || "SIN_DATOS",
+        descripcion: req.body.descripcion || "SIN_DATOS",
         titulo: req.body.titulo || "SIN_DATOS",
         severidad: req.body.severidad,
         prioridad: req.body.prioridad,
@@ -391,7 +419,7 @@ class ErrorController {
       // Modelo de errores
       const errores = await models.error.findAll({
         where: { id_caso_prueba: casosPruebaIds, estado: "NUEVO" },
-        attributes: ['funcionalidad', 'estado', 'external_id', 'titulo', 'pasos_repetir', 'severidad', 'prioridad', 'fecha_reporte', 'fecha_resolucion', 'id']
+        attributes: ['descripcion', 'estado', 'external_id', 'titulo', 'pasos_repetir', 'severidad', 'prioridad', 'fecha_reporte', 'fecha_resolucion', 'id']
       });
 
       if (errores.length === 0) {

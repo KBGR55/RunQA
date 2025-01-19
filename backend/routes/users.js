@@ -26,6 +26,8 @@ const PeticionController = require('../controls/PeticionController');
 const peticionController = new PeticionController();
 const ErrorController = require('../controls/ErrorController');
 const errorController = new ErrorController();
+const FuncionalidadController = require('../controls/FuncionalidadController');
+const funcionalidadController = new FuncionalidadController();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -282,6 +284,13 @@ router.get('/rol/entidad/obtener/administrador', rolEntidadController.obtenerAdm
 /** PETICION */
 router.get('/peticion/:tipo', peticionController.listarPeticiones);
 router.get('/aceptarechazar/peticiones/:external/:estado/:motivo_rechazo/:id_rechazador', /*auth,*/ peticionController.aceptarRechazar);
+
+/** FUNCIONALIDAD */
+router.get('/funcionalidad', funcionalidadController.listar);
+router.get('/funcionalidad/obtener/:external_id', funcionalidadController.obtenerFuncionalidadesProyecto);
+router.post('/funcionalidad/guardar', funcionalidadController.guardar);
+router.post('/funcionalidad/editar', funcionalidadController.actualizar);
+router.get('/funcionalidad/cambiar-estado/:external_id', funcionalidadController.cambiarEstado);
 
 
 module.exports = router;  

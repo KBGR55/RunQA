@@ -167,8 +167,6 @@ class ContratoController {
 
             const { id_proyecto, tester, entidad_asigno, casosPrueba, fecha_inicio, fecha_fin, tester_rol } = req.body;
 
-            console.log("sssssssssssssss", req.body);
-
 
             if (!id_proyecto || !tester || tester.length === 0 || !casosPrueba || casosPrueba.length === 0 || !fecha_inicio || !fecha_fin) {
                 return res.status(400).json({ msg: "Faltan datos requeridos", code: 400 });

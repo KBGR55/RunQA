@@ -43,6 +43,8 @@ const VerError = () => {
                 if (response.code === 200) {
                     setDataErrror(response.info.errorEncontrado);
                     setContrato(response.info.data);
+                    console.log("mmmmm", response.info.errorEncontrado);
+                    
                 } else {
                     mensajes(`Error al obtener error: ${response.msg}`, 'error');
                 }
@@ -99,23 +101,23 @@ const VerError = () => {
                 <div className="row mt-4">
                     <div className="col-6 mb-4">
                         <div className="card p-3 shadow-sm card-custom-bord">
-                            <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Resultado obtenido</h5>
-                            <p className="texto-normal" style={{ textAlign: 'justify' }} dangerouslySetInnerHTML={{ __html: dataErrror?.resultado_obtenido?.replace(/\n/g, '<br />') || 'No disponible' }} />
+                            <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Caso de prueba</h5>
+                            <p className="w-100 text-start texto-normal">{dataErrror?.caso_prueba?.nombre || 'No disponible'}</p>
                         </div>
                     </div>
                     <div className="col-6 mb-4">
                         <div className="card p-3 shadow-sm card-custom-bord">
-                            <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Pasos a reproducir</h5>
-                            <p className="texto-normal" style={{ textAlign: 'justify' }} dangerouslySetInnerHTML={{ __html: dataErrror?.pasos_repetir?.replace(/\n/g, '<br />') || 'No disponible' }} />
+                            <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Funcionalidad</h5>
+                            <p className="w-100 text-start texto-normal">{dataErrror?.caso_prueba?.funcionalidad?.nombre || 'No disponible'}</p>
                         </div>
                     </div>
 
                     <div className="col-md-6 mb-4">
                         <div className="card p-3 shadow-sm card-custom-bord ">
-                            <h5 className="titulo-secundario mb-3" style={{ textAlign: 'initial' }}>Detalles del Caso</h5>
+                            <h5 className="titulo-secundario mb-3" style={{ textAlign: 'initial' }}>Detalles del Error</h5>
                             <div className="d-flex justify-content-around align-items-center flex-wrap gap-2">
                                 <div className="d-flex flex-column align-items-center">
-
+                                    <p><span className="fw-bold">Estado</span></p>
                                     <EstadoDropdown
                                         currentEstado={dataErrror?.estado}
                                         onChangeEstado={handleEstadoChange}
@@ -201,10 +203,6 @@ const VerError = () => {
                                         {dataErrror?.prioridad || 'No disponible'}
                                     </span>
                                 </div>
-                                <div className="d-flex flex-column align-items-center">
-                                    <strong>Funcionalidad</strong>
-                                    <p className="texto-normal" style={{ textAlign: 'justify' }} dangerouslySetInnerHTML={{ __html: dataErrror?.funcionalidad?.replace(/\n/g, '<br />') || 'No disponible' }} />
-                                </div>
                             </div>
 
                         </div>
@@ -233,6 +231,13 @@ const VerError = () => {
                     </div>
 
                     <div className="col-12 mb-4">
+                        <div className="card p-3 shadow-sm card-custom-bord">
+                            <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Pasos a reproducir</h5>
+                            <p className="texto-normal" style={{ textAlign: 'justify' }} dangerouslySetInnerHTML={{ __html: dataErrror?.pasos_repetir?.replace(/\n/g, '<br />') || 'No disponible' }} />
+                        </div>
+                    </div>
+
+                    <div className="col-6 mb-4">
                         <div className="card p-3 shadow-sm card-custom-bord ">
                             <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Personal responsable</h5>
                             <div className="mb-2">
@@ -245,6 +250,14 @@ const VerError = () => {
                             </div>
                         </div>
                     </div>
+
+                    <div className="col-6 mb-4">
+                        <div className="card p-3 shadow-sm card-custom-bord">
+                            <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Resultado obtenido</h5>
+                            <p className="texto-normal" style={{ textAlign: 'justify' }} dangerouslySetInnerHTML={{ __html: dataErrror?.resultado_obtenido?.replace(/\n/g, '<br />') || 'No disponible' }} />
+                        </div>
+                    </div>
+
                     <div className="col-12 mb-4">
                         <div className="card p-3 shadow-sm card-custom-bord ">
                             <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Anexo</h5>

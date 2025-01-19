@@ -148,7 +148,7 @@ const AgregarErrores = () => {
 
     const onSubmit = async (data) => {
         const formData = new FormData();
-        formData.append('funcionalidad', data.funcionalidad);
+        formData.append('descripcion', data.descripcion);
         formData.append('titulo', data.titulo.toUpperCase());
         formData.append('pasos_repetir', data.pasos_repetir);
         formData.append('persona_responsable', 'data.persona_asignada.id');
@@ -181,7 +181,7 @@ const AgregarErrores = () => {
                 const response = await GuardarImages(formData, getToken(), "/error/guardar");
     
                 if (response.code === 200) {
-                    mensajes('Errores agregados correctamente', 'success');
+                    mensajes('Error agregado correctamente', 'success');
                     setIdError(response.info.id);
                     
                     swal({
@@ -268,14 +268,19 @@ const AgregarErrores = () => {
                     </div>
                     <div className="col-md-6">
                         <div className="form-group">
-                            <label className="titulo-campos"><strong style={{ color: 'red' }}>* </strong>Funcionalidad</label>
-                            <input
-                                type="text"
+                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Descripción</label>
+                            <textarea
                                 className="form-control"
-                                {...register('funcionalidad', { required: 'La funcionalidad es obligatoria' })}
+                                {...register('descripcion', {
+                                    required: 'La descripción es obligatoria',
+                                    maxLength: {
+                                        value: 350,
+                                        message: 'La descripción no puede tener más de 350 caracteres'
+                                    }
+                                })}
                             />
-                            {errors.funcionalidad && (
-                                <div className="alert alert-danger">{errors.funcionalidad.message}</div>
+                            {errors.descripcion && (
+                                <div className='alert alert-danger'>{errors.descripcion.message}</div>
                             )}
                         </div>
                     </div>
