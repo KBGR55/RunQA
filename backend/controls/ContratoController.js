@@ -501,7 +501,6 @@ class ContratoController {
 
             await contratoExistente.update({ estado: 0 }, { transaction });
 
-            // Crear un nuevo contrato para "reasignar" el error
             const nuevoContrato = await models.contrato.create({
                 external_id: uuid.v4(),
                 fecha_inicio: fechaInicio,
@@ -510,10 +509,10 @@ class ContratoController {
                 id_error: id_error,
                 id_rol_proyecto_asignado: rolProyectoAsignador.id,
                 id_rol_proyecto_responsable: rolProyectoAsignado.id,
-                estado: 1 // Estado activo
+                estado: 1 
             }, { transaction });
 
-            await errorInstance.update({ estado: "CORRECCION" }, { transaction });
+            await errorInstance.update({ estado: "PENDIENTE_VALIDACION" }, { transaction });
 
             await transaction.commit();
             res.status(200).json({ msg: "Error reasignado con éxito", code: 200, contrato: nuevoContrato });

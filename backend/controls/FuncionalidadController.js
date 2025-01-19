@@ -46,7 +46,7 @@ class FuncionalidadController {
             });
 
             if (!funcionalidades) {
-                return res.status(404).json({ msg: 'Funcionalidad no encontrada', code: 404 });
+                return res.status(404).json({ msg: 'No hay funcionalidades registradas', code: 404 });
             }
 
             res.json({ msg: 'OK', code: 200, info: funcionalidades });

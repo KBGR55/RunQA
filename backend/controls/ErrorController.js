@@ -93,7 +93,7 @@ class ErrorController {
               {
                 model: models.funcionalidad,
                 as: "funcionalidad",
-                attributes: ["id", "external_id", "nombre"],
+                attributes: ["id", "external_id", "nombre", 'tipo', 'descripcion'],
               }
             ],
           },
@@ -267,7 +267,7 @@ class ErrorController {
               {
                 model: models.funcionalidad,
                 as: "funcionalidad",
-                attributes: ["id", "external_id", "nombre"],
+                attributes: ["id", "external_id", "nombre", 'tipo', 'descripcion'],
               }
             ],
           },
