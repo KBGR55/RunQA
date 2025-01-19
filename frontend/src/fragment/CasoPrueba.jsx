@@ -112,7 +112,7 @@ const CasoPrueba = () => {
             "precondiciones": data.precondiciones,
             "datos_entrada": data.datos_entrada,
             "fecha_ejecucion_prueba": data.fecha_ejecucion_prueba,
-            "external_proyecto": external_id_proyecto, 
+            "external_proyecto": external_id_proyecto,
             'fecha_limite_ejecucion': fechaLimitePrueba
         };
 
@@ -161,7 +161,7 @@ const CasoPrueba = () => {
     return (
         <div className="contenedor-carta">
             <form className="form-sample" onSubmit={handleSubmit(onSubmit)}>
-                <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
+                <p className="titulo-proyecto">{infoProyecto.nombre}</p>
                 {!external_id ? (<h2 className='titulo-primario '>Registrar caso de prueba</h2>) : <p className="titulo-primario">Editar caso de prueba</p>}
                 <div className="row">
                     <div className="col-md-6">
@@ -297,9 +297,9 @@ const CasoPrueba = () => {
                     </div>
 
                     <div className="col-md-2">
-              
-                   <Form.Group controlId="fecha_limite_ejecucion" className="mt-2">
-                   <label className='titulo-campos'><strong > </strong>Fecha limite de ejecución</label>
+
+                        <Form.Group controlId="fecha_limite_ejecucion" className="mt-2">
+                            <label className='titulo-campos'><strong > </strong>Fecha limite de ejecución</label>
                             <DatePicker
                                 selected={fechaLimitePrueba}
                                 value={fechaLimitePrueba}

@@ -109,7 +109,7 @@ const UsuarioProyecto = () => {
                 setData((prevData) => prevData.filter((user) => user.rol_entidad.entidad.id !== userIdToDelete));
                 const updatedData = await peticionGet(getToken(), `proyecto/${external_id_proyecto}`);
                 if (updatedData.code === 200) {
-                    setData(updatedData.info); 
+                    setData(updatedData.info);
                 }
             } else {
                 mensajes(response.msg || 'Error al eliminar usuario', 'error', 'Error');
@@ -121,7 +121,7 @@ const UsuarioProyecto = () => {
             handleCloseModal();
         }
     };
-    
+
 
     const handleShowModalEditHours = (user) => {
         setSelectedUser(user);
@@ -139,7 +139,7 @@ const UsuarioProyecto = () => {
             const response = await peticionGet(getToken(), `proyecto/horas/cambiar/${selectedUser.rol_entidad.entidad.id}/${selectedUser.id}/${newHours}`);
             if (response.code === 200) {
                 mensajes('Horas actualizadas exitosamente', 'success', 'Éxito');
-                
+
                 setData(prevData => {
                     return prevData.map(user =>
                         user.id === selectedUser.id
@@ -157,13 +157,13 @@ const UsuarioProyecto = () => {
             handleCloseModalEditHours();
         }
     };
-    
+
 
     return (
         <div>
             <div className="contenedor-centro">
                 <div className='contenedor-carta'>
-                    <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
+                    <p className="titulo-proyecto">{infoProyecto.nombre}</p>
                     <div className="contenedor-filo">
                         <td className="text-center">
                             <Button className="btn-normal" onClick={handleShowModalAddMembers}>
