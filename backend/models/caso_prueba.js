@@ -90,6 +90,8 @@ module.exports = (sequelize, DataTypes) => {
         caso_prueba.belongsTo(models.proyecto, { foreignKey: 'id_proyecto' });
         caso_prueba.hasMany(models.error, { foreignKey: 'id_caso_prueba', as: 'error' });
         caso_prueba.hasOne(models.contrato, { foreignKey: 'id_caso_prueba', as: 'contrato' });
+        caso_prueba.belongsTo(models.funcionalidad, { foreignKey: 'id_funcionalidad'});
+
     };
 
     return caso_prueba;

@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     proyecto.associate = function (models){
         proyecto.hasMany(models.rol_proyecto, {foreignKey: 'id_proyecto',as:'proyecto_rol'});
         proyecto.hasMany(models.caso_prueba, {foreignKey: 'id_proyecto',as:'caso_prueba'});
+        proyecto.hasMany(models.funcionalidad, { foreignKey: 'id_proyecto', as: 'funcionalidad' });
     };
  
     return proyecto;

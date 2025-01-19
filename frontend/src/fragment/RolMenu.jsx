@@ -93,7 +93,7 @@ const RoleMenu = () => {
     useEffect(() => {
         if (isFirstLoad.current) {
             isFirstLoad.current = false;
-        } else if (location.pathname === '/proyectos' || location.pathname === '/usuarios'|| location.pathname === '/peticiones') {
+        } else if (location.pathname === '/proyectos' || location.pathname === '/usuarios' || location.pathname === '/peticiones') {
             setRoles([]);
             setProyecto({});
             setSelectedOption('');
@@ -120,10 +120,10 @@ const RoleMenu = () => {
     }, []);
 
     const roleOptions = {
-        'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Editar proyecto', 'Generar reportes', 'Miembros'],
-        'ANALISTA DE PRUEBAS': ['Asignar testers', 'Casos de prueba', 'Lista de casos de prueba asignados'],
-        'TESTER': ['Casos de prueba', 'Registrar errores', 'Asignar desarrolladores'],
-        'DESARROLLADOR': ['Errores asigandos', 'Consultar errores asignados']
+        'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Funcionalidades', 'Generar reportes', 'Miembros'],
+        'ANALISTA DE PRUEBAS': ['Asignar testers', 'Casos de prueba', 'Funcionalidades'],
+        'TESTER': ['Asignar desarrolladores', 'Casos de prueba', 'Registrar errores'],
+        'DESARROLLADOR': ['Consultar errores asignados', 'Errores asigandos']
     };
 
     const roleIcons = {
@@ -166,9 +166,12 @@ const RoleMenu = () => {
             }, 100);
         } else if (option === 'Asignar desarrolladores') {
             navigate(`/asignar/desarrollador/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
-        }else if (option === 'Errores asigandos') {
+        } else if (option === 'Errores asigandos') {
             navigate(`/errores/asignados/${proyecto.external_id}`);
-    };}
+        } else if (option === 'Funcionalidades') {
+            navigate(`/lista/funcionalidades/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
+        };
+    }
 
     const handleCloseNewProjectModal = () => {
         setShowNewProjectModal(false);
@@ -217,8 +220,8 @@ const RoleMenu = () => {
                                     {isOpen && <span>Gestionar usuarios</span>}
                                 </li>
 
-                                   {/* [Petciones cambio clave] */}
-                                <li className="p-2 mb-1" onClick={() =>   navigate('/peticiones/clave')}
+                                {/* [Petciones cambio clave] */}
+                                <li className="p-2 mb-1" onClick={() => navigate('/peticiones/clave')}
                                     style={{
                                         cursor: 'pointer',
                                         display: 'flex',

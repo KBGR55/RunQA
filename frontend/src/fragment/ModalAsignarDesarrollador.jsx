@@ -91,7 +91,7 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
             fecha_fin: fechaFinPrueba,
             desarrollador_rol: rolId
         };
-
+        
         try {
             const response = await peticionPost(getToken(), '/contrato/error', body);
             if (response.code === 200) {

@@ -2,7 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
     const error = sequelize.define('error', {
         external_id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, unique: true },
-        funcionalidad: { type: DataTypes.STRING(100), defaultValue: "SIN_DATOS" },  
+        descripcion: { type: DataTypes.STRING(350), defaultValue: "SIN_DATOS" },  
         titulo: { type: DataTypes.STRING(100), defaultValue: "SIN_DATOS" }, 
         severidad: { type: DataTypes.ENUM('CRÍTICA','MEDIA', 'BAJA'),  allowNull: false,  defaultValue: 'BAJA' },
         prioridad: { type: DataTypes.ENUM('ALTA', 'MEDIA', 'BAJA'), allowNull: false,  defaultValue: 'BAJA' },
