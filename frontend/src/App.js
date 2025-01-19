@@ -86,7 +86,7 @@ function App() {
           <Route path='/error/editar/:external_id_proyecto/:external_id/:external_id_error' element={<MiddewareSesion><AgregarErrores/></MiddewareSesion>} />
           <Route path='/errores/asignados/:external_id_proyecto' element={<MiddewareSesion requiredRoles={['DESARROLLADOR']}><ListaErroresAsigados/></MiddewareSesion>} />
           <Route path='/error/visualizar/:external_id_proyecto/:external_id/:external_id_error' element={<MiddewareSesion><VerError/></MiddewareSesion>} />
-          <Route path='/lista/funcionalidades/:external_id_proyecto' element={<MiddewareSesion><ListaFuncionalidades /></MiddewareSesion>} />
+          <Route path='/lista/funcionalidades/:external_id_proyecto' element={<MiddewareSesion requiredRoles={['LIDER DE CALIDAD','ANALISTA DE PRUEBAS']}><ListaFuncionalidades /></MiddewareSesion>} />
         </Route>
       </Routes>
     </div>
