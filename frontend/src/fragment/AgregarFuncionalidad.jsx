@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import { peticionGet, peticionPost } from '../utilities/hooks/Conexion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getToken, getUser } from '../utilities/Sessionutil';
@@ -61,7 +61,7 @@ const AgregarFuncionalidad = ({ funcionalidad, external_id_proyecto, onClose }) 
             <form className="form-sample" onSubmit={handleSubmit(onSubmit)}>
                 <div className="col-md-12">
                     <div className="form-group">
-                        <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Título</label>
+                    <Form.Label><strong style={{ color: 'red' }}>* </strong>Título</Form.Label>
                         <input
                             type="text"
                             className="form-control"
@@ -82,7 +82,7 @@ const AgregarFuncionalidad = ({ funcionalidad, external_id_proyecto, onClose }) 
 
                 <div className="col-md-12">
                     <div className="form-group">
-                        <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Descripción</label>
+                    <Form.Label><strong style={{ color: 'red' }}>* </strong>Descripción</Form.Label>
                         <textarea
                             className="form-control"
                             {...register('descripcion', {
@@ -101,7 +101,7 @@ const AgregarFuncionalidad = ({ funcionalidad, external_id_proyecto, onClose }) 
 
                 <div className="col-md-12">
                     <div className="form-group">
-                        <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Tipo</label>
+                    <Form.Label><strong style={{ color: 'red' }}>* </strong>Tipo</Form.Label>
                         <select
                             className="form-control"
                             defaultValue=""

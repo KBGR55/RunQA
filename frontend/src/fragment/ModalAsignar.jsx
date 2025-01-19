@@ -136,7 +136,7 @@ const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, ext
             <Modal.Body>
                 {!selectedTester && (
                     <Form.Group controlId="formTesters">
-                    <Form.Label>Seleccionar Tester</Form.Label>
+                    <Form.Label><strong style={{ color: 'red' }}>* </strong>Seleccionar Tester</Form.Label>
                     <Form.Control
                         as="select"
                         onChange={handleTesterSelect}
@@ -172,7 +172,7 @@ const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, ext
                 <div className="row">
                     <div className="col-md-6">
                         <Form.Group controlId="formFechaInicioPrueba" className="mt-2">
-                            <Form.Label>Fecha Inicio</Form.Label>
+                            <Form.Label><strong style={{ color: 'red' }}>* </strong>Fecha Inicio</Form.Label>
                             <DatePicker
                                 selected={fechaInicioPrueba}
                                 onChange={date => setFechaInicioPrueba(date)}
@@ -186,7 +186,7 @@ const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, ext
                     </div>
                     <div className="col-md-6">
                         <Form.Group controlId="formFechaFinPrueba" className="mt-2">
-                            <Form.Label>Fecha Fin</Form.Label>
+                            <Form.Label><strong style={{ color: 'red' }}>* </strong>Fecha Fin</Form.Label>
                             <DatePicker
                                 selected={fechaFinPrueba}
                                 onChange={date => setFechaFinPrueba(date)}

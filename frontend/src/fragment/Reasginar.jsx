@@ -89,7 +89,7 @@ const Reasignar = ({ showModalDesarrollador, setShowModalDesarrollador, external
             </Modal.Header>
             <Modal.Body>
               {!selectedDesarrollador && (   <Form.Group controlId="formTesters">
-                    <Form.Label>Seleccionar Desarrollador</Form.Label>
+                    <Form.Label><strong style={{ color: 'red' }}>* </strong>Seleccionar Desarrollador</Form.Label>
                     <Form.Control
                         as="select"
                         onChange={handleDesarrolladorSelect}
@@ -126,7 +126,7 @@ const Reasignar = ({ showModalDesarrollador, setShowModalDesarrollador, external
                 <div className="row">
                     <div className="col-md-6">
                         <Form.Group controlId="formFechaInicioPrueba" className="mt-2">
-                            <Form.Label>Fecha Inicio</Form.Label>
+                            <Form.Label><strong style={{ color: 'red' }}>* </strong>Fecha Inicio</Form.Label>
                             <DatePicker
                                 selected={fechaInicioPrueba}
                                 onChange={date => setFechaInicioPrueba(date)}
@@ -140,7 +140,7 @@ const Reasignar = ({ showModalDesarrollador, setShowModalDesarrollador, external
                     </div>
                     <div className="col-md-6">
                         <Form.Group controlId="formFechaFinPrueba" className="mt-2">
-                            <Form.Label>Fecha Fin</Form.Label>
+                            <Form.Label><strong style={{ color: 'red' }}>* </strong>Fecha Fin</Form.Label>
                             <DatePicker
                                 selected={fechaFinPrueba}
                                 onChange={date => setFechaFinPrueba(date)}
