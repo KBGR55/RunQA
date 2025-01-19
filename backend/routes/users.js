@@ -26,6 +26,8 @@ const PeticionController = require('../controls/PeticionController');
 const peticionController = new PeticionController();
 const ErrorController = require('../controls/ErrorController');
 const errorController = new ErrorController();
+const FuncionalidadController = require('../controls/FuncionalidadController');
+const funcionalidadController = new FuncionalidadController();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -239,6 +241,9 @@ router.put('/error/actualizar', (req, res, next) => {
 });
 router.get('/error/obtener/external', errorController.obtener);
 router.get('/error/obtener/proyecto/:external_id', errorController.obtenerErrores);
+router.get('/error/obtener/asignado/proyecto/:id_entidad/:proyecto_external_id', errorController.obtenerErrorAsignado);
+router.get('/error/cambiar/estado/:estado/:id_error', errorController.cambiarEstado);
+
 
 /** ROL_PROYECTO */
 router.get('/rol_proyecto/listar/proyectos', rolProyectoController.listar.bind(rolProyectoController));
@@ -252,10 +257,11 @@ router.put('/proyecto', proyectoController.actualizarProyecto);
 router.post('/proyecto/asignar', proyectoController.asignarProyecto);
 router.get('/proyecto/:id_proyect',proyectoController.getEntidadProyecto);
 router.get('/proyecto/obtener/:external_id',proyectoController.getProyecto);
-router.delete('/proyecto/:id_proyect/:id_entidad',proyectoController.removerEntidad);
+router.delete('/proyecto/:id_proyect/:id_rol_proyecto',proyectoController.removerEntidad);
 router.get('/proyecto/listar/rol/:rol_name/:external_id',proyectoController.obtenerRolesPorProyecto);
 router.get('/proyecto/eliminar/:external_id', proyectoController.eliminarProyecto);
 router.get('/proyecto/horas/cambiar/:id_entidad/:id_rol_proyecto/:horasDiarias', proyectoController.cambiarHorasDiarias);
+router.delete('/proyecto/terminar/:id_proyect/:razonTerminacion',proyectoController.terminarProyecto);
 
 /** CONTRATO */
 router.post('/contrato/caso/prueba', contratoController.asignarTesters);
@@ -264,7 +270,8 @@ router.get('/contrato/asignado/:external_id', contratoController.obtenerDatosCas
 
 router.post('/contrato/error', contratoController.asignarDesarrolladores);
 router.get('/contrato/errores/asignados', contratoController.obtenerDatosTabla);
-router.get('/contrato/error/asignado/:external_id', contratoController.obtenerDatosCasoAsignado);
+router.get('/contrato/error/obtener/:external_id', contratoController.obtenerDatosErrorAsignado);
+router.post('/contrato/error/reasginar', contratoController.reasignarError);
 
 
 /** ROL_ENTIDAD */
@@ -278,6 +285,13 @@ router.get('/rol/entidad/obtener/administrador', rolEntidadController.obtenerAdm
 /** PETICION */
 router.get('/peticion/:tipo', peticionController.listarPeticiones);
 router.get('/aceptarechazar/peticiones/:external/:estado/:motivo_rechazo/:id_rechazador', /*auth,*/ peticionController.aceptarRechazar);
+
+/** FUNCIONALIDAD */
+router.get('/funcionalidad', funcionalidadController.listar);
+router.get('/funcionalidad/obtener/:external_id', funcionalidadController.obtenerFuncionalidadesProyecto);
+router.post('/funcionalidad/guardar', funcionalidadController.guardar);
+router.post('/funcionalidad/editar', funcionalidadController.actualizar);
+router.get('/funcionalidad/cambiar-estado/:external_id', funcionalidadController.cambiarEstado);
 
 
 module.exports = router;  

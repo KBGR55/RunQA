@@ -78,7 +78,7 @@ const ListaCasosAsignados = () => {
             <div className='container-fluid'>
                 <div className='contenedor-centro'>
                     <div className="contenedor-carta">
-                        <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
+                        <p className="titulo-proyecto">{infoProyecto.nombre}</p>
                         <p className="titulo-primario">Lista de Casos de Prueba Asignados</p>
                         <InputGroup className="mb-3">
                             <InputGroup.Text>

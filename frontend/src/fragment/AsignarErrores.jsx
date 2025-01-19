@@ -36,7 +36,7 @@ const AsignarErrores = () => {
                 } 
                 const info = await peticionGet(getToken(), `/error/obtener/proyecto/${external_id_proyecto}`);
                 if (info.code !== 200) {
-                    mensajes(info.msg, 'error');
+                    mensajes(info.msg, 'warning', 'Advertencia');
                     if (info.msg === 'Acceso denegado. Token ha expirado') {
                         borrarSesion();
                         navigate("/login");

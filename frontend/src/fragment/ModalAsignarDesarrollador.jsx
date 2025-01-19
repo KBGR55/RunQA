@@ -11,14 +11,14 @@ import mensajes from '../utilities/Mensajes';
 import swal from 'sweetalert';
 import { useNavigate } from 'react-router-dom';
 
-const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarrollador, external_id_proyecto, external_error, usuario, navigate }) => {
+const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarrollador, external_id_proyecto, external_error, usuario }) => {
     const [desarrollador, setDesarrollador] = useState([]);
     const [selectedDesarrollador, setSelectedDesarrollador] = useState(null);
     const [fechaFinPrueba, setFechaFinPrueba] = useState(null);
     const [fechaInicioPrueba, setFechaInicioPrueba] = useState(null);
     const [rolId, setRolId] = useState(null);
     const handleClose = () => setShowModalDesarrollador(false);
-    const navigate = useNavigate();
+    const navigate = useNavigate();  
 
 
     useEffect(() => {
@@ -44,12 +44,12 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
     const showNoTestersAlert = () => {
         swal({
             title: "No hay desarrolladores asignados",
-            text: "¿Desea asignar desarrolladores al proyecto?",
+            //text: "¿Desea asignar desarrolladores al proyecto?",
             icon: "info",
-            showCancelButton: true,
-            buttons: ["No", "Sí"],
+            //showCancelButton: true,
+            //buttons: ["No", "Sí"],
             dangerMode: true,
-        }).then(async (confirmacion) => {
+        });/*.then(async (confirmacion) => {
             if (confirmacion) {
                 try {
                     navigate(`/proyecto/usuarios/${external_id_proyecto}`);
@@ -62,7 +62,7 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
                     });
                 }
             }
-        });
+        });*/
     };
 
     const handleDesarrolladorSelect = (e) => {
@@ -91,7 +91,7 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
             fecha_fin: fechaFinPrueba,
             desarrollador_rol: rolId
         };
-    
+        
         try {
             const response = await peticionPost(getToken(), '/contrato/error', body);
             if (response.code === 200) {
@@ -116,8 +116,8 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
                 <Modal.Title className='titulo-primario'>Asignar Desarrollador</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form.Group controlId="formTesters">
-                    <Form.Label>Seleccionar Desarrollador</Form.Label>
+              {!selectedDesarrollador && (  <Form.Group controlId="formTesters">
+                    <Form.Label><strong style={{ color: 'red' }}>* </strong>Seleccionar Desarrollador</Form.Label>
                     <Form.Control
                         as="select"
                         onChange={handleDesarrolladorSelect}
@@ -131,7 +131,7 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
                             </option>
                         ))}
                     </Form.Control>
-                </Form.Group>
+                </Form.Group>)}
 
                 {selectedDesarrollador && (
                     <div className="mt-4">
@@ -154,7 +154,7 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
                 <div className="row">
                     <div className="col-md-6">
                         <Form.Group controlId="formFechaInicioPrueba" className="mt-2">
-                            <Form.Label>Fecha Inicio</Form.Label>
+                            <Form.Label><strong style={{ color: 'red' }}>* </strong>Fecha Inicio</Form.Label>
                             <DatePicker
                                 selected={fechaInicioPrueba}
                                 onChange={date => setFechaInicioPrueba(date)}
@@ -168,7 +168,7 @@ const ModalAsignarDesarrollador = ({ showModalDesarrollador, setShowModalDesarro
                     </div>
                     <div className="col-md-6">
                         <Form.Group controlId="formFechaFinPrueba" className="mt-2">
-                            <Form.Label>Fecha Fin</Form.Label>
+                            <Form.Label><strong style={{ color: 'red' }}>* </strong>Fecha Fin</Form.Label>
                             <DatePicker
                                 selected={fechaFinPrueba}
                                 onChange={date => setFechaFinPrueba(date)}

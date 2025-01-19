@@ -1,8 +1,10 @@
 "use strict";
 const { validationResult } = require("express-validator");
 var models = require("../models/");
+const { where } = require("sequelize");
 const error = models.error;
 const proyecto = models.proyecto;
+const id_rol_desarrollador = 5;
 
 class ErrorController {
   /**
@@ -17,7 +19,7 @@ class ErrorController {
         attributes: [
           "id",
           "external_id",
-          "funcionalidad",
+          "descripcion",
           "titulo",
           "severidad",
           "estado",
@@ -71,7 +73,7 @@ class ErrorController {
         attributes: [
           "id",
           "external_id",
-          "funcionalidad",
+          "descripcion",
           "titulo",
           "pasos_repetir",
           "severidad",
@@ -82,6 +84,20 @@ class ErrorController {
           "fecha_reporte",
           "fecha_resolucion",
         ],
+        include: [
+          {
+            model: models.caso_prueba,
+            as: "caso_prueba",
+            attributes: ["id", "external_id", "nombre"],
+            include: [
+              {
+                model: models.funcionalidad,
+                as: "funcionalidad",
+                attributes: ["id", "external_id", "nombre", 'tipo', 'descripcion'],
+              }
+            ],
+          },
+        ]
       });
 
       if (errores.length === 0) {
@@ -127,7 +143,7 @@ class ErrorController {
         attributes: [
           "id",
           "external_id",
-          "funcionalidad",
+          "descripcion",
           "titulo",
           "pasos_repetir",
           "severidad",
@@ -169,8 +185,8 @@ class ErrorController {
 
       const [updated] = await error.update(
         {
-          funcionalidad:
-            req.body.funcionalidad || errorEncontrado.funcionalidad,
+          descripcion:
+            req.body.descripcion || errorEncontrado.descripcion,
           titulo: req.body.titulo || errorEncontrado.titulo,
           severidad: req.body.severidad || errorEncontrado.severidad,
           prioridad: req.body.prioridad || errorEncontrado.prioridad,
@@ -231,7 +247,7 @@ class ErrorController {
         attributes: [
           "id",
           "external_id",
-          "funcionalidad",
+          "descripcion",
           "titulo",
           "severidad",
           "estado",
@@ -242,6 +258,20 @@ class ErrorController {
           "fecha_resolucion",
           "pasos_repetir",
         ],
+        include: [
+          {
+            model: models.caso_prueba,
+            as: "caso_prueba",
+            attributes: ["id", "external_id", "nombre"],
+            include: [
+              {
+                model: models.funcionalidad,
+                as: "funcionalidad",
+                attributes: ["id", "external_id", "nombre", 'tipo', 'descripcion'],
+              }
+            ],
+          },
+        ]
       });
 
       if (!errorEncontrado) {
@@ -250,11 +280,28 @@ class ErrorController {
           code: 404,
         });
       }
+      const contrato = await models.contrato.findOne({ where: { id_error: errorEncontrado.id } });
+      const rol_proyecto_responsable = contrato
+        ? await models.rol_proyecto.findOne({ where: { id: contrato.id_rol_proyecto_responsable } })
+        : null;
+      const rol_entidad = rol_proyecto_responsable
+        ? await models.rol_entidad.findOne({ where: { id: rol_proyecto_responsable.id_rol_entidad } })
+        : null;
+      const entidad = rol_entidad
+        ? await models.entidad.findOne({ where: { id: rol_entidad.id_entidad } })
+        : null;
 
+      const data = {
+        contrato_id: contrato?.id || null,
+        contrato_external_id: contrato?.external_id || null,
+        entidad_id: entidad?.id || null,
+        entidad_external_id: entidad?.external_id || null,
+        responsable: entidad ? `${entidad.nombres || ''} ${entidad.apellidos || ''}`.trim() : null,
+      };
       res.json({
         msg: "Error encontrado correctamente",
         code: 200,
-        info: errorEncontrado,
+        info: { errorEncontrado, data },
       });
     } catch (err) {
       console.error("Error al buscar el error por external_id:", err);
@@ -322,7 +369,7 @@ class ErrorController {
       await casoPrueba.save();
 
       const nuevoError = await error.create({
-        funcionalidad: req.body.funcionalidad || "SIN_DATOS",
+        descripcion: req.body.descripcion || "SIN_DATOS",
         titulo: req.body.titulo || "SIN_DATOS",
         severidad: req.body.severidad,
         prioridad: req.body.prioridad,
@@ -372,7 +419,7 @@ class ErrorController {
       // Modelo de errores
       const errores = await models.error.findAll({
         where: { id_caso_prueba: casosPruebaIds, estado: "NUEVO" },
-        attributes: ['funcionalidad', 'estado', 'external_id', 'titulo', 'pasos_repetir', 'severidad', 'prioridad', 'fecha_reporte', 'fecha_resolucion', 'id']
+        attributes: ['descripcion', 'estado', 'external_id', 'titulo', 'pasos_repetir', 'severidad', 'prioridad', 'fecha_reporte', 'fecha_resolucion', 'id']
       });
 
       if (errores.length === 0) {
@@ -383,6 +430,105 @@ class ErrorController {
     } catch (err) {
       console.error('Database error:', err);
       res.status(500).json({ msg: 'Error al obtener registro de error', code: 500, error: err.message });
+    }
+  }
+
+  async obtenerErrorAsignado(req, res) {
+    const id_entidad = req.params.id_entidad;
+    const id_proyecto = req.params.proyecto_external_id;
+
+    if (!id_entidad || !id_proyecto) {
+      return res.status(400).json({ msg: "Faltan datos de búsqueda", code: 400 });
+    }
+
+    try {
+      const proyecto = await models.proyecto.findOne({ where: { external_id: id_proyecto } });
+
+      if (!proyecto) {
+        return res.status(404).json({ msg: "Proyecto no encontrado", code: 404 });
+      }
+
+      // Buscar en rol_entidad con el filtro requerido
+      const rolesEntidad = await models.rol_entidad.findOne({
+        where: {
+          id_entidad: id_entidad,
+          id_rol: id_rol_desarrollador,
+        }
+      });
+      if (!rolesEntidad) {
+        return res
+          .status(404)
+          .json({ msg: "No se encontraron roles para la entidad y proyecto dados", code: 404 });
+      }
+      const rol_proyecto = await models.rol_proyecto.findOne({
+        where: {
+          id_proyecto: proyecto.id,
+          id_rol_entidad: rolesEntidad.id
+        }
+      });
+      if (!rol_proyecto) {
+        return res
+          .status(404)
+          .json({ msg: "No se encontraron roles para la entidad y proyecto dados", code: 404 });
+      }
+      const contratos = await models.contrato.findAll({
+        where: {
+          id_rol_proyecto_responsable: rol_proyecto.id, tipo_contrato: 'ERROR'
+        }, attributes: ['id_error']
+      });
+      const idsErrores = contratos.map((contrato) => contrato.id_error);
+
+      // Buscar los errores correspondientes en la base de datos
+      const errores = await models.error.findAll({
+        where: {
+          id: idsErrores,
+        },
+        include: [{ model: models.caso_prueba, attributes: ['external_id'] }],
+      });
+
+      if (!errores || errores.length === 0) {
+        return res.status(404).json({
+          msg: "No se encontraron detalles de errores asignados",
+          code: 404,
+        });
+      }
+
+      // Respuesta exitosa con los errores encontrados
+      return res.status(200).json({
+        msg: "Errores encontrados",
+        code: 200,
+        info: errores,
+      });
+
+      // Respuesta exitosa con los datos encontrados
+      return res.status(200).json({ msg: "Errores encontrados", code: 200, info: contratos });
+    } catch (error) {
+      console.error("Error al buscar en la base de datos:", error);
+      return res.status(500).json({ msg: "Error interno del servidor", code: 500 });
+    }
+
+  }
+
+  async cambiarEstado(req, res) {
+    const estado = req.params.estado;
+    const id = req.params.id_error;
+    if (!estado) {
+      return res.status(400).json({ msg: "Falta el estado", code: 400 });
+    }
+    try {
+      var error = await models.error.findOne({ where: { id: id } });
+      if (!error) {
+        return res.status(404).json({ msg: "Error no encontrado", code: 404 });
+      }
+      error.estado = estado;
+      const result = await error.save();
+      if (!result) {
+        return res.status(400).json({ msg: "NO SE HAN MODIFICADO EL ESTADO, VUELVA A INTENTAR", code: 400 });
+      }
+      return res.status(200).json({ msg: "SE HAN MODIFICADO EL ESTADO CON ÉXITO", code: 200 });
+    } catch (error) {
+      console.error("Error al buscar en la base de datos:", error);
+      return res.status(500).json({ msg: "Error interno del servidor", code: 500 });
     }
   }
 

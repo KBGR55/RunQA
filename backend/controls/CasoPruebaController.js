@@ -4,6 +4,7 @@ var models = require('../models/');
 const { where, Op } = require('sequelize');
 const caso_prueba = models.caso_prueba;
 const proyecto = models.proyecto;
+const error = models.error;
 
 class CasoPruebaController {
 
@@ -14,7 +15,13 @@ class CasoPruebaController {
                     'nombre', 'estado', 'external_id', 'descripcion', 'estadoAsignacion',
                     'pasos', 'resultado_esperado', 'resultado_obtenido',
                     'clasificacion', 'tipo_prueba', 'precondiciones',
-                    'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada'
+                    'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada', 'id_funcionalidad'
+                ],
+                include: [
+                    {
+                        model: models.funcionalidad,
+                        attributes: ['id', 'nombre', 'tipo', 'descripcion']
+                    }    
                 ]
             });
             res.json({ msg: 'OK!', code: 200, info: listar });
@@ -44,14 +51,15 @@ class CasoPruebaController {
                     }
                 }
             });
-
+if (!rolesEntidad) {
+    return res.status(404).json({ msg: "No hay roles asignados a la entidad", code: 404 });
+}
             // Extraer los nombres de los roles
             const nombresRoles = rolesEntidad.map(item => item.rol_entidad.rol.nombre);
 
             // Verificar si tiene roles de calidad
             const rolesCalidad = ['LIDER DE CALIDAD', 'ANALISTA DE PRUEBAS'];
             const tieneRolCalidad = nombresRoles.some(rol => rolesCalidad.includes(rol));
-
             if (tieneRolCalidad) {
                 // Retornar todos los casos de prueba
                 const listar = await caso_prueba.findAll({
@@ -60,10 +68,15 @@ class CasoPruebaController {
                         'nombre', 'estado', 'external_id', 'descripcion', 'estadoAsignacion',
                         'pasos', 'resultado_esperado', 'resultado_obtenido',
                         'clasificacion', 'tipo_prueba', 'precondiciones',
-                        'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada'
+                        'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada', 'id_funcionalidad'
+                    ],
+                    include: [
+                        {
+                            model: models.funcionalidad,
+                            attributes: ['id', 'nombre', 'tipo', 'descripcion']
+                        }    
                     ]
                 });
-
                 return res.json({ msg: 'OK!', code: 200, info: listar });
             } else {
                 // Retornar casos de prueba específicos según el contrato
@@ -112,7 +125,13 @@ class CasoPruebaController {
                     'id', 'nombre', 'estado', 'external_id', 'descripcion', 'estadoAsignacion',
                     'pasos', 'resultado_esperado', 'resultado_obtenido', 'clasificacion',
                     'tipo_prueba', 'precondiciones', 'fecha_disenio', 'fecha_ejecucion_prueba',
-                    'id_proyecto', 'datos_entrada'
+                    'id_proyecto', 'datos_entrada', 'id_funcionalidad'
+                ],
+                include: [
+                    {
+                        model: models.funcionalidad,
+                        attributes: ['id', 'nombre', 'tipo', 'descripcion']
+                    }    
                 ]
             });
 
@@ -140,8 +159,20 @@ class CasoPruebaController {
                 attributes: ['id_rol_entidad']
 
             });
-            if (rol_proyecto) {
-                return res.json({ msg: 'OK!', code: 200, info: { caso, rol_proyecto } });
+
+            const rol_entidad = await models.rol_entidad.findOne({
+                where: { id_entidad: entidad_id, id_rol: 2 },
+            });
+            var rol_proyecto_afiormacio = null;
+            if (rol_entidad) {
+                rol_proyecto_afiormacio = await models.rol_proyecto.findOne({
+                    where: { id_rol_entidad: rol_entidad.id, id_proyecto: caso.id_proyecto },
+                });
+            }
+            if (rol_proyecto && rol_proyecto_afiormacio) {
+                return res.json({ msg: 'OK!', code: 200, info: { caso, rol: 'lider-tester' } });
+            } else if (rol_proyecto) {
+                return res.json({ msg: 'OK!', code: 200, info: { caso, rol: 'tester' } });
             } else {
                 return res.json({ msg: 'OK!', code: 200, info: { caso } });
             }
@@ -175,7 +206,9 @@ class CasoPruebaController {
                     tipo_prueba: req.body.tipo_prueba,
                     precondiciones: req.body.precondiciones,
                     datos_entrada: req.body.datos_entrada,
-                    id_proyecto: proyecto.id
+                    id_proyecto: proyecto.id,
+                    id_funcionalidad: req.body.funcionalidad,
+                    fecha_limite_ejecucion: req.body.fecha_limite_ejecucion? req.body.fecha_limite_ejecucion : null
                 });
 
                 res.json({ msg: "Caso de prueba registrado con éxito", code: 200, info: nuevoCaso.external_id });
@@ -209,6 +242,7 @@ class CasoPruebaController {
                 caso.precondiciones = req.body.precondiciones || caso.precondiciones;
                 caso.fecha_ejecucion_prueba = req.body.fecha_ejecucion_prueba || caso.fecha_ejecucion_prueba;
                 caso.datos_entrada = req.body.datos_entrada || caso.datos_entrada;
+                caso.id_funcionalidad = req.body.funcionalidad || caso.funcionalidad;
 
                 await caso.save();
 
@@ -235,23 +269,39 @@ class CasoPruebaController {
             res.status(500).json({ msg: 'Error al cambiar el estado', code: 500, error: error.message });
         }
     }
+    
     async cambiar_estado_obsoleto(req, res) {
         try {
             const external_id = req.query.external_id;
             if (!external_id) {
                 return res.status(400).json({ msg: "Falta el 'external_id'", code: 400 });
             }
+
             const caso = await caso_prueba.findOne({ where: { external_id: external_id } });
             if (!caso) {
                 return res.status(404).json({ msg: "Caso de prueba no encontrado", code: 404 });
             }
+
+            const errores = await error.findAll({ where: { id_caso_prueba: caso.id } });
+
+            const erroresActivos = errores.filter(e => ['NUEVO', 'PENDIENTE_VALIDACION', 'CORRECCION'].includes(e.estado));
+
+            if (erroresActivos.length > 0) {
+                return res.status(400).json({
+                    msg: "No se puede marcar el caso de prueba como obsoleto, ya que hay errores activos",
+                    code: 400
+                });
+            }
+
             caso.estado = 'OBSOLETO';
             await caso.save();
+
             res.json({ msg: "Caso de prueba marcado como obsoleto correctamente", code: 200 });
         } catch (error) {
             res.status(500).json({ msg: 'Error al marcar el caso de prueba como obsoleto', code: 500, error: error.message });
         }
     }
+
 
     /*SEGUNDO SPRINT*/
     async obtenerCasosProyecto(req, res) {
@@ -265,7 +315,12 @@ class CasoPruebaController {
 
         try {
             const caso = await caso_prueba.findAll({
-                where: { id_proyecto: proyectoAux.id, estado: "DISEÑADO", estadoAsignacion: "NO ASIGNADO" },
+                where: {
+                    id_proyecto: proyectoAux.id,
+                    estado: { [Op.in]: ["DISEÑADO", "REABIERTO"] },
+                    estadoAsignacion: "NO ASIGNADO",
+                },
+                
                 attributes: [
                     'nombre', 'estado', 'external_id', 'descripcion',
                     'pasos', 'resultado_esperado',

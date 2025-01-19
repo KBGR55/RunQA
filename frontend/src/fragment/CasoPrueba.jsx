@@ -9,6 +9,8 @@ import { getToken, getUser } from '../utilities/Sessionutil';
 import { useNavigate, useParams } from 'react-router-dom';
 import swal from 'sweetalert';
 import AsignarTesterModal from '../fragment/ModalAsignar';
+import { Form } from 'react-bootstrap';
+import DatePicker from 'react-datepicker';
 
 const CasoPrueba = () => {
     const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm();
@@ -20,7 +22,8 @@ const CasoPrueba = () => {
     const usuario = getUser();
     const [clasificaciones] = useState(['ALTA', 'MEDIA', 'BAJA']);
     const [estados] = useState(['DUPLICADO', 'BLOQUEADO', 'RECHAZADO', 'APROBADO']);
-
+    const [funcionalidades, setFuncionalidades] = useState([]);
+    const [fechaLimitePrueba, setFechaLimitePrueba] = useState(null);
     const [estadoSeleccionado, setEstadoSeleccionado] = useState('APROBADO');
     const [tiposPrueba] = useState([
         'FUNCIONAL', 'INTEGRACION', 'SISTEMA', 'REGRESION', 'EXPLORATORIA',
@@ -28,36 +31,47 @@ const CasoPrueba = () => {
     ]);
 
     useEffect(() => {
-        const fetchCasoPrueba = async () => {
-            if (external_id_proyecto) {
-                peticionGet(getToken(), `proyecto/obtener/${external_id_proyecto}`).then((info) => {
-                    if (info.code === 200) {
-                        setProyecto(info.info);
-                    } else {
-                        mensajes(info.msg, "error", "Error");
+        const fetchFuncionalidades = async () => {
+            try {
+                const response = await peticionGet(getToken(), `funcionalidad/obtener/${external_id_proyecto}`);
+                if (response.code === 200) {
+                    if (response.info && response.info.length > 0) {
+                        setFuncionalidades(response.info);
+                    } else if (response.info.length === 0){
+                        setFuncionalidades([]);
+                        mensajes('No existen funcionalidades registradas', 'warning', 'Advertencia');
                     }
-                }).catch((error) => {
-                    mensajes("Error al cargar el proyecto", "error", "Error");
-                    console.error(error);
-                });
+                } else  {
+                    setFuncionalidades([]);
+                }
+            } catch (error) {
+                mensajes("Error al cargar funcionalidades", "error");
+                console.error(error);
             }
+        };
+        
+    
+        // Carga el caso de prueba si `external_id` existe
+        const fetchCasoPrueba = async () => {
             if (external_id) {
-
                 try {
                     const response = await peticionGet(getToken(), `caso/prueba/obtener/${getUser().user.id}?external_id=${external_id}`);
-
                     if (response.code === 200) {
                         const casoPruebaData = response.info.caso;
+    
+                        // Establecer valores del caso de prueba
                         setValue('nombre', casoPruebaData.nombre);
                         setValue('descripcion', casoPruebaData.descripcion);
                         setValue('pasos', casoPruebaData.pasos);
                         setValue('resultado_esperado', casoPruebaData.resultado_esperado);
                         setValue('precondiciones', casoPruebaData.precondiciones);
                         setValue('datos_entrada', casoPruebaData.datos_entrada);
-                        //setValue('fecha_ejecucion_prueba', new Date(casoPruebaData.fecha_ejecucion_prueba).toISOString().slice(0, 10));
                         setValue('clasificacion', casoPruebaData.clasificacion);
-                        setEstadoSeleccionado(casoPruebaData.estado);
                         setValue('tipo_prueba', casoPruebaData.tipo_prueba);
+                        if (casoPruebaData.funcionalidad?.id) {
+                            setValue('funcionalidad', casoPruebaData.funcionalidad.id);
+                        }
+                        setFechaLimitePrueba(new Date(casoPruebaData.fecha_limite_ejecucion));
                     } else {
                         mensajes(`Error al obtener caso de prueba: ${response.msg}`, 'error');
                     }
@@ -66,9 +80,12 @@ const CasoPrueba = () => {
                 }
             }
         };
+    
+        // Ejecutar ambas llamadas a la API
+        fetchFuncionalidades().then(fetchCasoPrueba);
+    }, [external_id, external_id_proyecto, setValue]);
+    
 
-        fetchCasoPrueba();
-    }, [external_id, setValue, external_id_proyecto]);
 
     const handleCancelClick = () => {
         const isEditMode = Boolean(external_id);
@@ -104,11 +121,13 @@ const CasoPrueba = () => {
             "estado": estadoSeleccionado,
             "estadoActual": "PENDIENTE",
             "clasificacion": data.clasificacion,
+            "funcionalidad": data.funcionalidad,
             "tipo_prueba": data.tipo_prueba,
             "precondiciones": data.precondiciones,
             "datos_entrada": data.datos_entrada,
             "fecha_ejecucion_prueba": data.fecha_ejecucion_prueba,
-            "external_proyecto": external_id_proyecto
+            "external_proyecto": external_id_proyecto,
+            'fecha_limite_ejecucion': fechaLimitePrueba
         };
 
         try {
@@ -156,10 +175,10 @@ const CasoPrueba = () => {
     return (
         <div className="contenedor-carta">
             <form className="form-sample" onSubmit={handleSubmit(onSubmit)}>
-                <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
+                <p className="titulo-proyecto">{infoProyecto.nombre}</p>
                 {!external_id ? (<h2 className='titulo-primario '>Registrar caso de prueba</h2>) : <p className="titulo-primario">Editar caso de prueba</p>}
                 <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-md-4">
                         <div className="form-group">
                             <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Título</label>
                             <input
@@ -180,7 +199,26 @@ const CasoPrueba = () => {
                         </div>
                     </div>
 
-                    <div className="col-md-6">
+                    <div className="col-md-8">
+                        <div className="form-group">
+                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Descripción</label>
+                            <textarea
+                                className="form-control"
+                                {...register('descripcion', {
+                                    required: 'La descripción es obligatoria',
+                                    maxLength: {
+                                        value: 350,
+                                        message: 'La descripción no puede tener más de 350 caracteres'
+                                    }
+                                })}
+                            />
+                            {errors.descripcion && (
+                                <div className='alert alert-danger'>{errors.descripcion.message}</div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="col-md-4">
                         <div className="form-group">
                             <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Tipo de Prueba</label>
                             <select
@@ -201,7 +239,7 @@ const CasoPrueba = () => {
                         </div>
                     </div>
 
-                    <div className="col-md-6">
+                    <div className="col-md-2">
                         <div className="form-group">
                             <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Clasificación</label>
                             <select
@@ -219,7 +257,44 @@ const CasoPrueba = () => {
                             )}
                         </div>
                     </div>
+                    <div className="col-md-6">
+                        <div className="form-group">
+                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Funcionalidad</label>
+                            <select
+                                className="form-control"
+                                {...register('funcionalidad', { required: 'Seleccione una funcionalidad' })}
+                            >
+                                <option value="">Seleccione</option>
+                                {funcionalidades.map(funcionalidad => (
+                                    <option key={funcionalidad.id} value={funcionalidad.id}>
+                                        {`${funcionalidad.nombre} (${funcionalidad.tipo})`}
+                                    </option>
+                                ))}
+                            </select>
+                            {errors.funcionalidad && (
+                                <div className='alert alert-danger'>{errors.funcionalidad.message}</div>
+                            )}
+                        </div>
+                    </div>
 
+                    <div className="col-md-6">
+                        <div className="form-group">
+                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Precondiciones</label>
+                            <textarea
+                                className="form-control"
+                                {...register('precondiciones', {
+                                    required: 'Las precondiciones son obligatorias',
+                                    maxLength: {
+                                        value: 350,
+                                        message: 'Las precondiciones no pueden tener más de 350 caracteres'
+                                    }
+                                })}
+                            />
+                            {errors.precondiciones && (
+                                <div className='alert alert-danger'>{errors.precondiciones.message}</div>
+                            )}
+                        </div>
+                    </div>
 
                     <div className="col-md-6">
                         <div className="form-group">
@@ -242,44 +317,6 @@ const CasoPrueba = () => {
 
                     <div className="col-md-12">
                         <div className="form-group">
-                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Precondiciones</label>
-                            <textarea
-                                className="form-control"
-                                {...register('precondiciones', {
-                                    required: 'Las precondiciones son obligatorias',
-                                    maxLength: {
-                                        value: 350,
-                                        message: 'Las precondiciones no pueden tener más de 350 caracteres'
-                                    }
-                                })}
-                            />
-                            {errors.precondiciones && (
-                                <div className='alert alert-danger'>{errors.precondiciones.message}</div>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="col-md-12">
-                        <div className="form-group">
-                            <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Descripción</label>
-                            <textarea
-                                className="form-control"
-                                {...register('descripcion', {
-                                    required: 'La descripción es obligatoria',
-                                    maxLength: {
-                                        value: 350,
-                                        message: 'La descripción no puede tener más de 350 caracteres'
-                                    }
-                                })}
-                            />
-                            {errors.descripcion && (
-                                <div className='alert alert-danger'>{errors.descripcion.message}</div>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="col-md-12">
-                        <div className="form-group">
                             <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Pasos</label>
                             <textarea
                                 className="form-control"
@@ -291,7 +328,7 @@ const CasoPrueba = () => {
                         </div>
                     </div>
 
-                    <div className="col-md-12">
+                    <div className="col-md-10">
                         <div className="form-group">
                             <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Resultado Esperado</label>
                             <textarea
@@ -308,6 +345,23 @@ const CasoPrueba = () => {
                                 <div className='alert alert-danger'>{errors.resultado_esperado.message}</div>
                             )}
                         </div>
+                    </div>
+
+                    <div className="col-md-2">
+
+                        <Form.Group controlId="fecha_limite_ejecucion" className="mt-2">
+                            <label className='titulo-campos'><strong > </strong>Fecha limite de ejecución</label>
+                            <DatePicker
+                                selected={fechaLimitePrueba}
+                                value={fechaLimitePrueba}
+                                onChange={date => setFechaLimitePrueba(date)}
+                                dateFormat="yyyy/MM/dd"
+                                className="form-control"
+                                placeholderText="Selecciona la fecha"
+                                minDate={new Date()}
+                                popperPlacement="bottom-start"
+                            />
+                        </Form.Group>
                     </div>
 
                 </div>

@@ -3,9 +3,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Button, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExclamationCircle, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import CasoPrueba from './CasoPrueba';
-import { peticionGet } from '../utilities/hooks/Conexion';
+import { faArrowLeft, faExclamationCircle, faPlus, faTrash,faSearch, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+
+import { peticionGet, peticionPut } from '../utilities/hooks/Conexion';
 import { useNavigate, useParams } from 'react-router-dom';
 import '../css/style.css';
 import mensajes from '../utilities/Mensajes';
@@ -14,9 +14,11 @@ import { useForm } from 'react-hook-form';
 import swal from 'sweetalert';
 import EjecutarCasoPrueba from './EjecutarCasoPrueba';
 import TablePagination from '@mui/material/TablePagination';
+import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 const VerCasoPrueba = () => {
     const [casosPrueba, setCasosPrueba] = useState({});
+    const [infoAsignado, setInfoAsignado] = useState({});
     const { external_id_proyecto, external_id } = useParams();
     const [rol, setRol] = useState('false');
     const [infoProyecto, setProyecto] = useState([]);
@@ -103,10 +105,9 @@ const VerCasoPrueba = () => {
                 const response = await peticionGet(getToken(), `caso/prueba/obtener/${getUser().user.id}?external_id=${external_id}`);
                 if (response.code === 200) {
                     const casoPruebaData = response.info.caso;
-                    if (response.info.rol_proyecto) {
-                        setRol('true');
+                    if (response.info.rol) {
+                        setRol(response.info.rol);
                     }
-
                     setCasosPrueba(casoPruebaData);
                     peticionGet(getToken(), `error/obtener?external_caso_prueba=${external_id}`).then((info) => {
                         if (info.code === 200) {
@@ -125,9 +126,28 @@ const VerCasoPrueba = () => {
 
         };
 
+        const fetchCasoPruebaAsignado = async () => {
+            try {
+                if (external_id) {
+                    peticionGet(getToken(), `contrato/asignado/${external_id}`).then((info) => {
+                        if (info.code === 200) {
+                            setInfoAsignado(info.info);
+                        } else {
+                            setInfoAsignado({});
+                        }
+                    }).catch((error) => {
+                        mensajes("Error al cargar el asignado", "error", "Error");
+                        console.error(error);
+                    });
+                }
+            } catch (error) {
+                mensajes('Error al procesar la solicitud', 'error');
+            }
+        };
+
+        fetchCasoPruebaAsignado();
         fetchCasoPrueba();
     }, [setValue]);
-
 
     const handleDeleteCasoPrueba = async (external_id) => {
         swal({
@@ -157,14 +177,52 @@ const VerCasoPrueba = () => {
         return new Date(dateString).toISOString().slice(0, 10);
     }
 
+    const handleReabrirCaso = (externalId) => {
+        swal({
+            title: "¿Está seguro de reabrir el caso?",
+            text: "Esta acción cambiará el estado del caso a 'REABIERTO'.",
+            icon: "warning",
+            buttons: ["No", "Sí"],
+            dangerMode: true,
+        }).then((willConfirm) => {
+            if (willConfirm) {
+                const datos = { estado: "REABIERTO" };
+
+                peticionPut(getToken(), `caso/prueba/cambiar/estado`, { external_id: external_id, ...datos })
+                    .then((info) => {
+                        if (info.code !== 200) {
+                            mensajes(info.msg, "error", "Error");
+                        } else {
+                            mensajes(info.msg, "success", "Éxito");
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 2000);
+                        }
+                    })
+                    .catch((error) => {
+                        mensajes("Error al reabrir el caso de prueba", "error", "Error");
+                        console.error(error);
+                    });
+            }
+        });
+    };
+
     return (
         <div>
             <div className='container-fluid'>
                 <div className='contenedor-centro'>
 
                     <div className="contenedor-carta">
-                        <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
-                        <p className="titulo-primario">Caso de Prueba</p>
+                        <p className="titulo-proyecto">{infoProyecto.nombre}</p>
+                        <div className="d-flex align-items-center mb-3">
+                            <FontAwesomeIcon
+                                icon={faArrowLeft}
+                                onClick={() => navigate(-1)}
+                                style={{ cursor: 'pointer', fontSize: '20px', marginRight: '10px', color: 'var(--color-cuarto)' }}
+                            />
+                            <h4 className="titulo-primario"> Caso Prueba</h4>
+                        </div>
+
                         {errores.length > 0 ? (
                             <div className="accordion" id="accordionExample">
                                 <div className="accordion-item ">
@@ -194,7 +252,42 @@ const VerCasoPrueba = () => {
                                                             <th className="text-center">Titulo</th>
                                                             <th className="text-center">Severidad</th>
                                                             <th className="text-center">Prioridad</th>
-                                                            <th className="text-center">Estado</th>
+                                                            <th className="text-center">Estado   <OverlayTrigger
+                                                placement="top"
+                                                overlay={
+                                                    <Tooltip className="custom-tooltip">
+                                                        Indica el estado del error reportado
+                                                        <table className="table table-bordered text-start m-0">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Valor</th>
+                                                                    <th>Significado</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>NUEVO</td>
+                                                                    <td>El error ha sido reportado y aún no se ha procesado.</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>CERRADO</td>
+                                                                    <td>El error ha sido resuelto y no se requiere más acción.</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>PENDIENTE_VALIDACION</td>
+                                                                    <td>El error ha sido asignado y está esperando validación.</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>CORRECCION</td>
+                                                                    <td>El error está siendo corregido o requiere correcciones adicionales.</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </Tooltip>
+                                                }
+                                            >
+                                                <FontAwesomeIcon icon={faQuestionCircle} className="ms-2 text-info" />
+                                            </OverlayTrigger></th>
                                                             <th className="text-center"></th>
                                                         </tr>
                                                     </thead>
@@ -255,106 +348,245 @@ const VerCasoPrueba = () => {
                                 No hay errores generados
                             </div>
                         )}
-                        <div className="form-group">
-                            <div className="row">
-                                <div className="col-md-6">
-                                    <label className="w-100 text-start titulo-secundario">Estado</label>
-                                    <p className="w-100 text-start texto-normal">
-                                        <span className={`badge ${getEstadoClass(casosPrueba?.estado)}`}>
-                                            {casosPrueba?.estado}
-                                        </span>
-                                    </p>
-                                    <label className="w-100 text-start titulo-secundario">Título</label>
+
+                        <div className="row mt-4">
+                            <div className="col-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Título</h5>
                                     <p className="w-100 text-start texto-normal">{casosPrueba?.nombre}</p>
-
-                                    <label className="w-100 text-start titulo-secundario">Clasificación</label>
-                                    <p className="w-100 text-start texto-normal">
-                                        <span className={`badge ${casosPrueba?.clasificacion === 'ALTA' ? 'bg-danger' : casosPrueba?.clasificacion === 'MEDIA' ? 'bg-warning' : 'bg-success'}`}>
-                                            {casosPrueba?.clasificacion}
-                                        </span>
-                                    </p>
-
-
-                                    <label className="w-100 text-start titulo-secundario">Tipo de prueba</label>
-                                    <p className="w-100 text-start texto-normal">{casosPrueba?.tipo_prueba}</p>
                                 </div>
-                                <div className="col-md-6">
+                            </div>
 
-                                    <label className="w-100 text-start titulo-secundario">Estado de Asignación</label>
-                                    <p className="w-100 text-start texto-normal">
-                                        <span className={`badge ${casosPrueba?.estadoAsignacion === 'ASIGNADO' ? 'bg-primary' : casosPrueba?.estadoAsignacion === 'REASIGNADO' ? 'bg-warning' : 'bg-secondary'}`}>
-                                            {casosPrueba?.estadoAsignacion}
-                                        </span>
-                                    </p>
-
-
-                                    <label className="w-100 text-start titulo-secundario">Fecha de diseño</label>
-                                    <p className="w-100 text-start texto-normal">
-                                        {casosPrueba?.fecha_disenio ? formatDate(casosPrueba.fecha_disenio) : 'No disponible'}
-                                    </p>
-
-                                    <label className="w-100 text-start titulo-secundario">Fecha de ejecución de prueba</label>
-                                    <p className="w-100 text-start texto-normal">
-                                        {casosPrueba?.fecha_ejecucion_prueba ? formatDate(casosPrueba.fecha_ejecucion_prueba) : 'No disponible'}
-                                    </p>
-                                    <label className="w-100 text-start titulo-secundario">Resultado esperado</label>
-                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.resultado_esperado ? casosPrueba?.resultado_esperado.replace(/\n/g, '<br />') : '' }} />
-
-                                    <label className="w-100 text-start titulo-secundario">Resultado obtenido</label>
-                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.resultado_obtenido ? casosPrueba?.resultado_obtenido.replace(/\n/g, '<br />') : '' }} />
-
-                                </div>
-
-                                <div className="col-md-12">
-                                    <div className="col-md-12">
-                                        <label className="w-100 text-start titulo-secundario">Descripción</label>
-                                        <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.descripcion ? casosPrueba.descripcion.replace(/\n/g, '<br />') : '' }} />
+                            <div className="col-md-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord ">
+                                    <h5 className="titulo-secundario mb-3" style={{ textAlign: 'initial' }}>Detalles del Caso</h5>
+                                    <div className="d-flex justify-content-around align-items-center flex-wrap gap-2">
+                                        <div className="d-flex flex-column align-items-center">
+                                            <p className="w-100 text-start texto-normal">
+                                                <p><span className="fw-bold">Estado</span></p>
+                                                <span className={`badge ${getEstadoClass(casosPrueba?.estado)}`}>
+                                                    {casosPrueba?.estado}
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div className="d-flex flex-column align-items-center">
+                                            <p><span className="fw-bold">Clasificación</span></p>
+                                            <p className="w-100 text-start texto-normal">
+                                                <span className={`badge ${casosPrueba?.clasificacion === 'ALTA' ? 'bg-danger' : casosPrueba?.clasificacion === 'MEDIA' ? 'bg-warning' : 'bg-success'}`}>
+                                                    {casosPrueba?.clasificacion}
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div className="d-flex flex-column align-items-center">
+                                            <p className="w-100 text-start texto-normal">
+                                                <p><span className="fw-bold">Estado de asignación</span></p>
+                                                <span className={`badge ${casosPrueba?.estadoAsignacion === 'ASIGNADO' ? 'bg-primary' : casosPrueba?.estadoAsignacion === 'REASIGNADO' ? 'bg-warning' : 'bg-secondary'}`}>
+                                                    {casosPrueba?.estadoAsignacion}
+                                                </span>
+                                            </p>
+                                        </div>
                                     </div>
-
-                                    <label className="w-100 text-start titulo-secundario">Precondiciones</label>
-                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.precondiciones ? casosPrueba?.precondiciones.replace(/\n/g, '<br />') : '' }} />
-
-                                    <label className="w-100 text-start titulo-secundario">Datos entrada</label>
-                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.datos_entrada ? casosPrueba?.datos_entrada.replace(/\n/g, '<br />') : '' }} />
-
-                                    <label className="w-100 text-start titulo-secundario">Pasos</label>
-                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.pasos ? casosPrueba?.pasos.replace(/\n/g, '<br />') : '' }} />
 
                                 </div>
                             </div>
+
+                            <div className="col-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Tipo de prueba</h5>
+                                    <p className="w-100 text-start texto-normal">{casosPrueba?.tipo_prueba}</p>
+                                </div>
+                            </div>
+
+                            <div className="col-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Funcionalidad</h5>
+                                    <ul className="w-100 text-start texto-normal" style={{ listStyleType: 'disc', paddingLeft: '20px' }}>
+                                        <span className="fw-bold" style={{ fontSize: '18px' }}>{casosPrueba?.funcionalidad?.nombre || "No disponible"}</span>
+                                        <li><strong>Tipo:</strong> {casosPrueba?.funcionalidad?.tipo || "No disponible"}</li>
+                                        <li><strong>Descripción:</strong> {casosPrueba?.funcionalidad?.descripcion || "No disponible"}</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div className="col-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Descripción</h5>
+                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.descripcion ? casosPrueba.descripcion.replace(/\n/g, '<br />') : '' }} />
+                                </div>
+                            </div>
+
+                            <div className="col-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Precondiciones</h5>
+                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.precondiciones ? casosPrueba?.precondiciones.replace(/\n/g, '<br />') : '' }} />
+                                </div>
+                            </div>
+
+                            <div className="col-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Datos entrada</h5>
+                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.datos_entrada ? casosPrueba?.datos_entrada.replace(/\n/g, '<br />') : '' }} />
+                                </div>
+                            </div>
+
+                            <div className="col-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Pasos</h5>
+                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.pasos ? casosPrueba?.pasos.replace(/\n/g, '<br />') : '' }} />
+                                </div>
+                            </div>
+
+                            <div className="col-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Resultado esperado</h5>
+                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.resultado_esperado ? casosPrueba?.resultado_esperado.replace(/\n/g, '<br />') : '' }} />
+                                </div>
+                            </div>
+
+                            <div className="col-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Resultado obtenido</h5>
+                                    <div className="w-100 text-start texto-normal" dangerouslySetInnerHTML={{ __html: casosPrueba?.resultado_obtenido ? casosPrueba?.resultado_obtenido.replace(/\n/g, '<br />') : '' }} />
+                                </div>
+                            </div>
+
+                            <div className="col-md-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Fechas</h5>
+                                    <div className="mb-2">
+                                        <strong>Fecha de creación: </strong>
+                                        {casosPrueba?.fecha_disenio ? formatDate(casosPrueba.fecha_disenio) : 'No disponible'}
+                                    </div>
+                                    <div className="mb-2">
+                                        <strong>Fecha de asignación al tester: </strong>
+                                        {infoAsignado?.fecha_inicio ? formatDate(infoAsignado.fecha_inicio) : 'Sin fecha de asignación'}
+                                    </div>
+
+                                    <div className="mb-2">
+                                        <strong>Fecha de límite de ejecución: </strong>
+                                        {casosPrueba?.fecha_limite_ejecucion ? formatDate(casosPrueba.fecha_limite_ejecucion) : 'Sin fecha límite de ejecución'}
+                                    </div>
+                                    <div className="mb-2">
+                                        <strong>Fecha de ejecución: </strong>
+                                        {infoAsignado?.fecha_fin ? formatDate(infoAsignado.fecha_fin) : 'Sin fecha de ejecución'}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-md-6 mb-4">
+                                <div className="card p-3 shadow-sm card-custom-bord">
+                                    <h5 className="titulo-secundario" style={{ textAlign: 'initial' }}>Personal responsable</h5>
+                                    <div className="mb-2">
+                                        <strong>Asignado a: </strong>
+                                        {infoAsignado?.persona_asignada || 'Sin responsable asignado'}
+                                    </div>
+                                    <div className="mb-2">
+                                        <strong>Asignado por: </strong>
+                                        {infoAsignado?.persona_que_asigno || 'No existe registro de persona que asignó'}
+                                    </div>
+                                </div>
+                            </div>
+
+
+
                         </div>
+
                         <div className='contenedor-filo'>
 
-                            {rol === 'true' && !['FALLIDO', 'EXITOSO'].includes(casosPrueba.estado) ? (
+                            {/* Mostrar botón "Ejecutar" solo si rol es true y el estado no es FALLIDO o EXITOSO */}
+                            {(rol === 'tester' || rol === 'lider-tester') && !['FALLIDO', 'EXITOSO'].includes(casosPrueba.estado) ? (
                                 <Button
-                                className="btn-normal mb-3"
-                                onClick={handleshoModal}
-                            >
-                                <FontAwesomeIcon icon={faPlus} /> Ejecutar
-                            </Button>
-                        ) : (
-                            casosPrueba.estado === 'FALLIDO' && (
-                                <Button
-                                    className="btn-danger mb-3"
-                                    onClick={handleAddError}
+                                    className="btn-normal mb-3"
+                                    onClick={handleshoModal}
                                 >
-                                    <FontAwesomeIcon icon={faExclamationCircle} /> Agregar errores
+                                    <FontAwesomeIcon icon={faPlus} /> Ejecutar
                                 </Button>
-                            )
-                        )}
-                            <Button variant="btn btn-outline-info btn-rounded" onClick={() => navigate(`/editar/caso/prueba/${external_id_proyecto}/${casosPrueba.external_id}`)} >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
-                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                    <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-                                </svg>
-                            </Button>
-                            <Button
-                                className="btn-negativo"
-                                onClick={() => handleDeleteCasoPrueba(casosPrueba.external_id)}
-                            >
-                                <FontAwesomeIcon icon={faTrash} />
-                            </Button>
+                            ) : (
+                                // Mostrar botón "Agregar errores" solo si el estado es "FALLIDO"
+                                (rol === 'tester' || rol === 'lider-tester') && casosPrueba.estado === 'FALLIDO' && (
+                                    <Button
+                                        className="btn-danger mb-3"
+                                        onClick={handleAddError}
+                                    >
+                                        <FontAwesomeIcon icon={faExclamationCircle} /> Agregar errores
+                                    </Button>
+                                )
+                            )}
+
+                            {/* Mostrar botón "Reabrir Caso" si el estado es OBSOLETO */}
+                            {casosPrueba.estado === 'OBSOLETO' ? (
+                                <Button
+                                    className="btn-opcional"
+                                    onClick={() => {
+                                        swal({
+                                            title: "¿Está seguro de reabrir el caso?",
+                                            text: "Esta acción cambiará el estado del caso a 'REABIERTO'.",
+                                            icon: "warning",
+                                            buttons: ["No", "Sí"],
+                                            dangerMode: true,
+                                        }).then((willConfirm) => {
+                                            if (willConfirm) {
+                                                const datos = { estado: "REABIERTO", external_id: casosPrueba.external_id };
+
+                                                peticionPut(getToken(), `caso/prueba/cambiar/estado`, datos)
+                                                    .then((info) => {
+                                                        if (info.code !== 200) {
+                                                            mensajes(info.msg, "error", "Error");
+                                                        } else {
+                                                            mensajes(info.msg, "success", "Éxito");
+                                                            setTimeout(() => {
+                                                                window.location.reload();
+                                                            }, 2000);
+                                                        }
+                                                    })
+                                                    .catch((error) => {
+                                                        mensajes("Error al reabrir el caso de prueba", "error", "Error");
+                                                        console.error(error);
+                                                    });
+                                            }
+                                        });
+                                    }}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16" style={{ marginRight: '5px' }}>
+                                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
+                                    </svg>
+                                    Reabrir Caso
+                                </Button>
+                            ) : casosPrueba.estado!=="EXITOSO" && (
+                                // Mostrar botón "Editar" si el estado no es OBSOLETO
+                                <Button
+                                    variant="btn btn-outline-info btn-rounded"
+                                    onClick={() => navigate(`/editar/caso/prueba/${external_id_proyecto}/${casosPrueba.external_id}`)}
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        fill="currentColor"
+                                        className="bi bi-pencil-square"
+                                        viewBox="0 0 16 16"
+                                    >
+                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                                        />
+                                    </svg>
+                                </Button>
+                            )}
+
+                            {/* Mostrar el botón de "Eliminar" solo si el rol no es true */}
+                            {rol !== 'tester' && casosPrueba.estado!=="EXITOSO"&& (
+                                <Button
+                                    className="btn-negativo"
+                                    onClick={() => handleDeleteCasoPrueba(casosPrueba.external_id)}
+                                >
+                                    <FontAwesomeIcon icon={faTrash} />
+                                </Button>
+                            )}
+
                         </div>
+
                     </div>
                 </div>
 

@@ -42,7 +42,6 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
     const toggleModal = () => {
         setShowModal(!showModal);
     };
-    
 
     const onSubmit = async (data) => {
         const formData = new FormData();
@@ -54,31 +53,33 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
         formData.append('external_id', personaObtenida.external_id);
         formData.append('entidad_id', personaObtenida.id);
         formData.append('correo', data.correo);
+
+        // Si se proporciona una nueva clave
         if (data.clave) {
             formData.append('clave', data.clave);
         }
-        if (file) {
-            formData.append('foto', file);
+
+        if (uploadedPhoto) {
+            formData.append('foto', uploadedPhoto);
         }
 
-        ActualizarImagenes(formData, getToken(), "/modificar/entidad")
-            .then((info) => {
-                if (!info || info.code !== 200) {
-                    mensajes(info?.msg || 'Error desconocido', 'error', 'Error');
-                    if (info?.msg === "TOKEN NO VALIDO O EXPIRADO") {
-                        borrarSesion();
-                    }
-                } else {
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
-                    mensajes(info.msg);
+        try {
+            const info = await ActualizarImagenes(formData, getToken(), "/modificar/entidad");
+            if (!info || info.code !== 200) {
+                mensajes(info?.msg || 'Error desconocido', 'error', 'Error');
+                if (info?.msg === "TOKEN NO VALIDO O EXPIRADO") {
+                    borrarSesion();
                 }
-            })
-            .catch(error => {
-                console.error('Error en la solicitud:', error);
-                mensajes('Error en la conexión con el servidor', 'error', 'Error');
-            });
+            } else {
+                mensajes(info.msg, 'success');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            }
+        } catch (error) {
+            console.error('Error en la solicitud:', error);
+            mensajes('Error en la conexión con el servidor', 'error', 'Error');
+        }
     };
 
     useEffect(() => {

@@ -11,25 +11,23 @@ import mensajes from '../utilities/Mensajes';
 import swal from 'sweetalert';
 import { useNavigate } from 'react-router-dom';
 
-const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, external_caso_prueba, usuario }) => {
-    const [tester, setTester] = useState([]);
-    const [selectedTester, setSelectedTester] = useState(null);
+const Reasignar = ({ showModalDesarrollador, setShowModalDesarrollador, external_id_proyecto, id_error, usuario }) => {
+    const [desarrollador, setDesarrollador] = useState([]);
+    const [selectedDesarrollador, setSelectedDesarrollador] = useState(null);
     const [fechaFinPrueba, setFechaFinPrueba] = useState(null);
     const [fechaInicioPrueba, setFechaInicioPrueba] = useState(null);
     const [rolId, setRolId] = useState(null);
-    const handleClose = () => setShowModal(false);
-    const navigate = useNavigate();
+    const handleClose = () => setShowModalDesarrollador(false);
+    const navigate = useNavigate();  
 
 
     useEffect(() => {
-        const fetchTesters = async () => {
+        const fetchDesarrolladores = async () => {
             try {
-                const info = await peticionGet(getToken(), `/proyecto/listar/rol/TESTER/${external_id_proyecto}`);
+                const info = await peticionGet(getToken(), `/proyecto/listar/rol/DESARROLLADOR/${external_id_proyecto}`);
                 if (info.code === 200) {
-                    setTester(info.info);
+                    setDesarrollador(info.info);
                     setRolId(info.id_rol);
-                } else if (info.code === 404) {
-                    showNoTestersAlert();
                 } else {
                     mensajes(info.msg, "error");
                 }
@@ -38,62 +36,36 @@ const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, ext
             }
         };
 
-        fetchTesters();
+        fetchDesarrolladores();
     }, [external_id_proyecto]);
 
-    const showNoTestersAlert = () => {
-        swal({
-            title: "No hay testers asignados",
-            text: "¿Desea asignar testers al proyecto?",
-            icon: "info",
-            showCancelButton: true,
-            buttons: ["No", "Sí"],
-            dangerMode: true,
-        }).then(async (confirmacion) => {
-            if (confirmacion) {
-                try {
-                    navigate(`/proyecto/usuarios/${external_id_proyecto}`);
-                } catch (error) {
-                    console.error('Error al eliminar el proyecto:', error);
-                    swal({
-                        title: "Error",
-                        text: "Ocurrió un problema al asignar miembros al proyecto.",
-                        icon: "error",
-                    });
-                }
-            }
-        });
+    const handleDesarrolladorSelect = (e) => {
+        const desarrolladorId = e.target.value;
+        const selectedDesarrollador = desarrollador.find(desarrollador => desarrollador.id === parseInt(desarrolladorId));
+        setSelectedDesarrollador(selectedDesarrollador);
+        setDesarrollador(prevDesarrollador => prevDesarrollador.filter(t => t.id !== parseInt(desarrolladorId)));
     };
 
-    const handleTesterSelect = (e) => {
-        const testerId = e.target.value;
-        const selectedTester = tester.find(tester => tester.id === parseInt(testerId));
-        setSelectedTester(selectedTester);
-        setTester(prevTester => prevTester.filter(t => t.id !== parseInt(testerId)));
-    };
-
-    const handleRemoveTester = () => {
-        if (selectedTester) {
-            setTester(prevTester => [...prevTester, selectedTester]);
-            setSelectedTester(null);
+    const handleRemoveDesarrollador= () => {
+        if (selectedDesarrollador) {
+            setDesarrollador(prevDesarrollador => [...prevDesarrollador, selectedDesarrollador]);
+            setSelectedDesarrollador(null);
         }
     };
 
-    const handleAsignarTesters = async () => {
+    const handleAsignarDesarrolladores = async () => {
         const body = {
             id_proyecto: external_id_proyecto,
-            tester: { id_entidad: selectedTester.id },
+            id_error: id_error,
+            desarrollador: { id_entidad: selectedDesarrollador.id },
             entidad_asigno: usuario.user.id,
-            casosPrueba: Array.isArray(external_caso_prueba) 
-                ? external_caso_prueba.map(c => ({ external_id: c })) 
-                : external_caso_prueba ? [{ external_id: external_caso_prueba }] : external_caso_prueba,
             fecha_inicio: fechaInicioPrueba,
             fecha_fin: fechaFinPrueba,
-            tester_rol: rolId
+            desarrollador_rol: rolId
         };
     
         try {
-            const response = await peticionPost(getToken(), 'contrato/caso/prueba', body);
+            const response = await peticionPost(getToken(), '/contrato/error/reasginar', body);
             if (response.code === 200) {
                 setTimeout(() => {
                     window.location.reload();
@@ -104,64 +76,46 @@ const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, ext
                 mensajes(response.msg, 'error');
             }
         } catch (error) {
-            console.error('Error al asignar tester:', error);
+            console.error('Error al asignar desarrollador:', error);
         }
     };
-
-
-    const handleCancelClick = () => {
-        swal({
-            title: "¿Está seguro de cancelar la asignación de tester?",
-            text: "Una vez cancelado, no podrá revertir esta acción",
-            icon: "warning",
-            buttons: ["No", "Sí"],
-            dangerMode: true,
-        }).then((willCancel) => {
-            if (willCancel) {
-                mensajes("Asignación cancelada", "info", "Información");
-                setTimeout(() => {
-                    window.location.reload(); 
-                }, 2000);  
-            }
-        });
-    };
     
-    const isAcceptButtonDisabled = !selectedTester || !fechaInicioPrueba || !fechaFinPrueba;
+    const isAcceptButtonDisabled = !selectedDesarrollador || !fechaInicioPrueba || !fechaFinPrueba;
 
     return (
-        <Modal show={showModal} onHide={handleClose}>
-            <Modal.Header >
-                <Modal.Title className='titulo-primario'>Asignar Tester</Modal.Title>
+        <Modal show={showModalDesarrollador} onHide={handleClose}>
+            <Modal.Header closeButton>
+                <Modal.Title className='titulo-primario'>Asignar Desarrollador</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {!selectedTester && (
-                    <Form.Group controlId="formTesters">
-                    <Form.Label><strong style={{ color: 'red' }}>* </strong>Seleccionar Tester</Form.Label>
+              {!selectedDesarrollador && (   <Form.Group controlId="formTesters">
+                    <Form.Label><strong style={{ color: 'red' }}>* </strong>Seleccionar Desarrollador</Form.Label>
                     <Form.Control
                         as="select"
-                        onChange={handleTesterSelect}
-                        value={selectedTester ? "" : selectedTester?.id || ""}
-                        disabled={!!selectedTester}
+                        onChange={handleDesarrolladorSelect}
+                        value={selectedDesarrollador ? "" : selectedDesarrollador?.id || ""}
+                        disabled={!!selectedDesarrollador}
                     >
-                        <option value="" disabled>Seleccione un tester</option>
-                        {tester.map(t => (
+                        <option value="" disabled>Seleccione un desarrollador</option>
+                        {desarrollador.map(t => (
                             <option key={t.id} value={t.id}>
                                 {t.nombres} {t.apellidos}
                             </option>
                         ))}
                     </Form.Control>
                 </Form.Group>)}
-                {selectedTester && (
+
+                {selectedDesarrollador && (
                     <div className="mt-4">
-                        <h6 style={{ fontWeight: 'bold', color: '#3FA2F6' }}>Tester Seleccionado:</h6>
+                        <h6 style={{ fontWeight: 'bold', color: '#3FA2F6' }}>Desarrollador Seleccionado:</h6>
                         <ul className="list-group">
                             <li className="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
-                                    <strong>{selectedTester.nombres} {selectedTester.apellidos}</strong>
+                                    <strong>{selectedDesarrollador.nombres} {selectedDesarrollador.apellidos}</strong>
                                     <br />
-                                    <span>{selectedTester.correo}</span>
+                                    <span>{selectedDesarrollador.correo}</span>
                                 </div>
-                                <Button variant="danger" size="sm" onClick={handleRemoveTester}>
+                                <Button variant="danger" size="sm" onClick={handleRemoveDesarrollador}>
                                     <FontAwesomeIcon icon={faTrash} />
                                 </Button>
                             </li>
@@ -201,10 +155,7 @@ const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, ext
                 </div>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" className="btn-negativo" onClick={handleCancelClick}>
-                    <FontAwesomeIcon icon={faTimes} /> Cancelar
-                </Button>
-                <Button className="btn-positivo" onClick={handleAsignarTesters} disabled={isAcceptButtonDisabled}>
+                <Button className="btn-positivo" onClick={handleAsignarDesarrolladores} disabled={isAcceptButtonDisabled}>
                     <FontAwesomeIcon icon={faCheck} /> Aceptar
                 </Button>
             </Modal.Footer>
@@ -212,4 +163,4 @@ const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, ext
     );
 };
 
-export default AsignarTesterModal;
+export default Reasignar;

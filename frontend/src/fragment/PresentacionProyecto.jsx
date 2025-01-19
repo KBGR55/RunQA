@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import '../css/Presentacion_Style.css';
-import { getToken, getUser, borrarSesion } from '../utilities/Sessionutil';
+import { getToken, getUser, borrarSesion, saveRoles } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 
 const PresentacionProyecto = () => {
-    const { external_id } = useParams();
+    const { external_id_proyecto } = useParams();
     const [proyecto, setProyecto] = useState(null);
     const [proyectoEntidad, setProyectoEntidad] = useState(null);
     const [roles, setRoles] = useState([]);
@@ -22,7 +22,7 @@ const PresentacionProyecto = () => {
             try {
                 const info = await peticionGet(
                     getToken(),
-                    `rol_proyecto/listar/entidad?id_entidad=${getUser().user.id}&external_id_proyecto=${external_id}`
+                    `rol_proyecto/listar/entidad?id_entidad=${getUser().user.id}&external_id_proyecto=${external_id_proyecto}`
                 );
                 if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
                     borrarSesion();
@@ -30,6 +30,7 @@ const PresentacionProyecto = () => {
                     navigate("/main");
                 } else if (info.code === 200) {
                     setRoles(info.info.roles);
+                    saveRoles(info.info.roles);
                     setProyecto(info.info.proyecto);
                 } else {
                     console.error('Error al obtener roles:', info.msg);
@@ -82,12 +83,12 @@ const PresentacionProyecto = () => {
         fetchRoles();
         fetchRolAdministrador();
         fetchRolesEntidad();
-    }, [external_id, navigate]);
+    }, [external_id_proyecto, navigate]);
 
     useEffect(() => {
         const fetchProject = async () => {
             try {
-                const info = await peticionGet(getToken(), `proyecto/${external_id}`);
+                const info = await peticionGet(getToken(), `proyecto/${external_id_proyecto}`);
                 if (info.code === 200) {
                     setProyectoEntidad(info.info);
                 } else {
@@ -99,13 +100,13 @@ const PresentacionProyecto = () => {
         };
 
         fetchProject();
-    }, [external_id]);
+    }, [external_id_proyecto]);
 
     const roleOptions = {
-        'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Casos de prueba asignados', 'Generar reportes', 'Miembros'],
-        'ANALISTA DE PRUEBAS': ['Asignar testers', 'Casos de prueba', 'Lista de casos de prueba asignados'],
-        'TESTER': ['Casos de prueba', 'Registrar errores', 'Asignar desarrolladores'],
-        'DESARROLLADOR': ['Actualizar el estado de los errores', 'Consultar errores asignados']
+        'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Funcionalidades', 'Generar reportes', 'Miembros','Terminar proyecto'],
+        'ANALISTA DE PRUEBAS': ['Asignar testers', 'Casos de prueba', 'Funcionalidades'],
+        'TESTER': ['Asignar desarrolladores', 'Casos de prueba', 'Registrar errores'],
+        'DESARROLLADOR': ['Consultar errores asignados', 'Errores asigandos']
     };
 
     const roleIcons = {
@@ -128,18 +129,25 @@ const PresentacionProyecto = () => {
             navigate(`/proyecto/usuarios/${proyecto.external_id}`, { state: { proyecto } });
         } else if (option === 'Asignar testers') {
             navigate(`/asignar/tester/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
-        } else if (option === 'Casos de prueba asignados') {
-            navigate(`/casos/prueba/asignados/${proyecto.external_id}`, { state: { proyecto } });
         } else if (option === 'Asignar desarrolladores') {
             navigate(`/asignar/desarrollador/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
+        } else if (option === 'Funcionalidades') {
+            navigate(`/lista/funcionalidades/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
+        } else if (option === 'Errores asigandos') {
+            navigate(`/errores/asignados/${proyecto.external_id}`);
+        } else if (option === 'Terminar proyecto') {
+            navigate(`/proyecto/terminar/${proyecto.external_id}`);
+        } else {
+            mensajes('Esta funcionalidad está en desarrollo de desarrollo.', 'info', 'Próximamente');
         }
-    };
+    }
+
     const handleCloseNewProjectModal = () => {
         setShowNewProjectModal(false);
     };
 
     if (!proyecto) return <p>Cargando...</p>;
-    
+
     return (
         <div className="project-page">
             <div className="header-section">
@@ -153,7 +161,7 @@ const PresentacionProyecto = () => {
             {/* Sección de contenido */}
             <div className='contenedor-carta'>
                 <div className="row g-1">
-                <p className="titulo-primario">Opciones permitidas</p>
+                    <p className="titulo-primario">Opciones permitidas</p>
 
                     {roles.map((role, index) => (
                         <div key={index} className="col-md-4">

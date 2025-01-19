@@ -11,7 +11,7 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 const CasoPruebaAsignado = () => {
     const [casosPrueba, setCasosPrueba] = useState({});
     const { external_id_proyecto, external_id } = useParams();
-    const [infoProyecto,setProyecto] = useState([]);
+    const [infoProyecto, setProyecto] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -28,7 +28,7 @@ const CasoPruebaAsignado = () => {
                         mensajes("Error al cargar el proyecto", "error", "Error");
                         console.error(error);
                     });
-                } 
+                }
                 const response = await peticionGet(getToken(), `contrato/asignado/${external_id}`);
                 if (response.code === 200) {
                     setCasosPrueba(response.info);
@@ -80,7 +80,7 @@ const CasoPruebaAsignado = () => {
     return (
         <div className="container-fluid contenedor-centro" style={{ margin: '20px' }}>
             <div className="contenedor-carta">
-            <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
+                <p className="titulo-proyecto">{infoProyecto.nombre}</p>
                 <div className="d-flex align-items-center mb-3">
                     <FontAwesomeIcon
                         icon={faArrowLeft}
@@ -111,8 +111,8 @@ const CasoPruebaAsignado = () => {
                                 <div className="d-flex flex-column align-items-center">
                                     <strong>Estado Actual</strong>
                                     <span className={`badge ${getEstadoClass(casosPrueba?.estado)}`}>
-                                            {casosPrueba?.estado}
-                                        </span>
+                                        {casosPrueba?.estado}
+                                    </span>
                                 </div>
                                 <div className="d-flex flex-column align-items-center">
                                     <strong>Estado Asignación</strong>

@@ -8,6 +8,7 @@
   --azul-intermedio: #0d4f81;
   --azul-opcional: #608BC1;
   --azul-opcional-transparente: #CBDCEB;
+  --morado-bebe: #f4f2ff;
   --negro: #323232;
   --naranja-claro: #ffe6b1;
   --rojo-claro: #FFACAC;
@@ -18,6 +19,33 @@
   --color-positivo: var(--verde-claro);
   --color-negativo: var(--rojo);
 }
+
+.card-opaca {
+  opacity: 0.6;
+  pointer-events: none; /* Deshabilita interacciones si el proyecto está terminado */
+}
+
+.overlay-terminar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 1rem;
+  padding: 20px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.razon-terminar {
+  font-weight: bold;
+}
+
 
 .fondo-principal {
   background-color: var(--color-cuarto);
@@ -310,6 +338,7 @@ label {
   border: 1px solid #dadada;
 }
 .custom-tooltip {
+  font-size: 9px;
   background-color: #ffffff !important; /* Fondo blanco */
   color: #000000 !important;          /* Texto negro */
   border: 1px solid #ccc;             /* Borde gris claro */
@@ -319,7 +348,7 @@ label {
   text-align: left;                   /* Alineación del texto */
   margin: 0 !important;               /* Elimina margen externo */
   width: auto;                        /* Ajusta el ancho dinámicamente */
-  max-width: 400px;                   /* Ancho máximo */
+  max-width: 900px;                   /* Ancho máximo */
 }
 
 .custom-tooltip .tooltip-arrow {
@@ -330,7 +359,6 @@ label {
   margin: 0 !important;               /* Elimina margen interno */
   padding: 0 !important;              /* Elimina relleno */
   border: none !important;            /* Elimina bordes */
-  width: 100%;                        /* Ocupa todo el espacio disponible */
   background-color: transparent !important; /* Fondo transparente */
   color: inherit;                     /* Usa el color heredado */
   box-shadow: none !important;        /* Elimina sombras */
@@ -510,4 +538,29 @@ label {
   display: block; /* Asegura que se comporte como un bloque para una alineación uniforme */
   margin-bottom: 5px; /* Espacio debajo del título, opcional */
 }
+
+.btn-custom {
+  background-color: var(--azul-opcional);
+  color: white;
+  border: 1px solid var(--azul-opcional);
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-custom:hover {
+  background-color: var(--azul-opcional);
+  color: white;
+}
+
+.btn-custom-outline {
+  background-color: transparent;
+  color: var(--azul-opcional);
+  border: 1px solid var(--azul-opcional);
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-custom-outline:hover {
+  background-color: var(--azul-opcional);
+  color: white;
+}
+
 

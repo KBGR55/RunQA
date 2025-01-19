@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Modal, Dropdown } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
-import swal from 'sweetalert'; 
+import swal from 'sweetalert';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import '../css/style.css';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +15,9 @@ const ListaProyectos = () => {
     const [showNewProjectModal, setShowNewProjectModal] = useState(false);
     const [proyectos, setProyectos] = useState([]);
     const [rolLider, setRolLider] = useState([]);
+    const [showEditProjectModal, setShowEditProjectModal] = useState(false);
+    const [selectedProjectId, setSelectedProjectId] = useState(null);
+    const [roles, setRoles] = useState([]);
     const navigate = useNavigate();
     const user = getUser().user;
 
@@ -101,7 +104,17 @@ const ListaProyectos = () => {
             }
         });
     };
-    
+
+    const handleCloseModal = () => {
+        setShowEditProjectModal(false);
+        setSelectedProjectId(null); // Limpiar el external_id cuando se cierra el modal
+    };
+
+    const handleEditClick = (externalId) => {
+        setSelectedProjectId(externalId);
+        setShowEditProjectModal(true);
+    };
+    console.log(proyectos);
 
     return (
         <div>
@@ -124,10 +137,18 @@ const ListaProyectos = () => {
                             {proyectos.map((proyecto) => (
                                 <div className="col-md-4 mb-4" key={proyecto.id}>
                                     <div
-                                        className="card shadow-sm h-100"
+                                        className={`card shadow-sm h-100 position-relative ${proyecto.terminado ? 'card-opaca' : ''}`}
                                         style={{ cursor: 'pointer', borderColor: '#e0e0e0' }}
-                                        onClick={() => handleProjectClick(proyecto)}
+                                        onClick={() => !proyecto.terminado && handleProjectClick(proyecto)}
                                     >
+                                      {proyecto.terminado && (
+                                            <div className="overlay-terminar">
+                                                <p className="razon-terminar text-center">
+                                                    {proyecto.razon_terminado || 'Sin razón especificada'}
+                                                </p>
+                                            </div>
+                                        )}
+                                        {/* Imagen */}
                                         <div className="text-center" style={{ paddingTop: '10px' }}>
                                             <img
                                                 src="/img/fondo1.jpeg"
@@ -135,6 +156,7 @@ const ListaProyectos = () => {
                                                 className="img-fluid rounded"
                                             />
                                         </div>
+                                        {/* Cuerpo de la tarjeta */}
                                         <div className="card-body">
                                             <div className="d-flex justify-content-between align-items-start">
                                                 <h5 className="card-title fw-bold">{proyecto.nombre}</h5>
@@ -147,6 +169,14 @@ const ListaProyectos = () => {
                                                         <FontAwesomeIcon icon={faEllipsisV} />
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu>
+                                                        <Dropdown.Item
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleEditClick(proyecto.external_id);
+                                                            }}
+                                                        >
+                                                            Editar Proyecto
+                                                        </Dropdown.Item>
                                                         <Dropdown.Item
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
@@ -163,10 +193,23 @@ const ListaProyectos = () => {
                                     </div>
                                 </div>
                             ))}
+
                         </div>
                     )}
                 </div>
             </div>
+
+            {/* Modal para crear/editar proyecto */}
+            <Modal show={showEditProjectModal} onHide={handleCloseModal} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title className="titulo-primario">Editar Proyecto</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <NuevoProyecto external_id_proyecto={selectedProjectId} onClose={handleCloseNewProjectModal} />
+                </Modal.Body>
+            </Modal>
+
+            {/* Modal para crearproyecto */}
             <Modal show={showNewProjectModal} onHide={handleCloseNewProjectModal}>
                 <Modal.Header closeButton>
                     <Modal.Title className="titulo-primario">Crear Nuevo Proyecto</Modal.Title>

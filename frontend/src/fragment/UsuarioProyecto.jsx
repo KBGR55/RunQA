@@ -92,12 +92,23 @@ const UsuarioProyecto = () => {
         setShowModalAddMembers(false);
     };
 
+    /**
+     * Función que se encarga de eliminar un usuario de un proyecto.
+     * @function
+     * @param {number} userIdToDelete - El id del usuario que se va a eliminar.
+     * @returns {Promise<void>}
+     * @throws Si ocurre un error al eliminar el usuario.
+     */
     const handleDeleteUser = async () => {
         try {
             const response = await peticionDelete(getToken(), `proyecto/${external_id_proyecto}/${userIdToDelete}`);
             if (response.code === 200) {
                 mensajes('Usuario eliminado exitosamente', 'success', 'Éxito');
                 setData((prevData) => prevData.filter((user) => user.rol_entidad.entidad.id !== userIdToDelete));
+                const updatedData = await peticionGet(getToken(), `proyecto/${external_id_proyecto}`);
+                if (updatedData.code === 200) {
+                    setData(updatedData.info);
+                }
             } else {
                 mensajes(response.msg || 'Error al eliminar usuario', 'error', 'Error');
             }
@@ -108,6 +119,7 @@ const UsuarioProyecto = () => {
             handleCloseModal();
         }
     };
+
 
     const handleShowModalEditHours = (user) => {
         setSelectedUser(user);
@@ -125,8 +137,7 @@ const UsuarioProyecto = () => {
             const response = await peticionGet(getToken(), `proyecto/horas/cambiar/${selectedUser.rol_entidad.entidad.id}/${selectedUser.id}/${newHours}`);
             if (response.code === 200) {
                 mensajes('Horas actualizadas exitosamente', 'success', 'Éxito');
-                
-                // Actualiza el estado directamente
+
                 setData(prevData => {
                     return prevData.map(user =>
                         user.id === selectedUser.id
@@ -144,13 +155,13 @@ const UsuarioProyecto = () => {
             handleCloseModalEditHours();
         }
     };
-    
+
 
     return (
         <div>
             <div className="contenedor-centro">
                 <div className='contenedor-carta'>
-                    <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
+                    <p className="titulo-proyecto">{infoProyecto.nombre}</p>
                     <div className="contenedor-filo">
                         <td className="text-center">
                             <Button className="btn-normal" onClick={handleShowModalAddMembers}>
@@ -190,7 +201,7 @@ const UsuarioProyecto = () => {
                                         {data.map((user) => (
                                             <tr key={user.id}>
                                                 <td className="text-center" style={{ backgroundColor: "#FFFFFF", border: "none" }}>
-                                                    <img src={URLBASE + "/images/users/" + user.rol_entidad.entidad.foto} alt="Avatar" style={{ width: '30px', height: '30px' }} />
+                                                    <img src={URLBASE + "images/users/" + user.rol_entidad.entidad.foto} alt="Avatar" style={{ width: '30px', height: '30px' }} />
                                                 </td>
                                                 <td className="text-center">{user.rol_entidad.entidad.nombres}</td>
                                                 <td className="text-center">{user.rol_entidad.entidad.apellidos}</td>
@@ -208,7 +219,7 @@ const UsuarioProyecto = () => {
                                                     <Button
                                                         className="btn btn-danger"
                                                         disabled={rolLider && rolLider[0] && rolLider[0].nombre === user.rol_entidad.rol.nombre}
-                                                        onClick={() => handleShowModal(user.rol_entidad.entidad.id)}
+                                                        onClick={() => handleShowModal(user.id)}
                                                     >
                                                         <FontAwesomeIcon icon={faTrash} />
                                                     </Button>

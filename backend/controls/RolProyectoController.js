@@ -12,7 +12,7 @@ class RolProyectoController {
         try {
             const id_entidad = req.query.id_entidad;
             const entidadAux = await models.rol_entidad.findOne({
-                where: { id_entidad },
+                where: { id_entidad},
                 include: [
                     {
                         model: models.entidad,
@@ -37,12 +37,13 @@ class RolProyectoController {
                 return res.status(404).json({ msg: "No se encontró el rol de administrador", code: 404 });
             }                 
             const listar = await models.rol_proyecto.findAll({
+                where: { estado: 1 },
                 include: [
                     {
                         model: models.proyecto,
                         as: 'proyecto_rol',
                         where: { estado: true },
-                        attributes: ['id', 'fecha_inicio', 'external_id', 'nombre', 'estado', 'descripcion']
+                        attributes: ['id', 'fecha_inicio', 'external_id', 'nombre', 'estado', 'descripcion', 'terminado', 'razon_terminado']
                     },
                     {
                         model: models.rol_entidad,
@@ -92,7 +93,7 @@ class RolProyectoController {
             const ids_entidad = entidadAux.map(item => item.id);
     
             const listar = await models.rol_proyecto.findAll({
-                where: { id_rol_entidad: ids_entidad },
+                where: { id_rol_entidad: ids_entidad,estado: 1 },
                 include: [
                     {
                         model: models.proyecto,

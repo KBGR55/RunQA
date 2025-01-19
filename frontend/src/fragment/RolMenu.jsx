@@ -14,7 +14,7 @@ const RoleMenu = () => {
     const [proyecto, setProyecto] = useState({});
     const [isOpen, setIsOpen] = useState(true);
     const [activeMenu, setActiveMenu] = useState(null);
-    const { external_id } = useParams();
+    const { external_id_proyecto } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
     const [selectedRoleId, setSelectedRoleId] = useState(null);
@@ -28,7 +28,7 @@ const RoleMenu = () => {
             try {
                 const info = await peticionGet(
                     getToken(),
-                    `rol_proyecto/listar/entidad?id_entidad=${getUser().user.id}&external_id_proyecto=${external_id}`
+                    `rol_proyecto/listar/entidad?id_entidad=${getUser().user.id}&external_id_proyecto=${external_id_proyecto}`
                 );
                 if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
                     borrarSesion();
@@ -88,12 +88,12 @@ const RoleMenu = () => {
         fetchRoles();
         fetchRolAdministrador();
         fetchRolesEntidad();
-    }, [external_id, navigate]);
+    }, [external_id_proyecto, navigate]);
 
     useEffect(() => {
         if (isFirstLoad.current) {
             isFirstLoad.current = false;
-        } else if (location.pathname === '/proyectos' || location.pathname === '/usuarios'|| location.pathname === '/peticiones') {
+        } else if (location.pathname === '/proyectos' || location.pathname === '/usuarios' || location.pathname === '/peticiones') {
             setRoles([]);
             setProyecto({});
             setSelectedOption('');
@@ -120,10 +120,10 @@ const RoleMenu = () => {
     }, []);
 
     const roleOptions = {
-        'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Casos de prueba asignados', 'Editar proyecto', 'Generar reportes', 'Miembros'],
-        'ANALISTA DE PRUEBAS': ['Asignar testers', 'Casos de prueba', 'Lista de casos de prueba asignados'],
-        'TESTER': ['Casos de prueba', 'Registrar errores', 'Asignar desarrolladores'],
-        'DESARROLLADOR': ['Actualizar el estado de los errores', 'Consultar errores asignados']
+        'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Funcionalidades', 'Generar reportes', 'Miembros','Terminar proyecto'],
+        'ANALISTA DE PRUEBAS': ['Asignar testers', 'Casos de prueba', 'Funcionalidades'],
+        'TESTER': ['Asignar desarrolladores', 'Casos de prueba', 'Registrar errores'],
+        'DESARROLLADOR': ['Consultar errores asignados', 'Errores asigandos']
     };
 
     const roleIcons = {
@@ -154,9 +154,7 @@ const RoleMenu = () => {
             navigate(`/proyecto/usuarios/${proyecto.external_id}`, { state: { proyecto } });
         } else if (option === 'Asignar testers') {
             navigate(`/asignar/tester/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
-        } else if (option === 'Casos de prueba asignados') {
-            navigate(`/casos/prueba/asignados/${proyecto.external_id}`, { state: { proyecto } });
-        }else if (option === 'Ver peticiones') {
+        } else if (option === 'Ver peticiones') {
             window.location.assign('/peticiones/RI');
             setTimeout(() => {
                 window.location.reload();
@@ -168,8 +166,16 @@ const RoleMenu = () => {
             }, 100);
         } else if (option === 'Asignar desarrolladores') {
             navigate(`/asignar/desarrollador/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
+        } else if (option === 'Errores asigandos') {
+            navigate(`/errores/asignados/${proyecto.external_id}`);
+        } else if (option === 'Funcionalidades') {
+            navigate(`/lista/funcionalidades/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
+        }else if (option === 'Terminar proyecto') {
+            navigate(`/proyecto/terminar/${proyecto.external_id}`);
+        } else {
+            mensajes('Esta funcionalidad está en desarrollo de desarrollo.', 'info', 'Próximamente');
         }
-    };
+    }
 
     const handleCloseNewProjectModal = () => {
         setShowNewProjectModal(false);
@@ -218,8 +224,8 @@ const RoleMenu = () => {
                                     {isOpen && <span>Gestionar usuarios</span>}
                                 </li>
 
-                                   {/* [Petciones cambio clave] */}
-                                <li className="p-2 mb-1" onClick={() =>   navigate('/peticiones/clave')}
+                                {/* [Petciones cambio clave] */}
+                                <li className="p-2 mb-1" onClick={() => navigate('/peticiones/clave')}
                                     style={{
                                         cursor: 'pointer',
                                         display: 'flex',
@@ -305,7 +311,7 @@ const RoleMenu = () => {
                     <Modal.Title>Editar Proyecto</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <NuevoProyecto external_id_proyecto={external_id} />
+                    <NuevoProyecto external_id_proyecto={external_id_proyecto} />
                 </Modal.Body>
             </Modal>
 
