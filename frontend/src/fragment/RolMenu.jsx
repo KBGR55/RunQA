@@ -14,7 +14,7 @@ const RoleMenu = () => {
     const [proyecto, setProyecto] = useState({});
     const [isOpen, setIsOpen] = useState(true);
     const [activeMenu, setActiveMenu] = useState(null);
-    const { external_id } = useParams();
+    const { external_id_proyecto } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
     const [selectedRoleId, setSelectedRoleId] = useState(null);
@@ -28,7 +28,7 @@ const RoleMenu = () => {
             try {
                 const info = await peticionGet(
                     getToken(),
-                    `rol_proyecto/listar/entidad?id_entidad=${getUser().user.id}&external_id_proyecto=${external_id}`
+                    `rol_proyecto/listar/entidad?id_entidad=${getUser().user.id}&external_id_proyecto=${external_id_proyecto}`
                 );
                 if (info.code !== 200 && info.msg === 'Acceso denegado. Token ha expirado') {
                     borrarSesion();
@@ -88,7 +88,7 @@ const RoleMenu = () => {
         fetchRoles();
         fetchRolAdministrador();
         fetchRolesEntidad();
-    }, [external_id, navigate]);
+    }, [external_id_proyecto, navigate]);
 
     useEffect(() => {
         if (isFirstLoad.current) {
@@ -307,7 +307,7 @@ const RoleMenu = () => {
                     <Modal.Title>Editar Proyecto</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <NuevoProyecto external_id_proyecto={external_id} />
+                    <NuevoProyecto external_id_proyecto={external_id_proyecto} />
                 </Modal.Body>
             </Modal>
 

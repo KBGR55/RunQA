@@ -114,7 +114,7 @@ const VerError = () => {
 
                     <div className="col-md-6 mb-4">
                         <div className="card p-3 shadow-sm card-custom-bord ">
-                            <h5 className="titulo-secundario mb-3" style={{ textAlign: 'initial' }}>Detalles del Error</h5>
+                            <h5 className="titulo-secundario mb-3" style={{ textAlign: 'initial' }}>Detalles del error</h5>
                             <div className="d-flex justify-content-around align-items-center flex-wrap gap-2">
                                 <div className="d-flex flex-column align-items-center">
                                     <p><span className="fw-bold">Estado</span></p>
@@ -139,7 +139,7 @@ const VerError = () => {
                                                     </thead>
                                                     <tbody>
                                                         <tr>
-                                                            <td>CRITICO</td>
+                                                            <td>CRÍTICA</td>
                                                             <td>Compromete el sistema completo, urgente.</td>
                                                         </tr>
                                                         <tr>
@@ -159,7 +159,7 @@ const VerError = () => {
                                     </OverlayTrigger></strong>
                                     <span className={`badge ${dataErrror?.severidad === 'MEDIA' ? 'bg-warning' :
                                         dataErrror?.severidad === 'BAJA' ? 'bg-success' :
-                                            dataErrror?.severidad === 'CRITICO' ? 'bg-dark' :
+                                            dataErrror?.severidad === 'CRÍTICA' ? 'bg-danger' :
                                                 'bg-secondary'}`}>
                                         {dataErrror?.severidad || 'No disponible'}
                                     </span>

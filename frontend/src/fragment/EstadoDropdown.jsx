@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { borrarSesion, getToken } from '../utilities/Sessionutil';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import mensajes from '../utilities/Mensajes';
 import { useNavigate } from 'react-router-dom';
+import swal from 'sweetalert';  // Asegúrate de tener SweetAlert instalado
 
 const EstadoDropdown = ({ currentEstado, onChangeEstado, id_error }) => {
     const navigate = useNavigate();
     const estados = ['NUEVO', 'CORRECCION', 'CERRADO', 'PENDIENTE_VALIDACION'];
-    
+
     const getColorClass = (estado) => {
         switch (estado) {
             case 'NUEVO':
@@ -25,17 +26,26 @@ const EstadoDropdown = ({ currentEstado, onChangeEstado, id_error }) => {
     };
 
     const handleEstadoChange = (estado) => {
-        peticionGet(getToken(), `error/cambiar/estado/${estado}/${id_error}`).then((info) => {
-            if (info.code === 200) {
-                onChangeEstado(estado);  // Actualiza el estado en VerError
-            } else {
-                borrarSesion();
-                mensajes(info.mensajes);
-                navigate("main");
+        swal({
+            title: `¿Está seguro de cambiar el estado a ${estado}?`,
+            text: "Esta acción no se puede deshacer.",
+            icon: "warning",
+            buttons: ["Cancelar", "Sí, cambiar"],
+            dangerMode: true,
+        }).then((willChange) => {
+            if (willChange) {
+                peticionGet(getToken(), `error/cambiar/estado/${estado}/${id_error}`).then((info) => {
+                    if (info.code === 200) {
+                        onChangeEstado(estado);  // Actualiza el estado en VerError
+                    } else {
+                        borrarSesion();
+                        mensajes(info.mensajes);
+                        navigate("main");
+                    }
+                });
             }
         });
     };
-    
 
     return (
         <div className="d-flex align-items-center">

@@ -132,29 +132,34 @@ const NuevoProyecto = () => {
                         ></textarea>
                         {errors.description && <div className="alert alert-danger">{errors.description.message}</div>}
                     </div>
+                {!external_id_proyecto &&(
 
-                    <div className="">
-                        <label htmlFor="horasDiarias" className="form-label d-flex align-items-center">
-                            <strong style={{ color: 'red' }}>* </strong>Horas diarias a trabajar como líder
-                        </label>
-                        <input
-                            type="number"
-                            id="horasDiarias"
-                            className={`form-control ${errors.horasDiarias ? 'is-invalid' : ''}`}
-                            {...register('horasDiarias', {
-                                required: 'Las horas diarias son obligatorias',
-                                min: { value: 1, message: 'Debe ser al menos 1 hora' },
-                                max: { value: 24, message: 'Por favor, ingrese un valor válido. Recuerde que un día solo tiene 24 horas.' },
-                            })}
-                        />
-                        {errors.horasDiarias && <div className="alert alert-danger">{errors.horasDiarias.message}</div>}
-                        {horasDiarias > 8 && (
-                            <span className="mensajeerror">
-                                Al trabajar más de 8 horas, reconoce que está aceptando un mayor nivel de compromiso.
-                            </span>
-                        )}
+<div className="">
+<label htmlFor="horasDiarias" className="form-label d-flex align-items-center">
+    <strong style={{ color: 'red' }}>* </strong>Horas diarias a trabajar como líder
+</label>
+<input
+    type="number"
+    id="horasDiarias"
+    className={`form-control ${errors.horasDiarias ? 'is-invalid' : ''}`}
+    {...register('horasDiarias', {
+        required: 'Las horas diarias son obligatorias',
+        min: { value: 1, message: 'Debe ser al menos 1 hora' },
+        max: { value: 24, message: 'Por favor, ingrese un valor válido. Recuerde que un día solo tiene 24 horas.' },
+    })}
+/>
+{errors.horasDiarias && <div className="alert alert-danger">{errors.horasDiarias.message}</div>}
+{horasDiarias > 8 && (
+    <span className="mensajeerror">
+        Al trabajar más de 8 horas, reconoce que está aceptando un mayor nivel de compromiso.
+    </span>
+)}
 
-                    </div>
+</div>
+                )
+
+                    
+                }
 
                     <div className="contenedor-filo">
                         <button type="button" onClick={handleCancelClick} className="btn-negativo">

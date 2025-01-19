@@ -9,6 +9,8 @@ import { getToken, getUser } from '../utilities/Sessionutil';
 import { useNavigate, useParams } from 'react-router-dom';
 import swal from 'sweetalert';
 import AsignarTesterModal from '../fragment/ModalAsignar';
+import { Form } from 'react-bootstrap';
+import DatePicker from 'react-datepicker';
 
 const CasoPrueba = () => {
     const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm();
@@ -21,6 +23,7 @@ const CasoPrueba = () => {
     const [clasificaciones] = useState(['ALTA', 'MEDIA', 'BAJA']);
     const [estados] = useState(['DUPLICADO', 'BLOQUEADO', 'RECHAZADO', 'APROBADO']);
     const [funcionalidades, setFuncionalidades] = useState([]);
+    const [fechaLimitePrueba, setFechaLimitePrueba] = useState(null);
     const [estadoSeleccionado, setEstadoSeleccionado] = useState('APROBADO');
     const [tiposPrueba] = useState([
         'FUNCIONAL', 'INTEGRACION', 'SISTEMA', 'REGRESION', 'EXPLORATORIA',
@@ -63,6 +66,7 @@ const CasoPrueba = () => {
                         if (casoPruebaData.funcionalidad?.id) {
                             setValue('funcionalidad', casoPruebaData.funcionalidad.id);
                         }
+                        setFechaLimitePrueba(new Date(casoPruebaData.fecha_limite_ejecucion));
                     } else {
                         mensajes(`Error al obtener caso de prueba: ${response.msg}`, 'error');
                     }
@@ -117,7 +121,8 @@ const CasoPrueba = () => {
             "precondiciones": data.precondiciones,
             "datos_entrada": data.datos_entrada,
             "fecha_ejecucion_prueba": data.fecha_ejecucion_prueba,
-            "external_proyecto": external_id_proyecto
+            "external_proyecto": external_id_proyecto,
+            'fecha_limite_ejecucion': fechaLimitePrueba
         };
 
         try {
@@ -165,7 +170,7 @@ const CasoPrueba = () => {
     return (
         <div className="contenedor-carta">
             <form className="form-sample" onSubmit={handleSubmit(onSubmit)}>
-                <p className="titulo-proyecto"> {infoProyecto.nombre}</p>
+                <p className="titulo-proyecto">{infoProyecto.nombre}</p>
                 {!external_id ? (<h2 className='titulo-primario '>Registrar caso de prueba</h2>) : <p className="titulo-primario">Editar caso de prueba</p>}
                 <div className="row">
                     <div className="col-md-4">
@@ -316,6 +321,23 @@ const CasoPrueba = () => {
                                 <div className='alert alert-danger'>Ingrese los pasos del caso de prueba</div>
                             )}
                         </div>
+                    </div>
+
+                    <div className="col-md-2">
+
+                        <Form.Group controlId="fecha_limite_ejecucion" className="mt-2">
+                            <label className='titulo-campos'><strong > </strong>Fecha limite de ejecución</label>
+                            <DatePicker
+                                selected={fechaLimitePrueba}
+                                value={fechaLimitePrueba}
+                                onChange={date => setFechaLimitePrueba(date)}
+                                dateFormat="yyyy/MM/dd"
+                                className="form-control"
+                                placeholderText="Selecciona la fecha"
+                                minDate={new Date()}
+                                popperPlacement="bottom-start"
+                            />
+                        </Form.Group>
                     </div>
 
                     <div className="col-md-12">

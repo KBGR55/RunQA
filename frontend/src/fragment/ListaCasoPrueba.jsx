@@ -99,7 +99,7 @@ const ListaCasoPrueba = () => {
         <div className='container-fluid'>
             <div className='contenedor-centro'>
                 <div className="contenedor-carta">
-                    <p className="titulo-proyecto"> {infoProyecto.nombre}</p>
+                    <p className="titulo-proyecto">{infoProyecto.nombre}</p>
                     <div className='contenedor-filo'>
                         <Button
                             className="btn-normal mb-3"

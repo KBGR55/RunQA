@@ -214,6 +214,7 @@ class CasoPruebaController {
                     datos_entrada: req.body.datos_entrada,
                     id_proyecto: proyecto.id,
                     id_funcionalidad: req.body.funcionalidad,
+                    fecha_limite_ejecucion: req.body.fecha_limite_ejecucion? req.body.fecha_limite_ejecucion : null
                 });
 
                 res.json({ msg: "Caso de prueba registrado con éxito", code: 200, info: nuevoCaso.external_id });

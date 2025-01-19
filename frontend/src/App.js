@@ -4,7 +4,6 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Login from './fragment/Login';
 import Registrar from './fragment/Registrar';
-import Main from './fragment/Main';
 import Perfil from './fragment/Perfil';
 import CasoPrueba from './fragment/CasoPrueba';
 import ListaProyectos from './fragment/ListaProyectos';
@@ -52,7 +51,7 @@ function App() {
         <Route path='/olvidar/clave' element={<OlvidoClave />} />
         <Route path='/cambio/clave/restablecer/:external_id/:token' element={<CambioClave />} />
         <Route element={<LayoutComponent />}>
-          <Route path='/presentacion/:external_id' element={<MiddewareSesion><PresentacionProyecto /></MiddewareSesion>} />
+          <Route path='/presentacion/:external_id_proyecto' element={<MiddewareSesion><PresentacionProyecto /></MiddewareSesion>} />
           <Route path='/usuarios' element={<MiddewareSesion><ListaUsuarios /></MiddewareSesion>} />
           <Route path='/peticiones/registro' element={<MiddewareSesion><VerPeticion /></MiddewareSesion>} />
           <Route path='/peticiones/clave' element={<MiddewareSesion><VerPeticionesClave /></MiddewareSesion>} />
@@ -64,7 +63,7 @@ function App() {
           <Route path='/caso-prueba/:external_id_proyecto/:external_id' element={<MiddewareSesion><VerCasoPrueba /></MiddewareSesion>} />
           <Route path='/perfil' element={<MiddewareSesion><Perfil /></MiddewareSesion>} />
           <Route path='/proyecto/usuarios/:external_id_proyecto' element={<MiddewareSesion><UsuarioProyecto /></MiddewareSesion>} />
-          <Route path="/proyecto/:external_id" element={<MiddewareSesion><RolMenu /></MiddewareSesion>} />
+          <Route path="/proyecto/:external_id_proyecto" element={<MiddewareSesion><RolMenu /></MiddewareSesion>} />
           <Route path='/asignar/tester/:external_id_proyecto' element={<MiddewareSesion><AsignarCasosPrueba /></MiddewareSesion>} />
           <Route path='/asignar/desarrollador/:external_id_proyecto' element={<MiddewareSesion><AsignarErrores /></MiddewareSesion>} />
           <Route path='/casos/prueba/asignados/:external_id_proyecto' element={<MiddewareSesion><ListaCasosAsignados /></MiddewareSesion>} />

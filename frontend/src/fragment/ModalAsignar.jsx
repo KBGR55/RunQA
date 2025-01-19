@@ -134,7 +134,8 @@ const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, ext
                 <Modal.Title className='titulo-primario'>Asignar Tester</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form.Group controlId="formTesters">
+                {!selectedTester && (
+                    <Form.Group controlId="formTesters">
                     <Form.Label>Seleccionar Tester</Form.Label>
                     <Form.Control
                         as="select"
@@ -149,8 +150,7 @@ const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, ext
                             </option>
                         ))}
                     </Form.Control>
-                </Form.Group>
-
+                </Form.Group>)}
                 {selectedTester && (
                     <div className="mt-4">
                         <h6 style={{ fontWeight: 'bold', color: '#3FA2F6' }}>Tester Seleccionado:</h6>

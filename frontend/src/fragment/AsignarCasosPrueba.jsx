@@ -72,7 +72,7 @@ const AsignarCasosPrueba = () => {
             <div className='contenedor-fluid'>
                 <div className='contenedor-centro'>
                     <div className="contenedor-carta">
-                    <p className="titulo-proyecto">  Proyecto "{infoProyecto.nombre}"</p>
+                    <p className="titulo-proyecto">{infoProyecto.nombre}</p>
                         <div className='contenedor-filo'>
                             <Button
                                 className="btn-login"
