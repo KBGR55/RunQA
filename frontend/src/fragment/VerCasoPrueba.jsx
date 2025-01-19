@@ -401,8 +401,9 @@ const VerCasoPrueba = () => {
                                 <div className="card p-3 shadow-sm card-custom-bord">
                                     <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Funcionalidad</h5>
                                     <ul className="w-100 text-start texto-normal" style={{ listStyleType: 'disc', paddingLeft: '20px' }}>
-                                        <li>{casosPrueba?.funcionalidad?.nombre || "No disponible"}</li>
-                                        <p><strong>Tipo:</strong> {casosPrueba?.funcionalidad?.tipo || "No disponible"}</p>
+                                        <span className="fw-bold" style={{ fontSize: '18px' }}>{casosPrueba?.funcionalidad?.nombre || "No disponible"}</span>
+                                        <li><strong>Tipo:</strong> {casosPrueba?.funcionalidad?.tipo || "No disponible"}</li>
+                                        <li><strong>Descripción:</strong> {casosPrueba?.funcionalidad?.descripcion || "No disponible"}</li>
                                     </ul>
                                 </div>
                             </div>

@@ -17,6 +17,7 @@ const ListaProyectos = () => {
     const [rolLider, setRolLider] = useState([]);
     const [showEditProjectModal, setShowEditProjectModal] = useState(false);
     const [selectedProjectId, setSelectedProjectId] = useState(null);
+    const [roles, setRoles] = useState([]);
     const navigate = useNavigate();
     const user = getUser().user;
 

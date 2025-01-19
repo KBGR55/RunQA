@@ -31,13 +31,17 @@ const CasoPrueba = () => {
     ]);
 
     useEffect(() => {
-        // Carga las funcionalidades del proyecto
         const fetchFuncionalidades = async () => {
             try {
                 const response = await peticionGet(getToken(), `funcionalidad/obtener/${external_id_proyecto}`);
                 if (response.code === 200) {
-                    setFuncionalidades(response.info);
-                } else {
+                    if (response.info && response.info.length > 0) {
+                        setFuncionalidades(response.info);
+                    } else if (response.info.length === 0){
+                        setFuncionalidades([]);
+                        mensajes('No existen funcionalidades registradas', 'warning', 'Advertencia');
+                    }
+                } else  {
                     setFuncionalidades([]);
                 }
             } catch (error) {
@@ -45,6 +49,7 @@ const CasoPrueba = () => {
                 console.error(error);
             }
         };
+        
     
         // Carga el caso de prueba si `external_id` existe
         const fetchCasoPrueba = async () => {
@@ -323,24 +328,7 @@ const CasoPrueba = () => {
                         </div>
                     </div>
 
-                    <div className="col-md-2">
-
-                        <Form.Group controlId="fecha_limite_ejecucion" className="mt-2">
-                            <label className='titulo-campos'><strong > </strong>Fecha limite de ejecución</label>
-                            <DatePicker
-                                selected={fechaLimitePrueba}
-                                value={fechaLimitePrueba}
-                                onChange={date => setFechaLimitePrueba(date)}
-                                dateFormat="yyyy/MM/dd"
-                                className="form-control"
-                                placeholderText="Selecciona la fecha"
-                                minDate={new Date()}
-                                popperPlacement="bottom-start"
-                            />
-                        </Form.Group>
-                    </div>
-
-                    <div className="col-md-12">
+                    <div className="col-md-10">
                         <div className="form-group">
                             <label className='titulo-campos'><strong style={{ color: 'red' }}>* </strong>Resultado Esperado</label>
                             <textarea
@@ -357,6 +345,23 @@ const CasoPrueba = () => {
                                 <div className='alert alert-danger'>{errors.resultado_esperado.message}</div>
                             )}
                         </div>
+                    </div>
+
+                    <div className="col-md-2">
+
+                        <Form.Group controlId="fecha_limite_ejecucion" className="mt-2">
+                            <label className='titulo-campos'><strong > </strong>Fecha limite de ejecución</label>
+                            <DatePicker
+                                selected={fechaLimitePrueba}
+                                value={fechaLimitePrueba}
+                                onChange={date => setFechaLimitePrueba(date)}
+                                dateFormat="yyyy/MM/dd"
+                                className="form-control"
+                                placeholderText="Selecciona la fecha"
+                                minDate={new Date()}
+                                popperPlacement="bottom-start"
+                            />
+                        </Form.Group>
                     </div>
 
                 </div>

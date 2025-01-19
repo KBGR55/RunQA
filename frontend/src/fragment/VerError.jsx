@@ -7,7 +7,7 @@ import mensajes from '../utilities/Mensajes';
 import { getToken, getUser } from '../utilities/Sessionutil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import { Button} from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import Reasignar from './Reasginar';
@@ -42,7 +42,7 @@ const VerError = () => {
                 const response = await peticionGet(getToken(), `error/obtener/external?external_id=${external_id_error}`);
                 if (response.code === 200) {
                     setDataErrror(response.info.errorEncontrado);
-                    setContrato(response.info.data);  
+                    setContrato(response.info.data);
                 } else {
                     mensajes(`Error al obtener error: ${response.msg}`, 'error');
                 }
@@ -97,6 +97,13 @@ const VerError = () => {
                 </div>
 
                 <div className="row mt-4">
+                    <div className="col-12 mb-4">
+                        <div className="card p-3 shadow-sm card-custom-bord">
+                            <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Descripción</h5>
+                            <p className="w-100 text-start texto-normal">{dataErrror?.descripcion || 'No disponible'}</p>
+                        </div>
+                    </div>
+
                     <div className="col-6 mb-4">
                         <div className="card p-3 shadow-sm card-custom-bord">
                             <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Caso de prueba</h5>
@@ -104,9 +111,13 @@ const VerError = () => {
                         </div>
                     </div>
                     <div className="col-6 mb-4">
-                        <div className="card p-3 shadow-sm card-custom-bord">
-                            <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Funcionalidad</h5>
-                            <p className="w-100 text-start texto-normal">{dataErrror?.caso_prueba?.funcionalidad?.nombre || 'No disponible'}</p>
+                        <div className="card p-3 shadow-sm card-custom-bord justify-content-start">
+                        <h5 className="titulo-secundario" style={{ textAlign: 'left' }}>Funcionalidad</h5>
+                            <ul className="w-100 text-start texto-normal" style={{ listStyleType: 'disc', paddingLeft: '20px' }}> 
+                                <span className="fw-bold" style={{ fontSize: '18px' }}>{dataErrror?.caso_prueba?.funcionalidad?.nombre || "No disponible"}</span>
+                                <li><strong>Tipo:</strong> {dataErrror?.caso_prueba?.funcionalidad?.tipo || "No disponible"}</li>
+                                <li><strong>Descripción:</strong> {dataErrror?.caso_prueba?.funcionalidad?.descripcion || "No disponible"}</li>
+                            </ul>
                         </div>
                     </div>
 

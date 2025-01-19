@@ -93,7 +93,7 @@ class ErrorController {
               {
                 model: models.funcionalidad,
                 as: "funcionalidad",
-                attributes: ["id", "external_id", "nombre"],
+                attributes: ["id", "external_id", "nombre", 'tipo', 'descripcion'],
               }
             ],
           },
@@ -185,7 +185,7 @@ class ErrorController {
 
       const [updated] = await error.update(
         {
-          descrripcion:
+          descripcion:
             req.body.descripcion || errorEncontrado.descripcion,
           titulo: req.body.titulo || errorEncontrado.titulo,
           severidad: req.body.severidad || errorEncontrado.severidad,
@@ -267,7 +267,7 @@ class ErrorController {
               {
                 model: models.funcionalidad,
                 as: "funcionalidad",
-                attributes: ["id", "external_id", "nombre"],
+                attributes: ["id", "external_id", "nombre", 'tipo', 'descripcion'],
               }
             ],
           },
