@@ -102,7 +102,7 @@ const PresentacionProyecto = () => {
     }, [external_id_proyecto]);
 
     const roleOptions = {
-        'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Editar proyecto', 'Funcionalidades', 'Generar reportes', 'Miembros'],
+        'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Funcionalidades', 'Generar reportes', 'Miembros'],
         'ANALISTA DE PRUEBAS': ['Asignar testers', 'Casos de prueba', 'Funcionalidades'],
         'TESTER': ['Asignar desarrolladores', 'Casos de prueba', 'Registrar errores'],
         'DESARROLLADOR': ['Consultar errores asignados', 'Errores asigandos']
