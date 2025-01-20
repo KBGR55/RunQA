@@ -67,7 +67,7 @@ class CasoPruebaController {
                         'nombre', 'estado', 'external_id', 'descripcion', 'estadoAsignacion',
                         'pasos', 'resultado_esperado', 'resultado_obtenido',
                         'clasificacion', 'tipo_prueba', 'precondiciones',
-                        'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada', 'id_funcionalidad'
+                        'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada', 'id_funcionalidad', 'fecha_limite_ejecucion'
                     ],
                     include: [
                         {
@@ -97,7 +97,7 @@ class CasoPruebaController {
                         'nombre', 'estado', 'external_id', 'descripcion', 'estadoAsignacion',
                         'pasos', 'resultado_esperado', 'resultado_obtenido',
                         'clasificacion', 'tipo_prueba', 'precondiciones',
-                        'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada'
+                        'fecha_disenio', 'fecha_ejecucion_prueba', 'datos_entrada', 'fecha_limite_ejecucion'
                     ],
                     include: [
                         {
@@ -131,7 +131,7 @@ class CasoPruebaController {
                     'id', 'nombre', 'estado', 'external_id', 'descripcion', 'estadoAsignacion',
                     'pasos', 'resultado_esperado', 'resultado_obtenido', 'clasificacion',
                     'tipo_prueba', 'precondiciones', 'fecha_disenio', 'fecha_ejecucion_prueba',
-                    'id_proyecto', 'datos_entrada', 'id_funcionalidad'
+                    'id_proyecto', 'datos_entrada', 'id_funcionalidad', 'fecha_limite_ejecucion'
                 ],
                 include: [
                     {

@@ -687,13 +687,13 @@ class ProyectoController {
 
         if (contratosActivos > 0) {
           return res.status(400).json({
-            msg: `No se puede eliminar el rol ${rolNombre} porque tiene contratos activos.`,
+            msg: `No se puede eliminar el rol ${rolNombre} porque tiene tareas activas.`,
             code: 400,
           });
         }
       }
 
-      const rolesCriticos = ["LIDER DE CALIDAD", "ANALISTA DE PRUEBAS"];
+      const rolesCriticos = ["LIDER DE CALIDAD"];
 
       if (rolesCriticos.includes(rolNombre)) {
         try {

@@ -37,11 +37,11 @@ const CasoPrueba = () => {
                 if (response.code === 200) {
                     if (response.info && response.info.length > 0) {
                         setFuncionalidades(response.info);
-                    } else if (response.info.length === 0){
+                    } else if (response.info.length === 0) {
                         setFuncionalidades([]);
                         mensajes('No existen funcionalidades registradas', 'warning', 'Advertencia');
                     }
-                } else  {
+                } else {
                     setFuncionalidades([]);
                 }
             } catch (error) {
@@ -49,8 +49,9 @@ const CasoPrueba = () => {
                 console.error(error);
             }
         };
-        
-    
+
+
+        // Carga el caso de prueba si `external_id` existe
         // Carga el caso de prueba si `external_id` existe
         const fetchCasoPrueba = async () => {
             if (external_id) {
@@ -58,7 +59,7 @@ const CasoPrueba = () => {
                     const response = await peticionGet(getToken(), `caso/prueba/obtener/${getUser().user.id}?external_id=${external_id}`);
                     if (response.code === 200) {
                         const casoPruebaData = response.info.caso;
-    
+
                         // Establecer valores del caso de prueba
                         setValue('nombre', casoPruebaData.nombre);
                         setValue('descripcion', casoPruebaData.descripcion);
@@ -71,7 +72,11 @@ const CasoPrueba = () => {
                         if (casoPruebaData.funcionalidad?.id) {
                             setValue('funcionalidad', casoPruebaData.funcionalidad.id);
                         }
-                        setFechaLimitePrueba(new Date(casoPruebaData.fecha_limite_ejecucion));
+
+                        const formattedDate = casoPruebaData.fecha_limite_ejecucion
+                            ? new Date(casoPruebaData.fecha_limite_ejecucion)
+                            : null; 
+                        setFechaLimitePrueba(formattedDate);
                     } else {
                         mensajes(`Error al obtener caso de prueba: ${response.msg}`, 'error');
                     }
@@ -80,11 +85,11 @@ const CasoPrueba = () => {
                 }
             }
         };
-    
+
         // Ejecutar ambas llamadas a la API
         fetchFuncionalidades().then(fetchCasoPrueba);
     }, [external_id, external_id_proyecto, setValue]);
-    
+
 
 
     const handleCancelClick = () => {
@@ -353,7 +358,6 @@ const CasoPrueba = () => {
                             <label className='titulo-campos'><strong > </strong>Fecha limite de ejecución</label>
                             <DatePicker
                                 selected={fechaLimitePrueba}
-                                value={fechaLimitePrueba}
                                 onChange={date => setFechaLimitePrueba(date)}
                                 dateFormat="yyyy/MM/dd"
                                 className="form-control"
@@ -362,6 +366,7 @@ const CasoPrueba = () => {
                                 popperPlacement="bottom-start"
                             />
                         </Form.Group>
+
                     </div>
 
                 </div>
