@@ -36,9 +36,7 @@ const CasoPrueba = () => {
                 const response = await peticionGet(getToken(), `funcionalidad/obtener-activos/${external_id_proyecto}`);
                 if (response.code === 200) {
                     if (response.info && response.info.length > 0) {
-                        setFuncionalidades(response.info);
-                        console.log("wwwwwwwwwwww", response.info);
-                        
+                        setFuncionalidades(response.info);                        
                     } else if (response.info.length === 0){
                         setFuncionalidades([]);
                         mensajes('No existen funcionalidades registradas', 'warning', 'Advertencia');
