@@ -97,7 +97,7 @@ const ListaFuncionalidades = () => {
             <div className="contenedor-centro">
                 <div className="contenedor-carta">
                     <div className="d-flex justify-content-between align-items-center mb-3">
-                        <p className="titulo-primario">Lista de Funcionalidades</p>
+                        <p className="titulo-primario">Lista de funcionalidades clasificadas</p>
                         <Button className="btn-normal" onClick={() => handleShowModal()}>
                             <FontAwesomeIcon icon={faPlus} /> Agregar
                         </Button>

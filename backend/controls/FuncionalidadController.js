@@ -2,6 +2,7 @@
 const { validationResult } = require('express-validator');
 const models = require('../models');
 const uuid = require('uuid');
+const { where } = require('sequelize');
 
 class FuncionalidadController {
     async listar(req, res) {
@@ -22,12 +23,12 @@ class FuncionalidadController {
         }
     }
 
-    async obtenerFuncionalidadesProyecto(req, res) {
+    async obtenerFuncionalidadesActivasProyecto(req, res) {
         const { external_id } = req.params;
         
         try {
             const externalproyecto = await models.proyecto.findOne({
-                where: { external_id: external_id },
+                where: { external_id: external_id},
             });
 
             if (!externalproyecto) {
@@ -35,7 +36,39 @@ class FuncionalidadController {
             }
 
             const funcionalidades = await models.funcionalidad.findAll({
-                where: { id_proyecto: externalproyecto.id },
+                where: { id_proyecto: externalproyecto.id, estado: 1 },
+                attributes: ['external_id', 'nombre', 'estado', 'tipo', 'id', 'descripcion'],
+                include: [
+                    {
+                        model: models.entidad,
+                        attributes: ['nombres', 'apellidos']
+                    }
+                ]
+            });
+
+            if (!funcionalidades) {
+                return res.status(404).json({ msg: 'No hay funcionalidades registradas', code: 404 });
+            }
+
+            res.json({ msg: 'OK', code: 200, info: funcionalidades });
+        } catch (error) {
+            res.status(500).json({ msg: 'Error al obtener la funcionalidad: ' + error, code: 500 });
+        }
+    }
+    async obtenerFuncionalidadesProyecto(req, res) {
+        const { external_id } = req.params;
+        
+        try {
+            const externalproyecto = await models.proyecto.findOne({
+                where: { external_id: external_id},
+            });
+
+            if (!externalproyecto) {
+                return res.status(404).json({ msg: 'Proyecto no encontrado', code: 404 });
+            }
+
+            const funcionalidades = await models.funcionalidad.findAll({
+                where: { id_proyecto: externalproyecto.id  },
                 attributes: ['external_id', 'nombre', 'estado', 'tipo', 'id', 'descripcion'],
                 include: [
                     {

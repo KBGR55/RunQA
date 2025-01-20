@@ -101,7 +101,7 @@ const AgregarFuncionalidad = ({ funcionalidad, external_id_proyecto, onClose }) 
 
                 <div className="col-md-12">
                     <div className="form-group">
-                    <Form.Label><strong style={{ color: 'red' }}>* </strong>Tipo</Form.Label>
+                    <Form.Label><strong style={{ color: 'red' }}>* </strong>Origen</Form.Label>
                         <select
                             className="form-control"
                             defaultValue=""
