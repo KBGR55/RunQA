@@ -51,14 +51,15 @@ class CasoPruebaController {
                     }
                 }
             });
-
+if (!rolesEntidad) {
+    return res.status(404).json({ msg: "No hay roles asignados a la entidad", code: 404 });
+}
             // Extraer los nombres de los roles
             const nombresRoles = rolesEntidad.map(item => item.rol_entidad.rol.nombre);
 
             // Verificar si tiene roles de calidad
             const rolesCalidad = ['LIDER DE CALIDAD', 'ANALISTA DE PRUEBAS'];
             const tieneRolCalidad = nombresRoles.some(rol => rolesCalidad.includes(rol));
-
             if (tieneRolCalidad) {
                 // Retornar todos los casos de prueba
                 const listar = await caso_prueba.findAll({
@@ -76,7 +77,6 @@ class CasoPruebaController {
                         }    
                     ]
                 });
-
                 return res.json({ msg: 'OK!', code: 200, info: listar });
             } else {
                 // Retornar casos de prueba específicos según el contrato
