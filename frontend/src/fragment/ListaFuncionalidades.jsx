@@ -14,6 +14,7 @@ import swal from 'sweetalert';
 
 const ListaFuncionalidades = () => {
     const [funcionalidades, setFuncionalidades] = useState([]);
+    const [isLoading, setIsLoading] = useState(true); // Nuevo estado
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const { external_id_proyecto } = useParams();
@@ -23,6 +24,7 @@ const ListaFuncionalidades = () => {
 
     useEffect(() => {
         const fetchFuncionalidades = async () => {
+            setIsLoading(true); // Inicia la carga
             try {
                 const response = await peticionGet(getToken(), `funcionalidad/obtener/${external_id_proyecto}`);
                 if (response.code === 200) {
@@ -33,6 +35,8 @@ const ListaFuncionalidades = () => {
             } catch (error) {
                 mensajes("Error al cargar funcionalidades", "error", "Error");
                 console.error(error);
+            } finally {
+                setIsLoading(false); // Finaliza la carga
             }
         };
 
@@ -47,6 +51,15 @@ const ListaFuncionalidades = () => {
     const handleCloseModal = () => {
         setFuncionalidadSeleccionada(null);
         setShowModal(false);
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
     };
 
     const handleChangeStateFuncionalidad = async (external_id, isReactivating = false) => {
@@ -83,15 +96,6 @@ const ListaFuncionalidades = () => {
         }, {})
         : {};
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
-
     return (
         <div className="container-fluid">
             <div className="contenedor-centro">
@@ -103,75 +107,79 @@ const ListaFuncionalidades = () => {
                         </Button>
                     </div>
 
-                    {Object.keys(funcionalidadesPorTipo).length > 0 ? (
-                        <div className="accordion" id="accordionExample">
-                            {Object.entries(funcionalidadesPorTipo).map(([tipo, funcionalidades], index) => {
-                                const tipoColorClass = {
-                                    REQUISITO: { background: 'var(--color-secundario)', color: 'var(--color-cuarto)', fontWeight: 'bold' },
-                                    "CASO DE USO": { background: 'var(--morado-bebe)', color: 'var(--color-cuarto)', fontWeight: 'bold' },
-                                    "HISTORIA DE USUARIO": { background: 'var(--color-terciario)', color: 'var(--color-cuarto)', fontWeight: 'bold' },
-                                    "REGLA DE NEGOCIO": { background: 'var(--color-primario)', color: 'var(--color-cuarto)', fontWeight: 'bold' },
-                                }[tipo] || { background: '#6c757d', color: '#fff' };
+                    {isLoading ? (
+                        <div className="alert alert-info" role="alert">
+                            Cargando funcionalidades...
+                        </div>
+                    ) : (
+                        Object.keys(funcionalidadesPorTipo).length > 0 ? (
+                            <div className="accordion" id="accordionExample">
+                                {Object.entries(funcionalidadesPorTipo).map(([tipo, funcionalidades], index) => {
+                                    const tipoColorClass = {
+                                        REQUISITO: { background: 'var(--color-secundario)', color: 'var(--color-cuarto)', fontWeight: 'bold' },
+                                        "CASO DE USO": { background: 'var(--morado-bebe)', color: 'var(--color-cuarto)', fontWeight: 'bold' },
+                                        "HISTORIA DE USUARIO": { background: 'var(--color-terciario)', color: 'var(--color-cuarto)', fontWeight: 'bold' },
+                                        "REGLA DE NEGOCIO": { background: 'var(--color-primario)', color: 'var(--color-cuarto)', fontWeight: 'bold' },
+                                    }[tipo] || { background: '#6c757d', color: '#fff' };
 
-                                return (
-                                    <div className="accordion-item" key={index}>
-                                        <h2 className="accordion-header" id={`heading${index}`}>
-                                            <button
-                                                className="accordion-button collapsed"
-                                                type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target={`#collapse${index}`}
-                                                aria-expanded="false"
-                                                aria-controls={`collapse${index}`}
-                                                style={tipoColorClass}
+                                    return (
+                                        <div className="accordion-item" key={index}>
+                                            <h2 className="accordion-header" id={`heading${index}`}>
+                                                <button
+                                                    className="accordion-button collapsed"
+                                                    type="button"
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target={`#collapse${index}`}
+                                                    aria-expanded="false"
+                                                    aria-controls={`collapse${index}`}
+                                                    style={tipoColorClass}
+                                                >
+                                                    {tipo}
+                                                </button>
+                                            </h2>
+                                            <div
+                                                id={`collapse${index}`}
+                                                className="accordion-collapse collapse"
+                                                aria-labelledby={`heading${index}`}
+                                                data-bs-parent="#accordionExample"
                                             >
-                                                {tipo}
-                                            </button>
-                                        </h2>
-                                        <div
-                                            id={`collapse${index}`}
-                                            className="accordion-collapse collapse"
-                                            aria-labelledby={`heading${index}`}
-                                            data-bs-parent="#accordionExample"
-                                        >
-                                            <div className="accordion-body">
-                                                <div className="table-responsive">
-                                                    <table className="table table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th className="text-center">Nombre</th>
-                                                                <th className="text-center">Descripción</th>
-                                                                <th className="text-center">Registrada por</th>
-                                                                <th className="text-center">Estado</th>
-                                                                <th className="text-center">Acciones</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {funcionalidades.map((funcionalidad, idx) => (
-                                                                <tr key={idx}>
-                                                                    <td>{funcionalidad.nombre || "No disponible"}</td>
-                                                                    <td>{funcionalidad.descripcion || "No disponible"}</td>
-                                                                    <td>
-                                                                        {(funcionalidad.entidad && funcionalidad.entidad.nombres && funcionalidad.entidad.apellidos)
-                                                                            ? `${funcionalidad.entidad.nombres} ${funcionalidad.entidad.apellidos}`
-                                                                            : "No disponible"}
-                                                                    </td>
-                                                                    <td className="text-center">
-                                                                        <span
-                                                                            style={{
-                                                                                display: 'inline-block',
-                                                                                padding: '0.25em 0.5em',
-                                                                                borderRadius: '5px',
-                                                                                color: '#fff',
-                                                                                fontWeight: 'bold',
-                                                                                backgroundColor: funcionalidad.estado ? '#21BF73' : '#FD5E53',
-                                                                            }}
-                                                                        >
-                                                                            {funcionalidad.estado ? "Activo" : "Inactivo"}
-                                                                        </span>
-                                                                    </td>
-
-                                                                    <td className="text-center">
+                                                <div className="accordion-body">
+                                                    <div className="table-responsive">
+                                                        <table className="table table-striped">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th className="text-center">Nombre</th>
+                                                                    <th className="text-center">Descripción</th>
+                                                                    <th className="text-center">Registrada por</th>
+                                                                    <th className="text-center">Estado</th>
+                                                                    <th className="text-center">Acciones</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {funcionalidades.map((funcionalidad, idx) => (
+                                                                    <tr key={idx}>
+                                                                        <td>{funcionalidad.nombre || "No disponible"}</td>
+                                                                        <td>{funcionalidad.descripcion || "No disponible"}</td>
+                                                                        <td>
+                                                                            {(funcionalidad.entidad && funcionalidad.entidad.nombres && funcionalidad.entidad.apellidos)
+                                                                                ? `${funcionalidad.entidad.nombres} ${funcionalidad.entidad.apellidos}`
+                                                                                : "No disponible"}
+                                                                        </td>
+                                                                        <td className="text-center">
+                                                                            <span
+                                                                                style={{
+                                                                                    display: 'inline-block',
+                                                                                    padding: '0.25em 0.5em',
+                                                                                    borderRadius: '5px',
+                                                                                    color: '#fff',
+                                                                                    fontWeight: 'bold',
+                                                                                    backgroundColor: funcionalidad.estado ? '#21BF73' : '#FD5E53',
+                                                                                }}
+                                                                            >
+                                                                                {funcionalidad.estado ? "Activo" : "Inactivo"}
+                                                                            </span>
+                                                                        </td>
+                                                                        <td className="text-center">
                                                                         {funcionalidad.estado && (
                                                                             <Button
                                                                                 variant="btn btn-outline-info btn-rounded"
@@ -201,33 +209,33 @@ const ListaFuncionalidades = () => {
                                                                             <FontAwesomeIcon icon={funcionalidad.estado ? faTrash : faRedoAlt} />
                                                                         </Button>
                                                                     </td>
-                                                                </tr>
-                                                            ))}
-                                                        </tbody>
-                                                    </table>
+                                                                    </tr>
+                                                                ))}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <TablePagination
+                                                        rowsPerPageOptions={[10, 25, 100]}
+                                                        component="div"
+                                                        count={funcionalidades.length}
+                                                        rowsPerPage={rowsPerPage}
+                                                        page={page}
+                                                        onPageChange={handleChangePage}
+                                                        onRowsPerPageChange={handleChangeRowsPerPage}
+                                                    />
                                                 </div>
-                                                <TablePagination
-                                                    rowsPerPageOptions={[10, 25, 100]}
-                                                    component="div"
-                                                    count={funcionalidades.length}
-                                                    rowsPerPage={rowsPerPage}
-                                                    page={page}
-                                                    onPageChange={handleChangePage}
-                                                    onRowsPerPageChange={handleChangeRowsPerPage}
-                                                />
                                             </div>
                                         </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    ) : (
-                        <div className="alert alert-success" role="alert">
-                            No hay funcionalidades generadas.
-                        </div>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <div className="alert alert-success" role="alert">
+                                No hay funcionalidades generadas.
+                            </div>
+                        )
                     )}
                 </div>
-
                 {/* Modal para agregar o editar funcionalidades */}
                 <Modal show={showModal} onHide={handleCloseModal} backdrop="static" keyboard={false}>
                     <Modal.Header closeButton>
@@ -249,3 +257,4 @@ const ListaFuncionalidades = () => {
 };
 
 export default ListaFuncionalidades;
+

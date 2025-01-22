@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Form } from 'react-bootstrap';
-import { peticionGet, peticionPost } from '../utilities/hooks/Conexion';
-import { useNavigate, useParams } from 'react-router-dom';
+import { peticionPost } from '../utilities/hooks/Conexion';
 import { getToken, getUser } from '../utilities/Sessionutil';
 import mensajes from '../utilities/Mensajes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
 
-
 const AgregarFuncionalidad = ({ funcionalidad, external_id_proyecto, onClose }) => {
-    const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors, isValid }, reset, setValue } = useForm({ mode: 'onChange' });
     const isEditMode = Boolean(funcionalidad);
     const [tipo] = useState(['REQUISITO', 'CASO DE USO', 'HISTORIA DE USUARIO', 'REGLA DE NEGOCIO']);
@@ -53,7 +50,6 @@ const AgregarFuncionalidad = ({ funcionalidad, external_id_proyecto, onClose }) 
         } catch (error) {
             mensajes("Error al guardar la funcionalidad", "error");
         }
-        
     };
 
     return (
@@ -61,12 +57,16 @@ const AgregarFuncionalidad = ({ funcionalidad, external_id_proyecto, onClose }) 
             <form className="form-sample" onSubmit={handleSubmit(onSubmit)}>
                 <div className="col-md-12">
                     <div className="form-group">
-                    <Form.Label><strong style={{ color: 'red' }}>* </strong>Título</Form.Label>
+                        <Form.Label><strong style={{ color: 'red' }}>* </strong>Título</Form.Label>
                         <input
                             type="text"
                             className="form-control"
                             {...register('nombre', {
                                 required: 'El título es obligatorio',
+                                minLength: {
+                                    value: 3,
+                                    message: 'El título debe tener al menos 3 caracteres'
+                                },
                                 maxLength: {
                                     value: 100,
                                     message: 'El título no puede tener más de 100 caracteres'
@@ -82,11 +82,15 @@ const AgregarFuncionalidad = ({ funcionalidad, external_id_proyecto, onClose }) 
 
                 <div className="col-md-12">
                     <div className="form-group">
-                    <Form.Label><strong style={{ color: 'red' }}>* </strong>Descripción</Form.Label>
+                        <Form.Label><strong style={{ color: 'red' }}>* </strong>Descripción</Form.Label>
                         <textarea
                             className="form-control"
                             {...register('descripcion', {
                                 required: 'La descripción es obligatoria',
+                                minLength: {
+                                    value: 10,
+                                    message: 'La descripción debe tener al menos 10 caracteres'
+                                },
                                 maxLength: {
                                     value: 350,
                                     message: 'La descripción no puede tener más de 350 caracteres'
@@ -101,7 +105,7 @@ const AgregarFuncionalidad = ({ funcionalidad, external_id_proyecto, onClose }) 
 
                 <div className="col-md-12">
                     <div className="form-group">
-                    <Form.Label><strong style={{ color: 'red' }}>* </strong>Origen</Form.Label>
+                        <Form.Label><strong style={{ color: 'red' }}>* </strong>Origen</Form.Label>
                         <select
                             className="form-control"
                             defaultValue=""
@@ -121,7 +125,7 @@ const AgregarFuncionalidad = ({ funcionalidad, external_id_proyecto, onClose }) 
                 <div className="contenedor-filo mt-4">
                     <div className="mt-3">
                         <Button type="submit" className="btn-positivo" disabled={!isValid}>
-                        <FontAwesomeIcon icon={faCheck} style={{ marginRight: '5px' }}/> 
+                            <FontAwesomeIcon icon={faCheck} style={{ marginRight: '5px' }} />
                             {isEditMode ? "Actualizar" : "Guardar"}
                         </Button>
                     </div>

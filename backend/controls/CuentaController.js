@@ -48,7 +48,7 @@ class CuentaController {
                 },   attributes: ['estado']
             });
 
-            if (!estadoPersona.estado) {
+            if (!estadoPersona.estado && login.estado == "ACEPTADO") {
                 return res.status(400).json({
                     msg: "CUENTA DESACTIVADA",
                     code: 400
