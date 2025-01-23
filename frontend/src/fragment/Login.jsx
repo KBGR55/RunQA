@@ -5,7 +5,7 @@ import { InicioSesion } from '../utilities/hooks/Conexion';
 import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { saveCorreo, saveToken, saveUser } from '../utilities/Sessionutil';
-import  {mensajes} from '../utilities/Mensajes';
+import  {mensajes, mensajesSinRecargar} from '../utilities/Mensajes';
 
 const Login = () => {
     const navegation = useNavigate();
@@ -39,6 +39,7 @@ const Login = () => {
                 saveToken(infoAux.token);
                 saveUser(infoAux.user);
                 saveCorreo(infoAux.correo);
+                mensajesSinRecargar(info.msg);
                 navegation("/proyectos");
             }
         });
