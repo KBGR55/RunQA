@@ -32,6 +32,7 @@ import mensajes from './utilities/Mensajes';
 import ListaFuncionalidades from './fragment/ListaFuncionalidades';
 import AgregarFuncionalidad from './fragment/AgregarFuncionalidad';
 import TerminarProyecto from './fragment/TerminarProyecto';
+import Panel from './fragment/Panel';
 
 function App() {
   const MiddewareSesion = ({ children, requiredRoles }) => {
@@ -65,6 +66,7 @@ function App() {
         <Route path='/olvidar/clave' element={<OlvidoClave />} />
         <Route path='/cambio/clave/restablecer/:external_id/:token' element={<CambioClave />} />
         <Route element={<LayoutComponent />}>
+          <Route path='/panel/:external_id_proyecto' element={<MiddewareSesion><Panel/></MiddewareSesion>} />
           <Route path='/presentacion/:external_id_proyecto' element={<MiddewareSesion><PresentacionProyecto /></MiddewareSesion>} />
           <Route path='/usuarios' element={<MiddewareSesion><ListaUsuarios /></MiddewareSesion>} />
           <Route path='/peticiones/registro' element={<MiddewareSesion><VerPeticion /></MiddewareSesion>} />

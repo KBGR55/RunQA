@@ -262,6 +262,7 @@ router.get('/proyecto/listar/rol/:rol_name/:external_id',proyectoController.obte
 router.get('/proyecto/eliminar/:external_id', proyectoController.eliminarProyecto);
 router.get('/proyecto/horas/cambiar/:id_entidad/:id_rol_proyecto/:horasDiarias', proyectoController.cambiarHorasDiarias);
 router.delete('/proyecto/terminar/:id_proyect/:razonTerminacion',proyectoController.terminarProyecto);
+router.get('/proyecto/contar/casos/:external_id',proyectoController.obtenerConteoCasosPorEstado);
 
 /** CONTRATO */
 router.post('/contrato/caso/prueba', contratoController.asignarTesters);

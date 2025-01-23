@@ -24,6 +24,9 @@
   scrollbar-color: var(--color-terciario) var(--color-cuarto); 
 }
 
+.container-gird{
+  margin-bottom: 20px;
+}
 .custom-scroll::-webkit-scrollbar {
   width: 8px;
 }
@@ -153,6 +156,8 @@ label {
   border-radius: 10px;
   padding: 25px;
   width: 100%;
+  margin-bottom: 40px;
+  margin-top: 20px;
 }
 
 .role-title {
