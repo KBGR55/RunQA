@@ -6,7 +6,7 @@ import { faEdit, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { peticionGet, peticionDelete, URLBASE } from '../utilities/hooks/Conexion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getToken, borrarSesion, getUser } from '../utilities/Sessionutil';
-import  {mensajes} from '../utilities/Mensajes';
+import { mensajes } from '../utilities/Mensajes';
 import RoleDialog from './RoleDialog';
 
 const UsuarioProyecto = () => {
@@ -261,10 +261,22 @@ const UsuarioProyecto = () => {
                         id="newHours"
                         className="form-control"
                         value={newHours}
-                        onChange={(e) => setNewHours(Number(e.target.value))}
+                        onChange={(e) => {
+                            const value = Number(e.target.value);
+
+                            // Validar que el valor esté entre 1 y 24
+                            if (value >= 1 && value <= 24) {
+                                setNewHours(value);
+                            } else if (value < 1) {
+                                setNewHours(1); // Establecer al mínimo si es menor a 1
+                            } else if (value > 24) {
+                                setNewHours(24); // Establecer al máximo si es mayor a 24
+                            }
+                        }}
                         min="1"
                         max="24"
                     />
+
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleCloseModalEditHours}>
