@@ -5,7 +5,6 @@ import '../css/Presentacion_Style.css';
 import { getToken, getUser, borrarSesion, saveRoles } from '../utilities/Sessionutil';
 import  {mensajes, mensajesSinRecargar} from '../utilities/Mensajes';
 
-
 const PresentacionProyecto = () => {
     const { external_id_proyecto } = useParams();
     const [proyecto, setProyecto] = useState(null);
