@@ -290,6 +290,7 @@ router.get('/aceptarechazar/peticiones/:external/:estado/:motivo_rechazo/:id_rec
 router.get('/funcionalidad', funcionalidadController.listar);
 router.get('/funcionalidad/obtener/:external_id', funcionalidadController.obtenerFuncionalidadesProyecto);
 router.get('/funcionalidad/obtener-activos/:external_id', funcionalidadController.obtenerFuncionalidadesActivasProyecto);
+router.get('/funcionalidad/obtener-desactivos/:external_id', funcionalidadController.obtenerFuncionalidadesDesactivasProyecto);
 router.post('/funcionalidad/guardar', funcionalidadController.guardar);
 router.post('/funcionalidad/editar', funcionalidadController.actualizar);
 router.get('/funcionalidad/cambiar-estado/:external_id', funcionalidadController.cambiarEstado);

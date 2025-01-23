@@ -14,34 +14,47 @@ import swal from 'sweetalert';
 
 const ListaFuncionalidades = () => {
     const [funcionalidades, setFuncionalidades] = useState([]);
-    const [isLoading, setIsLoading] = useState(true); // Nuevo estado
+    const [isLoading, setIsLoading] = useState(true);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const { external_id_proyecto } = useParams();
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
     const [funcionalidadSeleccionada, setFuncionalidadSeleccionada] = useState(null);
+    const [showInactive, setShowInactive] = useState(false);
+
+    const fetchFuncionalidades = async (inactive = false) => {
+        setIsLoading(true);
+        try {
+            const endpoint = inactive
+                ? `funcionalidad/obtener-desactivos/${external_id_proyecto}`
+                : `funcionalidad/obtener-activos/${external_id_proyecto}`;
+            const response = await peticionGet(getToken(), endpoint);
+            if (response.code === 200) {
+                setFuncionalidades(response.info);
+            } else {
+                setFuncionalidades([]);
+            }
+        } catch (error) {
+            mensajes("Error al cargar funcionalidades", "error", "Error");
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Agrupa funcionalidades por tipo
+    const funcionalidadesPorTipo = funcionalidades.reduce((acc, funcionalidad) => {
+        if (funcionalidad.tipo) {
+            if (!acc[funcionalidad.tipo]) acc[funcionalidad.tipo] = [];
+            acc[funcionalidad.tipo].push(funcionalidad);
+        }
+        return acc;
+    }, {});
 
     useEffect(() => {
-        const fetchFuncionalidades = async () => {
-            setIsLoading(true); // Inicia la carga
-            try {
-                const response = await peticionGet(getToken(), `funcionalidad/obtener/${external_id_proyecto}`);
-                if (response.code === 200) {
-                    setFuncionalidades(response.info);
-                } else {
-                    setFuncionalidades([]);
-                }
-            } catch (error) {
-                mensajes("Error al cargar funcionalidades", "error", "Error");
-                console.error(error);
-            } finally {
-                setIsLoading(false); // Finaliza la carga
-            }
-        };
-
-        fetchFuncionalidades();
-    }, [external_id_proyecto]);
+        fetchFuncionalidades(showInactive);
+    }, [external_id_proyecto, showInactive]);
 
     const handleShowModal = (funcionalidad = null) => {
         setFuncionalidadSeleccionada(funcionalidad);
@@ -60,6 +73,10 @@ const ListaFuncionalidades = () => {
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
+    };
+
+    const toggleFuncionalidades = () => {
+        setShowInactive((prev) => !prev);
     };
 
     const handleChangeStateFuncionalidad = async (external_id, isReactivating = false) => {
@@ -87,24 +104,27 @@ const ListaFuncionalidades = () => {
         });
     };
 
-    const funcionalidadesPorTipo = Array.isArray(funcionalidades)
-        ? funcionalidades.reduce((acc, funcionalidad) => {
-            const { tipo } = funcionalidad;
-            if (!acc[tipo]) acc[tipo] = [];
-            acc[tipo].push(funcionalidad);
-            return acc;
-        }, {})
-        : {};
-
     return (
         <div className="container-fluid">
             <div className="contenedor-centro">
                 <div className="contenedor-carta">
                     <div className="d-flex justify-content-between align-items-center mb-3">
                         <p className="titulo-primario">Lista de funcionalidades clasificadas</p>
-                        <Button className="btn-normal" onClick={() => handleShowModal()}>
-                            <FontAwesomeIcon icon={faPlus} /> Agregar
-                        </Button>
+                        <div>
+                            <Button className="btn-normal" onClick={() => handleShowModal()}>
+                                <FontAwesomeIcon icon={faPlus} /> Agregar
+                            </Button>
+                            <Button
+                                className="btn-opcional"
+                                onClick={toggleFuncionalidades}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-ul" viewBox="0 0 16 16" style={{ marginRight: '0.5em' }}>
+                                    <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                                </svg>
+                                {showInactive ? "Listar funcionalidades activas" : "Listar funcionalidades inactivas"}
+                            </Button>
+                        </div>
+
                     </div>
 
                     {isLoading ? (
@@ -116,7 +136,7 @@ const ListaFuncionalidades = () => {
                             <div className="accordion" id="accordionExample">
                                 {Object.entries(funcionalidadesPorTipo).map(([tipo, funcionalidades], index) => {
                                     const tipoColorClass = {
-                                        REQUISITO: { background: 'var(--color-secundario)', color: 'var(--color-cuarto)', fontWeight: 'bold' },
+                                        "REQUISITO": { background: 'var(--color-secundario)', color: 'var(--color-cuarto)', fontWeight: 'bold' },
                                         "CASO DE USO": { background: 'var(--morado-bebe)', color: 'var(--color-cuarto)', fontWeight: 'bold' },
                                         "HISTORIA DE USUARIO": { background: 'var(--color-terciario)', color: 'var(--color-cuarto)', fontWeight: 'bold' },
                                         "REGLA DE NEGOCIO": { background: 'var(--color-primario)', color: 'var(--color-cuarto)', fontWeight: 'bold' },
@@ -180,35 +200,35 @@ const ListaFuncionalidades = () => {
                                                                             </span>
                                                                         </td>
                                                                         <td className="text-center">
-                                                                        {funcionalidad.estado && (
-                                                                            <Button
-                                                                                variant="btn btn-outline-info btn-rounded"
-                                                                                onClick={() => handleShowModal(funcionalidad)}
-                                                                            >
-                                                                                <svg
-                                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                                    width="16"
-                                                                                    height="16"
-                                                                                    fill="currentColor"
-                                                                                    className="bi bi-pencil-square"
-                                                                                    viewBox="0 0 16 16"
+                                                                            {funcionalidad.estado && (
+                                                                                <Button
+                                                                                    variant="btn btn-outline-info btn-rounded"
+                                                                                    onClick={() => handleShowModal(funcionalidad)}
                                                                                 >
-                                                                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                                                                    <path
-                                                                                        fillRule="evenodd"
-                                                                                        d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
-                                                                                    />
-                                                                                </svg>
-                                                                            </Button>
-                                                                        )}
+                                                                                    <svg
+                                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                                        width="16"
+                                                                                        height="16"
+                                                                                        fill="currentColor"
+                                                                                        className="bi bi-pencil-square"
+                                                                                        viewBox="0 0 16 16"
+                                                                                    >
+                                                                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                                                        <path
+                                                                                            fillRule="evenodd"
+                                                                                            d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                                                                                        />
+                                                                                    </svg>
+                                                                                </Button>
+                                                                            )}
 
-                                                                        <Button
-                                                                            className={funcionalidad.estado ? "btn-negativo" : "btn-positivo"}
-                                                                            onClick={() => handleChangeStateFuncionalidad(funcionalidad.external_id, !funcionalidad.estado)}
-                                                                        >
-                                                                            <FontAwesomeIcon icon={funcionalidad.estado ? faTrash : faRedoAlt} />
-                                                                        </Button>
-                                                                    </td>
+                                                                            <Button
+                                                                                className={funcionalidad.estado ? "btn-negativo" : "btn-positivo"}
+                                                                                onClick={() => handleChangeStateFuncionalidad(funcionalidad.external_id, !funcionalidad.estado)}
+                                                                            >
+                                                                                <FontAwesomeIcon icon={funcionalidad.estado ? faTrash : faRedoAlt} />
+                                                                            </Button>
+                                                                        </td>
                                                                     </tr>
                                                                 ))}
                                                             </tbody>
@@ -231,7 +251,7 @@ const ListaFuncionalidades = () => {
                             </div>
                         ) : (
                             <div className="alert alert-success" role="alert">
-                                No hay funcionalidades generadas.
+                                No hay funcionalidades {showInactive ? "inactivas" : "activas"} disponibles.
                             </div>
                         )
                     )}
