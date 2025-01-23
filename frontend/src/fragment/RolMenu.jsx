@@ -120,8 +120,8 @@ const RoleMenu = () => {
     }, []);
 
     const roleOptions = {
-        'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Funcionalidades', 'Generar reportes', 'Miembros','Terminar proyecto'],
-        'ANALISTA DE PRUEBAS': ['Asignar testers', 'Casos de prueba', 'Funcionalidades'],
+        'LIDER DE CALIDAD': ['Asignar casos de prueba', 'Casos de prueba', 'Funcionalidades', 'Generar reportes', 'Miembros','Terminar proyecto'],
+        'ANALISTA DE PRUEBAS': ['Asignar casos de prueba', 'Casos de prueba', 'Funcionalidades'],
         'TESTER': ['Asignar desarrolladores', 'Casos de prueba', 'Registrar errores'],
         'DESARROLLADOR': ['Consultar errores asignados', 'Errores asigandos']
     };
@@ -152,7 +152,7 @@ const RoleMenu = () => {
             setShowNewProjectModal(true);
         } else if (option === 'Miembros') {
             navigate(`/proyecto/usuarios/${proyecto.external_id}`, { state: { proyecto } });
-        } else if (option === 'Asignar testers') {
+        } else if (option === 'Asignar casos de prueba') {
             navigate(`/asignar/tester/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Ver peticiones') {
             navigate('/peticiones/RI');
@@ -183,7 +183,7 @@ const RoleMenu = () => {
             height: '100vh',
             color: 'var(--blanco)'
         }}>
-            <div style={{ overflow: 'hidden', flexGrow: 1, marginTop: '50px' }}>
+            <div className="custom-scroll" style={{ overflowY: 'auto',flexGrow: 1, marginTop: '50px' }}>
                 <div className="text-center mt-3 mb-4">
                     <img src="/logo192.png" alt="Logo" className="rounded-circle" style={{ width: isOpen ? '150px' : '40px' }} />
                 </div>

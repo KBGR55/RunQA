@@ -43,25 +43,10 @@ const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, ext
 
     const showNoTestersAlert = () => {
         swal({
-            title: "No hay testers asignados",
-            text: "¿Desea asignar testers al proyecto?",
-            icon: "info",
-            showCancelButton: true,
-            buttons: ["No", "Sí"],
+            title: "No hay testers registrados en el proyecto",
+            text: "Si usted es lider del proyecto agregue testers en la sección de miembros, caso contrario comunicarse con el lider del proyecto",
+            icon: "warning",
             dangerMode: true,
-        }).then(async (confirmacion) => {
-            if (confirmacion) {
-                try {
-                    navigate(`/proyecto/usuarios/${external_id_proyecto}`);
-                } catch (error) {
-                    console.error('Error al eliminar el proyecto:', error);
-                    swal({
-                        title: "Error",
-                        text: "Ocurrió un problema al asignar miembros al proyecto.",
-                        icon: "error",
-                    });
-                }
-            }
         });
     };
 
