@@ -881,7 +881,6 @@ class ProyectoController {
 
   async obtenerConteoCasosPorEstado(req, res) {
     try {
-        // Buscar proyecto
         const proyecto = await models.proyecto.findOne({
             where: { external_id: req.params.external_id, estado: true },
             attributes: ["id", "estado", "nombre"],
@@ -897,7 +896,7 @@ class ProyectoController {
         console.log("Buscando casos de prueba asociados al proyecto...");
         // Obtener casos de prueba asociados al proyecto
         const casosDePrueba = await models.caso_prueba.findAll({
-            attributes: ["id", "estado"], // Obtener id y estado de cada caso
+            attributes: ["id", "estado"],
             where: { id_proyecto: proyecto.id },
         });
 
@@ -977,6 +976,7 @@ class ProyectoController {
 
         // Formateando el resultado para enviar en la respuesta
         const resultado = {
+            proyecto: proyecto,
             casos_de_prueba: estadosContados.map((estado) => ({
                 estado: estado.estado,
                 cantidad: estado.get("cantidad"), // Cantidad de casos de prueba por estado

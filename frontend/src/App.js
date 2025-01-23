@@ -1,4 +1,3 @@
-// App.js
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -28,7 +27,6 @@ import VerError from './fragment/VerError';
 import AsignarErrores from './fragment/AsignarErrores';
 import ListaErroresAsigados from './fragment/ListaErroresAsigados';
 import { getRoles, getToken } from './utilities/Sessionutil';
-
 import ListaFuncionalidades from './fragment/ListaFuncionalidades';
 import AgregarFuncionalidad from './fragment/AgregarFuncionalidad';
 import TerminarProyecto from './fragment/TerminarProyecto';
