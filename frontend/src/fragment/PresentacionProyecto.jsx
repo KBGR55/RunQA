@@ -153,8 +153,8 @@ const PresentacionProyecto = () => {
             <div className="header-section">
                 <img src="/img/fondo1.jpeg" alt="Project Background" className="background-image" />
                 <div className="header-overlay">
-                    <h1 className="project-title">{proyectoEntidad[0].proyecto_rol.nombre}</h1>
-                    <p>{proyectoEntidad[0].proyecto_rol.descripcion || 'Descripción del proyecto.'}</p>
+                    <h1 className="project-title">{proyectoEntidad[0].proyecto_rol?.nombre}</h1>
+                    <p>{proyectoEntidad[0].proyecto_rol?.descripcion || 'Descripción del proyecto.'}</p>
                 </div>
             </div>
 
