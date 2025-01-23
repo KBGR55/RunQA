@@ -39,6 +39,7 @@ const VerError = () => {
                         console.error(error);
                     });
                 }
+
                 const response = await peticionGet(getToken(), `error/obtener/external?external_id=${external_id_error}`);
                 if (response.code === 200) {
                     setDataErrror(response.info.errorEncontrado);
@@ -54,7 +55,7 @@ const VerError = () => {
         const fetchErrorAsignado = async () => {
             try {
                 if (dataErrror.id) {
-                    peticionGet(getToken(), `/contrato/error/obtener/${dataErrror.id}`).then((info) => {
+                    peticionGet(getToken(), `contrato/error/obtener/${dataErrror.id}`).then((info) => {
                         if (info.code === 200) {
                             setAsignado(info.info);
                         } else {
@@ -87,6 +88,7 @@ const VerError = () => {
         <div className="container-fluid contenedor-centro" style={{ margin: '20px' }}>
             <div className="contenedor-carta">
                 <p className="titulo-proyecto">{infoProyecto.nombre}</p>
+              <p className='titulo-secundario'>Caso prueba: {dataErrror?.caso_prueba?.nombre || 'No disponible'}</p>
                 <div className="d-flex align-items-center mb-3">
                     <FontAwesomeIcon
                         icon={faArrowLeft}

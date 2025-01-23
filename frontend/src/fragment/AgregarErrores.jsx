@@ -23,6 +23,7 @@ const AgregarErrores = () => {
     const [prioridadSeleccionada, setPrioridadSeleccionada] = useState([]);
     const { external_id_proyecto, external_id, external_id_error } = useParams();
     const [infoProyecto, setProyecto] = useState([]);
+    const [casoPrueba, setCasosPrueba] = useState([]);
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
     const [uploadedPhoto, setUploadedPhoto] = useState(null);
@@ -45,6 +46,18 @@ const AgregarErrores = () => {
                         mensajes("Error al cargar el proyecto", "error", "Error");
                         console.error(error);
                     });
+                    if (external_id) {
+                        peticionGet(getToken(), `caso/prueba/obtener/external/${external_id}`).then((info) => {
+                            if (info.code === 200) {
+                                setCasosPrueba(info.info);
+                            } else {
+                                mensajes(info.msg, "error", "Error");
+                            }
+                        }).catch((error) => {
+                            mensajes("Error al cargar el caso de prueba", "error", "Error");
+                            console.error(error);
+                        });
+                    }
                 }
 
                 if (external_id_error) {
@@ -185,7 +198,8 @@ const AgregarErrores = () => {
     return (
         <div className="contenedor-carta">
             <p className="titulo-proyecto">{infoProyecto.nombre}</p>
-            {!external_id_error ? (<h2 className="titulo-primario">Agregar error</h2>) : <p className="titulo-primario">Editar error</p>}
+            <p className="titulo-secundario">Caso prueba: {casoPrueba.nombre}</p>
+            {!external_id_error ? (<h2 className="titulo-primario">Agregar error </h2>) : <p className="titulo-primario">Editar error</p>} 
             <form className="form-sample" onSubmit={handleSubmit(onSubmit)}>
                 <div className="row">
                     <div className="col-md-6">
