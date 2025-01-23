@@ -881,140 +881,129 @@ class ProyectoController {
 
   async obtenerConteoCasosPorEstado(req, res) {
     try {
-        const proyecto = await models.proyecto.findOne({
-            where: { external_id: req.params.external_id, estado: true },
-            attributes: ["id", "estado", "nombre"],
+      const proyecto = await models.proyecto.findOne({
+        where: { external_id: req.params.external_id, estado: true },
+        attributes: ["id", "estado", "nombre"],
+      });
+
+      if (!proyecto) {
+        return res
+          .status(404)
+          .json({ msg: "Proyecto no encontrado", code: 404 });
+      }
+
+      const casosDePrueba = await models.caso_prueba.findAll({
+        attributes: ["id", "estado", "clasificacion"],
+        where: { id_proyecto: proyecto.id },
+      });
+
+      if (casosDePrueba.length === 0) {
+        return res.status(404).json({
+          msg: `No se encontraron casos de prueba para este proyecto`,
+          code: 404,
         });
+      }
 
-        if (!proyecto) {
-            console.log("Proyecto no encontrado.");
-            return res
-                .status(404)
-                .json({ msg: "Proyecto no encontrado", code: 404 });
-        }
+      const idsCasosDePrueba = casosDePrueba.map((caso) => caso.id);
 
-        console.log("Buscando casos de prueba asociados al proyecto...");
-        // Obtener casos de prueba asociados al proyecto
-        const casosDePrueba = await models.caso_prueba.findAll({
-            attributes: ["id", "estado"],
-            where: { id_proyecto: proyecto.id },
-        });
+      const estadosContados = await models.caso_prueba.findAll({
+        attributes: [
+          "estado",
+          [models.sequelize.fn("COUNT", models.sequelize.col("*")), "cantidad"],
+        ],
+        where: { id_proyecto: proyecto.id },
+        group: ["estado"],
+      });
 
-        console.log("Resultado de los casos de prueba:", casosDePrueba);
+      const clasificacionContada = await models.caso_prueba.findAll({
+        attributes: [
+          "clasificacion",
+          [models.sequelize.fn("COUNT", models.sequelize.col("*")), "cantidad"],
+        ],
+        where: { id_proyecto: proyecto.id },
+        group: ["clasificacion"],
+      });
 
-        if (casosDePrueba.length === 0) {
-            console.log("No se encontraron casos de prueba para el proyecto.");
-            return res.status(404).json({
-                msg: `No se encontraron casos de prueba para este proyecto`,
-                code: 404,
-            });
-        }
+      const erroresContados = await models.error.findAll({
+        attributes: [
+          "estado",
+          [models.sequelize.fn("COUNT", models.sequelize.col("*")), "cantidad"],
+        ],
+        where: {
+          id_caso_prueba: {
+            [models.Sequelize.Op.in]: idsCasosDePrueba,
+          },
+          estado: { [models.Sequelize.Op.not]: "CERRADO" },
+        },
+        group: ["estado"],
+      });
 
-        // Obtener solo los ids de los casos de prueba
-        const idsCasosDePrueba = casosDePrueba.map(caso => caso.id);
+      const severidadContada = await models.error.findAll({
+        attributes: [
+          "severidad",
+          [models.sequelize.fn("COUNT", models.sequelize.col("*")), "cantidad"],
+        ],
+        where: {
+          id_caso_prueba: {
+            [models.Sequelize.Op.in]: idsCasosDePrueba,
+          },
+          estado: { [models.Sequelize.Op.not]: "CERRADO" },
+        },
+        group: ["severidad"],
+      });
 
-        // Obtener los estados de los casos de prueba agrupados por estado
-        const estadosContados = await models.caso_prueba.findAll({
-            attributes: [
-                "estado",
-                [models.sequelize.fn("COUNT", models.sequelize.col("*")), "cantidad"],
-            ],
-            where: { id_proyecto: proyecto.id },
-            group: ["estado"],
-        });
+      const prioridadContada = await models.error.findAll({
+        attributes: [
+          "prioridad",
+          [models.sequelize.fn("COUNT", models.sequelize.col("*")), "cantidad"],
+        ],
+        where: {
+          id_caso_prueba: {
+            [models.Sequelize.Op.in]: idsCasosDePrueba,
+          },
+          estado: { [models.Sequelize.Op.not]: "CERRADO" },
+        },
+        group: ["prioridad"],
+      });
 
-        console.log("Resultado de los estados de los casos de prueba:", estadosContados);
+      const resultado = {
+        proyecto: proyecto,
+        casos_de_prueba: estadosContados.map((estado) => ({
+          estado: estado.estado,
+          cantidad: estado.get("cantidad"),
+        })),
+        casos_de_prueba_clasificacion: clasificacionContada.map(
+          (clasificacion) => ({
+            clasificacion: clasificacion.clasificacion,
+            cantidad: clasificacion.get("cantidad"),
+          })
+        ),
+        errores: erroresContados.map((error) => ({
+          estado: error.estado,
+          cantidad: error.get("cantidad"),
+        })),
+        severidad: severidadContada.map((severidad) => ({
+          severidad: severidad.severidad,
+          cantidad: severidad.get("cantidad"),
+        })),
+        prioridad: prioridadContada.map((prioridad) => ({
+          prioridad: prioridad.prioridad,
+          cantidad: prioridad.get("cantidad"),
+        })),
+      };
 
-        // Obtener los errores asociados a los casos de prueba (estado != 'CERRADO')
-        const erroresContados = await models.error.findAll({
-            attributes: [
-                "estado",
-                [models.sequelize.fn("COUNT", models.sequelize.col("*")), "cantidad"],
-            ],
-            where: {
-                id_caso_prueba: {
-                    [models.Sequelize.Op.in]: idsCasosDePrueba, // Usar los ids de los casos de prueba
-                },
-                estado: { [models.Sequelize.Op.not]: 'CERRADO' }, // Solo errores no cerrados
-            },
-            group: ["estado"],
-        });
-
-        console.log("Resultado de los errores:", erroresContados);
-
-        // Obtener la severidad y prioridad de los errores no cerrados
-        const severidadContada = await models.error.findAll({
-            attributes: [
-                "severidad",
-                [models.sequelize.fn("COUNT", models.sequelize.col("*")), "cantidad"],
-            ],
-            where: {
-                id_caso_prueba: {
-                    [models.Sequelize.Op.in]: idsCasosDePrueba,
-                },
-                estado: { [models.Sequelize.Op.not]: 'CERRADO' },
-            },
-            group: ["severidad"],
-        });
-
-        const prioridadContada = await models.error.findAll({
-            attributes: [
-                "prioridad",
-                [models.sequelize.fn("COUNT", models.sequelize.col("*")), "cantidad"],
-            ],
-            where: {
-                id_caso_prueba: {
-                    [models.Sequelize.Op.in]: idsCasosDePrueba,
-                },
-                estado: { [models.Sequelize.Op.not]: 'CERRADO' },
-            },
-            group: ["prioridad"],
-        });
-
-        console.log("Resultado de severidad de los errores:", severidadContada);
-        console.log("Resultado de prioridad de los errores:", prioridadContada);
-
-        // Formateando el resultado para enviar en la respuesta
-        const resultado = {
-            proyecto: proyecto,
-            casos_de_prueba: estadosContados.map((estado) => ({
-                estado: estado.estado,
-                cantidad: estado.get("cantidad"), // Cantidad de casos de prueba por estado
-            })),
-            errores: erroresContados.map((error) => ({
-                estado: error.estado,
-                cantidad: error.get("cantidad"), // Cantidad de errores por estado
-            })),
-            severidad: severidadContada.map((severidad) => ({
-                severidad: severidad.severidad,
-                cantidad: severidad.get("cantidad"), // Cantidad de errores por severidad
-            })),
-            prioridad: prioridadContada.map((prioridad) => ({
-                prioridad: prioridad.prioridad,
-                cantidad: prioridad.get("cantidad"), // Cantidad de errores por prioridad
-            })),
-        };
-
-        console.log("Enviando respuesta con el conteo de estados, errores, severidad y prioridad...");
-        res.json({
-            msg: "OK",
-            code: 200,
-            info: resultado, // Información con los resultados finales
-        });
+      res.json({
+        msg: "OK",
+        code: 200,
+        info: resultado,
+      });
     } catch (error) {
-        console.error("Error en obtenerConteoCasosPorEstado:", error);
-        res.status(500).json({
-            msg: error.message || "Error interno del servidor",
-            code: 500,
-        });
+      res.status(500).json({
+        msg: error.message || "Error interno del servidor",
+        code: 500,
+      });
     }
-}
-
-
-
-
-
-
+  }
 }
 
 module.exports = ProyectoController;

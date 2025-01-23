@@ -23,6 +23,7 @@ function Panel() {
     const { external_id_proyecto } = useParams();
     const [proyecto, setProyecto] = useState([]);
     const [casosPrueba, setCasosPrueba] = useState([]);
+    const [casosPruebaClasificacion, setCasosPruebaClasificacion] = useState([]);
     const [errors, setErrors] = useState([]);
     const [prioridadErrors, setPrioridadErrors] = useState([]);
     const [severidadErrors, setSeveridadErrors] = useState([]);
@@ -34,6 +35,7 @@ function Panel() {
                 if (info.code === 200) {
                     setProyecto(info.info.proyecto);
                     setCasosPrueba(info.info.casos_de_prueba);
+                    setCasosPruebaClasificacion(info.info.casos_de_prueba_clasificacion);
                     setErrors(info.info.errores);
                     setPrioridadErrors(info.info.prioridad);
                     setSeveridadErrors(info.info.severidad); 
@@ -68,7 +70,7 @@ function Panel() {
             <p className="titulo-proyecto">{proyecto.nombre}</p>
             {/* Casos de prueba */}
             <div className="contenedor-carta">
-                <p className="titulo-primario">{'Casos de Prueba'}</p>
+                <p className="titulo-primario" style={{ textAlign: 'center' }}>{'Casos de Prueba'}</p>
                 {casosPrueba.length === 0 ? (
                     <p>No se encontraron casos de prueba para el proyecto seleccionado.</p>
                 ) : (
@@ -85,13 +87,40 @@ function Panel() {
                         ))}
                     </div>
                 )}
+                   <div className="contenedor-carta">
+                <p className="titulo-primario">{'Clasificación'}</p>
+                {casosPruebaClasificacion.length === 0 ? (
+                    <p>No se encontraron clasificaciones para los casos de prueba.</p>
+                ) : (
+                    <section className='table_body'>
+                    <div className="table-responsive">
+                        <table className="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th className="text-center">Clasificación</th>
+                                    <th className="text-center">Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {casosPruebaClasificacion.map((clasificacion, index) => (
+                                    <tr key={index}>
+                                        <td className="text-center">{clasificacion.clasificacion}</td>
+                                        <td className="text-center">{clasificacion.cantidad}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                )}
+            </div>
             </div>
 
             <div className="contenedor-carta">
                 <div className="row">
                     {/* Columna izquierda: Severidad y Prioridad */}
                     <div className="col-12 col-sm-6 col-md-4">
-                        <p className="titulo-primario" style={{ textAlign: 'center' }}>{'Puntos por Severidad'}</p>
+                        <p className="titulo-primario" style={{ textAlign: 'center' }}>{'Errores por Severidad'}</p>
                         {severidadErrors.length === 0 ? (
                             <p>No se han reportado severidades para este proyecto.</p>
                         ) : (
@@ -117,7 +146,7 @@ function Panel() {
                     </div>
 
                     <div className="col-12 col-sm-6 col-md-4">
-                        <p className="titulo-primario" style={{ textAlign: 'center' }}>{'Puntos por Prioridad'}</p>
+                        <p className="titulo-primario" style={{ textAlign: 'center' }}>{'Errores por Prioridad'}</p>
                         {prioridadErrors.length === 0 ? (
                             <p>No se han reportado prioridades para este proyecto.</p>
                         ) : (
@@ -144,7 +173,7 @@ function Panel() {
 
                     {/* Columna derecha: Gráfico de Errores */}
                     <div className="col-12 col-md-4">
-                        <p className="titulo-primario">{'Errores reportados'}</p>
+                        <p className="titulo-primario" style={{ textAlign: 'center' }}>{'Errores reportados'}</p>
                         {errors.length === 0 ? (
                             <p>No se han reportado errores en el proyecto.</p>
                         ) : (
