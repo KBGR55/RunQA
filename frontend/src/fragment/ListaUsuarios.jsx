@@ -6,7 +6,7 @@ import '../css/Usuarios_Style.css';
 import { peticionGet, URLBASE } from '../utilities/hooks/Conexion';
 import { useNavigate } from 'react-router-dom';
 import { getToken, borrarSesion } from '../utilities/Sessionutil';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes} from '../utilities/Mensajes';
 import EditarPersona from './EditarPersona';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTimes, faCheck, faSearch, faPerson } from '@fortawesome/free-solid-svg-icons';

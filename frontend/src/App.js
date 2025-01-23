@@ -28,11 +28,12 @@ import VerError from './fragment/VerError';
 import AsignarErrores from './fragment/AsignarErrores';
 import ListaErroresAsigados from './fragment/ListaErroresAsigados';
 import { getRoles, getToken } from './utilities/Sessionutil';
-import mensajes from './utilities/Mensajes';
+
 import ListaFuncionalidades from './fragment/ListaFuncionalidades';
 import AgregarFuncionalidad from './fragment/AgregarFuncionalidad';
 import TerminarProyecto from './fragment/TerminarProyecto';
 import Panel from './fragment/Panel';
+import { mensajesSinRecargar } from './utilities/Mensajes';
 
 function App() {
   const MiddewareSesion = ({ children, requiredRoles }) => {
@@ -46,7 +47,7 @@ function App() {
     if (requiredRoles && requiredRoles.length > 0) {
       const hasRequiredRole = roles.some(role => requiredRoles.includes(role.nombre));
       if (!hasRequiredRole) {
-        mensajes("No tienes el rol necesario para acceder a esta página.", "error", "Acceso Denegado");
+        mensajesSinRecargar("No tienes el rol necesario para acceder a esta página.", "error", "Acceso Denegado");
         return <Navigate to='/login' />;
       }
     }

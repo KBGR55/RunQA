@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/style.css';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes} from '../utilities/Mensajes';
 import { borrarSesion, getToken } from '../utilities/Sessionutil';
 import { Button, FormControl, InputGroup } from 'react-bootstrap';
 import TablePagination from '@mui/material/TablePagination';

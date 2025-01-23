@@ -3,16 +3,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Form } from 'react-bootstrap';
 import { peticionPost } from '../utilities/hooks/Conexion';
 import { getToken, getUser } from '../utilities/Sessionutil';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes}  from '../utilities/Mensajes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 const AgregarFuncionalidad = ({ funcionalidad, external_id_proyecto, onClose }) => {
     const { register, handleSubmit, formState: { errors, isValid }, reset, setValue } = useForm({ mode: 'onChange' });
     const isEditMode = Boolean(funcionalidad);
     const [tipo] = useState(['REQUISITO', 'CASO DE USO', 'HISTORIA DE USUARIO', 'REGLA DE NEGOCIO']);
     const usuario = getUser();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (isEditMode) {
@@ -39,11 +41,8 @@ const AgregarFuncionalidad = ({ funcionalidad, external_id_proyecto, onClose }) 
         try {
             const response = await peticionPost(getToken(), url, body);
             if (response.code === 200) {
-                mensajes(response.msg, 'success');
+                mensajes(response.msg, 'success'); 
                 onClose();
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
             } else {
                 mensajes(response.msg, 'error');
             }

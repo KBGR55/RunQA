@@ -7,7 +7,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { peticionGet, peticionPost } from '../utilities/hooks/Conexion';
 import { getToken } from '../utilities/Sessionutil';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes} from '../utilities/Mensajes';
 import swal from 'sweetalert';
 import { useNavigate } from 'react-router-dom';
 
@@ -67,9 +67,6 @@ const Reasignar = ({ showModalDesarrollador, setShowModalDesarrollador, external
         try {
             const response = await peticionPost(getToken(), '/contrato/error/reasginar', body);
             if (response.code === 200) {
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
                 mensajes(response.msg);
                 handleClose();
             } else {

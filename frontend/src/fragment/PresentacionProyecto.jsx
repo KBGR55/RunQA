@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import '../css/Presentacion_Style.css';
 import { getToken, getUser, borrarSesion, saveRoles } from '../utilities/Sessionutil';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes, mensajesSinRecargar} from '../utilities/Mensajes';
 
 const PresentacionProyecto = () => {
     const { external_id_proyecto } = useParams();
@@ -138,7 +138,7 @@ const PresentacionProyecto = () => {
         } else if (option === 'Terminar proyecto') {
             navigate(`/proyecto/terminar/${proyecto.external_id}`);
         } else {
-            mensajes('Esta funcionalidad está en desarrollo de desarrollo.', 'info', 'Próximamente');
+            mensajesSinRecargar('Esta funcionalidad está en desarrollo de desarrollo.', 'info', 'Próximamente');
         }
     }
 
@@ -153,8 +153,8 @@ const PresentacionProyecto = () => {
             <div className="header-section">
                 <img src="/img/fondo1.jpeg" alt="Project Background" className="background-image" />
                 <div className="header-overlay">
-                    <h1 className="project-title">{proyectoEntidad[0].proyecto_rol.nombre}</h1>
-                    <p>{proyectoEntidad[0].proyecto_rol.descripcion || 'Descripción del proyecto.'}</p>
+                    <h1 className="project-title">{proyectoEntidad[0].proyecto_rol?.nombre}</h1>
+                    <p>{proyectoEntidad[0].proyecto_rol?.descripcion || 'Descripción del proyecto.'}</p>
                 </div>
             </div>
 

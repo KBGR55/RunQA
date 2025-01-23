@@ -7,7 +7,10 @@ import swal from 'sweetalert';
 import { useNavigate, useParams } from 'react-router-dom';
 import { peticionPut } from '../utilities/hooks/Conexion';
 import { getToken } from '../utilities/Sessionutil';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes} from '../utilities/Mensajes';
+
+
+
 
 const EjecutarCasoPrueba = () => {
     const [resultadoObtenido, setResultadoObtenido] = useState('');
@@ -35,9 +38,6 @@ const EjecutarCasoPrueba = () => {
                             mensajes(info.msg, "error", "Error");
                         } else {
                             mensajes(info.msg, "success", "Éxito");
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 2000);
                         }
                     })
                     .catch((error) => {
@@ -72,14 +72,12 @@ const EjecutarCasoPrueba = () => {
                         if (info.code !== 200) {
                             mensajes(info.msg, "error", "Error");
                         } else {
-                            mensajes(info.msg, "success", "Éxito");
-                            setTimeout(() => {
+                            mensajesSinRercargar(info.msg, "success", "Éxito");
                                 if (estado === "FALLIDO") {
                                     navigate(`/error/${external_id_proyecto}/${external_id}`);
                                 } else {
                                     window.location.reload();
                                 }
-                            }, 2000);
                         }
                     })
                     .catch((error) => {
@@ -106,10 +104,7 @@ const EjecutarCasoPrueba = () => {
                     if (info.code !== 200) {
                         mensajes(info.msg, "error", "Error");
                     } else {
-                        mensajes(info.msg, "success", "Éxito");
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 5000);
+                        mensajesSinRercargar(info.msg, "success", "Éxito");
                         navigate(`/error/${external_id_proyecto}/${external_id}`);
                     }
                 })

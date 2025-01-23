@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { getToken, getUser } from '../utilities/Sessionutil';
 import { peticionGet } from '../utilities/hooks/Conexion';
-import mensajes from '../utilities/Mensajes';
 import swal from 'sweetalert';
+import { mensajes } from '../utilities/Mensajes';
 
 const VerPeticionesClave = () => {
     const [peticiones, setPeticiones] = useState([]);
