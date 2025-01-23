@@ -189,7 +189,7 @@ const RoleMenu = () => {
             height: '100vh',
             color: 'var(--blanco)'
         }}>
-            <div style={{ overflow: 'hidden', flexGrow: 1, marginTop: '50px' }}>
+            <div className="custom-scroll" style={{ overflowY: 'auto',flexGrow: 1, marginTop: '50px' }}>
                 <div className="text-center mt-3 mb-4">
                     <img src="/logo192.png" alt="Logo" className="rounded-circle" style={{ width: isOpen ? '150px' : '40px' }} />
                 </div>
