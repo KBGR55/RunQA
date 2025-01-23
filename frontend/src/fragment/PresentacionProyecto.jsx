@@ -17,6 +17,7 @@ const PresentacionProyecto = () => {
     const [showNewProjectModal, setShowNewProjectModal] = useState(false);
     const navigate = useNavigate();
 
+    
     useEffect(() => {
         const fetchRoles = async () => {
             try {
