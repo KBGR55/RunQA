@@ -103,8 +103,8 @@ const PresentacionProyecto = () => {
     }, [external_id_proyecto]);
 
     const roleOptions = {
-        'LIDER DE CALIDAD': ['Asignar testers', 'Casos de prueba', 'Funcionalidades', 'Generar reportes', 'Miembros','Terminar proyecto'],
-        'ANALISTA DE PRUEBAS': ['Asignar testers', 'Casos de prueba', 'Funcionalidades'],
+        'LIDER DE CALIDAD': ['Asignar casos de prueba', 'Casos de prueba', 'Funcionalidades', 'Generar reportes', 'Miembros','Terminar proyecto'],
+        'ANALISTA DE PRUEBAS': ['Asignar casos de prueba', 'Casos de prueba', 'Funcionalidades'],
         'TESTER': ['Asignar desarrolladores', 'Casos de prueba', 'Registrar errores'],
         'DESARROLLADOR': ['Consultar errores asignados', 'Errores asigandos']
     };
@@ -127,7 +127,7 @@ const PresentacionProyecto = () => {
             setShowNewProjectModal(true);
         } else if (option === 'Miembros') {
             navigate(`/proyecto/usuarios/${proyecto.external_id}`, { state: { proyecto } });
-        } else if (option === 'Asignar testers') {
+        } else if (option === 'Asignar casos de prueba') {
             navigate(`/asignar/tester/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Asignar desarrolladores') {
             navigate(`/asignar/desarrollador/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
