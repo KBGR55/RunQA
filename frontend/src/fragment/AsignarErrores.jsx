@@ -6,7 +6,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { borrarSesion, getToken, getUser } from '../utilities/Sessionutil';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes}  from '../utilities/Mensajes';
 import 'react-datepicker/dist/react-datepicker.css';
 import ModalAsignarDesarrollador from './ModalAsignarDesarrollador';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { borrarSesion, getToken } from '../utilities/Sessionutil';
 import { peticionGet } from '../utilities/hooks/Conexion';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes} from '../utilities/Mensajes';
 import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';  // Asegúrate de tener SweetAlert instalado
 

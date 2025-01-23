@@ -4,7 +4,7 @@ import '../css/style.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { peticionPost, peticionGet, peticionPut } from '../utilities/hooks/Conexion';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes} from '../utilities/Mensajes';
 import { getToken, getUser } from '../utilities/Sessionutil';
 import swal from 'sweetalert';
 import { useForm } from 'react-hook-form';
@@ -59,9 +59,6 @@ const NuevoProyecto = ({ external_id_proyecto, onClose }) => {
                 const response = await peticionPut(getToken(), 'proyecto', requestData);
                 if (response.code === 200) {
                     mensajes(response.msg, 'success', 'Éxito');
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
                 } else {
                     mensajes(response.msg, 'error', 'Error');
                 }
@@ -70,9 +67,6 @@ const NuevoProyecto = ({ external_id_proyecto, onClose }) => {
                 const response = await peticionPost(getToken(), 'proyecto', requestData);
                 if (response.code === 200) {
                     mensajes(response.msg, 'success', 'Éxito');
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
                 } else {
                     mensajes(response.msg, 'error', 'Error');
                 }

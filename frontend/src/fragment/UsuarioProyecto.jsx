@@ -6,7 +6,7 @@ import { faEdit, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { peticionGet, peticionDelete, URLBASE } from '../utilities/hooks/Conexion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getToken, borrarSesion, getUser } from '../utilities/Sessionutil';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes} from '../utilities/Mensajes';
 import RoleDialog from './RoleDialog';
 
 const UsuarioProyecto = () => {

@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/style.css';
 import { useForm } from 'react-hook-form';
 import React, { useEffect, useState } from 'react';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes, mensajesSinRecargar}  from '../utilities/Mensajes';
 import { ActualizarImagenes, GuardarImages, peticionGet, peticionPost } from '../utilities/hooks/Conexion';
 import { borrarSesion, getToken, getUser } from '../utilities/Sessionutil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -106,6 +106,17 @@ const AgregarErrores = () => {
     
                 if (response.code === 200) {
                     mensajes('Error agregado correctamente', 'success');
+         
+                    setValue('titulo', '');
+                    setValue('descripcion', '');
+                    setValue('pasos_repetir', '');
+                    setValue('persona_asignada', '');
+                    setValue('resultado_obtenido', '');
+                    setClasificacionSeleccionada('');
+                    setPrioridadSeleccionada('');
+                    setEstadoSeleccionado('PENDIENTE');
+                    setUploadedPhoto(null);
+
                     setIdError(response.info.id);
                     
                     swal({
@@ -118,7 +129,7 @@ const AgregarErrores = () => {
                         if (willAssign) {
                             setShowModalDesarrollador(true);
                         } else {
-                            mensajes("Creación del error completada", "success");
+                            mensajesSinRecargar("Creación del error completada", "success");
                             navigate(-1);
                         }
                     });

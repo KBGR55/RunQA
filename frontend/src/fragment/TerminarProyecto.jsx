@@ -4,7 +4,7 @@ import '../css/style.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { peticionDelete, peticionGet, peticionPut } from '../utilities/hooks/Conexion';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes} from '../utilities/Mensajes';
 import { getToken } from '../utilities/Sessionutil';
 import swal from 'sweetalert';
 import { useForm } from 'react-hook-form';

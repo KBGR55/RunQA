@@ -3,7 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import { getToken, getUser, borrarSesion } from '../utilities/Sessionutil';
 import { Button, Collapse, Modal } from 'react-bootstrap';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes, mensajesSinRecargar} from '../utilities/Mensajes';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import NuevoProyecto from './NuevoProyecto';
 
@@ -155,15 +155,9 @@ const RoleMenu = () => {
         } else if (option === 'Asignar testers') {
             navigate(`/asignar/tester/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Ver peticiones') {
-            window.location.assign('/peticiones/RI');
-            setTimeout(() => {
-                window.location.reload();
-            }, 100);
+            navigate('/peticiones/RI');
         } else if (option === 'Peticiones de cambio de clave') {
-            window.location.assign('/peticiones/CC');
-            setTimeout(() => {
-                window.location.reload();
-            }, 100);
+            navigate(`/peticiones/CC`);
         } else if (option === 'Asignar desarrolladores') {
             navigate(`/asignar/desarrollador/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Errores asigandos') {
@@ -173,7 +167,7 @@ const RoleMenu = () => {
         }else if (option === 'Terminar proyecto') {
             navigate(`/proyecto/terminar/${proyecto.external_id}`);
         } else {
-            mensajes('Esta funcionalidad está en desarrollo de desarrollo.', 'info', 'Próximamente');
+            mensajesSinRecargar('Esta funcionalidad está en desarrollo de desarrollo.', 'info', 'Próximamente');
         }
     }
 

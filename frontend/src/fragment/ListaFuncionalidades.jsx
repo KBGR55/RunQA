@@ -6,7 +6,7 @@ import { faPlus, faTrash, faPencilAlt, faRedoAlt } from '@fortawesome/free-solid
 import { peticionGet } from '../utilities/hooks/Conexion';
 import { useNavigate, useParams } from 'react-router-dom';
 import '../css/style.css';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes} from '../utilities/Mensajes';
 import TablePagination from '@mui/material/TablePagination';
 import { getToken } from '../utilities/Sessionutil';
 import AgregarFuncionalidad from './AgregarFuncionalidad';
@@ -75,9 +75,7 @@ const ListaFuncionalidades = () => {
                 const response = await peticionGet(getToken(), `funcionalidad/cambiar-estado/${external_id}`);
                 if (response.code === 200) {
                     mensajes(response.msg, "success");
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
+                  
                 } else {
                     mensajes(response.msg, 'error', 'Error');
                 }

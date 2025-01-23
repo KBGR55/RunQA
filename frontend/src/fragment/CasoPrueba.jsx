@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes, mensajesSinRecargar}  from '../utilities/Mensajes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { peticionPost, peticionGet } from '../utilities/hooks/Conexion';
@@ -158,7 +158,7 @@ const CasoPrueba = () => {
                         if (willAssign) {
                             setShowModal(true);
                         } else {
-                            mensajes("Creación del caso de prueba completada", "success");
+                            mensajesSinRecargar("Creación del caso de prueba completada", "success");
                             navigate(-1);
                         }
                     });

@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { peticionGet, URLBASE } from '../utilities/hooks/Conexion';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/style.css';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes} from '../utilities/Mensajes';
 import { getToken, getUser } from '../utilities/Sessionutil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
