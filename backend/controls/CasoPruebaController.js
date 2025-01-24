@@ -125,7 +125,7 @@ if (!rolesEntidad) {
                     'id', 'nombre', 'estado', 'external_id', 'descripcion', 'estadoAsignacion',
                     'pasos', 'resultado_esperado', 'resultado_obtenido', 'clasificacion',
                     'tipo_prueba', 'precondiciones', 'fecha_disenio', 'fecha_ejecucion_prueba',
-                    'id_proyecto', 'datos_entrada', 'id_funcionalidad'
+                    'id_proyecto', 'datos_entrada', 'id_funcionalidad', 'fecha_limite_ejecucion'
                 ],
                 include: [
                     {

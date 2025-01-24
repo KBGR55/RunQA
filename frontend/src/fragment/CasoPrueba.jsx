@@ -69,7 +69,10 @@ const CasoPrueba = () => {
                         if (casoPruebaData.funcionalidad?.id) {
                             setValue('funcionalidad', casoPruebaData.funcionalidad.id);
                         }
-                        setFechaLimitePrueba(new Date(casoPruebaData.fecha_limite_ejecucion));
+                        const formattedDate = casoPruebaData.fecha_limite_ejecucion
+                        ? new Date(casoPruebaData.fecha_limite_ejecucion)
+                        : null; 
+                    setFechaLimitePrueba(formattedDate);
                     } else {
                         mensajes(`Error al obtener caso de prueba: ${response.msg}`, 'error');
                     }
@@ -98,7 +101,7 @@ const CasoPrueba = () => {
             dangerMode: true,
         }).then((willCancel) => {
             if (willCancel) {
-                mensajes(isEditMode
+                mensajesSinRecargar(isEditMode
                     ? "Edición del caso de prueba cancelada"
                     : "Creación del caso de prueba cancelada",
                     "info",
