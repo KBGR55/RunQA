@@ -3,12 +3,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Button, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faExclamationCircle, faPlus, faTrash,faSearch, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faExclamationCircle, faPlus, faTrash, faSearch, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 import { peticionGet, peticionPut } from '../utilities/hooks/Conexion';
 import { useNavigate, useParams } from 'react-router-dom';
 import '../css/style.css';
-import  {mensajes} from '../utilities/Mensajes';
+import { mensajes } from '../utilities/Mensajes';
 import { getToken, getUser } from '../utilities/Sessionutil';
 import { useForm } from 'react-hook-form';
 import swal from 'sweetalert';
@@ -247,41 +247,45 @@ const VerCasoPrueba = () => {
                                                             <th className="text-center">Severidad</th>
                                                             <th className="text-center">Prioridad</th>
                                                             <th className="text-center">Estado   <OverlayTrigger
-                                                placement="top"
-                                                overlay={
-                                                    <Tooltip className="custom-tooltip">
-                                                        Indica el estado del error reportado
-                                                        <table className="table table-bordered text-start m-0">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Valor</th>
-                                                                    <th>Significado</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>NUEVO</td>
-                                                                    <td>El error ha sido reportado y aún no se ha procesado.</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>CERRADO</td>
-                                                                    <td>El error ha sido resuelto y no se requiere más acción.</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>PENDIENTE_VALIDACION</td>
-                                                                    <td>El error ha sido asignado y está esperando validación.</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>CORRECCION</td>
-                                                                    <td>El error está siendo corregido o requiere correcciones adicionales.</td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </Tooltip>
-                                                }
-                                            >
-                                                <FontAwesomeIcon icon={faQuestionCircle} className="ms-2 text-info" />
-                                            </OverlayTrigger></th>
+                                                                placement="top"
+                                                                overlay={
+                                                                    <Tooltip className="custom-tooltip">
+                                                                        Indica el estado del error reportado
+                                                                        <table className="table table-bordered text-start m-0">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Valor</th>
+                                                                                    <th>Significado</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td>NUEVO</td>
+                                                                                    <td>El error se crea y aún no ha sido asignado a ningún desarrollador.</td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>CERRADO</td>
+                                                                                    <td>El tester valida que la corrección es correcta.</td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>PENDIENTE DE VALIDACION</td>
+                                                                                    <td>El error corregido pasa a validación por parte del tester.</td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>EN CORRECCION</td>
+                                                                                    <td>El error es asignado a un desarrollador para ser corregido.</td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>DEVUELTO</td>
+                                                                                    <td>El tester clasifica el error corregido por el desarrollador como incorrecto.</td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </Tooltip>
+                                                                }
+                                                            >
+                                                                <FontAwesomeIcon icon={faQuestionCircle} className="ms-2 text-info" />
+                                                            </OverlayTrigger></th>
                                                             <th className="text-center"></th>
                                                         </tr>
                                                     </thead>
@@ -543,7 +547,7 @@ const VerCasoPrueba = () => {
                                     </svg>
                                     Reabrir Caso
                                 </Button>
-                            ) : casosPrueba.estado!=="EXITOSO" && (
+                            ) : casosPrueba.estado !== "EXITOSO" && (
                                 // Mostrar botón "Editar" si el estado no es OBSOLETO
                                 <Button
                                     variant="btn btn-outline-info btn-rounded"
@@ -567,7 +571,7 @@ const VerCasoPrueba = () => {
                             )}
 
                             {/* Mostrar el botón de "Eliminar" solo si el rol no es true */}
-                            {rol !== 'tester' && casosPrueba.estado!=="EXITOSO"&& (
+                            {rol !== 'tester' && casosPrueba.estado !== "EXITOSO" && (
                                 <Button
                                     className="btn-negativo"
                                     onClick={() => handleDeleteCasoPrueba(casosPrueba.external_id)}
