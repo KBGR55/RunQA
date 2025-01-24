@@ -4,7 +4,7 @@ import { Button, Form } from 'react-bootstrap';
 import { peticionGet, peticionPost, URLBASE } from '../utilities/hooks/Conexion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getToken } from '../utilities/Sessionutil';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes}  from '../utilities/Mensajes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import swal from 'sweetalert';
@@ -59,9 +59,6 @@ const AsignarLideres = () => {
         try {
             const response = await peticionPost(getToken(), 'asignar/lideres', body);
             if (response.code === 200) {
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
                 mensajes(response.msg);
             } else {
                 mensajes(response.msg, 'error');

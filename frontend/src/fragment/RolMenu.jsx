@@ -3,7 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import { getToken, getUser, borrarSesion } from '../utilities/Sessionutil';
 import { Button, Collapse, Modal } from 'react-bootstrap';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes, mensajesSinRecargar} from '../utilities/Mensajes';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import NuevoProyecto from './NuevoProyecto';
 
@@ -120,7 +120,7 @@ const RoleMenu = () => {
     }, []);
 
     const roleOptions = {
-        'LIDER DE CALIDAD': ['Asignar casos de prueba', 'Casos de prueba', 'Funcionalidades', 'Generar reportes', 'Miembros','Terminar proyecto'],
+        'LIDER DE CALIDAD': ['Asignar casos de prueba', 'Casos de prueba', 'Funcionalidades', 'Generar reportes', 'Miembros', 'Terminar proyecto'],
         'ANALISTA DE PRUEBAS': ['Asignar casos de prueba', 'Casos de prueba', 'Funcionalidades'],
         'TESTER': ['Asignar desarrolladores', 'Casos de prueba', 'Registrar errores'],
         'DESARROLLADOR': ['Consultar errores asignados', 'Errores asigandos']
@@ -155,25 +155,19 @@ const RoleMenu = () => {
         } else if (option === 'Asignar casos de prueba') {
             navigate(`/asignar/tester/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Ver peticiones') {
-            window.location.assign('/peticiones/RI');
-            setTimeout(() => {
-                window.location.reload();
-            }, 100);
+            navigate('/peticiones/RI');
         } else if (option === 'Peticiones de cambio de clave') {
-            window.location.assign('/peticiones/CC');
-            setTimeout(() => {
-                window.location.reload();
-            }, 100);
+            navigate(`/peticiones/CC`);
         } else if (option === 'Asignar desarrolladores') {
             navigate(`/asignar/desarrollador/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
         } else if (option === 'Errores asigandos') {
             navigate(`/errores/asignados/${proyecto.external_id}`);
         } else if (option === 'Funcionalidades') {
             navigate(`/lista/funcionalidades/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
-        }else if (option === 'Terminar proyecto') {
+        } else if (option === 'Terminar proyecto') {
             navigate(`/proyecto/terminar/${proyecto.external_id}`);
         } else {
-            mensajes('Esta funcionalidad está en desarrollo de desarrollo.', 'info', 'Próximamente');
+            mensajesSinRecargar('Esta funcionalidad está en desarrollo de desarrollo.', 'info', 'Próximamente');
         }
     }
 
@@ -189,12 +183,11 @@ const RoleMenu = () => {
             height: '100vh',
             color: 'var(--blanco)'
         }}>
-            <div style={{ overflow: 'hidden', flexGrow: 1, marginTop: '50px' }}>
+            <div className="custom-scroll" style={{ overflowY: 'auto', flexGrow: 1, marginTop: '50px' }}>
                 <div className="text-center mt-3 mb-4">
                     <img src="/logo192.png" alt="Logo" className="rounded-circle" style={{ width: isOpen ? '150px' : '40px' }} />
                 </div>
 
-                {/* Opciones de navegación */}
                 <div className="p-2 mb-3" style={{ backgroundColor: 'var(--color-cuarto)' }}>
                     <ul className="list-unstyled mb-0">
                         <li className="p-2 mb-1" onClick={() => navigate('/proyectos')}
@@ -256,12 +249,29 @@ const RoleMenu = () => {
                     </ul>
                 </div>
 
-                {/* Roles del Proyecto */}
                 <div className="sidebar-heading" style={{ marginLeft: isOpen ? '10px' : '0', color: 'var(--blanco)', fontWeight: 'bold' }}>
                     {isOpen ? proyecto.nombre : ''}
                 </div>
 
                 <ul className="list-unstyled">
+                    {isOpen && proyecto?.nombre && (
+                        <li className="mb-1">
+                            <div
+                                className="p-2"
+                                style={{
+                                    backgroundColor: 'var(--color-cuarto)',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    transition: 'background-color 0.3s',
+                                }}
+                                onClick={() => window.location.href = `/panel/${proyecto.external_id}`}
+                            >
+                                <i className="bi bi-file-earmark-bar-graph me-2"></i> {/* Ícono de reportes */}
+                                <span>Estadísticas</span> {/* Texto fijo */}
+                            </div>
+                        </li>
+                    )}
                     {roles.map((role) => (
                         <li className="mb-1" key={role.id}>
                             <div className="p-2" style={{
@@ -302,6 +312,7 @@ const RoleMenu = () => {
                             </Collapse>
                         </li>
                     ))}
+
                 </ul>
             </div>
 

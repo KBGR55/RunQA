@@ -358,6 +358,18 @@ if (!rolesEntidad) {
         }
     }
 
+    async obtnerPorExternalId(req, res) {
+        try {
+            const caso = await caso_prueba.findOne({ where: { external_id: req.params.external_id } });
+            if (!caso) {
+                return res.status(404).json({ msg: "Caso de prueba no encontrado", code: 404 });
+            }
+            res.json({ msg: "OK!", code: 200, info: caso });
+        } catch (error) {
+            res.status(500).json({ msg: 'Error al obtener el caso de prueba', code: 500, error: error.message });
+        }
+    }
+
 }
 
 module.exports = CasoPruebaController;

@@ -6,7 +6,7 @@ import { faSearch, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import '../css/style.css';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes} from '../utilities/Mensajes';
 import { borrarSesion, getToken, getUser } from '../utilities/Sessionutil';
 import TablePagination from '@mui/material/TablePagination';
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';

@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
-import mensajes from '../utilities/Mensajes';
+import {mensajes} from '../utilities/Mensajes';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faCheck, faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
@@ -72,9 +72,6 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
                 }
             } else {
                 mensajes(info.msg, 'success');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
             }
         } catch (error) {
             console.error('Error en la solicitud:', error);
@@ -103,9 +100,6 @@ const EditarPersona = ({ personaObtenida, handleChange }) => {
         }).then((willCancel) => {
             if (willCancel) {
                 mensajes("Actualización cancelada", "info", "Información");
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
             }
         });
     };

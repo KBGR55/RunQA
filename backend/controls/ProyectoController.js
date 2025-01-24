@@ -320,71 +320,70 @@ class ProyectoController {
     const { id_proyect, razonTerminacion } = req.params;
 
     try {
-        transaction = await models.sequelize.transaction();
+      transaction = await models.sequelize.transaction();
 
-        const oldProyect = await models.proyecto.findOne({
-            where: { external_id: id_proyect },
+      const oldProyect = await models.proyecto.findOne({
+        where: { external_id: id_proyect },
+      });
+
+      if (!oldProyect) {
+        return res
+          .status(400)
+          .json({ msg: "No se encontró el proyecto", code: 400 });
+      }
+
+      // Buscar roles asociados al proyecto
+      const rolesProyectos = await models.rol_proyecto.findAll({
+        where: { id_proyecto: oldProyect.id },
+      });
+
+      for (const rol of rolesProyectos) {
+        // Buscar rol_entidad relacionado
+        const rol_entidad = await models.rol_entidad.findOne({
+          where: { id: rol.id_rol_entidad },
         });
 
-        if (!oldProyect) {
-            return res.status(400).json({ msg: "No se encontró el proyecto", code: 400 });
+        if (rol_entidad) {
+          // Buscar entidad asociada
+          const entidad = await models.entidad.findOne({
+            where: { id: rol_entidad.id_entidad },
+          });
+
+          if (entidad) {
+            // Actualizar horas disponibles
+            entidad.horasDisponibles += rol.horasDiarias;
+            await entidad.save({ transaction });
+
+            // Actualizar estado de rol_entidad
+            rol_entidad.estado = 0; // Cambiar estado a inactivo
+            await rol_entidad.save({ transaction });
+          }
         }
+      }
 
-        // Buscar roles asociados al proyecto
-        const rolesProyectos = await models.rol_proyecto.findAll({
-            where: { id_proyecto: oldProyect.id },
-        });
+      // Marcar proyecto como terminado
+      oldProyect.terminado = 1;
 
-        for (const rol of rolesProyectos) {
+      if (razonTerminacion && oldProyect.razon_terminado !== razonTerminacion) {
+        oldProyect.razon_terminado = razonTerminacion;
+      }
 
-            // Buscar rol_entidad relacionado
-            const rol_entidad = await models.rol_entidad.findOne({
-                where: { id: rol.id_rol_entidad },
-            });
+      await oldProyect.save({ transaction });
+      await transaction.commit();
 
-            if (rol_entidad) {
-
-                // Buscar entidad asociada
-                const entidad = await models.entidad.findOne({
-                    where: { id: rol_entidad.id_entidad },
-                });
-
-                if (entidad) {
-                  
-                    // Actualizar horas disponibles
-                    entidad.horasDisponibles += rol.horasDiarias;
-                    await entidad.save({ transaction });
-
-                    // Actualizar estado de rol_entidad
-                    rol_entidad.estado = 0; // Cambiar estado a inactivo
-                    await rol_entidad.save({ transaction });
-
-                }
-            }
-        }
-
-        // Marcar proyecto como terminado
-        oldProyect.terminado = 1;
-
-        if (razonTerminacion && oldProyect.razon_terminado !== razonTerminacion) {
-            oldProyect.razon_terminado = razonTerminacion;
-        }
-
-        await oldProyect.save({ transaction });
-        await transaction.commit();
-
-        res.json({
-            msg: "El proyecto se ha terminado por " + oldProyect.razon_terminado,
-            code: 200,
-            info: oldProyect.external_id,
-        });
+      res.json({
+        msg: "El proyecto se ha terminado por " + oldProyect.razon_terminado,
+        code: 200,
+        info: oldProyect.external_id,
+      });
     } catch (error) {
-        if (transaction) await transaction.rollback();
-        console.error("Error al procesar la transacción:", error);
-        res.status(500).json({ msg: "Hubo un problema al actualizar el proyecto", code: 500 });
+      if (transaction) await transaction.rollback();
+      console.error("Error al procesar la transacción:", error);
+      res
+        .status(500)
+        .json({ msg: "Hubo un problema al actualizar el proyecto", code: 500 });
     }
-}
-
+  }
 
   async asignarProyecto(req, res) {
     let transaction;
@@ -877,6 +876,132 @@ class ProyectoController {
     } catch (error) {
       console.error("Error:", error);
       res.status(500).json({ msg: "Estamos teniendo problemas", code: 500 });
+    }
+  }
+
+  async obtenerConteoCasosPorEstado(req, res) {
+    try {
+      const proyecto = await models.proyecto.findOne({
+        where: { external_id: req.params.external_id, estado: true },
+        attributes: ["id", "estado", "nombre"],
+      });
+
+      if (!proyecto) {
+        return res
+          .status(404)
+          .json({ msg: "Proyecto no encontrado", code: 404 });
+      }
+
+      const casosDePrueba = await models.caso_prueba.findAll({
+        attributes: ["id", "estado", "clasificacion"],
+        where: { id_proyecto: proyecto.id },
+      });
+
+      if (casosDePrueba.length === 0) {
+        return res.status(404).json({
+          msg: `No se encontraron casos de prueba para este proyecto`,
+          code: 404,
+        });
+      }
+
+      const idsCasosDePrueba = casosDePrueba.map((caso) => caso.id);
+
+      const estadosContados = await models.caso_prueba.findAll({
+        attributes: [
+          "estado",
+          [models.sequelize.fn("COUNT", models.sequelize.col("*")), "cantidad"],
+        ],
+        where: { id_proyecto: proyecto.id },
+        group: ["estado"],
+      });
+
+      const clasificacionContada = await models.caso_prueba.findAll({
+        attributes: [
+          "clasificacion",
+          [models.sequelize.fn("COUNT", models.sequelize.col("*")), "cantidad"],
+        ],
+        where: { id_proyecto: proyecto.id },
+        group: ["clasificacion"],
+      });
+
+      const erroresContados = await models.error.findAll({
+        attributes: [
+          "estado",
+          [models.sequelize.fn("COUNT", models.sequelize.col("*")), "cantidad"],
+        ],
+        where: {
+          id_caso_prueba: {
+            [models.Sequelize.Op.in]: idsCasosDePrueba,
+          },
+          estado: { [models.Sequelize.Op.not]: "CERRADO" },
+        },
+        group: ["estado"],
+      });
+
+      const severidadContada = await models.error.findAll({
+        attributes: [
+          "severidad",
+          [models.sequelize.fn("COUNT", models.sequelize.col("*")), "cantidad"],
+        ],
+        where: {
+          id_caso_prueba: {
+            [models.Sequelize.Op.in]: idsCasosDePrueba,
+          },
+          estado: { [models.Sequelize.Op.not]: "CERRADO" },
+        },
+        group: ["severidad"],
+      });
+
+      const prioridadContada = await models.error.findAll({
+        attributes: [
+          "prioridad",
+          [models.sequelize.fn("COUNT", models.sequelize.col("*")), "cantidad"],
+        ],
+        where: {
+          id_caso_prueba: {
+            [models.Sequelize.Op.in]: idsCasosDePrueba,
+          },
+          estado: { [models.Sequelize.Op.not]: "CERRADO" },
+        },
+        group: ["prioridad"],
+      });
+
+      const resultado = {
+        proyecto: proyecto,
+        casos_de_prueba: estadosContados.map((estado) => ({
+          estado: estado.estado,
+          cantidad: estado.get("cantidad"),
+        })),
+        casos_de_prueba_clasificacion: clasificacionContada.map(
+          (clasificacion) => ({
+            clasificacion: clasificacion.clasificacion,
+            cantidad: clasificacion.get("cantidad"),
+          })
+        ),
+        errores: erroresContados.map((error) => ({
+          estado: error.estado,
+          cantidad: error.get("cantidad"),
+        })),
+        severidad: severidadContada.map((severidad) => ({
+          severidad: severidad.severidad,
+          cantidad: severidad.get("cantidad"),
+        })),
+        prioridad: prioridadContada.map((prioridad) => ({
+          prioridad: prioridad.prioridad,
+          cantidad: prioridad.get("cantidad"),
+        })),
+      };
+
+      res.json({
+        msg: "OK",
+        code: 200,
+        info: resultado,
+      });
+    } catch (error) {
+      res.status(500).json({
+        msg: error.message || "Error interno del servidor",
+        code: 500,
+      });
     }
   }
 }

@@ -7,7 +7,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { peticionGet, peticionPost } from '../utilities/hooks/Conexion';
 import { getToken } from '../utilities/Sessionutil';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes} from '../utilities/Mensajes';
 import swal from 'sweetalert';
 import { useNavigate } from 'react-router-dom';
 
@@ -80,9 +80,6 @@ const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, ext
         try {
             const response = await peticionPost(getToken(), 'contrato/caso/prueba', body);
             if (response.code === 200) {
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
                 mensajes(response.msg);
                 handleClose();
             } else {
@@ -104,9 +101,6 @@ const AsignarTesterModal = ({ showModal, setShowModal, external_id_proyecto, ext
         }).then((willCancel) => {
             if (willCancel) {
                 mensajes("Asignación cancelada", "info", "Información");
-                setTimeout(() => {
-                    window.location.reload(); 
-                }, 2000);  
             }
         });
     };

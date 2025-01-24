@@ -1,11 +1,25 @@
 import swal from 'sweetalert';
 
-const mensajes = (texto, type='success', title='OK') => swal({
+// Mensaje con recarga de página
+export const mensajes = (texto, type = 'success', title = 'OK') => {
+  swal({
     title: title,
     text: texto,
     icon: type,
     button: 'OK',
-    timer: 5000,
+    closeOnEsc: true
+  }).then(() => {
+    window.location.reload();
+  });
+};
+
+// Mensaje sin recargar la página
+export const mensajesSinRecargar = (texto, type = 'success', title = 'OK') => {
+  swal({
+    title: title,
+    text: texto,
+    icon: type,
+    button: 'OK',
     closeOnEsc: true
   });
-export default mensajes;
+};

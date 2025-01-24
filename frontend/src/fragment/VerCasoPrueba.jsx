@@ -8,7 +8,7 @@ import { faArrowLeft, faExclamationCircle, faPlus, faTrash,faSearch, faQuestionC
 import { peticionGet, peticionPut } from '../utilities/hooks/Conexion';
 import { useNavigate, useParams } from 'react-router-dom';
 import '../css/style.css';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes} from '../utilities/Mensajes';
 import { getToken, getUser } from '../utilities/Sessionutil';
 import { useForm } from 'react-hook-form';
 import swal from 'sweetalert';
@@ -161,9 +161,6 @@ const VerCasoPrueba = () => {
                 const response = await peticionGet(getToken(), `caso/prueba/eliminar?external_id=${external_id}`);
                 if (response.code === 200) {
                     mensajes('Caso de prueba eliminado exitosamente.', 'success');
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
                 } else {
                     mensajes(response.msg, 'error', 'Error');
                 }
@@ -194,9 +191,6 @@ const VerCasoPrueba = () => {
                             mensajes(info.msg, "error", "Error");
                         } else {
                             mensajes(info.msg, "success", "Éxito");
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 2000);
                         }
                     })
                     .catch((error) => {
@@ -534,9 +528,6 @@ const VerCasoPrueba = () => {
                                                             mensajes(info.msg, "error", "Error");
                                                         } else {
                                                             mensajes(info.msg, "success", "Éxito");
-                                                            setTimeout(() => {
-                                                                window.location.reload();
-                                                            }, 2000);
                                                         }
                                                     })
                                                     .catch((error) => {

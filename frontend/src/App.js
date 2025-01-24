@@ -1,4 +1,3 @@
-// App.js
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -28,10 +27,11 @@ import VerError from './fragment/VerError';
 import AsignarErrores from './fragment/AsignarErrores';
 import ListaErroresAsigados from './fragment/ListaErroresAsigados';
 import { getRoles, getToken } from './utilities/Sessionutil';
-import mensajes from './utilities/Mensajes';
 import ListaFuncionalidades from './fragment/ListaFuncionalidades';
 import AgregarFuncionalidad from './fragment/AgregarFuncionalidad';
 import TerminarProyecto from './fragment/TerminarProyecto';
+import Panel from './fragment/Panel';
+import { mensajesSinRecargar } from './utilities/Mensajes';
 
 function App() {
   const MiddewareSesion = ({ children, requiredRoles }) => {
@@ -45,7 +45,7 @@ function App() {
     if (requiredRoles && requiredRoles.length > 0) {
       const hasRequiredRole = roles.some(role => requiredRoles.includes(role.nombre));
       if (!hasRequiredRole) {
-        mensajes("No tienes el rol necesario para acceder a esta página.", "error", "Acceso Denegado");
+        mensajesSinRecargar("No tienes el rol necesario para acceder a esta página.", "error", "Acceso Denegado");
         return <Navigate to='/login' />;
       }
     }
@@ -65,6 +65,7 @@ function App() {
         <Route path='/olvidar/clave' element={<OlvidoClave />} />
         <Route path='/cambio/clave/restablecer/:external_id/:token' element={<CambioClave />} />
         <Route element={<LayoutComponent />}>
+          <Route path='/panel/:external_id_proyecto' element={<MiddewareSesion><Panel/></MiddewareSesion>} />
           <Route path='/presentacion/:external_id_proyecto' element={<MiddewareSesion><PresentacionProyecto /></MiddewareSesion>} />
           <Route path='/usuarios' element={<MiddewareSesion><ListaUsuarios /></MiddewareSesion>} />
           <Route path='/peticiones/registro' element={<MiddewareSesion><VerPeticion /></MiddewareSesion>} />

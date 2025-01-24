@@ -8,7 +8,7 @@ import { peticionGet } from '../utilities/hooks/Conexion';
 import '../css/style.css';
 import { useNavigate } from 'react-router-dom';
 import { borrarSesion, getToken, getUser } from '../utilities/Sessionutil';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes} from '../utilities/Mensajes';
 import NuevoProyecto from './NuevoProyecto';
 
 const ListaProyectos = () => {

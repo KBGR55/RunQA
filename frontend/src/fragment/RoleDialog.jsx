@@ -5,7 +5,7 @@ import '../css/style.css';
 import { peticionGet, peticionPost, URLBASE } from '../utilities/hooks/Conexion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes, faTrash } from '@fortawesome/free-solid-svg-icons';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes} from '../utilities/Mensajes';
 import { borrarSesion, getToken } from '../utilities/Sessionutil';
 import { Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -39,9 +39,6 @@ const RoleDialog = ({ handleClose, external_id }) => {
                 mensajes(response.msg, 'error', 'Error');
             } else {
                 mensajes(response.msg, 'success', 'Éxito');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
             }
         } catch (error) {
             console.error("Error al asignar roles:", error);

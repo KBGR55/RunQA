@@ -200,6 +200,7 @@ router.put('/caso/prueba/cambiar/estado',casoPruebaController.cambiar_estado);
 router.get('/caso/prueba/eliminar',casoPruebaController.cambiar_estado_obsoleto);
 router.get('/caso/obtener/proyecto/:external_id', casoPruebaController.obtenerCasosProyecto);
 router.put('/caso/prueba/ejecutar/:external_id',casoPruebaController.ejecutarCasoPrueba);
+router.get('/caso/prueba/obtener/external/:external_id',casoPruebaController.obtnerPorExternalId);
 
 /** ERROR */
 router.get('/error/listar', errorController.listar);
@@ -264,6 +265,7 @@ router.get('/proyecto/listar/rol/:rol_name/:external_id',proyectoController.obte
 router.get('/proyecto/eliminar/:external_id', proyectoController.eliminarProyecto);
 router.get('/proyecto/horas/cambiar/:id_entidad/:id_rol_proyecto/:horasDiarias', proyectoController.cambiarHorasDiarias);
 router.delete('/proyecto/terminar/:id_proyect/:razonTerminacion',proyectoController.terminarProyecto);
+router.get('/proyecto/contar/casos/:external_id',proyectoController.obtenerConteoCasosPorEstado);
 
 /** CONTRATO */
 router.post('/contrato/caso/prueba', contratoController.asignarTesters);

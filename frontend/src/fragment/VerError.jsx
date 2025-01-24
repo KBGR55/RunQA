@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { peticionGet, URLBASE } from '../utilities/hooks/Conexion';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/style.css';
-import mensajes from '../utilities/Mensajes';
+import  {mensajes} from '../utilities/Mensajes';
 import { getToken, getUser } from '../utilities/Sessionutil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faCheckCircle, faExclamationTriangle, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
@@ -84,6 +84,7 @@ const VerError = () => {
         <div className="container-fluid contenedor-centro" style={{ margin: '20px' }}>
             <div className="contenedor-carta">
                 <p className="titulo-proyecto">{infoProyecto.nombre}</p>
+              <p className='titulo-secundario'>Caso prueba: {dataErrror?.caso_prueba?.nombre || 'No disponible'}</p>
                 <div className="d-flex align-items-center mb-3">
                     <FontAwesomeIcon
                         icon={faArrowLeft}
