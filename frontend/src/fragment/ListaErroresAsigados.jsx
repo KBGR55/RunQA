@@ -110,19 +110,23 @@ const ListaErroresAsigados = () => {
                                                             <tbody>
                                                                 <tr>
                                                                     <td>NUEVO</td>
-                                                                    <td>El error ha sido reportado y aún no se ha procesado.</td>
+                                                                    <td>El error se crea y aún no ha sido asignado a ningún desarrollador.</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>CERRADO</td>
-                                                                    <td>El error ha sido resuelto y no se requiere más acción.</td>
+                                                                    <td>El tester valida que la corrección es correcta.</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td>PENDIENTE_VALIDACION</td>
-                                                                    <td>El error ha sido asignado y está esperando validación.</td>
+                                                                    <td>PENDIENTE DE VALIDACION</td>
+                                                                    <td>El error corregido pasa a validación por parte del tester.</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td>CORRECCION</td>
-                                                                    <td>El error está siendo corregido o requiere correcciones adicionales.</td>
+                                                                    <td>EN CORRECCION</td>
+                                                                    <td>El error es asignado a un desarrollador para ser corregido.</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>DEVUELTO</td>
+                                                                    <td>El tester clasifica el error corregido por el desarrollador como incorrecto.</td>
                                                                 </tr>
                                                             </tbody>
                                                         </table>

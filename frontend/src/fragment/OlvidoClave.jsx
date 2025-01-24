@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/Registro_Style.css';
 import '../css/style.css';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import  {mensajes} from '../utilities/Mensajes';
 import { peticionPut } from '../utilities/hooks/Conexion';
 

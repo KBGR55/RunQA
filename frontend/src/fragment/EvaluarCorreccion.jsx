@@ -7,7 +7,7 @@ import swal from 'sweetalert';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { Modal, Button } from 'react-bootstrap';
-import mensajes from '../utilities/Mensajes';
+import { mensajes, mensajesSinRecargar } from '../utilities/Mensajes';
 import { peticionPost } from '../utilities/hooks/Conexion';
 import { getToken } from '../utilities/Sessionutil';
 
@@ -53,10 +53,7 @@ const EvaluarCorreccion = ({ showModalEvaluar, setShowModalEvaluar, external_id_
                         if (info.code !== 200) {
                             mensajes(info.msg, "error", "Error");
                         } else {
-                            mensajes(info.msg, "success", "Éxito");
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 2000);
+                            mensajesSinRecargar(info.msg, "success", "Éxito");
                         }
                     })
                     .catch((error) => {

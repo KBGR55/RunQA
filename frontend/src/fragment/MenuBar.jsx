@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar, Dropdown } from 'react-bootstrap';
 import { borrarSesion, getToken, getUser } from '../utilities/Sessionutil';
 import { URLBASE } from '../utilities/hooks/Conexion';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import '../css/style.css';
 
 const MenuBar = () => {

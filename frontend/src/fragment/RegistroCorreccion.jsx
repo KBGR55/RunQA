@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Modal, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { peticionPost } from '../utilities/hooks/Conexion';
 import { getToken } from '../utilities/Sessionutil';
-import mensajes from '../utilities/Mensajes';
+import { mensajes } from '../utilities/Mensajes';
 import '../css/style.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import { getToken, getUser, borrarSesion } from '../utilities/Sessionutil';
 import { Button, Collapse, Modal } from 'react-bootstrap';
@@ -122,8 +122,8 @@ const RoleMenu = () => {
     const roleOptions = {
         'LIDER DE CALIDAD': ['Asignar casos de prueba', 'Casos de prueba', 'Funcionalidades', 'Generar reportes', 'Miembros', 'Terminar proyecto'],
         'ANALISTA DE PRUEBAS': ['Asignar casos de prueba', 'Casos de prueba', 'Funcionalidades'],
-        'TESTER': ['Asignar desarrolladores', 'Casos de prueba', 'Registrar errores'],
-        'DESARROLLADOR': ['Consultar errores asignados', 'Errores asigandos']
+        'TESTER': ['Asignar errores', 'Casos de prueba', 'Registrar errores'],
+        'DESARROLLADOR': ['Consultar errores asignados', 'Errores asignados']
     };
 
     const roleIcons = {
@@ -158,9 +158,9 @@ const RoleMenu = () => {
             navigate('/peticiones/RI');
         } else if (option === 'Peticiones de cambio de clave') {
             navigate(`/peticiones/CC`);
-        } else if (option === 'Asignar desarrolladores') {
+        } else if (option === 'Asignar errores') {
             navigate(`/asignar/desarrollador/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });
-        } else if (option === 'Errores asigandos') {
+        } else if (option === 'Errores asignados') {
             navigate(`/errores/asignados/${proyecto.external_id}`);
         } else if (option === 'Funcionalidades') {
             navigate(`/lista/funcionalidades/${proyecto.external_id}`, { state: { selectedRoleId: roleId } });

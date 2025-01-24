@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/Login_Style.css';
 import { InicioSesion } from '../utilities/hooks/Conexion';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { saveCorreo, saveToken, saveUser } from '../utilities/Sessionutil';
 import  {mensajes, mensajesSinRecargar} from '../utilities/Mensajes';
