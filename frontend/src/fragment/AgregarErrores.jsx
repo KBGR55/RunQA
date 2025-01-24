@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/style.css';
 import { useForm } from 'react-hook-form';
 import React, { useEffect, useState } from 'react';
-import  {mensajes, mensajesSinRecargar}  from '../utilities/Mensajes';
+import { mensajes, mensajesSinRecargar } from '../utilities/Mensajes';
 import { ActualizarImagenes, GuardarImages, peticionGet, peticionPost } from '../utilities/hooks/Conexion';
 import { borrarSesion, getToken, getUser } from '../utilities/Sessionutil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,7 +16,7 @@ import ModalAsignarDesarrollador from './ModalAsignarDesarrollador';
 
 const AgregarErrores = () => {
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
-    const [severidad] = useState(['CRÍTICA','MEDIA', 'BAJA']);
+    const [severidad] = useState(['CRÍTICA', 'MEDIA', 'BAJA']);
     const [prioridad] = useState(['ALTA', 'MEDIA', 'BAJA']);
     const [estadoSeleccionado, setEstadoSeleccionado] = useState('PENDIENTE');
     const [clasificacionSeleccionada, setClasificacionSeleccionada] = useState([]);
@@ -96,14 +96,14 @@ const AgregarErrores = () => {
         formData.append('resultado_obtenido', data.resultado_obtenido);
         formData.append('fecha_resolucion', null);
         formData.append('external_caso_prueba', external_id);
-    
+
         if (data.foto && data.foto.length > 0) {
             formData.append('foto', data.foto[0]);
         } else {
             const defaultPhotoUrl = `${process.env.PUBLIC_URL}/errors/SIN_ANEXO.png`;
             formData.append('foto', defaultPhotoUrl);
         }
-    
+
         try {
             if (external_id_error) {
                 formData.append('external_id', external_id_error);
@@ -116,10 +116,10 @@ const AgregarErrores = () => {
                 }
             } else {
                 const response = await GuardarImages(formData, getToken(), "/error/guardar");
-    
+
                 if (response.code === 200) {
                     mensajes('Error agregado correctamente', 'success');
-         
+
                     setValue('titulo', '');
                     setValue('descripcion', '');
                     setValue('pasos_repetir', '');
@@ -131,7 +131,7 @@ const AgregarErrores = () => {
                     setUploadedPhoto(null);
 
                     setIdError(response.info.id);
-                    
+
                     swal({
                         title: "Errores agregados correctamente",
                         text: "¿Desea asignar un desarrollador para corregir el error?",
@@ -154,7 +154,7 @@ const AgregarErrores = () => {
             mensajes('Error al procesar la solicitud: ' + error.message, 'error');
         }
     };
-    
+
 
     const handlePhotoChange = (event) => {
         const file = event.target.files[0];
@@ -199,7 +199,7 @@ const AgregarErrores = () => {
         <div className="contenedor-carta">
             <p className="titulo-proyecto">{infoProyecto.nombre}</p>
             <p className="titulo-secundario">Caso prueba: {casoPrueba.nombre}</p>
-            {!external_id_error ? (<h2 className="titulo-primario">Agregar error </h2>) : <p className="titulo-primario">Editar error</p>} 
+            {!external_id_error ? (<h2 className="titulo-primario">Agregar error </h2>) : <p className="titulo-primario">Editar error</p>}
             <form className="form-sample" onSubmit={handleSubmit(onSubmit)}>
                 <div className="row">
                     <div className="col-md-6">
