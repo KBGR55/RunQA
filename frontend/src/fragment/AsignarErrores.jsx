@@ -106,8 +106,9 @@ const AsignarErrores = () => {
                                                 <div className="card-body">
                                                     <h5 className="card-title"><strong>{error.titulo}</strong></h5>
                                                     <div style={{ textAlign: 'left', marginLeft: '15px' }}>
-                                                        <li className="card-text"><strong>Funcionalidad:</strong> {error.funcionalidad}</li>
+                                                        <li className="card-text"><strong>Descripción:</strong> {error.descripcion}</li>
                                                         <li className="card-text"><strong>Severidad:</strong> {error.severidad}</li>
+                                                        <li className="card-text"><strong>Prioridad:</strong> {error.prioridad}</li>
                                                     </div>
                                                 </div>
                                             </div>

@@ -342,7 +342,7 @@ class ContratoController {
                         id_rol_proyecto_responsable: rolProyectoAsignado.id
                     }, { transaction });
 
-                    await errorInstance.update({ estado: 'PENDIENTE_VALIDACION' }, { transaction });
+                    await errorInstance.update({ estado: 'CORRECCION' }, { transaction });
                 } else {
                     console.log(`Contrato ya existente para el desarrollador ${desarrollador.nombres} en el error ${errorInstance.nombre}.`);
                 }
@@ -512,7 +512,7 @@ class ContratoController {
                 estado: 1 
             }, { transaction });
 
-            await errorInstance.update({ estado: "PENDIENTE_VALIDACION" }, { transaction });
+            await errorInstance.update({ estado: "CORRECCION" }, { transaction });
 
             await transaction.commit();
             res.status(200).json({ msg: "Error reasignado con éxito", code: 200, contrato: nuevoContrato });

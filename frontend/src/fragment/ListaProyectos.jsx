@@ -114,8 +114,7 @@ const ListaProyectos = () => {
         setSelectedProjectId(externalId);
         setShowEditProjectModal(true);
     };
-    console.log(proyectos);
-
+    
     return (
         <div>
             <div className="contenedor-centro">

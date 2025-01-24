@@ -6,12 +6,16 @@ module.exports = (sequelize, DataTypes) => {
         titulo: { type: DataTypes.STRING(100), defaultValue: "SIN_DATOS" }, 
         severidad: { type: DataTypes.ENUM('CRÍTICA','MEDIA', 'BAJA'),  allowNull: false,  defaultValue: 'BAJA' },
         prioridad: { type: DataTypes.ENUM('ALTA', 'MEDIA', 'BAJA'), allowNull: false,  defaultValue: 'BAJA' },
-        estado: { type: DataTypes.ENUM('NUEVO','CERRADO','PENDIENTE_VALIDACION', 'CORRECCION'),  defaultValue: 'NUEVO' },
+        estado: { type: DataTypes.ENUM('NUEVO','CERRADO','PENDIENTE_VALIDACION', 'CORRECCION', 'DEVUELTO'),  defaultValue: 'NUEVO' },
         anexo_foto: { type: DataTypes.STRING(80), defaultValue: "NO_DATA"},
         pasos_repetir: {type: DataTypes.STRING(350), allowNull: true },
         resultado_obtenido: {type: DataTypes.STRING(350), allowNull: true },
         fecha_reporte: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
         fecha_resolucion: { type: DataTypes.DATE }, 
+        fecha_devolucion: { type: DataTypes.DATE },
+        fecha_cierre: { type: DataTypes.DATE },
+        motivo_devolucion: { type: DataTypes.STRING(350), defaultValue: "SIN_DATOS" },
+        ciclo_error: { type: DataTypes.INTEGER, defaultValue: 1 },
     }, {
         freezeTableName: true
     });

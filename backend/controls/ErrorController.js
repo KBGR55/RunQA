@@ -88,14 +88,7 @@ class ErrorController {
           {
             model: models.caso_prueba,
             as: "caso_prueba",
-            attributes: ["id", "external_id", "nombre"],
-            include: [
-              {
-                model: models.funcionalidad,
-                as: "funcionalidad",
-                attributes: ["id", "external_id", "nombre", 'tipo', 'descripcion'],
-              }
-            ],
+            attributes: ["id", "external_id", "nombre"]
           },
         ]
       });
@@ -107,6 +100,8 @@ class ErrorController {
         });
       }
 
+      console.log("Errores encontrados:", errores);
+      
       res.json({
         msg: "Errores encontrados para el caso de prueba",
         code: 200,
@@ -234,6 +229,8 @@ class ErrorController {
    */
   async obtener(req, res) {
     const { external_id } = req.query;
+    const { entidad_id } = req.params;
+
     if (!external_id) {
       return res.status(400).json({
         msg: "El external_id es requerido",
@@ -242,6 +239,7 @@ class ErrorController {
     }
 
     try {
+      // Buscar el error por external_id
       const errorEncontrado = await error.findOne({
         where: { external_id: external_id },
         attributes: [
@@ -257,6 +255,9 @@ class ErrorController {
           "fecha_reporte",
           "fecha_resolucion",
           "pasos_repetir",
+          "fecha_devolucion",
+          "motivo_devolucion",
+          "ciclo_error",
         ],
         include: [
           {
@@ -267,11 +268,11 @@ class ErrorController {
               {
                 model: models.funcionalidad,
                 as: "funcionalidad",
-                attributes: ["id", "external_id", "nombre", 'tipo', 'descripcion'],
-              }
+                attributes: ["id", "external_id", "nombre", "tipo", "descripcion"],
+              },
             ],
           },
-        ]
+        ],
       });
 
       if (!errorEncontrado) {
@@ -280,28 +281,93 @@ class ErrorController {
           code: 404,
         });
       }
-      const contrato = await models.contrato.findOne({ where: { id_error: errorEncontrado.id } });
-      const rol_proyecto_responsable = contrato
-        ? await models.rol_proyecto.findOne({ where: { id: contrato.id_rol_proyecto_responsable } })
-        : null;
-      const rol_entidad = rol_proyecto_responsable
-        ? await models.rol_entidad.findOne({ where: { id: rol_proyecto_responsable.id_rol_entidad } })
-        : null;
-      const entidad = rol_entidad
-        ? await models.entidad.findOne({ where: { id: rol_entidad.id_entidad } })
-        : null;
 
-      const data = {
-        contrato_id: contrato?.id || null,
-        contrato_external_id: contrato?.external_id || null,
-        entidad_id: entidad?.id || null,
-        entidad_external_id: entidad?.external_id || null,
-        responsable: entidad ? `${entidad.nombres || ''} ${entidad.apellidos || ''}`.trim() : null,
-      };
+      // Buscar el contrato relacionado al error
+      const contrato = await models.contrato.findOne({
+        where: { id_error: errorEncontrado.id, estado: 1 },
+        attributes: ["fecha_inicio", "fecha_fin", "external_id"],
+        include: [
+          {
+            model: models.rol_proyecto,
+            as: "rol_proyecto_responsable",
+            include: [
+              {
+                model: models.rol_entidad,
+                as: "rol_entidad",
+                include: [
+                  {
+                    model: models.entidad,
+                    as: "entidad",
+                    attributes: ["nombres", "apellidos"],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            model: models.rol_proyecto,
+            as: "rol_proyecto_asignado",
+            include: [
+              {
+                model: models.rol_entidad,
+                as: "rol_entidad",
+                include: [
+                  {
+                    model: models.entidad,
+                    as: "entidad",
+                    attributes: ["nombres", "apellidos"],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+
+      let data = null;
+
+      if (contrato) {
+        data = {
+          fecha_inicio: contrato.fecha_inicio,
+          fecha_fin: contrato.fecha_fin,
+          external_id: contrato.external_id,
+          persona_asignada: `${contrato.rol_proyecto_responsable.rol_entidad.entidad.nombres} ${contrato.rol_proyecto_responsable.rol_entidad.entidad.apellidos}`,
+          persona_que_asigno: `${contrato.rol_proyecto_asignado.rol_entidad.entidad.nombres} ${contrato.rol_proyecto_asignado.rol_entidad.entidad.apellidos}`,
+        };
+      }
+
+      // Determinar los roles del usuario
+      const roles = [];
+
+      // Verificar si es tester
+      const rolTester = await models.rol_entidad.findOne({
+        where: { id_entidad: entidad_id, id_rol: 4 }, // 4: tester
+      });
+
+      if (rolTester) {
+        roles.push("tester");
+      }
+
+      // Verificar si es desarrollador solo si hay un contrato relacionado
+      if (contrato?.rol_proyecto_responsable?.id) {
+        const rolDesarrollador = await models.rol_proyecto.findOne({
+          where: { id: contrato.rol_proyecto_responsable.id },
+          include: {
+            model: models.rol_entidad,
+            as: "rol_entidad",
+            where: { id_entidad: entidad_id },
+          },
+        });
+
+        if (rolDesarrollador) {
+          roles.push("desarrollador");
+        }
+      }
+
       res.json({
         msg: "Error encontrado correctamente",
         code: 200,
-        info: { errorEncontrado, data },
+        info: { errorEncontrado, ...(data ? { data } : {}), roles },
       });
     } catch (err) {
       console.error("Error al buscar el error por external_id:", err);
@@ -312,6 +378,10 @@ class ErrorController {
       });
     }
   }
+
+
+
+
 
   /**
    * @description Guarda un nuevo error en la base de datos.
@@ -529,6 +599,122 @@ class ErrorController {
     } catch (error) {
       console.error("Error al buscar en la base de datos:", error);
       return res.status(500).json({ msg: "Error interno del servidor", code: 500 });
+    }
+  }
+
+  async registrarCorreccion(req, res) {
+    const { resultado_ejecucion } = req.body;
+    const { external_id_error } = req.params;
+
+    if (!external_id_error || !resultado_ejecucion) {
+      return res.status(400).json({
+        msg: "El external_id_error y el resultado de ejecución son requeridos",
+        code: 400,
+      });
+    }
+
+    try {
+      const errorEncontrado = await models.error.findOne({
+        where: { external_id: external_id_error },
+      });
+
+      if (!errorEncontrado) {
+        return res.status(404).json({
+          msg: "Error no encontrado",
+          code: 404,
+        });
+      }
+
+      errorEncontrado.estado = 'PENDIENTE_VALIDACION';
+      errorEncontrado.resultado_obtenido = resultado_ejecucion;
+      errorEncontrado.fecha_resolucion = new Date();
+
+      const resultado = await errorEncontrado.save();
+
+      if (!resultado) {
+        return res.status(400).json({
+          msg: "No se pudo registrar la corrección. Inténtelo de nuevo.",
+          code: 400,
+        });
+      }
+
+      return res.status(200).json({
+        msg: "La corrección se ha registrado correctamente, espere a confirmación de validación",
+        code: 200,
+      });
+    } catch (error) {
+      console.error("Error interno al registrar la corrección:", error);
+      return res.status(500).json({
+        msg: "Error interno del servidor",
+        code: 500,
+      });
+    }
+  }
+
+  async evaluarCorreccion(req, res) {
+    const { estado, motivo_invalido } = req.body;
+    const { external_id_error } = req.params;
+
+    if (!external_id_error || !estado) {
+      return res.status(400).json({
+        msg: "El external_id_error y el estado son requeridos",
+        code: 400,
+      });
+    }
+
+    try {
+      const errorEncontrado = await models.error.findOne({
+        where: { external_id: external_id_error },
+      });
+
+      if (!errorEncontrado) {
+        return res.status(404).json({
+          msg: "Error no encontrado",
+          code: 404,
+        });
+      }
+
+      if (estado === 'VALIDADO') {
+        errorEncontrado.estado = 'CERRADO';
+        errorEncontrado.fecha_cierre = new Date();
+      } else if (estado === 'INVALIDO') {
+        if (!motivo_invalido || motivo_invalido.trim() === '') {
+          return res.status(400).json({
+            msg: "El motivo de invalidez es obligatorio para este estado",
+            code: 400,
+          });
+        }
+
+        errorEncontrado.estado = 'DEVUELTO';
+        errorEncontrado.motivo_devolucion = motivo_invalido;
+        errorEncontrado.fecha_devolucion = new Date();
+        errorEncontrado.ciclo_error = (errorEncontrado.ciclo_error || 1) + 1;
+      } else {
+        return res.status(400).json({
+          msg: "Estado no válido. Use 'VALIDADO' o 'INVALIDO'.",
+          code: 400,
+        });
+      }
+
+      const resultado = await errorEncontrado.save();
+
+      if (!resultado) {
+        return res.status(400).json({
+          msg: "No se pudo actualizar el estado del error. Inténtelo de nuevo.",
+          code: 400,
+        });
+      }
+
+      return res.status(200).json({
+        msg: `El estado del error se ha actualizado correctamente a ${estado}`,
+        code: 200,
+      });
+    } catch (error) {
+      console.error("Error interno al evaluar la corrección:", error);
+      return res.status(500).json({
+        msg: "Error interno del servidor",
+        code: 500,
+      });
     }
   }
 

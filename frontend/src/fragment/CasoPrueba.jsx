@@ -50,8 +50,6 @@ const CasoPrueba = () => {
             }
         };
         
-    
-        // Carga el caso de prueba si `external_id` existe
         const fetchCasoPrueba = async () => {
             if (external_id) {
                 try {

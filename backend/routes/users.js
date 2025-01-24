@@ -239,10 +239,12 @@ router.put('/error/actualizar', (req, res, next) => {
     errorController.editar(req, res, next);
   });
 });
-router.get('/error/obtener/external', errorController.obtener);
+router.get('/error/obtener/external/:entidad_id', errorController.obtener);
 router.get('/error/obtener/proyecto/:external_id', errorController.obtenerErrores);
 router.get('/error/obtener/asignado/proyecto/:id_entidad/:proyecto_external_id', errorController.obtenerErrorAsignado);
 router.get('/error/cambiar/estado/:estado/:id_error', errorController.cambiarEstado);
+router.post('/error/registrar-correccion/:external_id_error', errorController.registrarCorreccion);
+router.post('/error/evaluar/:external_id_error', errorController.evaluarCorreccion);
 
 
 /** ROL_PROYECTO */
