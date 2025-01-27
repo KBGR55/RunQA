@@ -39,7 +39,7 @@ const CasoPrueba = () => {
                         setFuncionalidades(response.info);                        
                     } else if (response.info.length === 0){
                         setFuncionalidades([]);
-                        mensajes('No existen funcionalidades registradas', 'warning', 'Advertencia');
+                        mensajesSinRecargar('No existen funcionalidades registradas', 'warning', 'Advertencia');
                     }
                 } else  {
                     setFuncionalidades([]);
