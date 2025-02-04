@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3006:3006"
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=db
+      - DB_USER=desarrollo
+      - DB_PASSWORD=desarrollo
+      - DB_NAME=bd_runqa
+    depends_on:
+      - db
+    networks:
+      - app-network
+    volumes:
+      - backend_data:/usr/src/app/storage
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:3000"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: bd_runqa
+      MYSQL_USER: desarrollo
+      MYSQL_PASSWORD: desarrollo
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db_data:
+  backend_data:

@@ -3,7 +3,7 @@
         "username":"desarrollo",
         "password":"desarrollo",
         "database": "bd_runqa",
-        "host":"127.0.0.1",
+        "host":"db",
         "dialect":"mysql",
         "operatorAliases":false
     }
