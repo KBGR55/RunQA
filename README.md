@@ -16,6 +16,12 @@ La carpeta principal del proyecto `RunQA` contiene dos subcarpetas principales:
 - `frontend`: Proyecto de React para la interfaz de usuario.
 - `backend`: Proyecto de Node.js para la API y lógica del servidor.
 
+## Tecnologías Utilizadas
+
+- **Frontend**: React, JavaScript
+- **Backend**: Node.js, Express
+- **Control de versiones**: Git
+
 ## Instalación
 
 ### Clonar el repositorio
@@ -31,7 +37,7 @@ La carpeta principal del proyecto `RunQA` contiene dos subcarpetas principales:
    ```bash
    cd RunQA
    ```
-
+## Opción 1: Ejecución Local
 ### Instalación del Frontend
 
 1. Ve a la carpeta `frontend`:
@@ -76,21 +82,7 @@ La carpeta principal del proyecto `RunQA` contiene dos subcarpetas principales:
 
    Esto iniciará el servidor en `http://localhost:3000` (o el puerto que configures).
 
-## Cómo Correr Ambos Proyectos
-
-1. Abre dos terminales:
-
-   - En la primera, navega a la carpeta `frontend` y ejecuta `npm start` para iniciar la interfaz.
-   - En la segunda, navega a la carpeta `backend` y ejecuta `node index.js` para iniciar el servidor.
-
-2. Puedes acceder a la aplicación frontend en `http://localhost:3000` y verificar las conexiones con el backend que estará corriendo en `http://localhost:3000` (o el puerto configurado).
-
-## Tecnologías Utilizadas
-
-- **Frontend**: React, JavaScript
-- **Backend**: Node.js, Express
-- **Control de versiones**: Git
-## Configurar la Base de Datos
+### Configurar la Base de Datos
 
 Antes de ejecutar el proyecto, asegúrate de configurar la base de datos. Sigue estos pasos:
 
@@ -192,6 +184,17 @@ Antes de ejecutar el proyecto, asegúrate de configurar la base de datos. Sigue 
    ```
 
 Una vez completados estos pasos, la base de datos estará configurada correctamente para su correcto funcionamiento.
+
+## Opción 2: Ejecución con Docker
+Si prefieres ejecutar el sistema con Docker, simplemente usa el siguiente comando en la raíz del proyecto:
+ 
+  ```bash
+  sudo docker-compose up --build
+  ```
+Esto iniciará el frontend, backend y base de datos en contenedores.
+
+Después de unos segundos, la aplicación estará disponible en http://localhost:80.
+
 ## Cuentas de Acceso
 
 | Correo                     | Contraseña |
