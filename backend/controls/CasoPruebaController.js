@@ -317,7 +317,7 @@ if (!rolesEntidad) {
             const caso = await caso_prueba.findAll({
                 where: {
                     id_proyecto: proyectoAux.id,
-                    estado: { [Op.in]: ["DISEÑADO", "REABIERTO"] },
+                    estado: { [Op.in]: ["DISENADO", "REABIERTO"] },
                     estadoAsignacion: "NO ASIGNADO",
                 },
                 

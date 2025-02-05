@@ -6,7 +6,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { peticionGet } from '../utilities/hooks/Conexion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { borrarSesion, getToken, getUser } from '../utilities/Sessionutil';
-import  {mensajes}  from '../utilities/Mensajes';
+import  {mensajes, mensajesSinRecargar}  from '../utilities/Mensajes';
 import 'react-datepicker/dist/react-datepicker.css';
 import ModalAsignarDesarrollador from './ModalAsignarDesarrollador';
 
@@ -36,7 +36,7 @@ const AsignarErrores = () => {
                 } 
                 const info = await peticionGet(getToken(), `/error/obtener/proyecto/${external_id_proyecto}`);
                 if (info.code !== 200) {
-                    mensajes(info.msg, 'warning', 'Advertencia');
+                    mensajesSinRecargar(info.msg, 'warning', 'Advertencia');
                     if (info.msg === 'Acceso denegado. Token ha expirado') {
                         borrarSesion();
                         navigate("/login");

@@ -194,7 +194,7 @@ const VerError = () => {
                                                             </thead>
                                                             <tbody>
                                                                 <tr>
-                                                                    <td>CRÍTICA</td>
+                                                                    <td>CRITICA</td>
                                                                     <td>Compromete el sistema completo, urgente.</td>
                                                                 </tr>
                                                                 <tr>
@@ -217,7 +217,7 @@ const VerError = () => {
                                     <span
                                         className={`badge ${dataErrror?.severidad === 'MEDIA' ? 'bg-warning' :
                                             dataErrror?.severidad === 'BAJA' ? 'bg-success' :
-                                                dataErrror?.severidad === 'CRÍTICA' ? 'bg-danger' :
+                                                dataErrror?.severidad === 'CRITICA' ? 'bg-danger' :
                                                     'bg-secondary'}`}
                                     >
                                         {dataErrror?.severidad || 'No disponible'}
@@ -247,7 +247,7 @@ const VerError = () => {
                                                                 </tr>
                                                                 <tr>
                                                                     <td>MEDIA</td>
-                                                                    <td>Intermedio en prioridad, no afecta funciones críticas.</td>
+                                                                    <td>Intermedio en prioridad, no afecta funciones criticas.</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>BAJA</td>

@@ -53,7 +53,7 @@ const EvaluarCorreccion = ({ showModalEvaluar, setShowModalEvaluar, external_id_
                         if (info.code !== 200) {
                             mensajes(info.msg, "error", "Error");
                         } else {
-                            mensajesSinRecargar(info.msg, "success", "Éxito");
+                            mensajes(info.msg, "success", "Éxito");
                         }
                     })
                     .catch((error) => {

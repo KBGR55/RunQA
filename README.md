@@ -145,10 +145,10 @@ Antes de ejecutar el proyecto, asegúrate de configurar la base de datos. Sigue 
          VALUES 
          (1, '93a9e3f1-907c-11ef-8f4d-30e37a2aa82d', 1, '3efe8462-5255-4839-b694-c269ca4475b3.jpeg', 'KAREN BRIGITH', 'GONZAGA RIVAS', '2003-12-05 00:00:00', '0980715353', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
          (2, '93a9e97e-907c-11ef-8f4d-30e37a2aa82d', 1, '2307fd96-9917-4da1-a666-90d0711162c3.jpeg', 'HILARY MADELEY', 'CALVA CAMACHO', '1995-08-15 00:00:00', '0987654321', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
-         (3, '93a9eb2d-907c-11ef-8f4d-30e37a2aa82d', 1, 'USUARIO_ICONO.png', 'MARÍA ELENA', 'PÉREZ MARTÍNEZ', '1998-03-22 00:00:00', '0980123456', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
-         (4, '25b65566-907d-11ef-8f4d-30e37a2aa82d', 1, 'USUARIO_ICONO.png', 'PEDRO ANTONIO', 'RAMÍREZ VARGAS', '1987-07-30 00:00:00', '0998765432', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
-         (5, '93a9ed2c-907c-11ef-8f4d-30e37a2aa82d', 1, 'USUARIO_ICONO.png', 'ANA MARÍA', 'TORRES QUINTERO', '2000-11-10 00:00:00', '0976543210', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
-         (6, '93a9ee14-907c-11ef-8f4d-30e37a2aa82d', 1, 'USUARIO_ICONO.png', 'SOFÍA ALEJANDRA', 'MENDOZA PÉREZ', '2003-12-05 00:00:00', '0980735353', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
+         (3, '93a9eb2d-907c-11ef-8f4d-30e37a2aa82d', 1, 'USUARIO_ICONO.png', 'MARIA ELENA', 'PEREZ MARTINEZ', '1998-03-22 00:00:00', '0980123456', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
+         (4, '25b65566-907d-11ef-8f4d-30e37a2aa82d', 1, 'USUARIO_ICONO.png', 'PEDRO ANTONIO', 'RAMIREZ VARGAS', '1987-07-30 00:00:00', '0998765432', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
+         (5, '93a9ed2c-907c-11ef-8f4d-30e37a2aa82d', 1, 'USUARIO_ICONO.png', 'ANA MARIA', 'TORRES QUINTERO', '2000-11-10 00:00:00', '0976543210', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
+         (6, '93a9ee14-907c-11ef-8f4d-30e37a2aa82d', 1, 'USUARIO_ICONO.png', 'SOFIA ALEJANDRA', 'MENDOZA PEREZ', '2003-12-05 00:00:00', '0980735353', '2024-10-22 08:50:19', '2024-10-22 08:50:19'),
          (7, '670f8cfe-7132-42b5-9b09-7b257762ccc1', 1, 'USUARIO_ICONO.png', 'FRANCISCO JAVIER', 'ALVAREZ PINEDA', '1979-01-15 00:00:00', '09971789', '2024-12-06 13:09:05', '2024-12-06 13:29:31');
 
          INSERT INTO cuenta (id, external_id, estado, correo, clave, createdAt, updatedAt, id_entidad) 
@@ -169,10 +169,10 @@ Antes de ejecutar el proyecto, asegúrate de configurar la base de datos. Sigue 
 
          INSERT INTO proyecto (external_id, estado, nombre, fecha_inicio, descripcion, createdAt, updatedAt)
          VALUES
-         (UUID(), 1, 'Auditoría Interna de Calidad', '2024-12-01 10:00:00', 'Realización de auditorías internas para evaluar la calidad del sistema.', NOW(), NOW()),
-         (UUID(), 1, 'Pruebas de Integración Críticas', '2024-12-02 11:00:00', 'Ejecución de pruebas de integración en módulos críticos.', NOW(), NOW()),
-         (UUID(), 1, 'Validación de Seguridad Avanzada', '2024-12-03 09:00:00', 'Revisión de medidas de seguridad en aplicaciones web.', NOW(), NOW()),
-         (UUID(), 1, 'Optimización de Procesos Operativos', '2024-12-04 15:00:00', 'Mejora de procesos operativos en el sistema.', NOW(), NOW()),
+         (UUID(), 1, 'Auditoria Interna de Calidad', '2024-12-01 10:00:00', 'Realizacion de auditorias internas para evaluar la calidad del sistema.', NOW(), NOW()),
+         (UUID(), 1, 'Pruebas de Integracion Criticas', '2024-12-02 11:00:00', 'Ejecucion de pruebas de integracion en modulos criticos.', NOW(), NOW()),
+         (UUID(), 1, 'Validacion de Seguridad Avanzada', '2024-12-03 09:00:00', 'Revision de medidas de seguridad en aplicaciones web.', NOW(), NOW()),
+         (UUID(), 1, 'Optimizacion de Procesos Operativos', '2024-12-04 15:00:00', 'Mejora de procesos operativos en el sistema.', NOW(), NOW()),
          (UUID(), 1, 'ADMINISTRADOR SYS', '2024-10-22 09:08:40', 'Encargado de gestionar el sistema', NOW(), NOW());
 
          INSERT INTO rol_proyecto (external_id, estado, horasDiarias, createdAt, updatedAt, id_proyecto, id_rol_entidad)
@@ -183,8 +183,8 @@ Antes de ejecutar el proyecto, asegúrate de configurar la base de datos. Sigue 
 
          INSERT INTO caso_prueba (external_id, nombre, estado, estadoAsignacion, descripcion, precondiciones, datos_entrada, pasos, resultado_esperado, clasificacion, tipo_prueba, fecha_disenio, fecha_ejecucion_prueba, createdAt, updatedAt, id_proyecto)
          VALUES
-         (UUID(), 'Validación de Inputs en Formularios', 'DISEÑADO', 'NO ASIGNADO', 'Verificación de datos de entrada en formularios.', 'El formulario debe estar activo.', 'Entrada de datos válidos.', 'Paso 1: Abrir formulario.\nPaso 2: Ingresar datos.', 'El sistema valida los datos correctamente.', 'MEDIA', 'FUNCIONAL', NOW(), NULL, NOW(), NOW(), 1),
-         (UUID(), 'Prueba de Conexión de Enlaces', 'DISEÑADO', 'NO ASIGNADO', 'Validación de enlaces en el sistema.', 'Sistema operativo configurado.', 'Enlace a servidores configurados.', 'Paso 1: Configurar red.\nPaso 2: Ejecutar enlace.', 'El sistema establece conexión correctamente.', 'ALTA', 'INTEGRACION', NOW(), NULL, NOW(), NOW(), 2);
+         (UUID(), 'Validación de Inputs en Formularios', 'DISENADO', 'NO ASIGNADO', 'Verificacion de datos de entrada en formularios.', 'El formulario debe estar activo.', 'Entrada de datos validos.', 'Paso 1: Abrir formulario.\nPaso 2: Ingresar datos.', 'El sistema valida los datos correctamente.', 'MEDIA', 'FUNCIONAL', NOW(), NULL, NOW(), NOW(), 1),
+         (UUID(), 'Prueba de Conexion de Enlaces', 'DISENADO', 'NO ASIGNADO', 'Validacion de enlaces en el sistema.', 'Sistema operativo configurado.', 'Enlace a servidores configurados.', 'Paso 1: Configurar red.\nPaso 2: Ejecutar enlace.', 'El sistema establece conexión correctamente.', 'ALTA', 'INTEGRACION', NOW(), NULL, NOW(), NOW(), 2);
 
          COMMIT;
 

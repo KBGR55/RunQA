@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         estado: {
-            type: DataTypes.ENUM('DISEÑADO',
+            type: DataTypes.ENUM('DISENADO',
                 'REVISADO',
                 'PENDIENTE',
                 'EN PROGRESO',
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
                 'CERRADO',
                 'REABIERTO'),
             allowNull: false,
-            defaultValue: 'DISEÑADO'
+            defaultValue: 'DISENADO'
         },
         estadoAsignacion: {
             type: DataTypes.ENUM('ASIGNADO', 'NO ASIGNADO', 'REASIGNADO'),
