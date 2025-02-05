@@ -16,7 +16,7 @@ import ModalAsignarDesarrollador from './ModalAsignarDesarrollador';
 
 const AgregarErrores = () => {
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
-    const [severidad] = useState(['CRÍTICA', 'MEDIA', 'BAJA']);
+    const [severidad] = useState(['CRITICA', 'MEDIA', 'BAJA']);
     const [prioridad] = useState(['ALTA', 'MEDIA', 'BAJA']);
     const [estadoSeleccionado, setEstadoSeleccionado] = useState('PENDIENTE');
     const [clasificacionSeleccionada, setClasificacionSeleccionada] = useState([]);
@@ -261,7 +261,7 @@ const AgregarErrores = () => {
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td>CRÍTICA</td>
+                                                    <td>CRITICA</td>
                                                     <td>Compromete el sistema completo, urgente.</td>
                                                 </tr>
                                                 <tr>
@@ -316,7 +316,7 @@ const AgregarErrores = () => {
                                                 </tr>
                                                 <tr>
                                                     <td>MEDIA</td>
-                                                    <td>Intermedio en prioridad, no afecta funciones críticas.</td>
+                                                    <td>Intermedio en prioridad, no afecta funciones criticas.</td>
                                                 </tr>
                                                 <tr>
                                                     <td>BAJA</td>

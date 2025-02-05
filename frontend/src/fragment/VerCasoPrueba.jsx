@@ -56,7 +56,7 @@ const VerCasoPrueba = () => {
     };
     const getEstadoClass = (estado) => {
         switch (estado) {
-            case 'DISEÑADO':
+            case 'DISENADO':
                 return 'bg-secondary';
             case 'REVISADO':
                 return 'bg-primary';
